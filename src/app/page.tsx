@@ -23,6 +23,7 @@ import {
   Building2,
   Star,
   ArrowRight,
+  CreditCard,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -84,8 +85,9 @@ function Navbar() {
   const navLinks = [
     { href: '#inicio', label: 'Inicio' },
     { href: '#sobre-mi', label: 'Sobre Mí' },
-    { href: '#segmentos', label: 'Segmentos' },
-    { href: '#cobertura', label: 'Cobertura' },
+    { href: '#planes', label: 'Planes' },
+    { href: '#promociones', label: 'Promos' },
+    { href: '#servicios', label: 'Servicios' },
     { href: '#contacto', label: 'Contacto' },
   ];
 
@@ -221,7 +223,7 @@ function HeroSection() {
               className="mb-6 bg-white/15 text-white/90 border-white/20 backdrop-blur-sm px-4 py-1.5 text-xs font-medium tracking-wider uppercase"
             >
               <Shield className="w-3.5 h-3.5 mr-1.5" />
-              Asesora Comercial Hominis
+              Cobertura médica Inspirada en vos
             </Badge>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-serif font-bold text-white leading-tight mb-6">
@@ -234,9 +236,10 @@ function HeroSection() {
               <strong className="text-white font-semibold">
                 Agustina C. Candia
               </strong>
-              , asesora comercial especializada en coberturas de salud.
-              Acompaño a particulares, monotributistas y empleados en relación
-              de dependencia a encontrar la protección ideal.
+              , asesora comercial de Hominis. Te ayudo a elegir entre{' '}
+              <strong className="text-hominis-gold font-semibold">Vita Más</strong> y{' '}
+              <strong className="text-hominis-gold font-semibold">Aqua Más</strong>,
+              dos planes con la misma calidad médica y diferente forma de pagar.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -374,15 +377,14 @@ function AboutSection() {
             </h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
               Como asesora comercial de <strong className="text-foreground">Hominis</strong>,
-              me dedico a brindar un servicio cercano y profesional, entendiendo
-              las necesidades de cada cliente para ofrecer las mejores soluciones
-              en cobertura de salud.
+              me dedico a brindar un servicio cercano y profesional, ayudándote
+              a elegir el plan de salud que mejor se adapte a vos: <strong className="text-hominis-violet">Vita Más</strong> con cobertura
+              completa sin copagos, o <strong className="text-hominis-violet">Aqua Más</strong> con más ahorro y más bienestar.
             </p>
             <p className="text-muted-foreground leading-relaxed mb-8">
-              Trabajo con las principales prestadoras del mercado, garantizando
-              opciones flexibles que se ajustan a cada situación particular,
-              ya seas independiente, monotributista o empleado en relación de
-              dependencia.
+              Ambos planes comparten la misma calidad médica, con acceso a sanatorios
+              de primer nivel, odontología, asistencia al viajero y trámites 100% online
+              desde la App Hominis. Mi compromiso es encontrarte la protección ideal.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -390,7 +392,7 @@ function AboutSection() {
                 { icon: UserCheck, label: 'Atención personalizada' },
                 { icon: Clock, label: 'Respuesta inmediata' },
                 { icon: Shield, label: 'Respaldo Hominis' },
-                { icon: Heart, label: 'Compromiso genuino' },
+                { icon: Heart, label: 'Sanatorio Güemes' },
               ].map(({ icon: Icon, label }) => (
                 <div
                   key={label}
@@ -410,125 +412,136 @@ function AboutSection() {
   );
 }
 
-/* ─── SEGMENTS SECTION ─── */
-function SegmentsSection() {
-  const segments = [
-    {
-      icon: Heart,
-      title: 'Particulares',
-      description:
-        'Cobertura integral de salud para vos y tu familia. Planes flexibles con la mejor relación costo-beneficio del mercado.',
-      features: [
-        'Consultas médicas ilimitadas',
-        'Prácticas y estudios incluidos',
-        'Cobertura odontológica',
-        'Internación y cirugía',
-        'Programa de prevención',
-      ],
-      color: 'from-blue-600 to-indigo-700',
-      accent: 'bg-blue-50 text-blue-700 border-blue-100',
-      badge: 'bg-blue-100 text-blue-800',
-    },
-    {
-      icon: Briefcase,
-      title: 'Monotributistas',
-      description:
-        'Soluciones especialmente diseñadas para trabajadores independientes. Accedé a cobertura premium con beneficios exclusivos.',
-      features: [
-        'Deducción impositiva',
-        'Planes escalonados por categoría',
-        'Cobertura para grupo familiar',
-        'Sin carencias extensas',
-        'Asesoramiento impositivo',
-      ],
-      color: 'from-violet-600 to-purple-700',
-      accent: 'bg-violet-50 text-violet-700 border-violet-100',
-      badge: 'bg-violet-100 text-violet-800',
-    },
-    {
-      icon: Building2,
-      title: 'Empleados en Relación de Dependencia',
-      description:
-        'Si trabajás con recibo de sueldo, accedé a beneficios corporativos exclusivos con descuentos especiales.',
-      features: [
-        'Descuentos por nómina',
-        'Cobertura para familiares',
-        'Beneficios corporativos',
-        'Deducción del recibo de sueldo',
-        'Asistencia al trabajador',
-      ],
-      color: 'from-hominis-indigo to-hominis-purple',
-      accent: 'bg-purple-50 text-purple-700 border-purple-100',
-      badge: 'bg-purple-100 text-purple-800',
-    },
-  ];
-
+/* ─── PLANS SECTION (Vita Más vs Aqua Más) ─── */
+function PlansSection() {
   return (
-    <AnimatedSection id="segmentos" className="py-20 lg:py-28 bg-white">
+    <AnimatedSection id="planes" className="py-20 lg:py-28 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
           <Badge variant="secondary" className="mb-4 text-hominis-violet bg-hominis-violet/10 border-hominis-violet/20">
-            Segmentos
+            Planes de Salud
           </Badge>
           <h2 className="text-3xl sm:text-4xl font-serif font-bold gradient-text mb-4">
-            Cobertura pensada para cada necesidad
+            Misma calidad médica, diferente forma de pagar
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-            Elegí el segmento que mejor se adapte a tu situación y descubrí
-            las opciones que tengo para vos.
+            Elegí el plan que mejor se adapte a tu estilo de vida. Ambos con la
+            calidad Hominis y respaldo del Sanatorio Güemes.
           </p>
         </div>
 
-        {/* Cards */}
-        <div className="grid md:grid-cols-3 gap-8">
-          {segments.map((seg, i) => (
-            <motion.div
-              key={seg.title}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: i * 0.15 }}
-            >
-              <Card className="group h-full border-0 shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden rounded-2xl hover:-translate-y-1">
-                {/* Gradient header */}
-                <div
-                  className={`bg-gradient-to-r ${seg.color} p-8 text-white relative overflow-hidden`}
-                >
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-                  <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
-                  <seg.icon className="w-12 h-12 mb-4 relative z-10" />
-                  <h3 className="text-2xl font-serif font-bold relative z-10">
-                    {seg.title}
-                  </h3>
-                </div>
+        {/* Central message */}
+        <div className="flex items-center justify-center gap-4 mb-12">
+          <div className="h-px flex-1 max-w-[120px] bg-gradient-to-r from-transparent to-purple-300" />
+          <Shield className="w-8 h-8 text-hominis-violet" />
+          <div className="h-px flex-1 max-w-[120px] bg-gradient-to-l from-transparent to-purple-300" />
+        </div>
 
-                <CardContent className="p-6 lg:p-8">
-                  <p className="text-muted-foreground mb-6 leading-relaxed">
-                    {seg.description}
-                  </p>
+        {/* Two Plan Cards */}
+        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          {/* Vita Más */}
+          <motion.div
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <Card className="group h-full border-2 border-purple-200 shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden rounded-2xl hover:-translate-y-1">
+              {/* Header */}
+              <div className="bg-gradient-to-r from-purple-700 to-violet-600 p-8 text-white relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+                <div className="absolute bottom-0 left-0 w-28 h-28 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
+                <Badge className="bg-white/20 text-white border-white/30 mb-4">Plan Premium</Badge>
+                <h3 className="text-3xl font-serif font-bold relative z-10 mb-2">
+                  Vita Más
+                </h3>
+                <p className="text-white/80 text-sm relative z-10">
+                  COBERTURA COMPLETA SIN COPAGOS
+                </p>
+                <p className="text-white/60 text-xs mt-2 relative z-10 italic">
+                  Ideal si querés cobertura completa sin pagar extras
+                </p>
+              </div>
 
-                  <ul className="space-y-3 mb-6">
-                    {seg.features.map((feat) => (
-                      <li key={feat} className="flex items-start gap-2.5">
-                        <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                        <span className="text-sm">{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
+              <CardContent className="p-6 lg:p-8">
+                <ul className="space-y-4 mb-8">
+                  {[
+                    { icon: '💰', text: 'Plan sin copagos' },
+                    { icon: '🎧', text: 'Experiencia Concierge: Asistencia personalizada 24/7 en el Sanatorio Güemes' },
+                    { icon: '🏥', text: 'Acceso completo a todos los prestadores en CABA y GBA' },
+                    { icon: '📅', text: 'Prioridad en la gestión de turnos para estudios, prácticas y consultas médicas' },
+                    { icon: '🦷', text: 'Odontología sin cargo' },
+                    { icon: '📱', text: 'Trámites 100% online desde el portal y la App Hominis' },
+                  ].map((feat) => (
+                    <li key={feat.text} className="flex items-start gap-3">
+                      <span className="text-lg flex-shrink-0 mt-0.5">{feat.icon}</span>
+                      <span className="text-sm leading-relaxed">{feat.text}</span>
+                    </li>
+                  ))}
+                </ul>
 
-                  <a href="#contacto">
-                    <Button
-                      className={`w-full bg-gradient-to-r ${seg.color} text-white shadow-md hover:shadow-lg transition-all`}
-                    >
-                      Consultar Planes
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
-                  </a>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+                <a href="#contacto">
+                  <Button className="w-full bg-gradient-to-r from-purple-700 to-violet-600 text-white shadow-lg hover:shadow-xl transition-all text-base h-12 rounded-xl">
+                    Consultar Vita Más
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </a>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Aqua Más */}
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <Card className="group h-full border-2 border-teal-200 shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden rounded-2xl hover:-translate-y-1">
+              {/* Header */}
+              <div className="bg-gradient-to-r from-teal-600 to-cyan-600 p-8 text-white relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+                <div className="absolute bottom-0 left-0 w-28 h-28 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
+                <Badge className="bg-white/20 text-white border-white/30 mb-4">Plan Ahorro</Badge>
+                <h3 className="text-3xl font-serif font-bold relative z-10 mb-2">
+                  Aqua Más
+                </h3>
+                <p className="text-white/80 text-sm relative z-10">
+                  MÁS AHORRO, MÁS BIENESTAR
+                </p>
+                <p className="text-white/60 text-xs mt-2 relative z-10 italic">
+                  Ideal si buscás cuidar tu bolsillo y tu bienestar
+                </p>
+              </div>
+
+              <CardContent className="p-6 lg:p-8">
+                <ul className="space-y-4 mb-8">
+                  {[
+                    { icon: '💲', text: 'Copagos flexibles' },
+                    { icon: '🚑', text: 'Urgencias 24/7 sin copagos' },
+                    { icon: '🏥', text: 'Acceso total a todos los Sanatorios de cartilla' },
+                    { icon: '✈️', text: 'Asistencia al viajero' },
+                    { icon: '💊', text: '40% de descuento en farmacias' },
+                    { icon: '🧠', text: 'Salud mental con coseguro, hasta 30 sesiones anuales' },
+                    { icon: '🦷', text: 'Odontología con coseguro' },
+                  ].map((feat) => (
+                    <li key={feat.text} className="flex items-start gap-3">
+                      <span className="text-lg flex-shrink-0 mt-0.5">{feat.icon}</span>
+                      <span className="text-sm leading-relaxed">{feat.text}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <a href="#contacto">
+                  <Button className="w-full bg-gradient-to-r from-teal-600 to-cyan-600 text-white shadow-lg hover:shadow-xl transition-all text-base h-12 rounded-xl">
+                    Consultar Aqua Más
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </a>
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
 
         {/* Age Restriction Notice */}
@@ -545,12 +558,12 @@ function SegmentsSection() {
             </div>
             <div>
               <h4 className="font-semibold text-amber-900 mb-1">
-                Importante: Restricción de Edad
+                Importante: Condiciones de edad
               </h4>
               <p className="text-sm text-amber-800 leading-relaxed">
-                La cobertura de salud está disponible para clientes de{' '}
-                <strong>hasta 64 años de edad</strong>. Si tenés dudas sobre tu
-                elegibilidad, contactame y te asesorare personalmente.
+                Las promociones con descuento aplican para nuevos socios de{' '}
+                <strong>hasta 39 años</strong>. Para cobertura general, consultá
+                las condiciones según tu edad. Contactame y te asesorare personalmente.
               </p>
             </div>
           </div>
@@ -560,72 +573,178 @@ function SegmentsSection() {
   );
 }
 
-/* ─── COVERAGE SECTION ─── */
-function CoverageSection() {
-  const coverages = [
+/* ─── PROMOTIONS SECTION ─── */
+function PromotionsSection() {
+  const promos = [
     {
-      icon: MapPin,
-      title: 'Buenos Aires',
-      description:
-        'Amplia red de prestadores en CABA y Provincia de Buenos Aires. Sanatorios y clínicas de primer nivel.',
-      features: [
-        'Red de +500 prestadores',
-        'Sanatorios de referencia',
-        'Urgencias 24/7',
-        'Centros de diagnóstico',
+      plan: 'Aqua Más',
+      planColor: 'from-teal-600 to-cyan-600',
+      badge: 'bg-teal-100 text-teal-800',
+      maxAge: 39,
+      tiers: [
+        { months: 'Meses 1 a 3', discount: 40 },
+        { months: 'Meses 4 a 6', discount: 30 },
+        { months: 'Meses 7 a 12', discount: 20 },
       ],
-      gradient: 'from-blue-500 to-indigo-600',
     },
     {
-      icon: Globe,
-      title: 'Cobertura Nacional',
-      description:
-        'Protección en todo el territorio argentino. Viajá con la tranquilidad de estar cubierto en cualquier provincia.',
-      features: [
-        'Cobertura en todas las provincias',
-        'Trasladados y urgencias',
-        'Convenios nacionales',
-        'Telemedicina',
+      plan: 'Vita Más',
+      planColor: 'from-purple-700 to-violet-600',
+      badge: 'bg-purple-100 text-purple-800',
+      maxAge: 39,
+      tiers: [
+        { months: 'Meses 1 a 3', discount: 30 },
+        { months: 'Meses 4 a 12', discount: 20 },
       ],
-      gradient: 'from-violet-500 to-purple-600',
-    },
-    {
-      icon: Star,
-      title: 'Cobertura Internacional',
-      description:
-        'Para quienes necesitan protección más allá de las fronteras. Asistencia médica en el exterior con estándares internacionales.',
-      features: [
-        'Asistencia en el exterior',
-        'Traslados sanitarios',
-        'Repatriación sanitaria',
-        'Convenios internacionales',
-      ],
-      gradient: 'from-hominis-indigo to-hominis-violet',
     },
   ];
 
   return (
-    <AnimatedSection id="cobertura" className="py-20 lg:py-28 bg-hominis-gradient-subtle">
+    <AnimatedSection id="promociones" className="py-20 lg:py-28 bg-hominis-gradient-light">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
           <Badge variant="secondary" className="mb-4 text-hominis-violet bg-hominis-violet/10 border-hominis-violet/20">
-            Cobertura Geográfica
+            Promociones Exclusivas
           </Badge>
           <h2 className="text-3xl sm:text-4xl font-serif font-bold gradient-text mb-4">
-            Protección donde sea que estés
+            Promo 1 Año — Beneficio para Nuevos Socios
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-            Desde Buenos Aires hasta cualquier parte del mundo, contás con
-            respaldo médico integral.
+            Aprovechá descuentos escalonados durante todo el primer año. 
+            Adhiriéndote al débito automático con tarjeta de crédito o CBU bancario.
           </p>
         </div>
 
-        {/* Coverage Cards */}
-        <div className="grid md:grid-cols-3 gap-8">
-          {coverages.map((cov, i) => (
+        {/* Promo Cards */}
+        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          {promos.map((promo, i) => (
             <motion.div
-              key={cov.title}
+              key={promo.plan}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: i * 0.15 }}
+            >
+              <Card className="h-full border-0 shadow-xl rounded-2xl overflow-hidden">
+                <div className={`bg-gradient-to-r ${promo.planColor} p-6 text-white text-center`}>
+                  <p className="text-sm font-medium text-white/70 uppercase tracking-wider">Plan</p>
+                  <h3 className="text-2xl font-serif font-bold mt-1">{promo.plan}</h3>
+                </div>
+                <CardContent className="p-6">
+                  <div className="space-y-4 mb-6">
+                    {promo.tiers.map((tier, j) => (
+                      <div
+                        key={j}
+                        className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-100"
+                      >
+                        <span className="text-sm font-medium text-muted-foreground">
+                          {tier.months}
+                        </span>
+                        <span className={`text-2xl font-bold ${
+                          tier.discount === 40 ? 'text-teal-600' : 
+                          tier.discount === 30 ? 'text-purple-600' : 'text-indigo-600'
+                        }`}>
+                          {tier.discount}% OFF
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="space-y-3 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-2">
+                      <Users className="w-4 h-4 text-hominis-violet" />
+                      <span>Para nuevos socios de hasta <strong>{promo.maxAge} años</strong></span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CreditCard className="w-4 h-4 text-hominis-violet" />
+                      <span>Débito automático: tarjeta de crédito o CBU bancario</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 text-amber-500" />
+                      <span>No acumulable con otras promociones</span>
+                    </div>
+                  </div>
+
+                  <a href="#contacto" className="block mt-6">
+                    <Button className={`w-full bg-gradient-to-r ${promo.planColor} text-white shadow-md hover:shadow-lg transition-all rounded-xl h-11`}>
+                      Aprovechar Promo
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  </a>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </AnimatedSection>
+  );
+}
+
+/* ─── DIGITAL SERVICES SECTION ─── */
+function ServicesSection() {
+  const services = [
+    {
+      icon: (
+        <svg viewBox="0 0 24 24" className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth={1.5}>
+          <path d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
+        </svg>
+      ),
+      title: 'Médico Virtual',
+      subtitle: 'Consultas por videollamada desde la app',
+      description: 'Simple. Rápido. Desde donde estés. Consultá con profesionales sin moverte de tu casa, directamente desde la App Hominis.',
+      color: 'from-teal-500 to-cyan-500',
+      detail: 'Para afiliados mayores de 5 años',
+    },
+    {
+      icon: (
+        <svg viewBox="0 0 24 24" className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth={1.5}>
+          <path d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+        </svg>
+      ),
+      title: 'Farmacia Virtual',
+      subtitle: 'Pedí tus medicamentos desde la app',
+      description: 'Sacá foto de tu receta o subí la electrónica, recibí un listado con tu cobertura del 40% y te lo enviamos directo a tu domicilio. Sin filas ni traslados.',
+      color: 'from-purple-600 to-violet-500',
+      detail: 'Para socios de CABA',
+    },
+    {
+      icon: (
+        <svg viewBox="0 0 24 24" className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth={1.5}>
+          <path d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+        </svg>
+      ),
+      title: 'App Hominis',
+      subtitle: 'Trámites 100% online',
+      description: 'Gestioná credenciales, turnos, autorizaciones y más desde tu celular. Sin necesidad de gestiones presenciales. Todo en la palma de tu mano.',
+      color: 'from-hominis-blue to-hominis-indigo',
+      detail: 'Disponible para iOS y Android',
+    },
+  ];
+
+  return (
+    <AnimatedSection id="servicios" className="py-20 lg:py-28 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="text-center mb-16">
+          <Badge variant="secondary" className="mb-4 text-hominis-violet bg-hominis-violet/10 border-hominis-violet/20">
+            Servicios Digitales
+          </Badge>
+          <h2 className="text-3xl sm:text-4xl font-serif font-bold gradient-text mb-4">
+            Pensado para vos, que buscas resolver todo de forma simple
+          </h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+            Hominis pone la tecnología al servicio de tu salud. Todo lo que 
+            necesitás, desde donde estés.
+          </p>
+        </div>
+
+        {/* Service Cards */}
+        <div className="grid md:grid-cols-3 gap-8">
+          {services.map((svc, i) => (
+            <motion.div
+              key={svc.title}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -633,27 +752,21 @@ function CoverageSection() {
             >
               <Card className="group h-full border-0 bg-white shadow-lg hover:shadow-2xl transition-all duration-500 rounded-2xl overflow-hidden hover:-translate-y-1">
                 <CardContent className="p-8">
-                  <div
-                    className={`w-14 h-14 rounded-2xl bg-gradient-to-r ${cov.gradient} flex items-center justify-center mb-6 shadow-lg`}
-                  >
-                    <cov.icon className="w-7 h-7 text-white" />
+                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-r ${svc.color} flex items-center justify-center mb-6 shadow-lg text-white`}>
+                    {svc.icon}
                   </div>
-                  <h3 className="text-xl font-serif font-bold mb-3">
-                    {cov.title}
+                  <h3 className="text-xl font-serif font-bold mb-1">
+                    {svc.title}
                   </h3>
-                  <p className="text-muted-foreground mb-6 leading-relaxed text-sm">
-                    {cov.description}
+                  <p className="text-sm font-medium text-hominis-violet mb-4">
+                    {svc.subtitle}
                   </p>
-                  <ul className="space-y-2.5">
-                    {cov.features.map((feat) => (
-                      <li key={feat} className="flex items-center gap-2.5">
-                        <div className={`w-5 h-5 rounded-full bg-gradient-to-r ${cov.gradient} flex items-center justify-center flex-shrink-0`}>
-                          <CheckCircle2 className="w-3 h-3 text-white" />
-                        </div>
-                        <span className="text-sm">{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <p className="text-muted-foreground mb-4 leading-relaxed text-sm">
+                    {svc.description}
+                  </p>
+                  <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-600">
+                    {svc.detail}
+                  </Badge>
                 </CardContent>
               </Card>
             </motion.div>
@@ -889,7 +1002,7 @@ function ContactSection() {
                 {/* Segmento + Edad */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium">Segmento *</Label>
+                    <Label className="text-sm font-medium">Plan de interés *</Label>
                     <Select
                       value={formData.segmento}
                       onValueChange={(val) =>
@@ -901,14 +1014,14 @@ function ContactSection() {
                         <SelectValue placeholder="Seleccioná tu segmento" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="PARTICULAR">
-                          Particular
+                        <SelectItem value="VITA_MAS">
+                          Vita Más — Sin copagos
                         </SelectItem>
-                        <SelectItem value="MONOTRIBUTISTA">
-                          Monotributista
+                        <SelectItem value="AQUA_MAS">
+                          Aqua Más — Más ahorro
                         </SelectItem>
-                        <SelectItem value="EMPLEADO_DEPENDENCIA">
-                          Empleado en Rel. Dependencia
+                        <SelectItem value="CONSULTA">
+                          No estoy seguro / Consulta general
                         </SelectItem>
                       </SelectContent>
                     </Select>
@@ -925,7 +1038,7 @@ function ContactSection() {
                       max={64}
                       value={formData.edad}
                       onChange={handleChange}
-                      placeholder="Máximo 64 años"
+                      placeholder="Tu edad"
                       className="rounded-xl h-12"
                     />
                   </div>
@@ -1034,8 +1147,9 @@ function Footer() {
               {[
                 { href: '#inicio', label: 'Inicio' },
                 { href: '#sobre-mi', label: 'Sobre Mí' },
-                { href: '#segmentos', label: 'Segmentos' },
-                { href: '#cobertura', label: 'Cobertura' },
+                { href: '#planes', label: 'Planes' },
+                { href: '#promociones', label: 'Promos' },
+                { href: '#servicios', label: 'Servicios' },
                 { href: '#contacto', label: 'Contacto' },
               ].map((link) => (
                 <li key={link.href}>
@@ -1103,7 +1217,7 @@ function Footer() {
             Hominis. Todos los derechos reservados.
           </p>
           <p>
-            Cobertura disponible para clientes de hasta 64 años
+            Promos para nuevos socios de hasta 39 años. Consultá condiciones según tu edad.
           </p>
         </div>
       </div>
@@ -1119,8 +1233,9 @@ export default function Home() {
       <main className="flex-1">
         <HeroSection />
         <AboutSection />
-        <SegmentsSection />
-        <CoverageSection />
+        <PlansSection />
+        <PromotionsSection />
+        <ServicesSection />
         <ContactSection />
       </main>
       <Footer />

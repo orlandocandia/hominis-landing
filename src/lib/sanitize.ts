@@ -56,7 +56,7 @@ export function sanitizePhone(input: unknown): string {
  * Validate segment type
  */
 export function validateSegmento(input: unknown): string {
-  const validSegments = ['PARTICULAR', 'MONOTRIBUTISTA', 'EMPLEADO_DEPENDENCIA'];
+  const validSegments = ['PARTICULAR', 'MONOTRIBUTISTA', 'EMPLEADO_DEPENDENCIA', 'VITA_MAS', 'AQUA_MAS', 'CONSULTA'];
   
   if (typeof input !== 'string') return '';
   const upper = input.toUpperCase().trim();
@@ -77,7 +77,7 @@ export function validateCobertura(input: unknown): string {
 }
 
 /**
- * Validate age (must be <= 64)
+ * Validate age (promos apply up to 39, general coverage may differ)
  */
 export function validateAge(input: unknown): number | null {
   if (input === null || input === undefined || input === '') return null;
@@ -86,7 +86,6 @@ export function validateAge(input: unknown): number | null {
               typeof input === 'number' ? input : NaN;
   
   if (isNaN(age) || age < 0 || age > 150) return null;
-  if (age > 64) return null; // Business rule: max 64 years
   
   return age;
 }

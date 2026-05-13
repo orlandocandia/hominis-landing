@@ -64,10 +64,10 @@ export async function POST(request: Request) {
       errors.push('El teléfono es obligatorio');
     }
     if (!segmento) {
-      errors.push('Seleccioná un segmento válido');
+      errors.push('Seleccioná un plan de interés válido');
     }
     if (edad === null && body.edad !== undefined && body.edad !== '') {
-      errors.push('La edad debe ser menor o igual a 64 años para acceder a la cobertura');
+      errors.push('La edad ingresada no es válida');
     }
 
     if (errors.length > 0) {
