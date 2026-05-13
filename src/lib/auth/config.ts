@@ -117,6 +117,45 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
+    async redirect({ url, baseUrl }) {
+      // After login, redirect to dashboard instead of the default callback URL
+      if (url.includes('/login') || url === baseUrl) {
+        return `${baseUrl}/dashboard`;
+      }
+      // If url is relative, prepend base
+      if (url.startsWith('/')) return `${baseUrl}${url}`;
+      // If url is on same domain, allow it
+      if (new URL(url).origin === new URL(baseUrl).origin) return url;
+      return baseUrl;
+    },
   },
   secret: process.env.NEXTAUTH_SECRET,
+  cookies: {
+    sessionToken: {
+      name: `__Secure-next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: false, // Allow over HTTP in dev/preview
+      },
+    },
+    callbackUrl: {
+      name: `next-auth.callback-url`,
+      options: {
+        sameSite: 'lax',
+        path: '/',
+        secure: false,
+      },
+    },
+    csrfToken: {
+      name: `next-auth.csrf-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: false,
+      },
+    },
+  },
 };

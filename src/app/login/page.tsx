@@ -33,8 +33,9 @@ export default function LoginPage() {
       if (result?.error) {
         setError(result.error);
       } else if (result?.ok) {
-        router.push('/dashboard');
-        router.refresh();
+        // Small delay to ensure cookie is set before navigating
+        await new Promise((r) => setTimeout(r, 500));
+        window.location.href = '/dashboard';
       }
     } catch {
       setError('Error de conexión. Intentá nuevamente.');

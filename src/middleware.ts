@@ -1,6 +1,5 @@
 // Middleware - Route Protection
 import { NextResponse } from 'next/server';
-import { getToken } from 'next-auth/jwt';
 import type { NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
@@ -14,13 +13,12 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Check for JWT token
-  const token = await getToken({
-    req: request,
-    secret: process.env.NEXTAUTH_SECRET,
-  });
+  // Check for NextAuth session token cookie
+  const sessionToken =
+    request.cookies.get('__Secure-next-auth.session-token')?.value ||
+    request.cookies.get('next-auth.session-token')?.value;
 
-  if (!token) {
+  if (!sessionToken) {
     if (isContactsApi) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
