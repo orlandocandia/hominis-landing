@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Creando usuario administrador...');
 
-  const email = 'agustina.candia@hominis.com';
+  const email = 'acandia@mphominis.com.ar';
   const password = 'Hominis2025!';
   const nombre = 'Agustina C. Candia';
 
