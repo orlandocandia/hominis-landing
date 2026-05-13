@@ -1002,7 +1002,7 @@ function ContactSection() {
                 {/* Segmento + Edad */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium">Seleccioná tu segmento *</Label>
+                    <Label className="text-sm font-medium">Situación laboral *</Label>
                     <Select
                       value={formData.segmento}
                       onValueChange={(val) =>
@@ -1011,7 +1011,7 @@ function ContactSection() {
                       required
                     >
                       <SelectTrigger className="rounded-xl h-12">
-                        <SelectValue placeholder="Seleccioná tu segmento" />
+                        <SelectValue placeholder="Seleccioná tu situación laboral" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="RECIBO_DE_SUELDO">
