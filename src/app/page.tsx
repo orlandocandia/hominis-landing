@@ -1002,7 +1002,7 @@ function ContactSection() {
                 {/* Segmento + Edad */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium">Plan de interés *</Label>
+                    <Label className="text-sm font-medium">Seleccioná tu segmento *</Label>
                     <Select
                       value={formData.segmento}
                       onValueChange={(val) =>
@@ -1014,14 +1014,14 @@ function ContactSection() {
                         <SelectValue placeholder="Seleccioná tu segmento" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="VITA_MAS">
-                          Vita Más — Sin copagos
+                        <SelectItem value="RECIBO_DE_SUELDO">
+                          Recibo de sueldo
                         </SelectItem>
-                        <SelectItem value="AQUA_MAS">
-                          Aqua Más — Más ahorro
+                        <SelectItem value="MONOTRIBUTO">
+                          Monotributo
                         </SelectItem>
-                        <SelectItem value="CONSULTA">
-                          No estoy seguro / Consulta general
+                        <SelectItem value="PARTICULAR">
+                          Particular
                         </SelectItem>
                       </SelectContent>
                     </Select>
@@ -1059,11 +1059,7 @@ function ContactSection() {
                       <SelectValue placeholder="Seleccioná cobertura" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="BSAS">Buenos Aires</SelectItem>
-                      <SelectItem value="NACIONAL">Nacional</SelectItem>
-                      <SelectItem value="INTERNACIONAL">
-                        Internacional
-                      </SelectItem>
+                      <SelectItem value="CABA_GBA">Caba y Gba</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

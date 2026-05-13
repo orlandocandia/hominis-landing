@@ -56,7 +56,7 @@ export function sanitizePhone(input: unknown): string {
  * Validate segment type
  */
 export function validateSegmento(input: unknown): string {
-  const validSegments = ['PARTICULAR', 'MONOTRIBUTISTA', 'EMPLEADO_DEPENDENCIA', 'VITA_MAS', 'AQUA_MAS', 'CONSULTA'];
+  const validSegments = ['RECIBO_DE_SUELDO', 'MONOTRIBUTO', 'PARTICULAR'];
   
   if (typeof input !== 'string') return '';
   const upper = input.toUpperCase().trim();
@@ -68,7 +68,7 @@ export function validateSegmento(input: unknown): string {
  * Validate coverage type
  */
 export function validateCobertura(input: unknown): string {
-  const validCoverages = ['BSAS', 'NACIONAL', 'INTERNACIONAL'];
+  const validCoverages = ['CABA_GBA'];
   
   if (typeof input !== 'string') return '';
   const upper = input.toUpperCase().trim();

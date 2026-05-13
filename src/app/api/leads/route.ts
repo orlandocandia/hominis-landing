@@ -64,7 +64,7 @@ export async function POST(request: Request) {
       errors.push('El teléfono es obligatorio');
     }
     if (!segmento) {
-      errors.push('Seleccioná un plan de interés válido');
+      errors.push('Seleccioná un segmento válido');
     }
     if (edad === null && body.edad !== undefined && body.edad !== '') {
       errors.push('La edad ingresada no es válida');
