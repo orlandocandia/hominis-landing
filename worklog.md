@@ -1,27 +1,29 @@
+# Worklog - Agustina Candia Landing Page
+
 ---
 Task ID: 1
-Agent: Main Developer
-Task: Build Landing Page for Agustina C. Candia - Hominis Asesora Comercial
+Agent: Main Agent
+Task: Implement Login and Dashboard module with NextAuth.js authentication
 
 Work Log:
-- Generated 3 AI images: profile photo (agustina_c_candia.png), logo (logo_hominis.png), hero background (hero-bg.png)
-- Updated Prisma schema with Contacto model (leads table) with fields: id, nombre, email, telefono, segmento, mensaje, cobertura, edad, origen, ip, timestamps
-- Ran db:push to create the database table
-- Created security utilities: csrf.ts, sanitize.ts, rate-limit.ts
-- Created API routes: /api/csrf (GET) and /api/leads (POST)
-- Built complete landing page with 6 sections: Hero, About, Segments, Coverage, Contact Form, Footer
-- Implemented WhatsApp floating button component
-- Added Framer Motion animations for section reveals
-- Configured corporate color scheme matching hominis.com.ar (blues, violets, gradients)
-- Tested all API endpoints successfully: CSRF generation, lead creation, validation, age restriction
-- Fixed Next.js config warnings (metadataBase, allowedDevOrigins)
+- Installed bcryptjs for password hashing
+- Updated Prisma schema: added User model (email, password, nombre, rol, activo, ultimoLogin, intentosLogin, bloqueadoHasta) and estado field to Contacto model (NUEVO, LEIDO, ATENDIDO)
+- Ran `db:push` to sync schema with SQLite database
+- Created NextAuth configuration (`src/lib/auth/config.ts`) with CredentialsProvider, JWT strategy, 8-hour session, brute-force protection (5 attempts max, 15-min lockout)
+- Created auth helper (`src/lib/auth/index.ts`) with getServerSession wrapper
+- Created NextAuth route handler (`src/app/api/auth/[...nextauth]/route.ts`)
+- Created middleware (`src/middleware.ts`) to protect /dashboard and /api/contacts routes
+- Created contacts API: GET `/api/contacts` (list with filters, search, pagination, stats) and PATCH/DELETE `/api/contacts/[id]` (status update and delete)
+- Created login page (`src/app/login/page.tsx`) with branded design, email/password form, show/hide password, error alerts, loading state
+- Created dashboard page (`src/app/dashboard/page.tsx`) with: stats cards (total, nuevos, leidos, atendidos), search bar, estado/segmento filters, contacts list with status badges, contact detail dialog, quick status change dropdown, WhatsApp direct contact, pagination
+- Created seed script (`prisma/seed.ts`) and ran it to create admin user
+- Added small shield icon link to footer for admin access
+- Added NEXTAUTH_SECRET and NEXTAUTH_URL to .env
+- Verified lint passes, login API works (302 redirect on success), and all routes respond correctly
 
 Stage Summary:
-- Full landing page for Agustina C. Candia is complete and running
-- Backend API with CSRF protection, input sanitization, rate limiting, and age validation
-- Database schema for leads with Prisma/SQLite
-- Corporate visual identity: blue-violet gradients, Playfair Display + Inter fonts, glass effects
-- All contact channels integrated: WhatsApp (11-6555-534), email, Instagram, Facebook
-- Age restriction (≤64 years) enforced in both UI and API
-- Three segments: Particulares, Monotributistas, Empleados en Relación de Dependencia
-- Three coverage levels: Buenos Aires, Nacional, Internacional
+- Full auth system implemented with NextAuth.js v4 + Credentials provider
+- Dashboard with contact management (list, filter, search, status change, delete, WhatsApp contact)
+- Admin user created: email=agustina.candia@hominis.com, password=Hominis2025!
+- Security features: bcrypt password hashing, brute-force protection, JWT sessions, route middleware
+- All API endpoints protected except /api/leads (public form submissions)

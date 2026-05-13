@@ -1,5 +1,4 @@
-// Prisma Schema - ContactoModel (Leads)
-// Equivalent to the MySQL table for lead management
+// Prisma Schema - ContactoModel (Leads) + User Auth
 
 generator client {
   provider = "prisma-client-js"
@@ -15,16 +14,34 @@ model Contacto {
   nombre    String   // Full name
   email     String   // Email address
   telefono  String   // Phone number (WhatsApp)
-  segmento  String   // Segment: PARTICULAR, MONOTRIBUTISTA, EMPLEADO_DEPENDENCIA
+  segmento  String   // Segment: RECIBO_DE_SUELDO, MONOTRIBUTO, PARTICULAR
   mensaje   String?  // Optional message
-  cobertura String?  // Coverage interest: BSAS, NACIONAL, INTERNACIONAL
+  cobertura String?  // Coverage interest: CABA_GBA
   edad      Int?     // Age (must be <= 64)
   origen    String   @default("landing") // Lead origin tracking
   ip        String?  // Client IP for security
+  estado    String   @default("NUEVO") // NUEVO, LEIDO, ATENDIDO
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([email])
   @@index([segmento])
   @@index([createdAt])
+  @@index([estado])
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique // Login email
+  password      String   // Hashed password (bcrypt)
+  nombre        String   // Display name
+  rol           String   @default("ADMIN") // ADMIN, SUPERVISOR
+  activo        Boolean  @default(true)
+  ultimoLogin   DateTime?
+  intentosLogin Int      @default(0)
+  bloqueadoHasta DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([email])
 }

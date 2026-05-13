@@ -1384,9 +1384,18 @@ function Footer() {
             © {new Date().getFullYear()} Agustina C. Candia — Asesora Comercial
             Hominis. Todos los derechos reservados.
           </p>
-          <p>
-            Promos para nuevos socios de hasta 39 años. Consultá condiciones según tu edad.
-          </p>
+          <div className="flex items-center gap-4">
+            <p>
+              Promos para nuevos socios de hasta 39 años. Consultá condiciones según tu edad.
+            </p>
+            <a
+              href="/login"
+              className="text-white/30 hover:text-white/60 transition-colors"
+              title="Acceso panel de gestión"
+            >
+              <Shield className="w-3.5 h-3.5" />
+            </a>
+          </div>
         </div>
       </div>
     </footer>

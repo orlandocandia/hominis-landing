@@ -89,6 +89,7 @@ export async function POST(request: Request) {
         edad,
         origen: 'landing',
         ip: clientIp,
+        estado: 'NUEVO',
       },
     });
 
