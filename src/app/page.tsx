@@ -1379,7 +1379,7 @@ function Footer() {
         <Separator className="bg-white/10" />
 
         {/* Bottom bar */}
-        <div className="py-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/50">
+        <div className="pb-20 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/50">
           <p>
             © {new Date().getFullYear()} Agustina C. Candia — Asesora Comercial
             Hominis. Todos los derechos reservados.
