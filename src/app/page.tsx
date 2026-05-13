@@ -100,11 +100,13 @@ function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-24">
           {/* Logo */}
-          <a href="#inicio" className="flex items-center group">
+          <a href="#inicio" className="flex items-center group relative">
+            {/* Glow ring behind logo */}
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-hominis-accent/30 to-hominis-violet/30 blur-md opacity-60 group-hover:opacity-100 group-hover:blur-lg transition-all duration-500" />
             <img
               src="/logo_hominis.png"
               alt="Hominis Logo"
-              className="h-14 sm:h-16 w-auto object-contain rounded-2xl group-hover:scale-105 transition-transform"
+              className="relative h-14 sm:h-16 w-auto object-contain rounded-2xl group-hover:scale-110 group-hover:rotate-2 transition-all duration-500 drop-shadow-[0_0_12px_rgba(124,77,255,0.3)] group-hover:drop-shadow-[0_0_20px_rgba(124,77,255,0.5)]"
             />
           </a>
 
@@ -1009,11 +1011,15 @@ function Footer() {
         <div className="py-12 grid md:grid-cols-3 gap-10">
           {/* Brand */}
           <div>
-            <img
-              src="/logo_hominis.png"
-              alt="Hominis Logo"
-              className="h-20 w-auto object-contain rounded-2xl mb-6"
-            />
+            <div className="relative mb-6 w-fit">
+              {/* Glow ring behind logo */}
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-hominis-accent/20 to-hominis-gold/20 blur-xl opacity-70" />
+              <img
+                src="/logo_hominis.png"
+                alt="Hominis Logo"
+                className="relative h-20 w-auto object-contain rounded-2xl drop-shadow-[0_0_16px_rgba(124,77,255,0.3)]"
+              />
+            </div>
             <p className="text-white/70 text-sm leading-relaxed">
               Asesoría comercial personalizada en coberturas de salud.
               Compromiso, profesionalismo y atención cercana.
