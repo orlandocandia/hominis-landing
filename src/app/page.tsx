@@ -756,7 +756,7 @@ function ContactSection() {
             {/* Contact cards */}
             <div className="space-y-4 mb-8">
               <a
-                href="https://wa.me/549116555534"
+                href="https://wa.me/5491165555534"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-4 p-4 rounded-xl bg-green-50 border border-green-100 hover:bg-green-100 transition-colors group"
@@ -768,7 +768,7 @@ function ContactSection() {
                   <div className="text-sm font-semibold text-green-900">
                     WhatsApp Directo
                   </div>
-                  <div className="text-sm text-green-700">11-6555-534</div>
+                  <div className="text-sm text-green-700">11-6555-5534</div>
                 </div>
               </a>
 
@@ -1057,13 +1057,13 @@ function Footer() {
             </h4>
             <div className="space-y-3">
               <a
-                href="https://wa.me/549116555534"
+                href="https://wa.me/5491165555534"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors"
               >
                 <Phone className="w-4 h-4" />
-                11-6555-534
+                11-6555-5534
               </a>
               <a
                 href="mailto:acandia@mphominis.com.ar"

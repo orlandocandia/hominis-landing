@@ -2,7 +2,7 @@
 
 import { MessageCircle } from 'lucide-react';
 
-const WHATSAPP_NUMBER = '549116555534'; // 11-6555-5344 formatted for WhatsApp API
+const WHATSAPP_NUMBER = '5491165555534'; // 11-6555-5534 formatted for WhatsApp API
 const WHATSAPP_MESSAGE = encodeURIComponent(
   'Hola Agustina, me interesa conocer más sobre las coberturas de salud. ¿Podrías asesorarme?'
 );
