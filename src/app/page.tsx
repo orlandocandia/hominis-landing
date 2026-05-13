@@ -104,7 +104,7 @@ function Navbar() {
             <img
               src="/logo_hominis.png"
               alt="Hominis Logo"
-              className="h-20 sm:h-24 w-auto object-contain group-hover:scale-105 transition-transform drop-shadow-md"
+              className="h-14 sm:h-16 w-auto object-contain group-hover:scale-105 transition-transform"
             />
           </a>
 
@@ -1012,7 +1012,7 @@ function Footer() {
             <img
               src="/logo_hominis.png"
               alt="Hominis Logo"
-              className="h-24 w-auto object-contain drop-shadow-lg mb-6"
+              className="h-16 w-auto object-contain mb-6"
             />
             <p className="text-white/70 text-sm leading-relaxed">
               Asesoría comercial personalizada en coberturas de salud.
