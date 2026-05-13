@@ -98,19 +98,19 @@ function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-24">
           {/* Logo */}
           <a href="#inicio" className="flex items-center gap-3 group">
             <img
               src="/logo_hominis.png"
               alt="Hominis Logo"
-              className="h-12 w-12 object-contain rounded-lg group-hover:scale-105 transition-transform"
+              className="h-16 w-16 sm:h-[4.5rem] sm:w-[4.5rem] object-contain group-hover:scale-105 transition-transform drop-shadow-md"
             />
             <div className="hidden sm:block">
-              <span className="font-serif text-xl font-bold gradient-text">
+              <span className="font-serif text-2xl font-bold gradient-text">
                 Hominis
               </span>
-              <span className="block text-[10px] font-medium text-muted-foreground tracking-widest uppercase">
+              <span className="block text-[11px] font-semibold text-muted-foreground tracking-widest uppercase">
                 Asesoría Comercial
               </span>
             </div>
@@ -1017,14 +1017,14 @@ function Footer() {
         <div className="py-12 grid md:grid-cols-3 gap-10">
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-4 mb-6">
               <img
                 src="/logo_hominis.png"
                 alt="Hominis Logo"
-                className="h-12 w-12 object-contain rounded-lg"
+                className="h-20 w-20 object-contain drop-shadow-lg"
               />
               <div>
-                <span className="font-serif text-xl font-bold">Hominis</span>
+                <span className="font-serif text-2xl font-bold">Hominis</span>
                 <span className="block text-xs text-white/60 tracking-widest uppercase">
                   Asesoría Comercial
                 </span>
