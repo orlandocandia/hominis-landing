@@ -1010,7 +1010,7 @@ function ContactSection() {
                       }
                       required
                     >
-                      <SelectTrigger className="rounded-xl h-12">
+                      <SelectTrigger className="w-full rounded-xl h-12 data-[size=default]:h-12">
                         <SelectValue placeholder="Seleccioná tu situación laboral" />
                       </SelectTrigger>
                       <SelectContent>
@@ -1055,7 +1055,7 @@ function ContactSection() {
                       setFormData((p) => ({ ...p, cobertura: val }))
                     }
                   >
-                    <SelectTrigger className="rounded-xl h-12">
+                    <SelectTrigger className="w-full rounded-xl h-12 data-[size=default]:h-12">
                       <SelectValue placeholder="Seleccioná cobertura" />
                     </SelectTrigger>
                     <SelectContent>
