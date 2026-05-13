@@ -1221,7 +1221,8 @@ function ContactSection() {
                       <SelectValue placeholder="Seleccioná cobertura" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="CABA_GBA">Caba y Gba</SelectItem>
+                      <SelectItem value="CABA">CABA</SelectItem>
+                      <SelectItem value="GBA">GBA</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

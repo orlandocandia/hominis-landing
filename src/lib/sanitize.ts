@@ -68,7 +68,7 @@ export function validateSegmento(input: unknown): string {
  * Validate coverage type
  */
 export function validateCobertura(input: unknown): string {
-  const validCoverages = ['CABA_GBA'];
+  const validCoverages = ['CABA', 'GBA'];
   
   if (typeof input !== 'string') return '';
   const upper = input.toUpperCase().trim();

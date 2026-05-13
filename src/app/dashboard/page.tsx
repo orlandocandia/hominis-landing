@@ -191,7 +191,7 @@ function ContactDetailDialog({
             {contact.cobertura && (
               <div className="flex items-center gap-3">
                 <Shield className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm">{contact.cobertura.replace('_', ' y ')}</span>
+                <span className="text-sm">{contact.cobertura}</span>
               </div>
             )}
             {contact.edad && (
