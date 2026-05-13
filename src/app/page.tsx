@@ -1390,10 +1390,10 @@ function Footer() {
             </p>
             <a
               href="/login"
-              className="text-white/30 hover:text-white/60 transition-colors"
+              className="text-white/40 hover:text-white/80 transition-colors"
               title="Acceso panel de gestión"
             >
-              <Shield className="w-3.5 h-3.5" />
+              <Shield className="w-5 h-5" />
             </a>
           </div>
         </div>
