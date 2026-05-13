@@ -42,6 +42,16 @@ import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 import { QRCodeSVG } from 'qrcode.react';
 import { WhatsAppButton } from '@/components/whatsapp-button';
+import dynamic from 'next/dynamic';
+
+const MapWithAgustina = dynamic(() => import('@/components/MapWithAgustina'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full min-h-[400px] bg-gray-100 rounded-2xl flex items-center justify-center">
+      <p className="text-sm text-muted-foreground">Cargando mapa...</p>
+    </div>
+  ),
+});
 
 /* ─── Animated Section Wrapper ─── */
 function AnimatedSection({
@@ -895,17 +905,7 @@ function SucursalSection() {
             className="flex flex-col"
           >
             <Card className="border-0 shadow-xl rounded-2xl overflow-hidden flex-1 min-h-[400px] lg:min-h-0">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3279.5!2d-58.4045!3d-34.7634!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcd3c5e1c5c5c5%3A0x1234567890!2sPortela%20266%2C%20Lomas%20de%20Zamora%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1ses-419!2sar!4v1700000000000"
-                width="100%"
-                height="100%"
-                style={{ border: 0, minHeight: '400px' }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Oficina Hominis — Portela 266, Lomas de Zamora"
-                className="w-full h-full"
-              />
+              <MapWithAgustina />
             </Card>
           </motion.div>
         </div>
