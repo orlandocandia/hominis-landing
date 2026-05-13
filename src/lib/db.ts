@@ -1,26 +1,33 @@
 import { PrismaClient } from '@prisma/client'
+import { PrismaLibSQL } from '@prisma/adapter-libsql'
+import { createClient } from '@libsql/client'
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
 }
 
-const databaseUrl = process.env.DATABASE_URL || ''
+function createPrismaClient(): PrismaClient {
+  const databaseUrl = process.env.DATABASE_URL || ''
 
-// For Turso (Vercel production): load the Turso adapter dynamically
-// For local dev: use simple SQLite PrismaClient
-if (databaseUrl.startsWith('libsql://') && !globalForPrisma.prisma) {
-  // In production (Vercel), import the Turso adapter
-  import('./db-turso').then(({ createTursoClient }) => {
-    globalForPrisma.prisma = createTursoClient()
-  }).catch((err) => {
-    console.error('Failed to connect to Turso:', err)
-    // Fallback to SQLite
-    globalForPrisma.prisma = new PrismaClient({ log: ['query'] })
-  })
+  // If using Turso (Vercel production), use the libSQL adapter
+  if (databaseUrl.startsWith('libsql://')) {
+    console.log('[DB] Using Turso (libSQL) adapter')
+    const libsql = createClient({
+      url: databaseUrl,
+      authToken: process.env.DATABASE_AUTH_TOKEN || '',
+    })
+
+    const adapter = new PrismaLibSQL(libsql)
+    return new PrismaClient({ adapter })
+  }
+
+  // Local development: use simple SQLite PrismaClient
+  console.log('[DB] Using SQLite (local)')
+  return new PrismaClient({ log: ['query'] })
 }
 
 if (!globalForPrisma.prisma) {
-  globalForPrisma.prisma = new PrismaClient({ log: ['query'] })
+  globalForPrisma.prisma = createPrismaClient()
 }
 
 export const db = globalForPrisma.prisma
