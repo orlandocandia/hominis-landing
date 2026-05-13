@@ -97,6 +97,9 @@
   html {
     scroll-behavior: smooth;
   }
+  [id] {
+    scroll-margin-top: 6rem;
+  }
 }
 
 /* Custom scrollbar */
