@@ -254,7 +254,7 @@ function HeroSection() {
               dos planes con la misma calidad médica y diferente forma de pagar.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+            <div className="flex justify-center lg:justify-start">
               <a href="#contacto">
                 <Button
                   size="lg"
@@ -262,15 +262,6 @@ function HeroSection() {
                 >
                   Solicitar Asesoramiento
                   <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </a>
-              <a href="#segmentos">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-white/30 text-white hover:bg-white/10 font-semibold px-8 text-base backdrop-blur-sm"
-                >
-                  Ver Segmentos
                 </Button>
               </a>
             </div>
