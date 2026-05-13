@@ -40,6 +40,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
+import { QRCodeSVG } from 'qrcode.react';
 import { WhatsAppButton } from '@/components/whatsapp-button';
 
 /* ─── Animated Section Wrapper ─── */
@@ -932,6 +933,31 @@ function ContactSection() {
                     <div className="text-xs text-blue-600">Facebook</div>
                   </div>
                 </a>
+              </div>
+
+              {/* QR Code WhatsApp */}
+              <div className="flex flex-col items-center p-6 rounded-xl bg-gradient-to-br from-green-50 to-emerald-50 border border-green-100">
+                <p className="text-sm font-semibold text-green-900 mb-1">Escaneá y escribile a Agustina</p>
+                <p className="text-xs text-green-700 mb-4">Apretá con la cámara de tu celular</p>
+                <div className="bg-white p-3 rounded-2xl shadow-lg border border-green-200">
+                  <QRCodeSVG
+                    value="https://wa.me/5491165555534?text=Hola%20Agustina%2C%20me%20interesa%20conocer%20m%C3%A1s%20sobre%20las%20coberturas%20de%20salud.%20%C2%BFPodr%C3%ADas%20asesorarme%3F"
+                    size={160}
+                    bgColor="#ffffff"
+                    fgColor="#1a237e"
+                    level="H"
+                    imageSettings={{
+                      src: "/logo_hominis.png",
+                      height: 32,
+                      width: 32,
+                      excavate: true,
+                    }}
+                  />
+                </div>
+                <p className="text-xs text-green-600 mt-3 flex items-center gap-1">
+                  <svg viewBox="0 0 32 32" className="w-4 h-4" fill="#25D366"><path d="M16.004 0h-.008C7.174 0 0 7.176 0 16.004c0 3.5 1.132 6.742 3.054 9.378L1.054 31.29l6.118-1.962A15.9 15.9 0 0016.004 32C24.826 32 32 24.826 32 16.004S24.826 0 16.004 0zm9.31 22.61c-.39 1.1-1.932 2.014-3.164 2.28-.844.18-1.946.324-5.66-1.216-4.748-1.97-7.804-6.78-8.038-7.094-.226-.314-1.886-2.512-1.886-4.79s1.194-3.398 1.618-3.864c.39-.428.852-.536 1.136-.536.282 0 .566.002.812.016.262.012.614-.1.96.732.356.854 1.21 2.95 1.316 3.164.108.214.18.466.036.748-.136.282-.204.458-.408.706-.214.248-.448.554-.638.744-.214.214-.436.446-.188.876.248.428 1.104 1.82 2.37 2.948 1.63 1.452 3.004 1.902 3.432 2.116.428.214.676.18.924-.108.248-.288 1.064-1.24 1.348-1.666.282-.428.566-.356.952-.214.39.142 2.478 1.168 2.902 1.382.428.214.712.322.818.498.108.178.108 1.022-.282 2.12z"/></svg>
+                  WhatsApp 11-6555-5534
+                </p>
               </div>
             </div>
           </div>
