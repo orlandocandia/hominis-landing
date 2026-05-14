@@ -841,7 +841,7 @@ function SucursalSection() {
                   <div>
                     <p className="text-sm font-semibold text-foreground">Horario de atención</p>
                     <p className="text-sm text-muted-foreground">Lunes a Viernes: 9:00 — 18:00</p>
-                    <p className="text-sm text-muted-foreground">Sábados: 9:00 — 13:00</p>
+                    <p className="text-sm text-muted-foreground">Sábados y Domingos: Cerrado</p>
                   </div>
                 </div>
 
