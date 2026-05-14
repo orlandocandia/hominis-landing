@@ -1,6 +1,7 @@
 // WhatsApp notification service
 // Sends a WhatsApp message to Agustina when a new contact/lead arrives
-// Uses CallMeBot API (free) or fallback to WhatsApp deep link
+// Uses Fonnte API (free) - https://fonnte.com
+// Setup: Scan QR code on fonnte.com with Agustina's WhatsApp to get API key
 
 interface ContactNotification {
   nombre: string;
@@ -15,9 +16,9 @@ interface ContactNotification {
 // Agustina's phone - hardcoded fallback for Vercel
 const AGUSTINA_PHONE = '5491165555534';
 
-// Hardcoded fallback for Vercel (env vars sometimes don't load there)
-const HARDCODED_CALLMEBOT_PHONE = '';
-const HARDCODED_CALLMEBOT_APIKEY = '';
+// Fonnte API key - hardcoded fallback for Vercel
+// Get yours at: https://fonnte.com → scan QR → copy API key
+const HARDCODED_FONNTE_APIKEY = '';
 
 function formatSegmento(segmento: string): string {
   const map: Record<string, string> = {
@@ -29,14 +30,23 @@ function formatSegmento(segmento: string): string {
 }
 
 /**
- * Send WhatsApp notification via CallMeBot API (free)
- * Setup: Send "AllowMe" to +34644452906 on WhatsApp to get your API key
- * Alternative: Use Twilio WhatsApp API for production
+ * Send WhatsApp notification via Fonnte API (free)
+ *
+ * SETUP (one-time, 5 minutes):
+ * 1. Go to https://fonnte.com on your computer
+ * 2. Scan the QR code with Agustina's WhatsApp (like WhatsApp Web)
+ * 3. Copy the API key that appears
+ * 4. Paste it in HARDCODED_FONNTE_APIKEY below
+ *
+ * How it works:
+ * - Fonnte uses Agustina's own WhatsApp to send messages TO HERSELF
+ * - This is like WhatsApp Web but automated via API
+ * - The WhatsApp must stay connected (visit fonnte.com periodically to re-scan if disconnected)
+ * - Free tier: ~500 messages/month
  */
 export async function sendWhatsAppNotification(contact: ContactNotification): Promise<boolean> {
   try {
-    const callmebotPhone = process.env.CALLMEBOT_PHONE || HARDCODED_CALLMEBOT_PHONE;
-    const callmebotApikey = process.env.CALLMEBOT_APIKEY || HARDCODED_CALLMEBOT_APIKEY;
+    const fonnteApikey = process.env.FONNTE_APIKEY || HARDCODED_FONNTE_APIKEY;
 
     const segmentoText = formatSegmento(contact.segmento);
     const coberturaText = contact.cobertura || 'No especificada';
@@ -53,25 +63,35 @@ export async function sendWhatsAppNotification(contact: ContactNotification): Pr
       `💬 *Mensaje:* ${mensajeText}\n\n` +
       `👉 Contactar: https://wa.me/54${contact.telefono.replace(/[^0-9]/g, '')}`;
 
-    // Try CallMeBot API first (free WhatsApp notifications)
-    if (callmebotPhone && callmebotApikey) {
-      const encodedText = encodeURIComponent(text);
-      const url = `https://api.callmebot.com/whatsapp.php?phone=${callmebotPhone}&text=${encodedText}&apikey=${callmebotApikey}`;
+    // Try Fonnte API (free WhatsApp notifications)
+    if (fonnteApikey) {
+      const response = await fetch('https://api.fonnte.com/send', {
+        method: 'POST',
+        headers: {
+          'Authorization': fonnteApikey,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          target: AGUSTINA_PHONE,
+          message: text,
+        }),
+      });
 
-      const response = await fetch(url, { method: 'GET' });
+      const result = await response.json();
 
-      if (response.ok) {
-        console.log('[WhatsApp] Notificación enviada via CallMeBot');
+      if (response.ok && result.status === true) {
+        console.log('[WhatsApp] Notificación enviada via Fonnte');
         return true;
       } else {
-        console.warn('[WhatsApp] CallMeBot falló, intentando fallback');
+        console.warn('[WhatsApp] Fonnte falló:', JSON.stringify(result));
+        // Continue to fallback
       }
     }
 
-    // Fallback: Log the WhatsApp deep link (can be used for manual notification)
+    // Fallback: Log the WhatsApp deep link
     const waLink = `https://wa.me/${AGUSTINA_PHONE}?text=${encodeURIComponent(text)}`;
     console.log('[WhatsApp] Link de notificación:', waLink);
-    console.log('[WhatsApp] No se envió automáticamente - configurar CallMeBot o Twilio');
+    console.log('[WhatsApp] No se envió automáticamente - configurar Fonnte en https://fonnte.com');
 
     return false;
   } catch (error) {
