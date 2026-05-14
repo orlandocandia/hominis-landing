@@ -1,5 +1,6 @@
 // POST /api/leads - Create a new lead (Contacto)
-// Uses raw SQL via Turso (no Prisma dependency for Vercel compatibility)
+// Uses raw SQL via Turso (no Prisma dependency)
+// Sends email + WhatsApp notifications to Agustina
 import { NextResponse } from 'next/server';
 import { verifyCsrf } from '@/lib/csrf';
 import {
@@ -11,6 +12,8 @@ import {
   validateAge,
 } from '@/lib/sanitize';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
+import { sendNewContactEmail } from '@/lib/notifications/email';
+import { sendWhatsAppNotification } from '@/lib/notifications/whatsapp';
 
 function getTursoClient() {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -60,6 +63,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: errors.join('. ') }, { status: 400 });
     }
 
+    // 1. Store in database
     const libsql = getTursoClient();
     const id = 'lead_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
     const now = new Date().toISOString();
@@ -69,6 +73,15 @@ export async function POST(request: Request) {
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       args: [id, nombre, email, telefono, segmento, mensaje || null, cobertura || null, edad || null, 'landing', clientIp, 'NUEVO', now, now],
     });
+
+    // 2. Send notifications (don't block the response if they fail)
+    const contactData = { nombre, email, telefono, segmento, cobertura, edad, mensaje };
+
+    // Fire and forget - errors are logged but don't affect the user response
+    Promise.all([
+      sendNewContactEmail(contactData).catch((e) => console.error('[Leads] Email error:', e)),
+      sendWhatsAppNotification(contactData).catch((e) => console.error('[Leads] WhatsApp error:', e)),
+    ]).catch(() => {});
 
     return NextResponse.json({
       success: true,
