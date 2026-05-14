@@ -1,41 +1,22 @@
-// GET /api/setup - One-time setup: verify Turso connection and create tables + admin user
-// Accepts optional query params: turso_url and turso_token (as additional fallback)
+// GET /api/setup - Create tables and admin user in Turso
 import { NextResponse } from 'next/server';
-import { getTursoUrl, getTursoAuthToken, isTursoConfigured, getLibsqlClient } from '@/lib/turso-config';
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
-    // Check for query parameter overrides (highest priority fallback)
-    const { searchParams } = new URL(request.url);
-    const queryTursoUrl = searchParams.get('turso_url') || '';
-    const queryTursoToken = searchParams.get('turso_token') || '';
-
-    // Resolve credentials: query params > env vars > hardcoded config
-    const tursoUrl = queryTursoUrl.startsWith('libsql://') ? queryTursoUrl : getTursoUrl();
-    const tursoToken = queryTursoToken || getTursoAuthToken();
+    const tursoUrl = process.env.TURSO_URL || 'libsql://hominins-db-orlandocandia.aws-us-east-2.turso.io';
+    const tursoToken = process.env.TURSO_AUTH_TOKEN || '';
 
     if (!tursoUrl.startsWith('libsql://')) {
-      return NextResponse.json({
-        error: 'Turso no está configurado',
-        hint: 'Agregá tus credenciales de Turso en el archivo src/lib/turso-config.ts (HARDCODED_TURSO_URL y HARDCODED_TURSO_AUTH_TOKEN), o pasalas por URL: ?turso_url=libsql://...&turso_token=...',
-        current_turso_url: tursoUrl || '(vacía)',
-        env_TURSO_URL: process.env.TURSO_URL ? 'definida' : 'NO definida',
-        env_TURSO_AUTH_TOKEN: process.env.TURSO_AUTH_TOKEN ? 'definida' : 'NO definida',
-        hardcoded_config: isTursoConfigured() ? 'configurado' : 'NO configurado (vacío)',
-        source: queryTursoUrl ? 'query_params' : (process.env.TURSO_URL ? 'env_vars' : 'hardcoded'),
-      });
+      return NextResponse.json({ error: 'Turso no configurado', turso_url: tursoUrl || '(vacía)' });
     }
 
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { createClient } = require('@libsql/client');
-    const libsql = createClient({
-      url: tursoUrl,
-      authToken: tursoToken,
-    });
+    const libsql = createClient({ url: tursoUrl, authToken: tursoToken });
 
     const results: string[] = [];
 
-    // Create Contacto table if not exists
+    // Create Contacto table
     await libsql.execute(`
       CREATE TABLE IF NOT EXISTS Contacto (
         id TEXT PRIMARY KEY,
@@ -55,12 +36,12 @@ export async function GET(request: Request) {
     `);
     results.push('Tabla Contacto OK');
 
-    await libsql.execute(`CREATE INDEX IF NOT EXISTS Contacto_email_idx ON Contacto(email)`);
-    await libsql.execute(`CREATE INDEX IF NOT EXISTS Contacto_segmento_idx ON Contacto(segmento)`);
-    await libsql.execute(`CREATE INDEX IF NOT EXISTS Contacto_createdAt_idx ON Contacto(createdAt)`);
-    await libsql.execute(`CREATE INDEX IF NOT EXISTS Contacto_estado_idx ON Contacto(estado)`);
+    await libsql.execute('CREATE INDEX IF NOT EXISTS Contacto_email_idx ON Contacto(email)');
+    await libsql.execute('CREATE INDEX IF NOT EXISTS Contacto_segmento_idx ON Contacto(segmento)');
+    await libsql.execute('CREATE INDEX IF NOT EXISTS Contacto_createdAt_idx ON Contacto(createdAt)');
+    await libsql.execute('CREATE INDEX IF NOT EXISTS Contacto_estado_idx ON Contacto(estado)');
 
-    // Create User table if not exists
+    // Create User table
     await libsql.execute(`
       CREATE TABLE IF NOT EXISTS User (
         id TEXT PRIMARY KEY,
@@ -78,12 +59,11 @@ export async function GET(request: Request) {
     `);
     results.push('Tabla User OK');
 
-    await libsql.execute(`CREATE INDEX IF NOT EXISTS User_email_idx ON User(email)`);
+    await libsql.execute('CREATE INDEX IF NOT EXISTS User_email_idx ON User(email)');
 
-    // Create admin user if not exists
+    // Create admin user
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const bcrypt = require('bcryptjs');
-
     const existing = await libsql.execute({
       sql: 'SELECT id FROM User WHERE rol = ? LIMIT 1',
       args: ['ADMIN'],
@@ -106,17 +86,9 @@ export async function GET(request: Request) {
       success: true,
       message: 'Setup completado exitosamente',
       details: results,
-      connection: {
-        url_prefix: tursoUrl.substring(0, 30) + '...',
-        source: queryTursoUrl ? 'query_params' : (process.env.TURSO_URL ? 'env_vars' : 'hardcoded_config'),
-      },
     });
-  } catch (error: unknown) {
-    console.error('[Setup API] Error:', error);
+  } catch (error) {
     const message = error instanceof Error ? error.message : 'Error desconocido';
-    return NextResponse.json(
-      { error: 'Error en setup: ' + message },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Error en setup: ' + message }, { status: 500 });
   }
 }
