@@ -1,66 +1,118 @@
-// POST /api/setup - Create initial admin user (only works once)
-// This endpoint is for initial setup on Vercel where you can't run seed scripts
+// GET /api/setup - One-time setup: creates tables and admin user on Turso
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import bcrypt from 'bcryptjs';
 
-export async function POST(request: Request) {
+export async function GET() {
   try {
-    // Check if any admin already exists
-    const existingAdmin = await db.user.findFirst({ where: { rol: 'ADMIN' } });
+    const databaseUrl = process.env.DATABASE_URL || '';
+    const authToken = process.env.DATABASE_AUTH_TOKEN || '';
 
-    if (existingAdmin) {
+    if (!databaseUrl.startsWith('libsql://')) {
       return NextResponse.json(
-        { error: 'Ya existe un usuario administrador. Usá el login normal.' },
+        { error: 'Este endpoint solo funciona en producción con Turso. DATABASE_URL debe comenzar con libsql://' },
         { status: 400 }
       );
     }
 
-    const body = await request.json();
-    const { email, password, nombre } = body;
+    // Dynamically import libsql client
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { createClient } = require('@libsql/client');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const bcrypt = require('bcryptjs');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { PrismaClient } = require('@prisma/client');
 
-    if (!email || !password || !nombre) {
-      return NextResponse.json(
-        { error: 'Email, contraseña y nombre son obligatorios' },
-        { status: 400 }
-      );
-    }
-
-    // Validate email
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json({ error: 'Email inválido' }, { status: 400 });
-    }
-
-    // Validate password (min 8 chars)
-    if (password.length < 8) {
-      return NextResponse.json(
-        { error: 'La contraseña debe tener al menos 8 caracteres' },
-        { status: 400 }
-      );
-    }
-
-    // Create admin user
-    const hashedPassword = await bcrypt.hash(password, 12);
-    const user = await db.user.create({
-      data: {
-        email: email.toLowerCase().trim(),
-        password: hashedPassword,
-        nombre,
-        rol: 'ADMIN',
-        activo: true,
-      },
+    const libsql = createClient({
+      url: databaseUrl,
+      authToken: authToken,
     });
+
+    const results: string[] = [];
+
+    // Create Contacto table
+    await libsql.execute(`
+      CREATE TABLE IF NOT EXISTS Contacto (
+        id TEXT PRIMARY KEY,
+        nombre TEXT NOT NULL,
+        email TEXT NOT NULL,
+        telefono TEXT NOT NULL,
+        segmento TEXT NOT NULL,
+        mensaje TEXT,
+        cobertura TEXT,
+        edad INTEGER,
+        origen TEXT NOT NULL DEFAULT 'landing',
+        ip TEXT,
+        estado TEXT NOT NULL DEFAULT 'NUEVO',
+        createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    results.push('✅ Tabla Contacto creada');
+
+    // Create indexes for Contacto
+    await libsql.execute(`CREATE INDEX IF NOT EXISTS Contacto_email_idx ON Contacto(email)`);
+    await libsql.execute(`CREATE INDEX IF NOT EXISTS Contacto_segmento_idx ON Contacto(segmento)`);
+    await libsql.execute(`CREATE INDEX IF NOT EXISTS Contacto_createdAt_idx ON Contacto(createdAt)`);
+    await libsql.execute(`CREATE INDEX IF NOT EXISTS Contacto_estado_idx ON Contacto(estado)`);
+    results.push('✅ Índices de Contacto creados');
+
+    // Create User table
+    await libsql.execute(`
+      CREATE TABLE IF NOT EXISTS User (
+        id TEXT PRIMARY KEY,
+        email TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL,
+        nombre TEXT NOT NULL,
+        rol TEXT NOT NULL DEFAULT 'ADMIN',
+        activo INTEGER NOT NULL DEFAULT 1,
+        ultimoLogin DATETIME,
+        intentosLogin INTEGER NOT NULL DEFAULT 0,
+        bloqueadoHasta DATETIME,
+        createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    results.push('✅ Tabla User creada');
+
+    // Create index for User
+    await libsql.execute(`CREATE INDEX IF NOT EXISTS User_email_idx ON User(email)`);
+    results.push('✅ Índices de User creados');
+
+    // Create admin user if not exists
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { PrismaLibSql } = require('@prisma/adapter-libsql');
+    const adapter = new PrismaLibSql(libsql);
+    const prisma = new PrismaClient({ adapter });
+
+    const existingAdmin = await prisma.user.findFirst({ where: { rol: 'ADMIN' } });
+
+    if (!existingAdmin) {
+      const hashedPassword = await bcrypt.hash('Hominis2025!', 12);
+      await prisma.user.create({
+        data: {
+          email: 'acandia@mphominis.com.ar',
+          password: hashedPassword,
+          nombre: 'Agustina C. Candia',
+          rol: 'ADMIN',
+          activo: true,
+        },
+      });
+      results.push('✅ Usuario admin creado (acandia@mphominis.com.ar / Hominis2025!)');
+    } else {
+      results.push('ℹ️ Usuario admin ya existe, no se creó otro');
+    }
+
+    await prisma.$disconnect();
 
     return NextResponse.json({
       success: true,
-      message: 'Usuario administrador creado correctamente',
-      user: { id: user.id, email: user.email, nombre: user.nombre, rol: user.rol },
+      message: 'Setup completado exitosamente',
+      details: results,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('[Setup API] Error:', error);
+    const message = error instanceof Error ? error.message : 'Error desconocido';
     return NextResponse.json(
-      { error: 'Error al crear usuario. Verificá que la base de datos esté configurada.' },
+      { error: 'Error en setup: ' + message },
       { status: 500 }
     );
   }
