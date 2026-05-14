@@ -1,34 +1,29 @@
-// GET /api/setup - One-time setup: creates tables and admin user on Turso
+// GET /api/setup - One-time setup: verify Turso connection and create admin user
 import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    const databaseUrl = process.env.DATABASE_URL || '';
-    const authToken = process.env.DATABASE_AUTH_TOKEN || '';
+    const tursoUrl = process.env.TURSO_URL || '';
+    const tursoToken = process.env.TURSO_AUTH_TOKEN || '';
 
-    if (!databaseUrl.startsWith('libsql://')) {
-      return NextResponse.json(
-        { error: 'Este endpoint solo funciona en producción con Turso. DATABASE_URL debe comenzar con libsql://' },
-        { status: 400 }
-      );
+    if (!tursoUrl.startsWith('libsql://')) {
+      return NextResponse.json({
+        error: 'TURSO_URL no está configurada en Vercel',
+        hint: 'Agregá las variables TURSO_URL y TURSO_AUTH_TOKEN en Settings > Environment Variables',
+        current_turso_url: tursoUrl || '(vacía)',
+      });
     }
 
-    // Dynamically import libsql client
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { createClient } = require('@libsql/client');
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const bcrypt = require('bcryptjs');
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { PrismaClient } = require('@prisma/client');
-
     const libsql = createClient({
-      url: databaseUrl,
-      authToken: authToken,
+      url: tursoUrl,
+      authToken: tursoToken,
     });
 
     const results: string[] = [];
 
-    // Create Contacto table
+    // Create Contacto table if not exists
     await libsql.execute(`
       CREATE TABLE IF NOT EXISTS Contacto (
         id TEXT PRIMARY KEY,
@@ -46,16 +41,14 @@ export async function GET() {
         updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
       )
     `);
-    results.push('✅ Tabla Contacto creada');
+    results.push('Tabla Contacto OK');
 
-    // Create indexes for Contacto
     await libsql.execute(`CREATE INDEX IF NOT EXISTS Contacto_email_idx ON Contacto(email)`);
     await libsql.execute(`CREATE INDEX IF NOT EXISTS Contacto_segmento_idx ON Contacto(segmento)`);
     await libsql.execute(`CREATE INDEX IF NOT EXISTS Contacto_createdAt_idx ON Contacto(createdAt)`);
     await libsql.execute(`CREATE INDEX IF NOT EXISTS Contacto_estado_idx ON Contacto(estado)`);
-    results.push('✅ Índices de Contacto creados');
 
-    // Create User table
+    // Create User table if not exists
     await libsql.execute(`
       CREATE TABLE IF NOT EXISTS User (
         id TEXT PRIMARY KEY,
@@ -71,37 +64,31 @@ export async function GET() {
         updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
       )
     `);
-    results.push('✅ Tabla User creada');
+    results.push('Tabla User OK');
 
-    // Create index for User
     await libsql.execute(`CREATE INDEX IF NOT EXISTS User_email_idx ON User(email)`);
-    results.push('✅ Índices de User creados');
 
     // Create admin user if not exists
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { PrismaLibSql } = require('@prisma/adapter-libsql');
-    const adapter = new PrismaLibSql(libsql);
-    const prisma = new PrismaClient({ adapter });
+    const bcrypt = require('bcryptjs');
 
-    const existingAdmin = await prisma.user.findFirst({ where: { rol: 'ADMIN' } });
+    const existing = await libsql.execute({
+      sql: 'SELECT id FROM User WHERE rol = ? LIMIT 1',
+      args: ['ADMIN'],
+    });
 
-    if (!existingAdmin) {
+    if (existing.rows.length === 0) {
       const hashedPassword = await bcrypt.hash('Hominis2025!', 12);
-      await prisma.user.create({
-        data: {
-          email: 'acandia@mphominis.com.ar',
-          password: hashedPassword,
-          nombre: 'Agustina C. Candia',
-          rol: 'ADMIN',
-          activo: true,
-        },
+      const id = 'admin_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
+      const now = new Date().toISOString();
+      await libsql.execute({
+        sql: 'INSERT INTO User (id, email, password, nombre, rol, activo, intentosLogin, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        args: [id, 'acandia@mphominis.com.ar', hashedPassword, 'Agustina C. Candia', 'ADMIN', 1, 0, now, now],
       });
-      results.push('✅ Usuario admin creado (acandia@mphominis.com.ar / Hominis2025!)');
+      results.push('Usuario admin creado');
     } else {
-      results.push('ℹ️ Usuario admin ya existe, no se creó otro');
+      results.push('Usuario admin ya existe');
     }
-
-    await prisma.$disconnect();
 
     return NextResponse.json({
       success: true,
