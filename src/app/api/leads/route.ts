@@ -1,8 +1,10 @@
 // POST /api/leads - Create a new lead (Contacto)
 // Equivalent to ContactoController::store() in PHP MVC
+// Uses Prisma first, falls back to raw SQL if Prisma fails (e.g., on Vercel without proper DB)
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { verifyCsrf } from '@/lib/csrf';
+import { isTursoConfigured, getLibsqlClient } from '@/lib/turso-config';
 import {
   sanitizeString,
   sanitizeEmail,
@@ -77,28 +79,65 @@ export async function POST(request: Request) {
       );
     }
 
-    // 5. Insert into database (equivalent to ContactoModel::create())
-    const contacto = await db.contacto.create({
-      data: {
-        nombre,
-        email,
-        telefono,
-        segmento,
-        mensaje: mensaje || null,
-        cobertura: cobertura || null,
-        edad,
-        origen: 'landing',
-        ip: clientIp,
-        estado: 'NUEVO',
-      },
-    });
+    // 5. Insert into database
+    // Try Prisma first, then fall back to raw SQL via Turso
+    let contactoId: string;
+
+    try {
+      const contacto = await db.contacto.create({
+        data: {
+          nombre,
+          email,
+          telefono,
+          segmento,
+          mensaje: mensaje || null,
+          cobertura: cobertura || null,
+          edad,
+          origen: 'landing',
+          ip: clientIp,
+          estado: 'NUEVO',
+        },
+      });
+      contactoId = contacto.id;
+    } catch (prismaError) {
+      console.warn('[Leads API] Prisma failed, trying raw SQL fallback:', prismaError);
+      
+      // Fallback: use raw SQL via Turso libsql client
+      if (!isTursoConfigured()) {
+        throw prismaError; // No fallback available, re-throw original error
+      }
+
+      const libsql = getLibsqlClient();
+      contactoId = 'lead_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
+      const now = new Date().toISOString();
+
+      await libsql.execute({
+        sql: `INSERT INTO Contacto (id, nombre, email, telefono, segmento, mensaje, cobertura, edad, origen, ip, estado, createdAt, updatedAt)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        args: [
+          contactoId,
+          nombre,
+          email,
+          telefono,
+          segmento,
+          mensaje || null,
+          cobertura || null,
+          edad || null,
+          'landing',
+          clientIp,
+          'NUEVO',
+          now,
+          now,
+        ],
+      });
+    }
 
     // 6. Return success
     return NextResponse.json(
       {
         success: true,
         message: '¡Gracias por tu interés! Nos pondremos en contacto pronto.',
-        id: contacto.id,
+        id: contactoId,
       },
       {
         status: 201,

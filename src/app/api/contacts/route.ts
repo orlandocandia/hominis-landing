@@ -1,8 +1,10 @@
 // GET /api/contacts - List all contacts with filters
 // Protected: requires authentication
+// Uses Prisma first, falls back to raw SQL if Prisma fails
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { getAuthSession } from '@/lib/auth';
+import { isTursoConfigured, getLibsqlClient } from '@/lib/turso-config';
 
 export async function GET(request: Request) {
   try {
@@ -19,57 +21,143 @@ export async function GET(request: Request) {
     const limit = parseInt(searchParams.get('limit') || '20');
     const skip = (page - 1) * limit;
 
-    // Build where clause
-    const where: Record<string, unknown> = {};
+    try {
+      // Try Prisma first
+      // Build where clause
+      const where: Record<string, unknown> = {};
 
-    if (estado && estado !== 'TODOS') {
-      where.estado = estado;
+      if (estado && estado !== 'TODOS') {
+        where.estado = estado;
+      }
+
+      if (segmento && segmento !== 'TODOS') {
+        where.segmento = segmento;
+      }
+
+      if (search) {
+        where.OR = [
+          { nombre: { contains: search } },
+          { email: { contains: search } },
+          { telefono: { contains: search } },
+          { mensaje: { contains: search } },
+        ];
+      }
+
+      const [contacts, total] = await Promise.all([
+        db.contacto.findMany({
+          where,
+          orderBy: { createdAt: 'desc' },
+          skip,
+          take: limit,
+        }),
+        db.contacto.count({ where }),
+      ]);
+
+      // Get stats
+      const stats = await db.contacto.groupBy({
+        by: ['estado'],
+        _count: { id: true },
+      });
+
+      const statsMap: Record<string, number> = { NUEVO: 0, LEIDO: 0, ATENDIDO: 0 };
+      stats.forEach((s) => {
+        statsMap[s.estado] = s._count.id;
+      });
+
+      return NextResponse.json({
+        contacts,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit),
+        },
+        stats: statsMap,
+      });
+    } catch (prismaError) {
+      console.warn('[Contacts API] Prisma failed, trying raw SQL fallback:', prismaError);
+
+      // Fallback: use raw SQL via Turso libsql client
+      if (!isTursoConfigured()) {
+        throw prismaError;
+      }
+
+      const libsql = getLibsqlClient();
+
+      // Build WHERE clause for raw SQL
+      const conditions: string[] = [];
+      const args: (string | number)[] = [];
+
+      if (estado && estado !== 'TODOS') {
+        conditions.push('estado = ?');
+        args.push(estado);
+      }
+
+      if (segmento && segmento !== 'TODOS') {
+        conditions.push('segmento = ?');
+        args.push(segmento);
+      }
+
+      if (search) {
+        conditions.push('(nombre LIKE ? OR email LIKE ? OR telefono LIKE ? OR mensaje LIKE ?)');
+        const searchPattern = `%${search}%`;
+        args.push(searchPattern, searchPattern, searchPattern, searchPattern);
+      }
+
+      const whereClause = conditions.length > 0 ? 'WHERE ' + conditions.join(' AND ') : '';
+
+      // Count total
+      const countResult = await libsql.execute({
+        sql: `SELECT COUNT(*) as total FROM Contacto ${whereClause}`,
+        args,
+      });
+      const total = Number(countResult.rows[0]?.total || 0);
+
+      // Get contacts
+      const contactsResult = await libsql.execute({
+        sql: `SELECT * FROM Contacto ${whereClause} ORDER BY createdAt DESC LIMIT ? OFFSET ?`,
+        args: [...args, limit, skip],
+      });
+
+      const contacts = contactsResult.rows.map((row) => ({
+        id: row.id,
+        nombre: row.nombre,
+        email: row.email,
+        telefono: row.telefono,
+        segmento: row.segmento,
+        mensaje: row.mensaje,
+        cobertura: row.cobertura,
+        edad: row.edad,
+        origen: row.origen,
+        ip: row.ip,
+        estado: row.estado,
+        createdAt: row.createdAt,
+        updatedAt: row.updatedAt,
+      }));
+
+      // Get stats
+      const statsResult = await libsql.execute(
+        `SELECT estado, COUNT(*) as count FROM Contacto GROUP BY estado`
+      );
+      const statsMap: Record<string, number> = { NUEVO: 0, LEIDO: 0, ATENDIDO: 0 };
+      statsResult.rows.forEach((row) => {
+        const est = row.estado as string;
+        if (est in statsMap) {
+          statsMap[est] = Number(row.count);
+        }
+      });
+
+      return NextResponse.json({
+        contacts,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit),
+        },
+        stats: statsMap,
+      });
     }
-
-    if (segmento && segmento !== 'TODOS') {
-      where.segmento = segmento;
-    }
-
-    if (search) {
-      where.OR = [
-        { nombre: { contains: search } },
-        { email: { contains: search } },
-        { telefono: { contains: search } },
-        { mensaje: { contains: search } },
-      ];
-    }
-
-    const [contacts, total] = await Promise.all([
-      db.contacto.findMany({
-        where,
-        orderBy: { createdAt: 'desc' },
-        skip,
-        take: limit,
-      }),
-      db.contacto.count({ where }),
-    ]);
-
-    // Get stats
-    const stats = await db.contacto.groupBy({
-      by: ['estado'],
-      _count: { id: true },
-    });
-
-    const statsMap: Record<string, number> = { NUEVO: 0, LEIDO: 0, ATENDIDO: 0 };
-    stats.forEach((s) => {
-      statsMap[s.estado] = s._count.id;
-    });
-
-    return NextResponse.json({
-      contacts,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      },
-      stats: statsMap,
-    });
   } catch (error) {
     console.error('[Contacts API] Error:', error);
     return NextResponse.json(

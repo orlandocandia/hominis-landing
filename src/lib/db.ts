@@ -1,14 +1,14 @@
 import { PrismaClient } from '@prisma/client'
+import { getTursoUrl, getTursoAuthToken } from './turso-config'
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
 }
 
 function createPrismaClient(): PrismaClient {
-  // Use TURSO_URL and TURSO_AUTH_TOKEN for Turso connection
-  // This avoids conflict with Prisma's DATABASE_URL which expects file: protocol
-  const tursoUrl = process.env.TURSO_URL || ''
-  const tursoToken = process.env.TURSO_AUTH_TOKEN || ''
+  // Get credentials from centralized config (env vars first, then hardcoded fallback)
+  const tursoUrl = getTursoUrl()
+  const tursoToken = getTursoAuthToken()
 
   if (tursoUrl.startsWith('libsql://')) {
     try {

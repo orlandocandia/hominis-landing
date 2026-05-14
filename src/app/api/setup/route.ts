@@ -1,16 +1,28 @@
-// GET /api/setup - One-time setup: verify Turso connection and create admin user
+// GET /api/setup - One-time setup: verify Turso connection and create tables + admin user
+// Accepts optional query params: turso_url and turso_token (as additional fallback)
 import { NextResponse } from 'next/server';
+import { getTursoUrl, getTursoAuthToken, isTursoConfigured, getLibsqlClient } from '@/lib/turso-config';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const tursoUrl = process.env.TURSO_URL || '';
-    const tursoToken = process.env.TURSO_AUTH_TOKEN || '';
+    // Check for query parameter overrides (highest priority fallback)
+    const { searchParams } = new URL(request.url);
+    const queryTursoUrl = searchParams.get('turso_url') || '';
+    const queryTursoToken = searchParams.get('turso_token') || '';
+
+    // Resolve credentials: query params > env vars > hardcoded config
+    const tursoUrl = queryTursoUrl.startsWith('libsql://') ? queryTursoUrl : getTursoUrl();
+    const tursoToken = queryTursoToken || getTursoAuthToken();
 
     if (!tursoUrl.startsWith('libsql://')) {
       return NextResponse.json({
-        error: 'TURSO_URL no está configurada en Vercel',
-        hint: 'Agregá las variables TURSO_URL y TURSO_AUTH_TOKEN en Settings > Environment Variables',
+        error: 'Turso no está configurado',
+        hint: 'Agregá tus credenciales de Turso en el archivo src/lib/turso-config.ts (HARDCODED_TURSO_URL y HARDCODED_TURSO_AUTH_TOKEN), o pasalas por URL: ?turso_url=libsql://...&turso_token=...',
         current_turso_url: tursoUrl || '(vacía)',
+        env_TURSO_URL: process.env.TURSO_URL ? 'definida' : 'NO definida',
+        env_TURSO_AUTH_TOKEN: process.env.TURSO_AUTH_TOKEN ? 'definida' : 'NO definida',
+        hardcoded_config: isTursoConfigured() ? 'configurado' : 'NO configurado (vacío)',
+        source: queryTursoUrl ? 'query_params' : (process.env.TURSO_URL ? 'env_vars' : 'hardcoded'),
       });
     }
 
@@ -94,6 +106,10 @@ export async function GET() {
       success: true,
       message: 'Setup completado exitosamente',
       details: results,
+      connection: {
+        url_prefix: tursoUrl.substring(0, 30) + '...',
+        source: queryTursoUrl ? 'query_params' : (process.env.TURSO_URL ? 'env_vars' : 'hardcoded_config'),
+      },
     });
   } catch (error: unknown) {
     console.error('[Setup API] Error:', error);

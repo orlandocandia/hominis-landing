@@ -27,3 +27,26 @@ Stage Summary:
 - Admin user created: email=agustina.candia@hominis.com, password=Hominis2025!
 - Security features: bcrypt password hashing, brute-force protection, JWT sessions, route middleware
 - All API endpoints protected except /api/leads (public form submissions)
+
+---
+Task ID: 2
+Agent: Main Agent
+Task: Fix Turso database connection on Vercel - eliminate dependency on Vercel environment variables
+
+Work Log:
+- Created `src/lib/turso-config.ts` - Centralized config that reads Turso credentials from env vars first, then falls back to hardcoded values in the source code
+- Modified `src/lib/db.ts` to use turso-config for credential resolution
+- Modified `src/app/api/setup/route.ts` to use turso-config, accept query params (?turso_url=...&turso_token=...) as additional fallback, and show detailed diagnostic info
+- Created `src/app/api/debug/route.ts` - Diagnostic endpoint showing env var status, runtime info, and all available env keys
+- Modified `src/app/api/leads/route.ts` - Added raw SQL fallback via Turso libsql client when Prisma fails
+- Modified `src/app/api/contacts/route.ts` - Added raw SQL fallback for listing contacts with filters/search/pagination/stats
+- Modified `src/lib/auth/config.ts` to use getNextauthSecret() from turso-config for NEXTAUTH_SECRET
+- Added `"postinstall": "prisma generate"` to package.json scripts for Vercel builds
+- All code passes lint checks
+- Tested locally: /api/debug and /api/setup work correctly with diagnostic info
+
+Stage Summary:
+- Turso credentials can now be configured in THREE ways: (1) Vercel env vars, (2) hardcoded in turso-config.ts, (3) query params for setup
+- Raw SQL fallback ensures form submissions work even if Prisma ORM fails
+- Debug endpoint helps diagnose Vercel env var issues
+- User needs to update turso-config.ts with their Turso URL and token in their GitHub repo
