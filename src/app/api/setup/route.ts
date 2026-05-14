@@ -1,18 +1,14 @@
 // GET /api/setup - Create tables and admin user in Turso
 import { NextResponse } from 'next/server';
+import { getTursoClient, isTursoConfigured } from '@/lib/turso-config';
 
 export async function GET() {
   try {
-    const tursoUrl = process.env.TURSO_URL || 'libsql://hominins-db-orlandocandia.aws-us-east-2.turso.io';
-    const tursoToken = process.env.TURSO_AUTH_TOKEN || '';
-
-    if (!tursoUrl.startsWith('libsql://')) {
-      return NextResponse.json({ error: 'Turso no configurado', turso_url: tursoUrl || '(vacía)' });
+    if (!isTursoConfigured()) {
+      return NextResponse.json({ error: 'Turso no configurado - falta AUTH TOKEN' }, { status: 500 });
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { createClient } = require('@libsql/client');
-    const libsql = createClient({ url: tursoUrl, authToken: tursoToken });
+    const libsql = getTursoClient();
 
     const results: string[] = [];
 

@@ -2,18 +2,10 @@
 import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
+import { getTursoClient } from '@/lib/turso-config';
 
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCKOUT_MINUTES = 15;
-
-function getTursoClient() {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { createClient } = require('@libsql/client');
-  return createClient({
-    url: process.env.TURSO_URL || 'libsql://hominins-db-orlandocandia.aws-us-east-2.turso.io',
-    authToken: process.env.TURSO_AUTH_TOKEN || '',
-  });
-}
 
 export const authOptions: NextAuthOptions = {
   providers: [

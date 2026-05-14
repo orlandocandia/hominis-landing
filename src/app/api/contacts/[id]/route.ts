@@ -3,16 +3,7 @@
 // Protected: requires authentication
 import { NextResponse } from 'next/server';
 import { getAuthSession } from '@/lib/auth';
-import { sanitizeString } from '@/lib/sanitize';
-
-function getTursoClient() {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { createClient } = require('@libsql/client');
-  return createClient({
-    url: process.env.TURSO_URL || 'libsql://hominins-db-orlandocandia.aws-us-east-2.turso.io',
-    authToken: process.env.TURSO_AUTH_TOKEN || '',
-  });
-}
+import { getTursoClient } from '@/lib/turso-config';
 
 export async function PATCH(
   request: Request,

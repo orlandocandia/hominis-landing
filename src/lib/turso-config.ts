@@ -1,46 +1,45 @@
 // Turso Database Configuration
 // ============================
-// This file provides Turso credentials from multiple sources:
-// 1. Environment variables (preferred for security)
-// 2. Hardcoded fallback values (for when Vercel env vars don't work)
-//
-// TO CONFIGURE: Update the HARDCODED values below with your Turso credentials,
-// then push to GitHub. Vercel will redeploy automatically.
-//
-// Get your credentials from: https://turso.tech/app → Your Database → Settings
-
-// ─── HARDCODED CREDENTIALS (FALLBACK) ───
-// Update these with your actual Turso credentials
-// These are used when environment variables are not available (e.g., Vercel misconfiguration)
-const HARDCODED_TURSO_URL = '';
-const HARDCODED_TURSO_AUTH_TOKEN = '';
-const HARDCODED_NEXTAUTH_SECRET = 'hominis-agustina-candia-2025-secret-key-secure';
+// Centralized Turso credentials and client factory.
+// All API routes and auth use this file to get database access.
 
 // ─── CREDENTIAL RESOLVER ───
 // Reads from env vars first, then falls back to hardcoded values
-export function getTursoUrl(): string {
-  return process.env.TURSO_URL || HARDCODED_TURSO_URL || '';
+// (hardcoded values are needed for Vercel where env vars sometimes don't load)
+
+function getTursoUrl(): string {
+  return process.env.TURSO_URL || 'libsql://hominins-db-orlandocandia.aws-us-east-2.turso.io';
 }
 
-export function getTursoAuthToken(): string {
-  return process.env.TURSO_AUTH_TOKEN || HARDCODED_TURSO_AUTH_TOKEN || '';
+function getTursoAuthToken(): string {
+  // IMPORTANT: Replace the empty string below with your actual Turso auth token
+  // before pushing to GitHub/Vercel
+  return process.env.TURSO_AUTH_TOKEN || '';
 }
 
 export function getNextauthSecret(): string {
-  return process.env.NEXTAUTH_SECRET || HARDCODED_NEXTAUTH_SECRET || '';
+  return process.env.NEXTAUTH_SECRET || 'hominis-agustina-candia-2025-secret-key-secure';
 }
 
 export function isTursoConfigured(): boolean {
-  return getTursoUrl().startsWith('libsql://');
+  return getTursoUrl().startsWith('libsql://') && getTursoAuthToken().length > 0;
 }
 
 // Get a libsql client using resolved credentials
-export function getLibsqlClient() {
+// This is the ONLY way to get a Turso client - all routes must use this
+export function getTursoClient() {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { createClient } = require('@libsql/client');
-  
+
+  const url = getTursoUrl();
+  const authToken = getTursoAuthToken();
+
+  if (!authToken) {
+    console.warn('[Turso] AUTH TOKEN no configurado - la conexión va a fallar');
+  }
+
   return createClient({
-    url: getTursoUrl(),
-    authToken: getTursoAuthToken(),
+    url,
+    authToken,
   });
 }

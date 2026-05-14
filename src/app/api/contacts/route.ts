@@ -3,15 +3,7 @@
 // Uses raw SQL via Turso (no Prisma dependency)
 import { NextResponse } from 'next/server';
 import { getAuthSession } from '@/lib/auth';
-
-function getTursoClient() {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { createClient } = require('@libsql/client');
-  return createClient({
-    url: process.env.TURSO_URL || 'libsql://hominins-db-orlandocandia.aws-us-east-2.turso.io',
-    authToken: process.env.TURSO_AUTH_TOKEN || '',
-  });
-}
+import { getTursoClient } from '@/lib/turso-config';
 
 export async function GET(request: Request) {
   try {

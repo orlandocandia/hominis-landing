@@ -18,7 +18,7 @@ function getEmailConfig() {
     port: Number(process.env.EMAIL_PORT) || 587,
     secure: false,
     auth: {
-      user: process.env.EMAIL_USER || '',
+      user: process.env.EMAIL_USER || 'asesoradesaludagustinacandia@gmail.com',
       pass: process.env.EMAIL_PASS || '',
     },
   };
@@ -26,7 +26,7 @@ function getEmailConfig() {
 
 function isEmailConfigured(): boolean {
   const config = getEmailConfig();
-  return !!(config.auth.user && config.auth.pass);
+  return !!(config.auth.user && config.auth.pass && config.auth.pass.length > 5);
 }
 
 function createTransporter() {
@@ -50,7 +50,7 @@ export async function sendNewContactEmail(contact: ContactNotification): Promise
 
   try {
     const transporter = createTransporter();
-    const recipientEmail = process.env.EMAIL_TO || 'acandia@mphominis.com.ar';
+    const recipientEmail = process.env.EMAIL_TO || 'asesoradesaludagustinacandia@gmail.com';
 
     const segmentoText = formatSegmento(contact.segmento);
     const coberturaText = contact.cobertura || 'No especificada';

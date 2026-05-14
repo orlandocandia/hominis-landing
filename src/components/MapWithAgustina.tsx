@@ -1,9 +1,8 @@
 'use client';
 
-import { useSyncExternalStore } from 'react';
+import { useSyncExternalStore, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
 
 // MapPin icon for loading state
 function MapPinIcon() {
@@ -86,6 +85,15 @@ const SUCURSAL_POSITION: [number, number] = [-34.7634, -58.4045];
 
 export default function MapWithAgustina() {
   const mounted = useIsMounted();
+
+  // Load Leaflet CSS dynamically to avoid Turbopack resolution issues
+  useEffect(() => {
+    if (document.querySelector('link[href*="leaflet"]')) return;
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    document.head.appendChild(link);
+  }, []);
 
   if (!mounted) {
     return (

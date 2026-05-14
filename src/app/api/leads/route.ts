@@ -14,15 +14,7 @@ import {
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
 import { sendNewContactEmail } from '@/lib/notifications/email';
 import { sendWhatsAppNotification } from '@/lib/notifications/whatsapp';
-
-function getTursoClient() {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { createClient } = require('@libsql/client');
-  return createClient({
-    url: process.env.TURSO_URL || 'libsql://hominins-db-orlandocandia.aws-us-east-2.turso.io',
-    authToken: process.env.TURSO_AUTH_TOKEN || '',
-  });
-}
+import { getTursoClient } from '@/lib/turso-config';
 
 export async function POST(request: Request) {
   try {
