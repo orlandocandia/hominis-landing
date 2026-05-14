@@ -12,8 +12,11 @@ interface ContactNotification {
   mensaje?: string | null;
 }
 
+// Hardcoded fallback for Vercel (env vars sometimes don't load there)
+const HARDCODED_RESEND_API_KEY = 're_6X6QSSxh_5nm4YVZUw21fJqPvjQ1vdpoG';
+
 function getResendClient(): Resend | null {
-  const apiKey = process.env.RESEND_API_KEY || '';
+  const apiKey = process.env.RESEND_API_KEY || HARDCODED_RESEND_API_KEY;
   if (!apiKey || !apiKey.startsWith('re_')) {
     console.log('[Email] Resend API key no configurada - saltando envío de email');
     return null;

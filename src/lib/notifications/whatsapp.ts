@@ -12,7 +12,12 @@ interface ContactNotification {
   mensaje?: string | null;
 }
 
+// Agustina's phone - hardcoded fallback for Vercel
 const AGUSTINA_PHONE = '5491165555534';
+
+// Hardcoded fallback for Vercel (env vars sometimes don't load there)
+const HARDCODED_CALLMEBOT_PHONE = '';
+const HARDCODED_CALLMEBOT_APIKEY = '';
 
 function formatSegmento(segmento: string): string {
   const map: Record<string, string> = {
@@ -30,8 +35,8 @@ function formatSegmento(segmento: string): string {
  */
 export async function sendWhatsAppNotification(contact: ContactNotification): Promise<boolean> {
   try {
-    const callmebotPhone = process.env.CALLMEBOT_PHONE || '';
-    const callmebotApikey = process.env.CALLMEBOT_APIKEY || '';
+    const callmebotPhone = process.env.CALLMEBOT_PHONE || HARDCODED_CALLMEBOT_PHONE;
+    const callmebotApikey = process.env.CALLMEBOT_APIKEY || HARDCODED_CALLMEBOT_APIKEY;
 
     const segmentoText = formatSegmento(contact.segmento);
     const coberturaText = contact.cobertura || 'No especificada';
