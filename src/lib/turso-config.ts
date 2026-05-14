@@ -12,9 +12,8 @@ function getTursoUrl(): string {
 }
 
 function getTursoAuthToken(): string {
-  // IMPORTANT: Replace the empty string below with your actual Turso auth token
-  // before pushing to GitHub/Vercel
-  return process.env.TURSO_AUTH_TOKEN || '';
+  // Hardcoded fallback for Vercel (env vars sometimes don't load there)
+  return process.env.TURSO_AUTH_TOKEN || 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3Nzg3NjM4OTEsImlkIjoiMDE5ZTIzNDYtYjUwMS03Y2Y1LWFkZmItYWJjMDJmODNjNjQ4IiwicmlkIjoiMjI3M2MxOTAtYTA1Yy00MzA3LTk0ZTUtZWIxZTc1YmU3YmM4In0.oimDH6aXYryNto2cw5V3N9C2fhEPZH0jQwBp15VyGPciD7RzuIQfghQbnkuhoywlnFoz9rVq0YmFFXaM9OYfBQ';
 }
 
 export function getNextauthSecret(): string {
