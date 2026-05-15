@@ -60,6 +60,7 @@ next-env.d.ts
 .zscripts/
 *.zip
 *.pdf
+!MANUAL_USUARIO.pdf
 capture-screenshots.py
 generate-pdf-v2.py
 generate-pdf.py
