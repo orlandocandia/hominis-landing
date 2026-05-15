@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manual de Usuario - Asesora de Salud Hominis</title>
+<style>
+  @page {
+    size: A4;
+    margin: 20mm 18mm 20mm 18mm;
+  }
+
+  :root {
+    --primary: #6366f1;
+    --primary-light: #818cf8;
+    --accent: #8b5cf6;
+    --text: #1e293b;
+    --text-muted: #64748b;
+    --bg: #ffffff;
+    --bg-light: #f8fafc;
+    --bg-section: #f1f5f9;
+    --border: #e2e8f0;
+    --success: #16a34a;
+    --warning: #d97706;
+    --info: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.65;
+    color: var(--text);
+    background: var(--bg);
+  }
+
+  /* Cover Page */
+  .cover {
+    page-break-after: always;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #6d28d9 100%);
+    color: white;
+    padding: 60px 40px;
+  }
+
+  .cover-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+    font-size: 40px;
+  }
+
+  .cover h1 {
+    font-size: 32pt;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+
+  .cover h2 {
+    font-size: 16pt;
+    font-weight: 400;
+    opacity: 0.85;
+    margin-bottom: 40px;
+    max-width: 500px;
+  }
+
+  .cover-line {
+    width: 60px;
+    height: 3px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 2px;
+    margin: 0 auto 40px;
+  }
+
+  .cover-info {
+    font-size: 10pt;
+    opacity: 0.7;
+    line-height: 1.8;
+  }
+
+  .cover-info strong {
+    opacity: 1;
+  }
+
+  /* TOC */
+  .toc {
+    page-break-after: always;
+    padding: 20px 0;
+  }
+
+  .toc h2 {
+    font-size: 20pt;
+    color: var(--primary);
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary);
+  }
+
+  .toc-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 10px 0;
+    border-bottom: 1px dotted var(--border);
+    font-size: 11pt;
+  }
+
+  .toc-item.main {
+    font-weight: 700;
+    font-size: 12pt;
+    color: var(--text);
+    padding-top: 16px;
+  }
+
+  .toc-item.sub {
+    padding-left: 24px;
+    color: var(--text-muted);
+  }
+
+  /* Sections */
+  .section {
+    page-break-before: always;
+    padding-top: 10px;
+  }
+
+  .section:first-of-type {
+    page-break-before: auto;
+  }
+
+  h2.section-title {
+    font-size: 20pt;
+    color: var(--primary);
+    margin-bottom: 6px;
+    padding-bottom: 10px;
+    border-bottom: 3px solid var(--primary);
+    line-height: 1.3;
+  }
+
+  .section-subtitle {
+    font-size: 10pt;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+    font-style: italic;
+  }
+
+  h3 {
+    font-size: 14pt;
+    color: var(--accent);
+    margin-top: 28px;
+    margin-bottom: 10px;
+    padding-left: 12px;
+    border-left: 3px solid var(--accent);
+  }
+
+  h4 {
+    font-size: 12pt;
+    color: var(--text);
+    margin-top: 20px;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+
+  p {
+    margin-bottom: 12px;
+  }
+
+  ul, ol {
+    margin: 8px 0 16px 24px;
+  }
+
+  li {
+    margin-bottom: 6px;
+  }
+
+  /* Info boxes */
+  .info-box {
+    background: var(--bg-light);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 16px 0;
+  }
+
+  .info-box.tip {
+    border-left: 4px solid var(--success);
+    background: #f0fdf4;
+  }
+
+  .info-box.warning {
+    border-left: 4px solid var(--warning);
+    background: #fffbeb;
+  }
+
+  .info-box.info {
+    border-left: 4px solid var(--info);
+    background: #eff6ff;
+  }
+
+  .info-box-title {
+    font-weight: 700;
+    font-size: 10pt;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+
+  .info-box.tip .info-box-title { color: var(--success); }
+  .info-box.warning .info-box-title { color: var(--warning); }
+  .info-box.info .info-box-title { color: var(--info); }
+
+  .info-box p {
+    margin-bottom: 6px;
+    font-size: 10.5pt;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 10.5pt;
+  }
+
+  thead th {
+    background: var(--primary);
+    color: white;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 10pt;
+  }
+
+  tbody td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody tr:nth-child(even) {
+    background: var(--bg-light);
+  }
+
+  /* Steps */
+  .step {
+    display: flex;
+    gap: 16px;
+    margin: 16px 0;
+    align-items: flex-start;
+  }
+
+  .step-number {
+    background: var(--primary);
+    color: white;
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14pt;
+  }
+
+  .step-content {
+    flex: 1;
+    padding-top: 4px;
+  }
+
+  .step-content strong {
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* Keyboard shortcuts */
+  kbd {
+    background: var(--bg-section);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 10pt;
+    font-family: monospace;
+  }
+
+  /* URL */
+  .url {
+    font-family: monospace;
+    background: var(--bg-section);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10pt;
+    word-break: break-all;
+  }
+
+  /* Footer */
+  .page-footer {
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 9pt;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  /* Flow diagram */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0;
+  }
+
+  .flow-step {
+    background: var(--bg-light);
+    border: 2px solid var(--primary);
+    border-radius: 10px;
+    padding: 10px 24px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 10.5pt;
+    min-width: 280px;
+  }
+
+  .flow-arrow {
+    font-size: 18pt;
+    color: var(--primary);
+    margin: 4px 0;
+  }
+
+  /* Feature card grid */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 16px 0;
+  }
+
+  .feature-card {
+    background: var(--bg-light);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+  }
+
+  .feature-card h4 {
+    margin-top: 0;
+    font-size: 11pt;
+    color: var(--primary);
+  }
+
+  .feature-card p {
+    font-size: 10pt;
+    margin-bottom: 0;
+    color: var(--text-muted);
+  }
+
+  /* Credential table */
+  .cred-table td:first-child {
+    font-weight: 700;
+    width: 40%;
+  }
+
+  /* Print optimization */
+  @media print {
+    .cover { min-height: auto; padding: 120px 40px; }
+    .section { page-break-before: always; }
+    h3 { page-break-after: avoid; }
+    .info-box { page-break-inside: avoid; }
+    table { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER PAGE -->
+<div class="cover">
+  <div class="cover-icon">📋</div>
+  <h1>Manual de Usuario</h1>
+  <h2>Sistema de Gestión Web - Asesora de Salud Hominis</h2>
+  <div class="cover-line"></div>
+  <div class="cover-info">
+    <strong>Agustina C. Candia</strong><br>
+    Asesora Comercial - Hominis<br><br>
+    Sitio web: <strong>asesoradesalud.com.ar</strong><br>
+    Email: asesoradesaludagustinacandia@gmail.com<br><br>
+    Version 1.0 - Mayo 2025
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <h2>Indice de Contenidos</h2>
+
+  <div class="toc-item main"><span>1. Introduccion al Sistema</span></div>
+  <div class="toc-item sub"><span>1.1 Que es el sistema</span></div>
+  <div class="toc-item sub"><span>1.2 Para quien esta pensado</span></div>
+  <div class="toc-item sub"><span>1.3 Requisitos para usarlo</span></div>
+
+  <div class="toc-item main"><span>2. Navegacion del Sitio Web</span></div>
+  <div class="toc-item sub"><span>2.1 Barra de navegacion</span></div>
+  <div class="toc-item sub"><span>2.2 Seccion Inicio</span></div>
+  <div class="toc-item sub"><span>2.3 Seccion Sobre Mi</span></div>
+  <div class="toc-item sub"><span>2.4 Seccion Planes</span></div>
+  <div class="toc-item sub"><span>2.5 Seccion Promociones</span></div>
+  <div class="toc-item sub"><span>2.6 Seccion Servicios Digitales</span></div>
+  <div class="toc-item sub"><span>2.7 Seccion Sucursal</span></div>
+
+  <div class="toc-item main"><span>3. Formulario de Contacto</span></div>
+  <div class="toc-item sub"><span>3.1 Como completarlo</span></div>
+  <div class="toc-item sub"><span>3.2 Que pasa despues de enviarlo</span></div>
+  <div class="toc-item sub"><span>3.3 Campos obligatorios y opcionales</span></div>
+
+  <div class="toc-item main"><span>4. Notificaciones por Email</span></div>
+  <div class="toc-item sub"><span>4.1 Como llegan las notificaciones</span></div>
+  <div class="toc-item sub"><span>4.2 Contenido del email</span></div>
+  <div class="toc-item sub"><span>4.3 Boton de WhatsApp en el email</span></div>
+
+  <div class="toc-item main"><span>5. Panel de Administracion</span></div>
+  <div class="toc-item sub"><span>5.1 Como ingresar</span></div>
+  <div class="toc-item sub"><span>5.2 Ver contactos recibidos</span></div>
+  <div class="toc-item sub"><span>5.3 Cambiar estado de un contacto</span></div>
+  <div class="toc-item sub"><span>5.4 Eliminar un contacto</span></div>
+
+  <div class="toc-item main"><span>6. Credenciales y Accesos</span></div>
+
+  <div class="toc-item main"><span>7. Preguntas Frecuentes</span></div>
+
+  <div class="toc-item main"><span>8. Soporte Tecnico</span></div>
+</div>
+
+<!-- SECTION 1: INTRODUCCION -->
+<div class="section">
+  <h2 class="section-title">1. Introduccion al Sistema</h2>
+  <p class="section-subtitle">Todo lo que necesitas saber sobre tu sistema de gestion web</p>
+
+  <h3>1.1 Que es el sistema</h3>
+  <p>
+    El sistema es una <strong>pagina web profesional</strong> (landing page) diseñada para que los potenciales clientes de Hominis puedan conocer los planes de salud, ver las promociones vigentes y <strong>solicitar asesoramiento</strong> completando un formulario online.
+  </p>
+  <p>
+    Cuando un cliente completa el formulario, sus datos se guardan automaticamente en una base de datos y <strong>te llega una notificacion por email</strong> con toda la informacion para que puedas contactarlo rapidamente.
+  </p>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <h4>📋 Formulario Online</h4>
+      <p>Los clientes te contactan las 24 horas, los 7 dias de la semana.</p>
+    </div>
+    <div class="feature-card">
+      <h4>📧 Notificacion por Email</h4>
+      <p>Recibis los datos del cliente directo en tu casilla de correo.</p>
+    </div>
+    <div class="feature-card">
+      <h4>💾 Base de Datos</h4>
+      <p>Todos los contactos quedan guardados para consulta posterior.</p>
+    </div>
+    <div class="feature-card">
+      <h4>🔐 Panel de Admin</h4>
+      <p>Gestionas los contactos, cambias estados y eliminas registros.</p>
+    </div>
+  </div>
+
+  <h3>1.2 Para quien esta pensado</h3>
+  <p>
+    El sistema esta pensado para <strong>Agustina C. Candia</strong>, asesora comercial de Hominis, como herramienta de captacion de clientes y gestion de contactos. Los visitantes del sitio son personas interesadas en contratar un plan de salud.
+  </p>
+
+  <h3>1.3 Requisitos para usarlo</h3>
+  <p>Para usar el sistema solo necesitas:</p>
+  <ul>
+    <li>Un <strong>navegador web</strong> (Chrome, Firefox, Safari, Edge - actualizado)</li>
+    <li>Conexion a <strong>internet</strong></li>
+    <li>Tu <strong>email</strong> configurado para recibir notificaciones</li>
+    <li>Tus <strong>credenciales de acceso</strong> al panel de administracion</li>
+  </ul>
+
+  <div class="info-box tip">
+    <div class="info-box-title">CONSEJO</div>
+    <p>El sitio funciona tanto en computadora como en celular. La pagina se adapta automaticamente al tamano de la pantalla.</p>
+  </div>
+</div>
+
+<!-- SECTION 2: NAVEGACION -->
+<div class="section">
+  <h2 class="section-title">2. Navegacion del Sitio Web</h2>
+  <p class="section-subtitle">Conoce cada seccion de tu pagina web</p>
+
+  <h3>2.1 Barra de navegacion</h3>
+  <p>
+    En la parte superior de la pagina encontraras la barra de navegacion con el logo de Hominis y los siguientes botones:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Boton</th>
+        <th>Seccion a la que lleva</th>
+        <th>Descripcion</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Inicio</td><td>#inicio</td><td>Banner principal con tu foto y presentacion</td></tr>
+      <tr><td>Sobre Mi</td><td>#sobre-mi</td><td>Tu presentacion profesional</td></tr>
+      <tr><td>Planes</td><td>#planes</td><td>Comparacion Vita Mas vs Aqua Mas</td></tr>
+      <tr><td>Promos</td><td>#promociones</td><td>Descuentos para nuevos socios</td></tr>
+      <tr><td>Servicios</td><td>#servicios</td><td>Servicios digitales de Hominis</td></tr>
+      <tr><td>Sucursal</td><td>#sucursal</td><td>Ubicacion y mapa de la oficina</td></tr>
+      <tr><td>Contacto</td><td>#contacto</td><td>Formulario y datos de contacto</td></tr>
+    </tbody>
+  </table>
+
+  <div class="info-box info">
+    <div class="info-box-title">EN CELULAR</div>
+    <p>En el celular, los botones de navegacion se esconden detras de un icono de menu (tres lineas horizontales). Toca el icono para desplegar el menu.</p>
+  </div>
+
+  <h3>2.2 Seccion Inicio</h3>
+  <p>
+    Es la primera seccion que ven los visitantes. Incluye:
+  </p>
+  <ul>
+    <li>Tu <strong>foto profesional</strong> en un circulo</li>
+    <li>Tu <strong>nombre y presentacion</strong>: "Tu bienestar, mi compromiso"</li>
+    <li>El boton <strong>"Solicitar Asesoramiento"</strong> que lleva al formulario</li>
+    <li>Tres estadisticas: 500+ Clientes Asesorados, 10+ Anos de Experiencia, 98% Satisfaccion</li>
+  </ul>
+
+  <h3>2.3 Seccion Sobre Mi</h3>
+  <p>
+    Presenta tu perfil profesional como asesora comercial de Hominis. Destaca:
+  </p>
+  <ul>
+    <li>Atencion personalizada</li>
+    <li>Respuesta inmediata</li>
+    <li>Respaldo Hominis</li>
+    <li>Sanatorio Guemes</li>
+  </ul>
+
+  <h3>2.4 Seccion Planes</h3>
+  <p>
+    Muestra los dos planes de salud disponibles con sus caracteristicas:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Caracteristica</th>
+        <th>Vita Mas (Premium)</th>
+        <th>Aqua Mas (Ahorro)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Copagos</td><td>Sin copagos</td><td>Copagos flexibles</td></tr>
+      <tr><td>Urgencias</td><td>Incluidas</td><td>24/7 sin copagos</td></tr>
+      <tr><td>Odontologia</td><td>Sin cargo</td><td>Con coseguro</td></tr>
+      <tr><td>Experiencia Concierge</td><td>Si (24/7)</td><td>No</td></tr>
+      <tr><td>Asistencia al viajero</td><td>Incluida</td><td>Incluida</td></tr>
+      <tr><td>Farmacia</td><td>Incluida</td><td>40% descuento</td></tr>
+    </tbody>
+  </table>
+
+  <div class="info-box warning">
+    <div class="info-box-title">IMPORTANTE</div>
+    <p>Las promociones con descuento aplican para nuevos socios de <strong>hasta 39 anos</strong>. Para cobertura general, consultar condiciones segun la edad.</p>
+  </div>
+
+  <h3>2.5 Seccion Promociones</h3>
+  <p>
+    Muestra los descuentos escalonados durante el primer ano para nuevos socios que adhieran al debito automatico:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Periodo</th>
+        <th>Aqua Mas</th>
+        <th>Vita Mas</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Meses 1 a 3</td><td>40% OFF</td><td>30% OFF</td></tr>
+      <tr><td>Meses 4 a 6</td><td>30% OFF</td><td>20% OFF</td></tr>
+      <tr><td>Meses 7 a 12</td><td>20% OFF</td><td>20% OFF</td></tr>
+    </tbody>
+  </table>
+
+  <h3>2.6 Seccion Servicios Digitales</h3>
+  <p>Tres servicios principales de Hominis:</p>
+  <ul>
+    <li><strong>Medico Virtual</strong>: Consultas por videollamada desde la app</li>
+    <li><strong>Farmacia Virtual</strong>: Pedir medicamentos con 40% de cobertura, envio a domicilio</li>
+    <li><strong>App Hominis</strong>: Tramites 100% online (credenciales, turnos, autorizaciones)</li>
+  </ul>
+
+  <h3>2.7 Seccion Sucursal</h3>
+  <p>
+    Muestra la ubicacion de la oficina con un mapa interactivo:
+  </p>
+  <ul>
+    <li><strong>Direccion</strong>: Portela 266, Lomas de Zamora, PBA</li>
+    <li><strong>Horario</strong>: Lunes a Viernes de 9:00 a 18:00 | Sabados y Domingos: Cerrado</li>
+    <li><strong>Telefono/WhatsApp</strong>: 11-6555-5534</li>
+    <li>Boton para <strong>coordinar visita por WhatsApp</strong></li>
+    <li><strong>Mapa interactivo</strong> con la ubicacion marcada</li>
+  </ul>
+</div>
+
+<!-- SECTION 3: FORMULARIO -->
+<div class="section">
+  <h2 class="section-title">3. Formulario de Contacto</h2>
+  <p class="section-subtitle">Como funciona la herramienta principal de captacion de clientes</p>
+
+  <h3>3.1 Como completarlo</h3>
+  <p>El cliente debe completar los siguientes campos:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Campo</th>
+        <th>Tipo</th>
+        <th>Obligatorio</th>
+        <th>Ejemplo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Nombre completo</td><td>Texto</td><td>Si</td><td>Maria Gonzalez</td></tr>
+      <tr><td>Email</td><td>Email</td><td>Si</td><td>maria@email.com</td></tr>
+      <tr><td>Telefono / WhatsApp</td><td>Telefono</td><td>Si</td><td>11-5555-1234</td></tr>
+      <tr><td>Situacion laboral</td><td>Desplegable</td><td>Si</td><td>Monotributo</td></tr>
+      <tr><td>Edad</td><td>Numero</td><td>No</td><td>32</td></tr>
+      <tr><td>Cobertura de interes</td><td>Desplegable</td><td>No</td><td>CABA o GBA</td></tr>
+      <tr><td>Mensaje</td><td>Texto largo</td><td>No</td><td>Me interesa el plan Vita Mas</td></tr>
+    </tbody>
+  </table>
+
+  <p><strong>Opciones de Situacion laboral:</strong></p>
+  <ul>
+    <li>Recibo de sueldo</li>
+    <li>Monotributo</li>
+    <li>Particular</li>
+  </ul>
+
+  <p><strong>Opciones de Cobertura de interes:</strong></p>
+  <ul>
+    <li>CABA</li>
+    <li>GBA</li>
+  </ul>
+
+  <h3>3.2 Que pasa despues de enviarlo</h3>
+  <p>Cuando el cliente presiona el boton <strong>"Enviar Solicitud"</strong>, el sistema realiza automaticamente lo siguiente:</p>
+
+  <div class="flow">
+    <div class="flow-step">1. El cliente completa el formulario</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">2. El sistema valida los datos</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">3. Se guardan en la base de datos (Turso)</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">4. Te llega un email con todos los datos</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">5. El cliente ve un mensaje de confirmacion</div>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">TIEMPO DE RESPUESTA</div>
+    <p>La pagina le indica al cliente: "Completá el formulario y me comunico con vos en menos de 24 horas." Trata de responder lo antes posible para maximizar la conversion.</p>
+  </div>
+
+  <h3>3.3 Campos obligatorios y opcionales</h3>
+  <p>
+    Los campos marcados con <strong>*</strong> son obligatorios. Si el cliente intenta enviar el formulario sin completarlos, el navegador le mostrara un mensaje de error y no se enviara.
+  </p>
+  <p>
+    Los campos opcionales (Edad, Cobertura de interes, Mensaje) ayudan a que tengas mas informacion para la asesoria, pero no bloquean el envio.
+  </p>
+
+  <div class="info-box warning">
+    <div class="info-box-title">PROTECCION ANTI-SPAM</div>
+    <p>El sistema tiene proteccion contra envios masivos. Si alguien intenta enviar el formulario muchas veces desde la misma conexion, se bloqueara temporalmente. Esto protege tu casilla de email de spam.</p>
+  </div>
+</div>
+
+<!-- SECTION 4: NOTIFICACIONES -->
+<div class="section">
+  <h2 class="section-title">4. Notificaciones por Email</h2>
+  <p class="section-subtitle">Como recibis los datos de los clientes</p>
+
+  <h3>4.1 Como llegan las notificaciones</h3>
+  <p>
+    Cada vez que un cliente envia el formulario, recibis automaticamente un <strong>email</strong> en la casilla:
+  </p>
+  <p style="text-align:center; font-size: 13pt; font-weight: 700; color: var(--primary);">
+    asesoradesaludagustinacandia@gmail.com
+  </p>
+  <p>
+    El email se envia a traves del servicio <strong>Resend</strong>, que garantiza la entrega rapida y confiable.
+  </p>
+
+  <h3>4.2 Contenido del email</h3>
+  <p>El email que recibis incluye toda la informacion del contacto:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Dato</th>
+        <th>Ejemplo en el email</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Asunto del email</td><td>Nueva solicitud: Maria Gonzalez - Monotributo</td></tr>
+      <tr><td>Nombre</td><td>Maria Gonzalez</td></tr>
+      <tr><td>Email</td><td>maria@email.com (clicable)</td></tr>
+      <tr><td>Telefono</td><td>11-5555-1234 (con link a WhatsApp)</td></tr>
+      <tr><td>Segmento</td><td>Monotributo</td></tr>
+      <tr><td>Cobertura</td><td>CABA</td></tr>
+      <tr><td>Edad</td><td>32 anos</td></tr>
+      <tr><td>Mensaje</td><td>Me interesa el plan Vita Mas</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.3 Boton de WhatsApp en el email</h3>
+  <p>
+    El email incluye un <strong>boton verde "Contactar por WhatsApp"</strong> que abre directamente una conversacion de WhatsApp con el cliente, con un mensaje pre-escrito:
+  </p>
+  <div class="info-box info">
+    <div class="info-box-title">MENSAJE PRE-ESCRITO</div>
+    <p>"Hola [Nombre del cliente], soy Agustina de Hominis. Recibi tu solicitud de asesoramiento. Podemos conversar?"</p>
+  </div>
+  <p>
+    Esto te permite <strong>contactar al cliente con un solo clic</strong> desde el email, sin tener que buscar el numero ni redactar un mensaje.
+  </p>
+</div>
+
+<!-- SECTION 5: PANEL DE ADMIN -->
+<div class="section">
+  <h2 class="section-title">5. Panel de Administracion</h2>
+  <p class="section-subtitle">Gestion de contactos recibidos</p>
+
+  <h3>5.1 Como ingresar</h3>
+  <p>Para acceder al panel de administracion, segui estos pasos:</p>
+
+  <div class="step">
+    <div class="step-number">1</div>
+    <div class="step-content">
+      <strong>Abrir el navegador</strong>
+      <p>Ingresá a la direccion: <span class="url">https://asesoradesalud.com.ar/api/auth/signin</span></p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-number">2</div>
+    <div class="step-content">
+      <strong>Ingresar credenciales</strong>
+      <p>Completá con tu email y contraseña:</p>
+    </div>
+  </div>
+
+  <table class="cred-table">
+    <tbody>
+      <tr><td>Email</td><td>acandia@mphominis.com.ar</td></tr>
+      <tr><td>Contrasena</td><td>Hominis2025!</td></tr>
+    </tbody>
+  </table>
+
+  <div class="step">
+    <div class="step-number">3</div>
+    <div class="step-content">
+      <strong>Hacer clic en "Iniciar Sesion"</strong>
+      <p>Si las credenciales son correctas, accedes al sistema.</p>
+    </div>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">SEGURIDAD</div>
+    <p><strong>No compartas estas credenciales</strong> con nadie. Son tu acceso privado al panel de administracion. Si crees que alguien las tiene, contacta a soporte para cambiarlas.</p>
+  </div>
+
+  <h3>5.2 Ver contactos recibidos</h3>
+  <p>
+    Una vez autenticada, podes consultar los contactos a traves de la API del sistema. Los contactos se pueden filtrar por:
+  </p>
+  <ul>
+    <li><strong>Estado</strong>: NUEVO, LEIDO, ATENDIDO</li>
+    <li><strong>Segmento</strong>: RECIBO_DE_SUELDO, MONOTRIBUTO, PARTICULAR</li>
+    <li><strong>Busqueda</strong>: por nombre, email, telefono o mensaje</li>
+  </ul>
+
+  <p>
+    Los contactos se muestran ordenados del mas reciente al mas antiguo, con paginacion de 20 contactos por pagina.
+  </p>
+
+  <h3>5.3 Cambiar estado de un contacto</h3>
+  <p>
+    Cada contacto tiene un estado que te permite llevar un seguimiento:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Estado</th>
+        <th>Significado</th>
+        <th>Cuando usarlo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>NUEVO</strong></td>
+        <td>Recien recibido, sin leer</td>
+        <td>Es el estado automatico al crearce</td>
+      </tr>
+      <tr>
+        <td><strong>LEIDO</strong></td>
+        <td>Ya leiste la solicitud</td>
+        <td>Cuando revisaste los datos del cliente</td>
+      </tr>
+      <tr>
+        <td><strong>ATENDIDO</strong></td>
+        <td>Ya contactaste al cliente</td>
+        <td>Cuando ya hablaste con la persona</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>5.4 Eliminar un contacto</h3>
+  <p>
+    Si necesitas eliminar un contacto (por ejemplo, si es spam o un duplicado), podes hacerlo desde el panel. <strong>Esta accion no se puede deshacer</strong>, asi que usala con cuidado.
+  </p>
+</div>
+
+<!-- SECTION 6: CREDENCIALES -->
+<div class="section">
+  <h2 class="section-title">6. Credenciales y Accesos</h2>
+  <p class="section-subtitle">Resumen de todas las cuentas y accesos del sistema</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Servicio</th>
+        <th>URL / Dato</th>
+        <th>Usuario</th>
+        <th>Contrasena</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Sitio Web</td>
+        <td>asesoradesalud.com.ar</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>Panel Admin</td>
+        <td>asesoradesalud.com.ar/api/auth/signin</td>
+        <td>acandia@mphominis.com.ar</td>
+        <td>Hominis2025!</td>
+      </tr>
+      <tr>
+        <td>Email notificaciones</td>
+        <td>asesoradesaludagustinacandia@gmail.com</td>
+        <td>-</td>
+        <td>(tu contraseña de Gmail)</td>
+      </tr>
+      <tr>
+        <td>WhatsApp</td>
+        <td>wa.me/5491165555534</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>GitHub (repositorio)</td>
+        <td>github.com/orlandocandia/hominis-landing</td>
+        <td>orlandocandia</td>
+        <td>(token personal)</td>
+      </tr>
+      <tr>
+        <td>Vercel (hosting)</td>
+        <td>vercel.com/dashboard</td>
+        <td>(cuenta de GitHub)</td>
+        <td>-</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="info-box warning">
+    <div class="info-box-title">IMPORTANTE</div>
+    <p>Guardá esta informacion en un lugar seguro. No compartas las contrasenas ni los tokens de acceso. Si alguna vez necesitas cambiar una contraseña, contacta a soporte tecnico.</p>
+  </div>
+</div>
+
+<!-- SECTION 7: FAQ -->
+<div class="section">
+  <h2 class="section-title">7. Preguntas Frecuentes</h2>
+  <p class="section-subtitle">Las dudas mas comunes resueltas</p>
+
+  <h3>¿No me llega el email cuando un cliente completa el formulario?</h3>
+  <p>
+    Verifica lo siguiente:
+  </p>
+  <ol>
+    <li>Revisa la carpeta de <strong>Spam</strong> o <strong>Correo no deseado</strong> en tu casilla Gmail</li>
+    <li>Asegurate de que el cliente completo todos los campos obligatorios</li>
+    <li>El email viene de la direccion: <span class="url">onboarding@resend.dev</span></li>
+    <li>Si el problema persiste, contacta a soporte tecnico</li>
+  </ol>
+
+  <h3>¿Puedo cambiar el horario de atencion que aparece en la web?</h3>
+  <p>
+    Si, pero requiere modificar el codigo del sitio. Actualmente muestra "Lunes a Viernes: 9:00 - 18:00" y "Sabados y Domingos: Cerrado". Para cambiarlo, contacta a soporte tecnico.
+  </p>
+
+  <h3>¿Puedo agregar o modificar los planes de salud?</h3>
+  <p>
+    Si, pero los planes estan definidos en el codigo de la pagina. Para agregar, modificar o eliminar planes, se necesita editar el archivo del sitio web y volver a publicar. Contacta a soporte tecnico para hacer estos cambios.
+  </p>
+
+  <h3>¿Que pasa si se cae el sitio web?</h3>
+  <p>
+    El sitio esta alojado en <strong>Vercel</strong>, una plataforma con un 99.99% de disponibilidad. Si el sitio no carga, suele ser un problema temporal de DNS. Espera unos minutos e intenta nuevamente. Si el problema persiste mas de una hora, contacta a soporte.
+  </p>
+
+  <h3>¿Los datos de los clientes estan seguros?</h3>
+  <p>
+    Si. Los datos se guardan en <strong>Turso</strong>, una base de datos en la nube con cifrado. Ademas, el formulario tiene proteccion CSRF y limitador de tasa para evitar accesos no autorizados. Solo vos podes ver los contactos a traves del panel de administracion con tu contraseña.
+  </p>
+
+  <h3>¿Puedo recibir notificaciones por WhatsApp?</h3>
+  <p>
+    Actualmente las notificaciones automaticas son solo por <strong>email</strong>. Sin embargo, el email que recibis incluye un boton verde que abre WhatsApp directamente con el cliente, asi que con un solo clic podes contactarlo por WhatsApp.
+  </p>
+  <p>
+    La notificacion automatica por WhatsApp esta disponible como funcionalidad futura, pero requiere configuracion adicional (obtener una API key de CallMeBot enviando "AllowMe" al +34644452906).
+  </p>
+
+  <h3>¿Como cambio mi contraseña del panel de administracion?</h3>
+  <p>
+    Actualmente, el cambio de contraseña requiere acceso tecnico al sistema. Contacta a soporte para cambiarla.
+  </p>
+
+  <h3>¿El sitio funciona sin internet?</h3>
+  <p>
+    No. El sitio requiere conexion a internet tanto para que los clientes lo visiten como para que recibas las notificaciones. Sin embargo, los datos ya guardados en la base de datos no se pierden si se corta el internet.
+  </p>
+</div>
+
+<!-- SECTION 8: SOPORTE -->
+<div class="section">
+  <h2 class="section-title">8. Soporte Tecnico</h2>
+  <p class="section-subtitle">Cuando y como pedir ayuda</p>
+
+  <p>
+    Si tenes algun problema con el sistema o necesitas hacer cambios, podes contactar a soporte tecnico.
+  </p>
+
+  <h3>Tipos de problemas que cubre el soporte</h3>
+  <ul>
+    <li>El sitio web no carga o muestra errores</li>
+    <li>No llegan las notificaciones por email</li>
+    <li>No podes ingresar al panel de administracion</li>
+    <li>Necesitas cambiar informacion en la pagina (horarios, telefonos, planes)</li>
+    <li>Necesitas cambiar la contraseña</li>
+    <li>Problemas con el dominio (asesoradesalud.com.ar)</li>
+    <li>Renovacion del dominio (anual)</li>
+  </ul>
+
+  <h3>Informacion del dominio</h3>
+  <div class="info-box info">
+    <div class="info-box-title">DOMINIO</div>
+    <p><strong>Dominio:</strong> asesoradesalud.com.ar</p>
+    <p><strong>Registrado en:</strong> NIC Argentina (nic.ar)</p>
+    <p><strong>DNS gestionado por:</strong> Cloudflare</p>
+    <p><strong>Hosting:</strong> Vercel</p>
+    <p><strong>Nameservers:</strong> emely.ns.cloudflare.com / emerson.ns.cloudflare.com</p>
+    <p><strong>Registro DNS:</strong> A @ 76.76.21.21 | CNAME www cname.vercel-dns.com</p>
+    <p><strong>Renovacion:</strong> El dominio .com.ar debe renovarse anualmente en NIC Argentina</p>
+  </div>
+
+  <h3>Arquitectura del sistema</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Componente</th>
+        <th>Tecnologia</th>
+        <th>Proveedor</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Framework</td><td>Next.js 16 + TypeScript</td><td>-</td></tr>
+      <tr><td>Hosting</td><td>Vercel</td><td>vercel.com</td></tr>
+      <tr><td>Base de datos</td><td>Turso (libSQL)</td><td>turso.tech</td></tr>
+      <tr><td>Email</td><td>Resend API</td><td>resend.com</td></tr>
+      <tr><td>DNS</td><td>Cloudflare</td><td>cloudflare.com</td></tr>
+      <tr><td>Dominio</td><td>NIC Argentina</td><td>nic.ar</td></tr>
+      <tr><td>Codigo fuente</td><td>GitHub</td><td>github.com/orlandocandia/hominis-landing</td></tr>
+      <tr><td>Autenticacion</td><td>NextAuth.js v4</td><td>-</td></tr>
+    </tbody>
+  </table>
+
+  <div class="page-footer">
+    <p>Manual de Usuario - Asesora de Salud Hominis - asesoradesalud.com.ar - Version 1.0 - Mayo 2025</p>
+  </div>
+</div>
+
+</body>
+</html>
