@@ -7,11 +7,11 @@
 // Reads from env vars first, then falls back to hardcoded values
 // (hardcoded values are needed for Vercel where env vars sometimes don't load)
 
-function getTursoUrl(): string {
+export function getTursoUrl(): string {
   return process.env.TURSO_URL || 'libsql://hominins-db-orlandocandia.aws-us-east-2.turso.io';
 }
 
-function getTursoAuthToken(): string {
+export function getTursoAuthToken(): string {
   // Hardcoded fallback for Vercel (env vars sometimes don't load there)
   return process.env.TURSO_AUTH_TOKEN || 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3Nzg3NjM4OTEsImlkIjoiMDE5ZTIzNDYtYjUwMS03Y2Y1LWFkZmItYWJjMDJmODNjNjQ4IiwicmlkIjoiMjI3M2MxOTAtYTA1Yy00MzA3LTk0ZTUtZWIxZTc1YmU3YmM4In0.oimDH6aXYryNto2cw5V3N9C2fhEPZH0jQwBp15VyGPciD7RzuIQfghQbnkuhoywlnFoz9rVq0YmFFXaM9OYfBQ';
 }
