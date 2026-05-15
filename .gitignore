@@ -51,3 +51,17 @@ next-env.d.ts
 /prompt
 /test
 /worklog.md
+/screenshots/
+/screenshots_v2/
+/upload/
+/download/
+/examples/
+/mini-services/
+.zscripts/
+*.zip
+*.pdf
+capture-screenshots.py
+generate-pdf-v2.py
+generate-pdf.py
+pdf-screens*.html
+DOCUMENTACION_SISTEMA.md
