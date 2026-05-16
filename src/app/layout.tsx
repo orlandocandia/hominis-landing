@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     url: "https://asesoradesalud.com.ar",
     siteName: "Asesora de Salud - Agustina C. Candia",
     type: "website",
-    images: [{ url: "/logo_hominis.png", width: 1024, height: 1024 }],
+    images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
   },
 };
 
