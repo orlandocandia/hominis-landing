@@ -18,29 +18,34 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://asesoradesalud.com.ar'),
-  title: "Agustina C. Candia | Asesora Comercial",
+  title: "Agustina C. Candia | Asesora de Salud — Planes Vita Más y Aqua Más",
   description:
-    "Asesoría comercial personalizada en seguros de salud. Particulares, Monotributistas y Empleados en relación de dependencia. Cobertura en Buenos Aires, Nacional e Internacional.",
+    "Asesoramiento personalizado en cobertura médica. Planes sin copagos o con ahorro. Promos hasta 40% OFF para nuevos socios. Atención en Lomas de Zamora y online.",
   keywords: [
-    "seguros",
-    "asesora comercial",
-    "Hominis",
+    "obras sociales",
     "cobertura médica",
+    "planes de salud",
+    "asesora comercial",
+    "Vita Más",
+    "Aqua Más",
+    "Hominis",
     "Buenos Aires",
+    "Lomas de Zamora",
     "monotributista",
     "particular",
-    "empleado dependencia",
+    "sin copagos",
+    "promociones salud",
   ],
   authors: [{ name: "Agustina C. Candia" }],
   icons: {
     icon: "/logo_hominis.png",
   },
   openGraph: {
-    title: "Agustina C. Candia | Asesora Comercial",
+    title: "Agustina C. Candia | Asesora de Salud — Tu bienestar, mi compromiso",
     description:
-      "Asesoría comercial personalizada en seguros de salud. Cobertura en Buenos Aires, Nacional e Internacional.",
+      "Asesoramiento personalizado en cobertura médica. Planes sin copagos o con ahorro. Promos hasta 40% OFF. Contactame gratis.",
     url: "https://asesoradesalud.com.ar",
-    siteName: "Asesora Comercial - Agustina C. Candia",
+    siteName: "Asesora de Salud - Agustina C. Candia",
     type: "website",
     images: [{ url: "/logo_hominis.png", width: 1024, height: 1024 }],
   },
