@@ -17,8 +17,8 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://hominis.com.ar'),
-  title: "Agustina C. Candia | Asesora Comercial - Hominis",
+  metadataBase: new URL('https://asesoradesalud.com.ar'),
+  title: "Agustina C. Candia | Asesora Comercial",
   description:
     "Asesoría comercial personalizada en seguros de salud. Particulares, Monotributistas y Empleados en relación de dependencia. Cobertura en Buenos Aires, Nacional e Internacional.",
   keywords: [
@@ -36,11 +36,11 @@ export const metadata: Metadata = {
     icon: "/logo_hominis.png",
   },
   openGraph: {
-    title: "Agustina C. Candia | Asesora Comercial - Hominis",
+    title: "Agustina C. Candia | Asesora Comercial",
     description:
       "Asesoría comercial personalizada en seguros de salud. Cobertura en Buenos Aires, Nacional e Internacional.",
-    url: "https://hominis.com.ar",
-    siteName: "Hominis - Agustina C. Candia",
+    url: "https://asesoradesalud.com.ar",
+    siteName: "Asesora Comercial - Agustina C. Candia",
     type: "website",
     images: [{ url: "/logo_hominis.png", width: 1024, height: 1024 }],
   },
