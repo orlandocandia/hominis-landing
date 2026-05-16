@@ -24,6 +24,12 @@ import {
   Star,
   ArrowRight,
   CreditCard,
+  Zap,
+  Timer,
+  Plane,
+  Headphones,
+  Smartphone,
+  Stethoscope,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -230,6 +236,20 @@ function HeroSection() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-center lg:text-left"
           >
+            {/* Promo Badge */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <Badge
+                className="mb-6 bg-gradient-to-r from-hominis-gold/90 to-amber-500/90 text-white border-0 backdrop-blur-sm px-5 py-2 text-sm font-bold tracking-wide shadow-lg shadow-hominis-gold/30 animate-pulse"
+              >
+                <Zap className="w-4 h-4 mr-2" />
+                Hasta 40% OFF para nuevos socios
+              </Badge>
+            </motion.div>
+
             <Badge
               variant="secondary"
               className="mb-6 bg-white/15 text-white/90 border-white/20 backdrop-blur-sm px-4 py-1.5 text-xs font-medium tracking-wider uppercase"
@@ -248,22 +268,36 @@ function HeroSection() {
               <strong className="text-white font-semibold">
                 Agustina C. Candia
               </strong>
-              , asesora comercial de Hominis. Te ayudo a elegir entre{' '}
+              , tu asesora de confianza. Elegí entre{' '}
               <strong className="text-hominis-gold font-semibold">Vita Más</strong> y{' '}
-              <strong className="text-hominis-gold font-semibold">Aqua Más</strong>,
-              dos planes con la misma calidad médica y diferente forma de pagar.
+              <strong className="text-hominis-gold font-semibold">Aqua Más</strong>{' '}
+              y empezá a cuidarte hoy con descuentos exclusivos.
             </p>
 
-            <div className="flex justify-center lg:justify-start">
+            <div className="flex flex-col items-center lg:items-start gap-5">
               <a href="#contacto">
                 <Button
                   size="lg"
                   className="bg-white text-hominis-blue hover:bg-white/90 font-semibold px-8 shadow-2xl shadow-black/20 text-base"
                 >
-                  Solicitar Asesoramiento
+                  Solicitar Asesoramiento Gratis
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </a>
+
+              {/* Trust Indicators */}
+              <div className="flex flex-wrap justify-center lg:justify-start gap-x-6 gap-y-2">
+                {[
+                  { icon: CheckCircle2, text: 'Asesoramiento sin cargo' },
+                  { icon: Clock, text: 'Respuesta en menos de 24hs' },
+                  { icon: Shield, text: 'Sin compromiso' },
+                ].map(({ icon: Icon, text }) => (
+                  <span key={text} className="flex items-center gap-1.5 text-sm text-white/70">
+                    <Icon className="w-4 h-4 text-hominis-gold" />
+                    {text}
+                  </span>
+                ))}
+              </div>
             </div>
 
             {/* Stats */}
@@ -326,6 +360,50 @@ function HeroSection() {
       >
         <ChevronDown className="w-8 h-8 text-white/50" />
       </motion.div>
+    </section>
+  );
+}
+
+/* ─── TRUST BAR SECTION ─── */
+function TrustBarSection() {
+  const benefits = [
+    { icon: Stethoscope, text: 'Sanatorio Güemes', sub: 'Red de primer nivel' },
+    { icon: CreditCard, text: 'Hasta 40% OFF', sub: 'Promo primer año' },
+    { icon: Smartphone, text: 'App y trámites', sub: '100% online' },
+    { icon: Heart, text: 'Odontología', sub: 'Incluida' },
+    { icon: Plane, text: 'Asistencia al viajero', sub: 'Cobertura mundial' },
+    { icon: Headphones, text: 'Concierge 24/7', sub: 'Vita Más' },
+  ];
+
+  return (
+    <section className="relative bg-gradient-to-r from-hominis-blue via-hominis-violet to-hominis-indigo py-8 overflow-hidden">
+      {/* Subtle pattern overlay */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+          {benefits.map((b, i) => (
+            <motion.div
+              key={b.text}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.1 }}
+              className="flex flex-col items-center text-center gap-2"
+            >
+              <div className="w-12 h-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center">
+                <b.icon className="w-6 h-6 text-hominis-gold" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-white leading-tight">{b.text}</p>
+                <p className="text-xs text-white/60 mt-0.5">{b.sub}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
@@ -422,6 +500,19 @@ function PlansSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
+          {/* Urgency Badge */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4 }}
+            className="flex justify-center mb-4"
+          >
+            <Badge className="bg-gradient-to-r from-red-500 to-orange-500 text-white border-0 px-4 py-1.5 text-sm font-bold shadow-lg shadow-red-500/25 animate-pulse">
+              <Timer className="w-4 h-4 mr-1.5" />
+              Promos por tiempo limitado
+            </Badge>
+          </motion.div>
           <Badge variant="secondary" className="mb-4 text-hominis-violet bg-hominis-violet/10 border-hominis-violet/20">
             Planes de Salud
           </Badge>
@@ -644,10 +735,12 @@ function PromotionsSection() {
                         <span className="text-sm font-medium text-muted-foreground">
                           {tier.months}
                         </span>
-                        <span className={`text-2xl font-bold ${
-                          tier.discount === 40 ? 'text-teal-600' : 
-                          tier.discount === 30 ? 'text-purple-600' : 'text-indigo-600'
-                        }`}>
+                        <span className={`text-3xl font-extrabold drop-shadow-lg ${
+                          tier.discount === 40 ? 'text-teal-600 shadow-teal-600/30' :
+                          tier.discount === 30 ? 'text-purple-600 shadow-purple-600/30' : 'text-indigo-600 shadow-indigo-600/30'
+                        }`}
+                        style={{ filter: tier.discount >= 30 ? `drop-shadow(0 0 8px ${tier.discount === 40 ? 'rgba(13,148,136,0.4)' : 'rgba(147,51,234,0.4)'})` : undefined }}
+                        >
                           {tier.discount}% OFF
                         </span>
                       </div>
@@ -682,6 +775,48 @@ function PromotionsSection() {
         </div>
       </div>
     </AnimatedSection>
+  );
+}
+
+/* ─── CTA BANNER SECTION ─── */
+function CTABannerSection() {
+  return (
+    <section className="relative py-16 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-r from-hominis-blue via-hominis-violet to-hominis-indigo" />
+      <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
+      {/* Decorative blobs */}
+      <div className="absolute top-0 right-0 w-64 h-64 bg-hominis-gold/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-48 h-48 bg-hominis-accent/10 rounded-full blur-3xl" />
+
+      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <Heart className="w-8 h-8 text-hominis-gold" />
+            <Shield className="w-8 h-8 text-hominis-gold" />
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-serif font-bold text-white mb-4">
+            ¿Listo para cuidar tu salud?
+          </h2>
+          <p className="text-lg text-white/80 mb-8 max-w-2xl mx-auto">
+            Asesoramiento personalizado, sin costo y sin compromiso. Elegí el plan ideal para vos y tu familia hoy.
+          </p>
+          <a href="#contacto">
+            <Button
+              size="lg"
+              className="bg-white text-hominis-blue hover:bg-white/90 font-bold px-10 shadow-2xl shadow-black/25 text-base rounded-xl"
+            >
+              Hablá con Agustina Ahora
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+          </a>
+        </motion.div>
+      </div>
+    </section>
   );
 }
 
@@ -1283,8 +1418,7 @@ function Footer() {
               />
             </div>
             <p className="text-white/70 text-sm leading-relaxed">
-              Asesoría comercial personalizada en coberturas de salud.
-              Compromiso, profesionalismo y atención cercana.
+              Asesoría comercial profesional en coberturas de salud. Más de 10 años de experiencia, compromiso genuino y atención personalizada para cada familia.
             </p>
           </div>
 
@@ -1373,12 +1507,11 @@ function Footer() {
         {/* Bottom bar */}
         <div className="pb-20 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/50">
           <p>
-            © {new Date().getFullYear()} Agustina C. Candia — Asesora Comercial
-            Hominis. Todos los derechos reservados.
+            © {new Date().getFullYear()} Agustina C. Candia — Asesora Comercial Hominis. Todos los derechos reservados.
           </p>
           <div className="flex items-center gap-4">
             <p>
-              Promos para nuevos socios de hasta 39 años. Consultá condiciones según tu edad.
+              Promociones válidas para nuevos socios hasta 39 años. Sujetas a condiciones según edad y modalidad de pago.
             </p>
             <a
               href="/login"
@@ -1401,9 +1534,11 @@ export default function Home() {
       <Navbar />
       <main className="flex-1">
         <HeroSection />
+        <TrustBarSection />
         <AboutSection />
         <PlansSection />
         <PromotionsSection />
+        <CTABannerSection />
         <ServicesSection />
         <SucursalSection />
         <ContactSection />
