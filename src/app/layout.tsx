@@ -88,7 +88,6 @@ const jsonLd = {
     url: 'https://hominis.com.ar',
   },
   sameAs: [
-    'https://instagram.com/hominisok',
     'https://facebook.com/hominis_agustinacandiaasesor',
   ],
 };
