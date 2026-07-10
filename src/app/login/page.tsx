@@ -33,9 +33,24 @@ export default function LoginPage() {
       if (result?.error) {
         setError(result.error);
       } else if (result?.ok) {
-        // Small delay to ensure cookie is set before navigating
-        await new Promise((r) => setTimeout(r, 500));
-        window.location.href = '/dashboard';
+        // Fetch the session to read the role and redirect accordingly.
+        // Small delay to ensure the session cookie is readable.
+        await new Promise((r) => setTimeout(r, 300));
+        try {
+          const res = await fetch('/api/auth/session');
+          const data = await res.json();
+          const role = data?.user?.role;
+          const dest =
+            role === 'ADMIN'
+              ? '/admin/dashboard'
+              : role === 'ASESOR'
+                ? '/asesor/dashboard'
+                : '/dashboard';
+          window.location.href = dest;
+        } catch {
+          // Fallback to generic dashboard if session fetch fails
+          window.location.href = '/dashboard';
+        }
       }
     } catch {
       setError('Error de conexión. Intentá nuevamente.');

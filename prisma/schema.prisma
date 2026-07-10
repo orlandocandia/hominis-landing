@@ -31,17 +31,25 @@ model Contacto {
 }
 
 model User {
-  id            String   @id @default(cuid())
-  email         String   @unique // Login email
-  password      String   // Hashed password (bcrypt)
-  nombre        String   // Display name
-  rol           String   @default("ADMIN") // ADMIN, SUPERVISOR
-  activo        Boolean  @default(true)
-  ultimoLogin   DateTime?
-  intentosLogin Int      @default(0)
-  bloqueadoHasta DateTime?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id              String    @id @default(cuid())
+  email           String    @unique // Login email
+  password        String    // Hashed password (bcrypt)
+  nombre          String    // First name
+  apellido        String?   // Last name (optional)
+  telefono        String?   // Phone (optional)
+  rol             Rol       @default(ASESOR) // ADMIN o ASESOR
+  activo          Boolean   @default(true)
+  fechaAlta       DateTime  @default(now()) // Registration date
+  ultimoAcceso    DateTime? // Last successful login
+  intentosLogin   Int       @default(0) // Brute-force protection: failed attempts
+  bloqueadoHasta  DateTime? // Brute-force protection: lockout until
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
   @@index([email])
+}
+
+enum Rol {
+  ADMIN
+  ASESOR
 }

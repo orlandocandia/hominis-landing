@@ -68,7 +68,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         await libsql.execute({
-          sql: 'UPDATE User SET intentosLogin = 0, bloqueadoHasta = NULL, ultimoLogin = ? WHERE id = ?',
+          sql: 'UPDATE User SET intentosLogin = 0, bloqueadoHasta = NULL, ultimoAcceso = ? WHERE id = ?',
           args: [new Date().toISOString(), user.id],
         });
 
@@ -76,7 +76,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id as string,
           email: user.email as string,
           name: user.nombre as string,
-          role: user.rol as string,
+          role: (user.rol as string) || 'ASESOR',
         };
       },
     }),
@@ -95,22 +95,21 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as { role: string }).role;
+        token.role = user.role;
         token.id = user.id;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
-        (session.user as { role?: string }).role = token.role as string;
-        (session.user as { id?: string }).id = token.id as string;
+        session.user.role = token.role;
+        session.user.id = token.id;
       }
       return session;
     },
     async redirect({ url, baseUrl }) {
-      if (url.includes('/login') || url === baseUrl) {
-        return `${baseUrl}/dashboard`;
-      }
+      // Allow same-origin relative URLs; default to baseUrl.
+      // Role-based routing is handled in the login page after signIn.
       if (url.startsWith('/')) return `${baseUrl}${url}`;
       if (new URL(url).origin === new URL(baseUrl).origin) return url;
       return baseUrl;
