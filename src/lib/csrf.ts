@@ -34,7 +34,7 @@ export async function setCsrfCookie(token: string): Promise<void> {
   cookieStore.set(CSRF_COOKIE_NAME, token, {
     httpOnly: false, // Must be readable by client for form submission
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    sameSite: 'lax', // Changed from 'strict' to 'lax' — strict blocks cookies on cross-site POSTs (Vercel)
     maxAge: CSRF_EXPIRY_MS / 1000,
     path: '/',
   });
