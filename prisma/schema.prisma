@@ -464,6 +464,17 @@ model WhatsAppMessage {
   @@index([direction, sentAt])
 }
 
+model WhatsAppTemplate {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  language  String   @default("es")
+  category  String   // MARKETING, TRANSACTIONAL, AUTHENTICATION
+  body      String
+  variables String?  // JSON array of variable names
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
 // ═══════════════════════════════════════════════════════
 // SEGUIMIENTO AUTOMATIZADO (Fase 4)
 // ═══════════════════════════════════════════════════════

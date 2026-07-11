@@ -83,12 +83,52 @@ export class WhatsAppService {
 
   /**
    * Send a template message (pre-approved by Meta).
+   * If templateName matches a WhatsAppTemplate in DB, uses its language + variables.
    */
-  static async sendTemplate(to: string, templateName: string, components?: any[], contactId?: string): Promise<SendResult> {
+  static async sendTemplate(to: string, templateName: string, variables?: Record<string, string>, contactId?: string): Promise<SendResult> {
     if (!isWhatsAppConfigured()) {
       return { ok: false, error: 'WhatsApp Business API no configurado' };
     }
     const phone = to.replace(/[^\d]/g, '');
+
+    // Load template from DB (for language + variable mapping)
+    const libsql = getTursoClient();
+    let language = 'es';
+    let templateBody = `Template: ${templateName}`;
+    try {
+      const tplRes = await libsql.execute({
+        sql: 'SELECT language, body, variables FROM "WhatsAppTemplate" WHERE name = ? AND isActive = 1',
+        args: [templateName],
+      });
+      if (tplRes.rows.length > 0) {
+        const tpl = tplRes.rows[0] as any;
+        language = tpl.language || 'es';
+        templateBody = tpl.body;
+        // Build components with variables
+        if (variables && tpl.variables) {
+          const varNames = JSON.parse(tpl.variables) as string[];
+          // Substitute {{1}}, {{2}}, etc. in body for display
+          varNames.forEach((name, i) => {
+            templateBody = templateBody.replace(new RegExp(`\\{\\{${i + 1}\\}\\}`, 'g'), variables[name] || '');
+          });
+        }
+      }
+    } catch {}
+
+    // Build components for Meta API
+    const components: any[] = [];
+    if (variables) {
+      const libsql2 = getTursoClient();
+      try {
+        const tplRes = await libsql2.execute({ sql: 'SELECT variables FROM "WhatsAppTemplate" WHERE name = ?', args: [templateName] });
+        if (tplRes.rows.length > 0) {
+          const varNames = JSON.parse((tplRes.rows[0] as any).variables || '[]') as string[];
+          const params = varNames.map((name) => ({ type: 'text', text: variables[name] || '' }));
+          if (params.length > 0) components.push({ type: 'body', parameters: params });
+        }
+      } catch {}
+    }
+
     try {
       const res = await fetch(getApiUrl(), {
         method: 'POST',
@@ -100,7 +140,7 @@ export class WhatsAppService {
           messaging_product: 'whatsapp',
           to: phone,
           type: 'template',
-          template: { name: templateName, language: { code: 'es' }, components },
+          template: { name: templateName, language: { code: language }, components },
         }),
       });
       const data = await res.json();
@@ -108,12 +148,11 @@ export class WhatsAppService {
 
       const messageId = data.messages?.[0]?.id;
       if (contactId) {
-        const libsql = getTursoClient();
         const id = 'wa_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
         await libsql.execute({
           sql: `INSERT INTO "WhatsAppMessage" (id, contactId, direction, messageId, content, type, status, sentAt)
             VALUES (?, ?, 'OUTBOUND', ?, ?, 'TEMPLATE', 'SENT', CURRENT_TIMESTAMP)`,
-          args: [id, contactId, messageId || null, `Template: ${templateName}`],
+          args: [id, contactId, messageId || null, templateBody],
         });
       }
       return { ok: true, messageId };

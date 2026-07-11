@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
 
     const body = await request.json();
-    const { to, body: messageBody, contactId, type, templateName, components, buttons } = body;
+    const { to, body: messageBody, contactId, type, templateName, variables, buttons } = body;
 
     if (!to || (!messageBody && !templateName)) {
       return NextResponse.json({ error: 'to y body (o templateName) son obligatorios' }, { status: 400 });
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
 
     let result;
     if (type === 'template' && templateName) {
-      result = await WhatsAppService.sendTemplate(to, templateName, components, contactId);
+      result = await WhatsAppService.sendTemplate(to, templateName, variables, contactId);
     } else if (type === 'interactive' && buttons) {
       result = await WhatsAppService.sendQuickReply(to, messageBody, buttons, contactId);
     } else {
