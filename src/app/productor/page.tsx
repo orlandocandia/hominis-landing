@@ -7,6 +7,7 @@ import { VendedoresMapClient } from '@/components/dashboard/vendedores-map-clien
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Users, FileText, TrendingUp, ShieldCheck, MapPin } from 'lucide-react';
+import { DashboardTitle } from '@/components/dashboard-i18n';
 import Link from 'next/link';
 
 export default async function ProductorDashboardPage() {
@@ -39,12 +40,7 @@ export default async function ProductorDashboardPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Panel de Productor</h1>
-          <p className="text-sm text-muted-foreground">
-            Bienvenida/o, <span className="font-medium text-foreground">{session?.user?.name}</span>. Vista de equipo.
-          </p>
-        </div>
+        <DashboardTitle role="PRODUCTOR" name={session?.user?.name} />
         <Badge variant="secondary" className="w-fit gap-1">
           <ShieldCheck className="h-3 w-3" /> Rol: PRODUCTOR
         </Badge>

@@ -5,6 +5,7 @@ import { getTursoClient } from '@/lib/turso-config';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Users, FileText, ShieldCheck, Activity, MapPin, TrendingUp, Mail } from 'lucide-react';
+import { DashboardTitle } from '@/components/dashboard-i18n';
 import Link from 'next/link';
 
 export default async function AdminDashboardPage() {
@@ -43,12 +44,7 @@ export default async function AdminDashboardPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Panel de Administración</h1>
-          <p className="text-sm text-muted-foreground">
-            Bienvenida, <span className="font-medium text-foreground">{session?.user?.name}</span>.
-          </p>
-        </div>
+        <DashboardTitle role="ADMIN" name={session?.user?.name} />
         <Badge variant="secondary" className="w-fit gap-1">
           <ShieldCheck className="h-3 w-3" /> Rol: ADMIN
         </Badge>

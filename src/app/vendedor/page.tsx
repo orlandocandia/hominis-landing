@@ -8,6 +8,7 @@ import { FileText, Phone, Clock, CheckCircle2, TrendingUp, MapPin } from 'lucide
 import { LeadScoreBadge } from '@/components/lead-score-badge';
 import { UpcomingReminders } from '@/components/upcoming-reminders';
 import { GamificationWidget } from '@/components/gamification-widget';
+import { DashboardTitle } from '@/components/dashboard-i18n';
 import Link from 'next/link';
 
 export default async function VendedorDashboardPage() {
@@ -39,12 +40,7 @@ export default async function VendedorDashboardPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">{isProductor ? 'Panel de Productor' : 'Panel de Vendedor'}</h1>
-          <p className="text-sm text-muted-foreground">
-            Bienvenida/o, <span className="font-medium text-foreground">{session?.user?.name}</span>.
-          </p>
-        </div>
+        <DashboardTitle role={isProductor ? 'PRODUCTOR' : 'VENDEDOR'} name={session?.user?.name} />
         <Badge variant="secondary" className="w-fit gap-1">
           <CheckCircle2 className="h-3 w-3" /> Rol: {session?.user?.role}
         </Badge>

@@ -60,9 +60,12 @@ const TRANSLATIONS: Record<string, any> = {
       },
     },
     dashboard: {
-      title: 'Panel de Control',
-      welcome: 'Bienvenido/a',
-      stats: { total: 'Total Contactos', new: 'Nuevos', attended: 'Atendidos', rejected: 'Rechazados' },
+      title: 'Panel de Administración',
+      vendedor_title: 'Panel de Vendedor',
+      productor_title: 'Panel de Productor',
+      welcome: 'Bienvenida/o',
+      stats: { total: 'Total Contactos', new: 'Nuevos', attended: 'Atendidos', rejected: 'Rechazados', conversion: 'Conversión', activeVendors: 'Vendedores Activos', teamContacts: 'Contactos del Equipo', teamConversion: 'Conversión Equipo', leads: 'Leads Totales', newLeads: 'Leads sin Atender' },
+      actions: { newContact: 'Nuevo contacto', viewPipeline: 'Pipeline', viewMap: 'Mapa', viewProfile: 'Mi Perfil', viewContacts: 'Contactos', viewTeam: 'Equipo', viewMarketing: 'Marketing', viewReports: 'Reportes', viewRanking: 'Ranking', viewInvitations: 'Invitaciones' },
     },
   },
   en: {
@@ -123,9 +126,12 @@ const TRANSLATIONS: Record<string, any> = {
       },
     },
     dashboard: {
-      title: 'Dashboard',
+      title: 'Admin Dashboard',
+      vendedor_title: 'Vendor Dashboard',
+      productor_title: 'Producer Dashboard',
       welcome: 'Welcome',
-      stats: { total: 'Total Contacts', new: 'New', attended: 'Attended', rejected: 'Rejected' },
+      stats: { total: 'Total Contacts', new: 'New', attended: 'Attended', rejected: 'Rejected', conversion: 'Conversion', activeVendors: 'Active Vendors', teamContacts: 'Team Contacts', teamConversion: 'Team Conversion', leads: 'Total Leads', newLeads: 'Unattended Leads' },
+      actions: { newContact: 'New Contact', viewPipeline: 'Pipeline', viewMap: 'Map', viewProfile: 'My Profile', viewContacts: 'Contacts', viewTeam: 'Team', viewMarketing: 'Marketing', viewReports: 'Reports', viewRanking: 'Ranking', viewInvitations: 'Invitations' },
     },
   },
   pt: {
@@ -186,9 +192,12 @@ const TRANSLATIONS: Record<string, any> = {
       },
     },
     dashboard: {
-      title: 'Painel de Controle',
+      title: 'Painel de Administração',
+      vendedor_title: 'Painel do Vendedor',
+      productor_title: 'Painel do Produtor',
       welcome: 'Bem-vindo/a',
-      stats: { total: 'Total Contatos', new: 'Novos', attended: 'Atendidos', rejected: 'Rejeitados' },
+      stats: { total: 'Total Contatos', new: 'Novos', attended: 'Atendidos', rejected: 'Rejeitados', conversion: 'Conversão', activeVendors: 'Vendedores Ativos', teamContacts: 'Contatos da Equipe', teamConversion: 'Conversão da Equipe', leads: 'Total Leads', newLeads: 'Leads não atendidos' },
+      actions: { newContact: 'Novo Contato', viewPipeline: 'Pipeline', viewMap: 'Mapa', viewProfile: 'Meu Perfil', viewContacts: 'Contatos', viewTeam: 'Equipe', viewMarketing: 'Marketing', viewReports: 'Relatórios', viewRanking: 'Ranking', viewInvitations: 'Convites' },
     },
   },
 };
