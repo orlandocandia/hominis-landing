@@ -168,6 +168,8 @@ model User {
   assignments      AutomaticAssignment[] @relation("AssignmentAssignedTo")
   invitationsSent  Invitation[]        @relation("InvitationInvitedBy")
   notifications    Notification[]
+  followups        Followup[]
+  reminders        Reminder[]
 
   @@index([email])
   @@index([latitude, longitude])
@@ -282,6 +284,8 @@ model Contact {
   socialNetworks ContactSocialNetwork[]
   activities     ContactActivity[]
   assignments    AutomaticAssignment[]
+  followups      Followup[]
+  reminders      Reminder[]
 
   @@index([latitude, longitude])
   @@index([ownerId])
@@ -402,6 +406,64 @@ model Notification {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+// ═══════════════════════════════════════════════════════
+// SEGUIMIENTO AUTOMATIZADO (Fase 4)
+// ═══════════════════════════════════════════════════════
+
+model FollowupTemplate {
+  id        String     @id @default(cuid())
+  name      String
+  type      String     // 'EMAIL', 'WHATSAPP', 'CALL'
+  subject   String?
+  body      String
+  delayDays Int        @default(1)
+  isActive  Boolean    @default(true)
+  createdAt DateTime   @default(now())
+
+  followups Followup[]
+}
+
+model Followup {
+  id            String    @id @default(cuid())
+  contactId     String
+  userId        String
+  scheduledDate DateTime
+  executedDate  DateTime?
+  status        String    @default("PENDING") // PENDING, SENT, FAILED, SKIPPED
+  type          String    // 'EMAIL', 'WHATSAPP', 'CALL'
+  templateId    String?
+  content       String?
+  metadata      String?
+  createdAt     DateTime  @default(now())
+
+  contact   Contact           @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  template  FollowupTemplate? @relation(fields: [templateId], references: [id])
+
+  @@index([contactId])
+  @@index([userId])
+  @@index([status, scheduledDate])
+}
+
+model Reminder {
+  id            String    @id @default(cuid())
+  contactId     String
+  userId        String
+  reminderDate  DateTime
+  title         String
+  description   String?
+  type          String    // 'CALL', 'EMAIL', 'MEETING', 'OTHER'
+  isCompleted   Boolean   @default(false)
+  completedAt   DateTime?
+  createdAt     DateTime  @default(now())
+
+  contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([contactId])
+  @@index([userId, isCompleted, reminderDate])
 }
 
 // ═══════════════════════════════════════════════════════

@@ -6,6 +6,7 @@ import { getTursoClient } from '@/lib/turso-config';
 import { geocodeAddress } from '@/lib/geocoding';
 import { assignContact, recordAssignment } from '@/lib/assignment';
 import { LeadScoringService } from '@/lib/services/lead-scoring.service';
+import { FollowupService } from '@/lib/services/followup.service';
 
 const VALID_SEGMENTS = ['RECIBO_DE_SUELDO', 'MONOTRIBUTO', 'PARTICULAR'];
 const VALID_COVERAGE = ['CABA', 'GBA'];
@@ -230,6 +231,13 @@ export async function POST(request: Request) {
       leadScore = await LeadScoringService.scoreContact(contactId);
     } catch (e) {
       console.warn('[crm/contacts POST] lead scoring failed:', e);
+    }
+
+    // Schedule automated follow-ups
+    try {
+      await FollowupService.scheduleFollowups(contactId, ownerId);
+    } catch (e) {
+      console.warn('[crm/contacts POST] followup scheduling failed:', e);
     }
 
     return NextResponse.json({
