@@ -92,7 +92,7 @@ export async function POST(request: Request) {
 
     const body = await request.json();
     const { name, address, primaryEmail, primaryPhone, segment, coverage, age, message, phones, emails, assignMethod, manualOwnerId,
-      sourceUtmSource, sourceUtmMedium, sourceUtmCampaign, sourceReferrer } = body;
+      sourceUtmSource, sourceUtmMedium, sourceUtmCampaign, sourceUtmTerm, sourceUtmContent, sourceReferrer } = body;
 
     if (!name || !address) {
       return NextResponse.json({ error: 'name y address son obligatorios' }, { status: 400 });
@@ -156,8 +156,8 @@ export async function POST(request: Request) {
       sql: `INSERT INTO Contact (id, name, primaryEmail, primaryPhone, address, city, province,
         latitude, longitude, geocodingStatus, segment, age, coverage, message, status,
         ownerId, assignedBy, assignedAt, createdAt, updatedAt,
-        sourceId, sourceUtmSource, sourceUtmMedium, sourceUtmCampaign, sourceReferrer)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'NUEVO', ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?)`,
+        sourceId, sourceUtmSource, sourceUtmMedium, sourceUtmCampaign, sourceUtmTerm, sourceUtmContent, sourceReferrer)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'NUEVO', ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)`,
       args: [
         contactId, name, primaryEmail || null, primaryPhone || null,
         address, city, province, lat, lng, geocodingStatus,
@@ -166,7 +166,8 @@ export async function POST(request: Request) {
         coverage && VALID_COVERAGE.includes(coverage) ? coverage : null,
         message || null,
         ownerId, session.user.id,
-        sourceId, sourceUtmSource || null, sourceUtmMedium || null, sourceUtmCampaign || null, sourceReferrer || null,
+        sourceId, sourceUtmSource || null, sourceUtmMedium || null, sourceUtmCampaign || null,
+        sourceUtmTerm || null, sourceUtmContent || null, sourceReferrer || null,
       ],
     });
 

@@ -63,6 +63,11 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       // Gamification: award points for conversion
       if (action === 'ATENDIDO') {
         try { await GamificationService.awardPoints(ownerId, 'CONVERSION'); } catch {}
+        // Track conversion in SourceMetric (marketing analytics)
+        try {
+          const { TrackingService } = await import('@/lib/services/tracking.service');
+          await TrackingService.trackConversion(id);
+        } catch {}
       }
     } else {
       await libsql.execute({ sql: 'UPDATE Contact SET lastContact = CURRENT_TIMESTAMP, updatedAt = CURRENT_TIMESTAMP WHERE id = ?', args: [id] });

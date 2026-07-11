@@ -951,6 +951,8 @@ function ContactSection() {
         utmSource: getCookie('utm_source'),
         utmMedium: getCookie('utm_medium'),
         utmCampaign: getCookie('utm_campaign'),
+        utmTerm: getCookie('utm_term'),
+        utmContent: getCookie('utm_content'),
         referrer: getCookie('utm_referrer') || document.referrer,
       };
       const res = await fetch('/api/leads', {

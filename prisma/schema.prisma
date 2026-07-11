@@ -273,7 +273,12 @@ model Contact {
   sourceUtmSource   String?
   sourceUtmMedium   String?
   sourceUtmCampaign String?
+  sourceUtmTerm     String?
+  sourceUtmContent  String?
   sourceReferrer    String?
+  sourceUserAgent   String?
+  sourceIp          String?
+  source            LeadSource? @relation(fields: [sourceId], references: [id])
 
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt

@@ -64,11 +64,15 @@ export async function POST(request: Request) {
     const utmSource = body.utmSource || '';
     const utmMedium = body.utmMedium || '';
     const utmCampaign = body.utmCampaign || '';
+    const utmTerm = body.utmTerm || '';
+    const utmContent = body.utmContent || '';
     const referrer = body.referrer || '';
     const origenData: string[] = ['landing'];
     if (utmSource) origenData.push(`utm_source=${utmSource}`);
     if (utmMedium) origenData.push(`utm_medium=${utmMedium}`);
     if (utmCampaign) origenData.push(`utm_campaign=${utmCampaign}`);
+    if (utmTerm) origenData.push(`utm_term=${utmTerm}`);
+    if (utmContent) origenData.push(`utm_content=${utmContent}`);
     const origen = origenData.join('|');
 
     await libsql.execute({
