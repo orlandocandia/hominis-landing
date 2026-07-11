@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { FileText, Phone, Clock, CheckCircle2, TrendingUp, MapPin } from 'lucide-react';
 import { LeadScoreBadge } from '@/components/lead-score-badge';
+import { UpcomingReminders } from '@/components/upcoming-reminders';
 import Link from 'next/link';
 
 export default async function VendedorDashboardPage() {
@@ -85,6 +86,9 @@ export default async function VendedorDashboardPage() {
           </Card>
         </Link>
       </div>
+
+      {/* Upcoming reminders + follow-ups */}
+      <UpcomingReminders />
 
       {/* Recent contacts */}
       <Card>

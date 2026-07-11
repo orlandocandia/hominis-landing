@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 import { getAuthSession } from '@/lib/auth';
 import { getTursoClient } from '@/lib/turso-config';
 
-const VALID_TYPES = ['CALL', 'EMAIL', 'MEETING', 'OTHER'];
+const VALID_TYPES = ['CALL', 'EMAIL', 'WHATSAPP', 'MEETING', 'VISITA', 'TAREA', 'OTHER'];
 
 export async function GET(request: Request) {
   try {

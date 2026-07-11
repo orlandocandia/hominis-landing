@@ -23,8 +23,11 @@ interface ReminderButtonProps {
 
 const TYPE_LABELS: Record<string, string> = {
   CALL: '📞 Llamada',
+  WHATSAPP: '💬 WhatsApp',
   EMAIL: '✉️ Email',
   MEETING: '🤝 Reunión',
+  VISITA: '📍 Visita',
+  TAREA: '📋 Tarea',
   OTHER: '📌 Otro',
 };
 
