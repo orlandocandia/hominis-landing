@@ -7,6 +7,7 @@ import { geocodeAddress } from '@/lib/geocoding';
 import { assignContact, recordAssignment } from '@/lib/assignment';
 import { LeadScoringService } from '@/lib/services/lead-scoring.service';
 import { FollowupService } from '@/lib/services/followup.service';
+import { GamificationService } from '@/lib/services/gamification.service';
 
 const VALID_SEGMENTS = ['RECIBO_DE_SUELDO', 'MONOTRIBUTO', 'PARTICULAR'];
 const VALID_COVERAGE = ['CABA', 'GBA'];
@@ -238,6 +239,16 @@ export async function POST(request: Request) {
       await FollowupService.scheduleFollowups(contactId, ownerId);
     } catch (e) {
       console.warn('[crm/contacts POST] followup scheduling failed:', e);
+    }
+
+    // Gamification: award points to owner for new contact + lead score
+    try {
+      await GamificationService.awardPoints(ownerId, 'CONTACT_CREATED');
+      if (leadScore && leadScore.priority === 'ALTA') {
+        await GamificationService.awardPoints(ownerId, 'LEAD_SCORE_ALTA');
+      }
+    } catch (e) {
+      console.warn('[crm/contacts POST] gamification failed:', e);
     }
 
     return NextResponse.json({

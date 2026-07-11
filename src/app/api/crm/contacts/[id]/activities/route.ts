@@ -3,6 +3,7 @@
 import { NextResponse } from 'next/server';
 import { getAuthSession } from '@/lib/auth';
 import { getTursoClient } from '@/lib/turso-config';
+import { GamificationService } from '@/lib/services/gamification.service';
 
 const VALID_ACTIONS = ['NOTA', 'LLAMADA', 'WHATSAPP', 'EMAIL', 'VISITA', 'LEIDO', 'EN_CONTACTO', 'REUNION', 'PRESUPUESTO', 'ATENDIDO', 'RECHAZADO'];
 
@@ -59,6 +60,10 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
           updatedAt = CURRENT_TIMESTAMP WHERE id = ?`,
         args: [ownerId, ownerId, ownerId],
       });
+      // Gamification: award points for conversion
+      if (action === 'ATENDIDO') {
+        try { await GamificationService.awardPoints(ownerId, 'CONVERSION'); } catch {}
+      }
     } else {
       await libsql.execute({ sql: 'UPDATE Contact SET lastContact = CURRENT_TIMESTAMP, updatedAt = CURRENT_TIMESTAMP WHERE id = ?', args: [id] });
     }

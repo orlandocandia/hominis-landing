@@ -170,6 +170,7 @@ model User {
   notifications    Notification[]
   followups        Followup[]
   reminders        Reminder[]
+  gamification     Gamification?
 
   @@index([email])
   @@index([latitude, longitude])
@@ -407,6 +408,34 @@ model Notification {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+// ═══════════════════════════════════════════════════════
+// GAMIFICACIÓN Y LEADERBOARD (Fase 7)
+// ═══════════════════════════════════════════════════════
+
+model Gamification {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  points      Int      @default(0)
+  level       Int      @default(1)
+  badges      String?  // JSON array of badge IDs
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([points])
+}
+
+model Badge {
+  id             String   @id @default(cuid())
+  name           String
+  icon           String   // emoji
+  description    String
+  conditionType  String   // 'LEADS', 'CONVERSIONS', 'POINTS', 'FAST_RESPONSE'
+  conditionValue Int
+  pointsAward    Int      @default(0)
+  createdAt      DateTime @default(now())
 }
 
 // ═══════════════════════════════════════════════════════
