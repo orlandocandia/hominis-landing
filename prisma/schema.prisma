@@ -286,6 +286,7 @@ model Contact {
   assignments    AutomaticAssignment[]
   followups      Followup[]
   reminders      Reminder[]
+  whatsappMessages WhatsAppMessage[]
 
   @@index([latitude, longitude])
   @@index([ownerId])
@@ -406,6 +407,27 @@ model Notification {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+// ═══════════════════════════════════════════════════════
+// WHATSAPP BUSINESS API (Fase 5)
+// ═══════════════════════════════════════════════════════
+
+model WhatsAppMessage {
+  id        String   @id @default(cuid())
+  contactId String
+  direction String   // 'INBOUND', 'OUTBOUND'
+  messageId String?  // WhatsApp message ID
+  content   String
+  type      String   @default("TEXT") // TEXT, TEMPLATE, INTERACTIVE
+  status    String   @default("SENT") // SENT, DELIVERED, READ, FAILED
+  metadata  String?  // JSON
+  sentAt    DateTime @default(now())
+
+  contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@index([contactId])
+  @@index([direction, sentAt])
 }
 
 // ═══════════════════════════════════════════════════════

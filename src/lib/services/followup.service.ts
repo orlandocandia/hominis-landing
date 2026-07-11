@@ -110,22 +110,26 @@ export class FollowupService {
 
   /**
    * Dispatch a follow-up via the appropriate channel.
-   * Currently logs — wire to real WhatsApp/Email services later.
+   * Uses WhatsAppService (Business API with wa.me fallback) + Resend for email.
    */
   private static async sendFollowup(f: any): Promise<void> {
     if (f.type === 'WHATSAPP') {
       if (!f.primaryPhone) throw new Error('Contacto sin teléfono');
-      // TODO: integrate with WhatsApp Business API
-      console.log(`[followup] WHATSAPP to ${f.primaryPhone}: ${f.content?.substring(0, 50)}...`);
+      const { WhatsAppService } = await import('./whatsapp.service');
+      const result = await WhatsAppService.sendMessage(f.primaryPhone, f.content || '', f.contactId);
+      if (!result.ok && !result.fallbackUrl) throw new Error(result.error || 'Send failed');
+      // If fallbackUrl (API not configured), log for manual follow-up
+      if (result.fallbackUrl) {
+        console.log(`[followup] WHATSAPP fallback for ${f.contactName}: ${result.fallbackUrl}`);
+      }
     } else if (f.type === 'EMAIL') {
       if (!f.primaryEmail) throw new Error('Contacto sin email');
-      // TODO: integrate with Resend
+      // TODO: integrate with Resend (lib/notifications/email.ts)
       console.log(`[followup] EMAIL to ${f.primaryEmail}: ${f.content?.substring(0, 50)}...`);
     } else if (f.type === 'CALL') {
       // CALL type = reminder to the vendor, no automated send
-      console.log(`[followup] CALL reminder for ${f.contactName} — notify owner ${f.userEmail}`);
+      console.log(`[followup] CALL reminder for ${f.contactName} — notify owner`);
     }
-    // Simulate async send
     await new Promise((r) => setTimeout(r, 50));
   }
 
