@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from '@/components/language-selector';
 
 import dynamic from 'next/dynamic';
 

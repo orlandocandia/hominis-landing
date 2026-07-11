@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from '@/components/language-selector';
 
 import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -28,6 +29,7 @@ const CATEGORY_COLORS: Record<string, string> = {
 };
 
 export default function MarketingDashboardPage() {
+  const { t } = useTranslation();
   const [metrics, setMetrics] = useState<Metrics | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -55,23 +57,23 @@ export default function MarketingDashboardPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-          <Megaphone className="w-6 h-6 text-primary" /> Dashboard de Marketing
+          <Megaphone className="w-6 h-6 text-primary" /> {t('admin.marketing.title')}
         </h1>
         <p className="text-sm text-muted-foreground">Analytics de fuentes de leads y conversión</p>
       </div>
 
       {/* Stat cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard title="Leads totales" value={metrics.totalLeads.toString()} icon={<Users className="h-5 w-5" />} hint={`${metrics.unsourced} sin source`} />
-        <StatCard title="Costo por Lead" value={`$${metrics.costPerLead}`} icon={<DollarSign className="h-5 w-5" />} hint={`Gasto: $${metrics.totalCost}`} />
-        <StatCard title="Tasa Conversión" value={`${metrics.conversionRate}%`} icon={<TrendingUp className="h-5 w-5" />} hint={`${metrics.totalConversions} conversiones`} />
+        <StatCard title="{t('admin.marketing.totalLeads')}" value={metrics.totalLeads.toString()} icon={<Users className="h-5 w-5" />} hint={`${metrics.unsourced} sin source`} />
+        <StatCard title="{t('admin.marketing.costPerLead')}" value={`$${metrics.costPerLead}`} icon={<DollarSign className="h-5 w-5" />} hint={`Gasto: $${metrics.totalCost}`} />
+        <StatCard title="{t('admin.marketing.conversionRate')}" value={`${metrics.conversionRate}%`} icon={<TrendingUp className="h-5 w-5" />} hint={`${metrics.totalConversions} conversiones`} />
         <StatCard title="ROI" value={`${metrics.roi}x`} icon={<Gem className="h-5 w-5" />} hint={`Ingresos: $${metrics.totalRevenue}`} />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Source breakdown */}
         <Card>
-          <CardHeader><CardTitle className="text-base">Fuentes de leads</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-base">{t('admin.marketing.bySource')}</CardTitle></CardHeader>
           <CardContent>
             {metrics.sources.length === 0 ? (
               <p className="text-sm text-muted-foreground text-center py-6">No hay datos de fuentes todavía.</p>
@@ -99,7 +101,7 @@ export default function MarketingDashboardPage() {
 
         {/* Daily trend */}
         <Card>
-          <CardHeader><CardTitle className="text-base">Tendencia diaria (30 días)</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-base">{t('admin.marketing.dailyTrend')} (30 días)</CardTitle></CardHeader>
           <CardContent>
             {metrics.dailyData.length === 0 ? (
               <p className="text-sm text-muted-foreground text-center py-6">Sin datos en los últimos 30 días.</p>

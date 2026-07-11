@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from '@/components/language-selector';
 
 import { useState, useEffect, useSyncExternalStore } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';

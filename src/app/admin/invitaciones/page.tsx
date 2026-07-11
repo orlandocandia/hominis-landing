@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from '@/components/language-selector';
 
 import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
@@ -25,6 +26,7 @@ interface Invitation {
 }
 
 export default function InvitacionesPage() {
+  const { t } = useTranslation();
   const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({ email: '', role: 'VENDEDOR' });
@@ -81,13 +83,13 @@ export default function InvitacionesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Invitaciones</h1>
+        <h1 className="text-2xl font-bold tracking-tight">{t('admin.invitaciones.title')}</h1>
         <p className="text-sm text-muted-foreground">Invitá vendedores y productores por email</p>
       </div>
 
       {/* New invitation form */}
       <Card>
-        <CardHeader><CardTitle className="text-base">Nueva invitación</CardTitle></CardHeader>
+        <CardHeader><CardTitle className="text-base">{t('admin.invitaciones.newInvitation')}</CardTitle></CardHeader>
         <CardContent>
           <form onSubmit={submit} className="grid gap-4 sm:grid-cols-[1fr_180px_auto]">
             <div className="space-y-1.5">
@@ -120,7 +122,7 @@ export default function InvitacionesPage() {
 
       {/* Invitations list */}
       <Card>
-        <CardHeader><CardTitle className="text-base">Invitaciones enviadas ({invitations.length})</CardTitle></CardHeader>
+        <CardHeader><CardTitle className="text-base">{t('admin.invitaciones.title')} enviadas ({invitations.length})</CardTitle></CardHeader>
         <CardContent>
           {loading ? (
             <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin" /></div>

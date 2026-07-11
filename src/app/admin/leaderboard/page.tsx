@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from '@/components/language-selector';
 
 import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -32,6 +33,7 @@ interface BadgeDef {
 }
 
 export default function LeaderboardPage() {
+  const { t } = useTranslation();
   const [rankings, setRankings] = useState<Ranking[]>([]);
   const [badges, setBadges] = useState<BadgeDef[]>([]);
   const [loading, setLoading] = useState(true);
@@ -80,7 +82,7 @@ export default function LeaderboardPage() {
 
       {/* Full ranking */}
       <Card>
-        <CardHeader><CardTitle className="text-base">Ranking completo ({rankings.length})</CardTitle></CardHeader>
+        <CardHeader><CardTitle className="text-base">{t('admin.leaderboard.title')} ({rankings.length})</CardTitle></CardHeader>
         <CardContent>
           {rankings.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-6">
@@ -130,7 +132,7 @@ export default function LeaderboardPage() {
 
       {/* All badges */}
       <Card>
-        <CardHeader><CardTitle className="text-base">Badges disponibles ({badges.length})</CardTitle></CardHeader>
+        <CardHeader><CardTitle className="text-base">{t('admin.leaderboard.availableBadges')} ({badges.length})</CardTitle></CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {badges.map((b) => (

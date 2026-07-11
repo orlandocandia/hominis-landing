@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from '@/components/language-selector';
 
 import { useState, useEffect, useCallback } from 'react';
 import {
@@ -44,6 +45,7 @@ const STATUSES = [
 ];
 
 export default function PipelinePage() {
+  const { t } = useTranslation();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -123,9 +125,9 @@ export default function PipelinePage() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">📊 Pipeline de Ventas</h1>
+        <h1 className="text-2xl font-bold tracking-tight">📊 {t('vendedor.pipeline.title')}</h1>
         <p className="text-sm text-muted-foreground">
-          Arrastrá las tarjetas entre columnas para cambiar el estado. {contacts.length} contactos en total.
+          {t('vendedor.pipeline.dragHint')} entre columnas para cambiar el estado. {contacts.length} contactos en total.
         </p>
       </div>
 

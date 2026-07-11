@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from '@/components/language-selector';
 
 import dynamic from 'next/dynamic';
 import { Card, CardContent } from '@/components/ui/card';
@@ -10,10 +11,11 @@ const VendedoresMap = dynamic(() => import('@/components/dashboard/VendedoresMap
 });
 
 export default function AdminMapaPage() {
+  const { t } = useTranslation();
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Mapa global</h1>
+        <h1 className="text-2xl font-bold tracking-tight">{t('admin.mapa.title')}</h1>
         <p className="text-sm text-muted-foreground">Todos los vendedores con su radio de cobertura + todos los contactos del CRM</p>
       </div>
       <VendedoresMap contactLinkBase="/admin/contactos" height="600px" />

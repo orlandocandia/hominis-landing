@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from '@/components/language-selector';
 
 import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,6 +13,7 @@ import { toast } from 'sonner';
 type ReportType = 'sales' | 'performance';
 
 export default function ReportesPage() {
+  const { t } = useTranslation();
   const [reportType, setReportType] = useState<ReportType>('sales');
   const [start, setStart] = useState(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]);
   const [end, setEnd] = useState(new Date().toISOString().split('T')[0]);
@@ -67,7 +69,7 @@ export default function ReportesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">📊 Reportes Avanzados</h1>
+        <h1 className="text-2xl font-bold tracking-tight">📊 {t('admin.reportes.title')}</h1>
         <p className="text-sm text-muted-foreground">Analizá el rendimiento del equipo y las ventas</p>
       </div>
 
@@ -122,7 +124,7 @@ export default function ReportesPage() {
           {reportType === 'sales' && (
             <Button onClick={downloadExcel} disabled={downloading} className="gap-1.5 ml-auto">
               {downloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-              Exportar Excel
+              {t('admin.reportes.export')}
             </Button>
           )}
         </CardContent>
