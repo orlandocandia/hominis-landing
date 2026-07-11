@@ -13,7 +13,9 @@ export async function GET(request: Request) {
   const verifyToken = process.env.WHATSAPP_VERIFY_TOKEN;
 
   if (!verifyToken) {
-    return new Response('WHATSAPP_VERIFY_TOKEN not configured', { status: 500 });
+    // Token not configured — return 403 so Meta knows verification failed
+    console.warn('[whatsapp] WHATSAPP_VERIFY_TOKEN not configured');
+    return new Response('Forbidden', { status: 403 });
   }
 
   if (mode === 'subscribe' && token === verifyToken) {
