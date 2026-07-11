@@ -116,18 +116,7 @@ export const authOptions: NextAuthOptions = {
     },
   },
   secret: process.env.NEXTAUTH_SECRET || 'hominis-agustina-candia-2025-secret-key-secure',
-  cookies: {
-    sessionToken: {
-      name: 'next-auth.session-token',
-      options: { httpOnly: true, sameSite: 'lax', path: '/', secure: false },
-    },
-    callbackUrl: {
-      name: 'next-auth.callback-url',
-      options: { sameSite: 'lax', path: '/', secure: false },
-    },
-    csrfToken: {
-      name: 'next-auth.csrf-token',
-      options: { httpOnly: true, sameSite: 'lax', path: '/', secure: false },
-    },
-  },
+  // NOTE: Custom cookie config removed to ensure the middleware's withAuth()
+  // reads the same cookie name the route handler sets. In production (HTTPS),
+  // NextAuth auto-uses the __Secure- prefix consistently everywhere.
 };
