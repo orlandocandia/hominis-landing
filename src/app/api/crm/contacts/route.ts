@@ -5,6 +5,7 @@ import { getAuthSession } from '@/lib/auth';
 import { getTursoClient } from '@/lib/turso-config';
 import { geocodeAddress } from '@/lib/geocoding';
 import { assignContact, recordAssignment } from '@/lib/assignment';
+import { LeadScoringService } from '@/lib/services/lead-scoring.service';
 
 const VALID_SEGMENTS = ['RECIBO_DE_SUELDO', 'MONOTRIBUTO', 'PARTICULAR'];
 const VALID_COVERAGE = ['CABA', 'GBA'];
@@ -19,6 +20,8 @@ export async function GET(request: Request) {
     const status = searchParams.get('status');
     const ownerId = searchParams.get('ownerId');
     const search = searchParams.get('search');
+    const sortBy = searchParams.get('sortBy'); // 'leadScore' | null
+    const order = searchParams.get('order') === 'asc' ? 'ASC' : 'DESC';
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '50');
     const offset = (page - 1) * limit;
@@ -50,12 +53,18 @@ export async function GET(request: Request) {
     }
 
     const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+    const orderBy = sortBy === 'leadScore'
+      ? `c.leadScore ${order}, c.createdAt DESC`
+      : 'c.createdAt DESC';
     const result = await libsql.execute({
-      sql: `SELECT c.*, u.nombre as ownerNombre, u.apellido as ownerApellido
+      sql: `SELECT c.id, c.name, c.primaryEmail, c.primaryPhone, c.address, c.city, c.province,
+        c.latitude, c.longitude, c.segment, c.coverage, c.age, c.status, c.ownerId,
+        c.leadScore, c.leadPriority, c.leadScoredAt, c.createdAt,
+        u.nombre as ownerNombre, u.apellido as ownerApellido
         FROM Contact c
         LEFT JOIN "User" u ON c.ownerId = u.id
         ${where}
-        ORDER BY c.createdAt DESC
+        ORDER BY ${orderBy}
         LIMIT ? OFFSET ?`,
       args: [...args, limit, offset],
     });
@@ -187,6 +196,14 @@ export async function POST(request: Request) {
       args: [ownerId, ownerId],
     });
 
+    // Auto-score the new contact (lead scoring)
+    let leadScore: { score: number; priority: string } | null = null;
+    try {
+      leadScore = await LeadScoringService.scoreContact(contactId);
+    } catch (e) {
+      console.warn('[crm/contacts POST] lead scoring failed:', e);
+    }
+
     return NextResponse.json({
       id: contactId,
       ownerId,
@@ -194,6 +211,8 @@ export async function POST(request: Request) {
       geocodingStatus,
       latitude: lat,
       longitude: lng,
+      leadScore: leadScore?.score ?? 0,
+      leadPriority: leadScore?.priority ?? 'MEDIA',
     });
   } catch (e: any) {
     console.error('[crm/contacts POST] error:', e);

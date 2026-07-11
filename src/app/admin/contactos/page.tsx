@@ -5,15 +5,18 @@ import { getTursoClient } from '@/lib/turso-config';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Phone, Mail, FileText } from 'lucide-react';
+import { LeadScoreBadge } from '@/components/lead-score-badge';
 import Link from 'next/link';
 
 export default async function AdminContactosPage() {
   const session = await getServerSession(authOptions);
   const libsql = getTursoClient();
   const result = await libsql.execute({
-    sql: `SELECT c.*, u.nombre as ownerNombre, u.apellido as ownerApellido
+    sql: `SELECT c.id, c.name, c.primaryEmail, c.primaryPhone, c.address, c.city, c.status,
+      c.segment, c.leadScore, c.leadPriority, c.createdAt,
+      u.nombre as ownerNombre, u.apellido as ownerApellido
       FROM Contact c LEFT JOIN "User" u ON c.ownerId = u.id
-      ORDER BY c.createdAt DESC LIMIT 100`,
+      ORDER BY c.leadScore DESC, c.createdAt DESC LIMIT 100`,
   });
   const contacts = result.rows as any[];
 
@@ -46,6 +49,7 @@ export default async function AdminContactosPage() {
                       <span className="font-medium truncate">{c.name}</span>
                       <Badge variant="outline" className="text-[10px] py-0">{c.status}</Badge>
                       {c.segment && <Badge variant="secondary" className="text-[10px] py-0">{c.segment.replace('_', ' ')}</Badge>}
+                      <LeadScoreBadge score={c.leadScore} priority={c.leadPriority} size="sm" />
                     </div>
                     <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1 flex-wrap">
                       <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{c.address}{c.city ? `, ${c.city}` : ''}</span>

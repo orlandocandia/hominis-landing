@@ -3,12 +3,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Plus, Search, MapPin, Phone, Mail, Loader2, FileText } from 'lucide-react';
+import { Plus, Search, MapPin, Phone, Mail, Loader2, FileText, ArrowDownUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import { LeadScoreBadge } from '@/components/lead-score-badge';
 
 interface Contact {
   id: string;
@@ -22,6 +23,8 @@ interface Contact {
   createdAt: string;
   ownerNombre: string | null;
   ownerApellido: string | null;
+  leadScore: number | null;
+  leadPriority: string | null;
 }
 
 const STATUS_COLORS: Record<string, 'default' | 'secondary' | 'outline' | 'destructive'> = {
@@ -37,12 +40,14 @@ export function ContactosList({ newLinkBase = '/vendedor/contactos', detailLinkB
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('');
+  const [sortByScore, setSortByScore] = useState(false);
 
   const load = useCallback(async () => {
     try {
       const params = new URLSearchParams();
       if (search) params.set('search', search);
       if (statusFilter) params.set('status', statusFilter);
+      if (sortByScore) { params.set('sortBy', 'leadScore'); params.set('order', 'desc'); }
       const res = await fetch(`/api/crm/contacts?${params}`);
       const data = await res.json();
       setContacts(data.contacts || []);
@@ -51,7 +56,7 @@ export function ContactosList({ newLinkBase = '/vendedor/contactos', detailLinkB
     } finally {
       setLoading(false);
     }
-  }, [search, statusFilter]);
+  }, [search, statusFilter, sortByScore]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -73,7 +78,10 @@ export function ContactosList({ newLinkBase = '/vendedor/contactos', detailLinkB
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input placeholder="Buscar por nombre, email, teléfono..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10" />
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
+          <Button size="sm" variant={sortByScore ? 'default' : 'outline'} onClick={() => setSortByScore(!sortByScore)} className="gap-1.5" title="Ordenar por score de lead">
+            <ArrowDownUp className="w-3.5 h-3.5" /> Score
+          </Button>
           {['', 'NUEVO', 'LEIDO', 'ATENDIDO', 'RECHAZADO'].map((s) => (
             <Button key={s || 'ALL'} size="sm" variant={statusFilter === s ? 'default' : 'outline'} onClick={() => setStatusFilter(s)}>
               {s || 'Todos'}
@@ -110,6 +118,7 @@ export function ContactosList({ newLinkBase = '/vendedor/contactos', detailLinkB
                       <span className="font-medium truncate">{c.name}</span>
                       <Badge variant={STATUS_COLORS[c.status] || 'outline'} className="text-[10px] py-0">{c.status}</Badge>
                       {c.segment && <Badge variant="outline" className="text-[10px] py-0">{c.segment.replace('_', ' ')}</Badge>}
+                      <LeadScoreBadge score={c.leadScore} priority={c.leadPriority} size="sm" />
                     </div>
                     <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1 flex-wrap">
                       <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{c.address}{c.city ? `, ${c.city}` : ''}</span>

@@ -5,6 +5,7 @@ import { getTursoClient } from '@/lib/turso-config';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { FileText, Phone, Clock, CheckCircle2, TrendingUp, MapPin } from 'lucide-react';
+import { LeadScoreBadge } from '@/components/lead-score-badge';
 import Link from 'next/link';
 
 export default async function VendedorDashboardPage() {
@@ -19,7 +20,8 @@ export default async function VendedorDashboardPage() {
     libsql.execute({ sql: "SELECT COUNT(*) as n FROM Contact WHERE ownerId = ? AND status = 'NUEVO'", args: [userId] }),
     libsql.execute({ sql: "SELECT COUNT(*) as n FROM Contact WHERE ownerId = ? AND status = 'ATENDIDO'", args: [userId] }),
     libsql.execute({
-      sql: `SELECT c.id, c.name, c.address, c.city, c.status, c.createdAt, c.latitude, c.longitude
+      sql: `SELECT c.id, c.name, c.address, c.city, c.status, c.createdAt, c.latitude, c.longitude,
+        c.leadScore, c.leadPriority
         FROM Contact c WHERE c.ownerId = ? ORDER BY c.createdAt DESC LIMIT 5`,
       args: [userId],
     }),
@@ -109,6 +111,7 @@ export default async function VendedorDashboardPage() {
                     <div className="min-w-0">
                       <p className="font-medium truncate">{c.name}</p>
                       <p className="text-xs text-muted-foreground truncate">{c.address}{c.city ? `, ${c.city}` : ''}</p>
+                      <div className="mt-1"><LeadScoreBadge score={c.leadScore} priority={c.leadPriority} size="sm" /></div>
                     </div>
                   </div>
                   <Badge variant={c.status === 'NUEVO' ? 'default' : c.status === 'ATENDIDO' ? 'secondary' : 'outline'} className="text-[10px]">

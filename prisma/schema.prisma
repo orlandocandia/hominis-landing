@@ -244,6 +244,13 @@ model Contact {
   assignedAt      DateTime        @default(now())
   lastContact     DateTime?
   nextFollowup    DateTime?
+
+  // Lead scoring (optimización Fase 1)
+  leadScore       Int?      @default(0)
+  leadPriority    String?   @default("MEDIA")
+  leadScoredAt    DateTime?
+  leadScoreHistory String?  // JSON string of [{score, priority, date}]
+
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
 
