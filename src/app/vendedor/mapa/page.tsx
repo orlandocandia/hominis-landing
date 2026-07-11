@@ -1,3 +1,5 @@
+'use client';
+
 import dynamic from 'next/dynamic';
 
 const MapaContent = dynamic(() => import('./MapaContent').then(m => ({ default: m.default })), {
