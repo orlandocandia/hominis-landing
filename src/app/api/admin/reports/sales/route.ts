@@ -1,5 +1,5 @@
 // GET /api/admin/reports/sales — sales report (JSON or Excel)
-// Query: ?start=YYYY-MM-DD&end=YYYY-MM-DD&format=json|excel
+// Query: ?start=YYYY-MM-DD&end=YYYY-MM-DD&format=json|excel&vendor=ID&segment=X&source=ID
 import { NextResponse } from 'next/server';
 import { getAuthSession } from '@/lib/auth';
 import { ReportService } from '@/lib/services/report.service';
@@ -15,10 +15,17 @@ export async function GET(request: Request) {
     const end = searchParams.get('end') || new Date().toISOString().split('T')[0];
     const format = searchParams.get('format') || 'json';
 
+    // Filters
+    const filters = {
+      ownerId: searchParams.get('vendor') || undefined,
+      segment: searchParams.get('segment') || undefined,
+      sourceId: searchParams.get('source') || undefined,
+    };
+
     const startDate = new Date(start + 'T00:00:00');
     const endDate = new Date(end + 'T23:59:59');
 
-    const report = await ReportService.generateSalesReport(startDate, endDate);
+    const report = await ReportService.generateSalesReport(startDate, endDate, filters);
 
     if (format === 'excel') {
       const buffer = await ReportService.exportExcel(report.contacts);
@@ -40,6 +47,7 @@ export async function GET(request: Request) {
       byVendor: report.byVendor,
       bySource: report.bySource,
       dateRange: { start, end },
+      filters,
     });
   } catch (e: any) {
     console.error('[reports/sales GET] error:', e);

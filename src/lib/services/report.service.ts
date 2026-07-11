@@ -14,14 +14,28 @@ export interface SalesReport {
   contacts: any[];
 }
 
+export interface ReportFilters {
+  ownerId?: string;
+  segment?: string;
+  sourceId?: string;
+}
+
 export class ReportService {
   /**
-   * Generate a sales report for a date range.
+   * Generate a sales report for a date range (with optional filters).
    */
-  static async generateSalesReport(startDate: Date, endDate: Date): Promise<SalesReport> {
+  static async generateSalesReport(startDate: Date, endDate: Date, filters?: ReportFilters): Promise<SalesReport> {
     const libsql = getTursoClient();
     const startISO = startDate.toISOString();
     const endISO = endDate.toISOString();
+
+    // Build WHERE clause with filters
+    const conditions = ['c.createdAt >= ?', 'c.createdAt <= ?'];
+    const args: any[] = [startISO, endISO];
+    if (filters?.ownerId) { conditions.push('c.ownerId = ?'); args.push(filters.ownerId); }
+    if (filters?.segment) { conditions.push('c.segment = ?'); args.push(filters.segment); }
+    if (filters?.sourceId) { conditions.push('c.sourceId = ?'); args.push(filters.sourceId); }
+    const where = conditions.join(' AND ');
 
     // Fetch contacts in range with owner + source
     const contactsRes = await libsql.execute({
@@ -32,9 +46,9 @@ export class ReportService {
         FROM Contact c
         LEFT JOIN "User" u ON c.ownerId = u.id
         LEFT JOIN "LeadSource" ls ON c.sourceId = ls.id
-        WHERE c.createdAt >= ? AND c.createdAt <= ?
+        WHERE ${where}
         ORDER BY c.createdAt DESC`,
-      args: [startISO, endISO],
+      args,
     });
     const contacts = contactsRes.rows as any[];
 
@@ -151,6 +165,53 @@ export class ReportService {
         ownerName: `${c.ownerNombre || ''} ${c.ownerApellido || ''}`.trim(),
         sourceName: c.sourceName || '',
         createdAt: c.createdAt ? new Date(c.createdAt).toLocaleDateString('es-AR') : '',
+      });
+    });
+
+    // ─── Hoja de Resumen ───
+    const summarySheet = workbook.addWorksheet('Resumen', { properties: { tabColor: { argb: 'FF4CAF50' } } });
+    summarySheet.columns = [
+      { header: 'Métrica', key: 'metric', width: 30 },
+      { header: 'Valor', key: 'value', width: 20 },
+    ];
+    summarySheet.getRow(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+    summarySheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4CAF50' } };
+    const totalLeads = contacts.length;
+    const conversions = contacts.filter((c) => c.status === 'ATENDIDO').length;
+    const rejected = contacts.filter((c) => c.status === 'RECHAZADO').length;
+    const inProgress = contacts.filter((c) => !['ATENDIDO', 'RECHAZADO'].includes(c.status)).length;
+    summarySheet.addRows([
+      { metric: '📊 Total Contactos', value: totalLeads },
+      { metric: '✅ Conversiones', value: conversions },
+      { metric: '❌ Rechazados', value: rejected },
+      { metric: '🔄 En Progreso', value: inProgress },
+      { metric: '📈 Tasa de Conversión', value: totalLeads > 0 ? `${((conversions / totalLeads) * 100).toFixed(2)}%` : '0%' },
+    ]);
+
+    // ─── Hoja de Vendedores ───
+    const vendorSheet = workbook.addWorksheet('Vendedores', { properties: { tabColor: { argb: 'FFFFA500' } } });
+    vendorSheet.columns = [
+      { header: 'Vendedor', key: 'name', width: 30 },
+      { header: 'Contactos', key: 'total', width: 15 },
+      { header: 'Conversiones', key: 'conversions', width: 15 },
+      { header: 'Tasa', key: 'rate', width: 15 },
+    ];
+    vendorSheet.getRow(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+    vendorSheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFA500' } };
+    // Group by vendor
+    const vendorMap: Record<string, { name: string; total: number; conversions: number }> = {};
+    contacts.forEach((c) => {
+      const key = c.ownerNombre || 'Sin asignar';
+      if (!vendorMap[key]) vendorMap[key] = { name: key, total: 0, conversions: 0 };
+      vendorMap[key].total++;
+      if (c.status === 'ATENDIDO') vendorMap[key].conversions++;
+    });
+    Object.values(vendorMap).forEach((v) => {
+      vendorSheet.addRow({
+        name: v.name,
+        total: v.total,
+        conversions: v.conversions,
+        rate: v.total > 0 ? `${((v.conversions / v.total) * 100).toFixed(2)}%` : '0%',
       });
     });
 

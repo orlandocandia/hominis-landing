@@ -15,6 +15,8 @@ export default function ReportesPage() {
   const [reportType, setReportType] = useState<ReportType>('sales');
   const [start, setStart] = useState(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]);
   const [end, setEnd] = useState(new Date().toISOString().split('T')[0]);
+  const [vendorFilter, setVendorFilter] = useState('');
+  const [segmentFilter, setSegmentFilter] = useState('');
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [downloading, setDownloading] = useState(false);
@@ -22,7 +24,10 @@ export default function ReportesPage() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/reports/${reportType}?start=${start}&end=${end}`);
+      const params = new URLSearchParams({ start, end });
+      if (vendorFilter) params.set('vendor', vendorFilter);
+      if (segmentFilter) params.set('segment', segmentFilter);
+      const res = await fetch(`/api/admin/reports/${reportType}?${params}`);
       const d = await res.json();
       if (!res.ok) throw new Error(d.error);
       setData(d);
@@ -32,14 +37,17 @@ export default function ReportesPage() {
     } finally {
       setLoading(false);
     }
-  }, [reportType, start, end]);
+  }, [reportType, start, end, vendorFilter, segmentFilter]);
 
   useEffect(() => { load(); }, [load]);
 
   const downloadExcel = async () => {
     setDownloading(true);
     try {
-      const res = await fetch(`/api/admin/reports/sales?start=${start}&end=${end}&format=excel`);
+      const params = new URLSearchParams({ start, end, format: 'excel' });
+      if (vendorFilter) params.set('vendor', vendorFilter);
+      if (segmentFilter) params.set('segment', segmentFilter);
+      const res = await fetch(`/api/admin/reports/sales?${params}`);
       if (!res.ok) throw new Error('Error al exportar');
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
@@ -81,6 +89,36 @@ export default function ReportesPage() {
               <Button size="sm" variant={reportType === 'performance' ? 'default' : 'outline'} onClick={() => setReportType('performance')}>Rendimiento</Button>
             </div>
           </div>
+          {reportType === 'sales' && (
+            <>
+              <div className="space-y-1.5">
+                <Label>Vendedor</Label>
+                <select
+                  value={vendorFilter}
+                  onChange={(e) => setVendorFilter(e.target.value)}
+                  className="border rounded-lg px-3 py-2 text-sm h-9"
+                >
+                  <option value="">Todos</option>
+                  {data?.byVendor?.map((v: any) => (
+                    <option key={v.name} value={v.name}>{v.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-1.5">
+                <Label>Segmento</Label>
+                <select
+                  value={segmentFilter}
+                  onChange={(e) => setSegmentFilter(e.target.value)}
+                  className="border rounded-lg px-3 py-2 text-sm h-9"
+                >
+                  <option value="">Todos</option>
+                  <option value="PARTICULAR">Particular</option>
+                  <option value="MONOTRIBUTO">Monotributo</option>
+                  <option value="RECIBO_DE_SUELDO">Recibo de Sueldo</option>
+                </select>
+              </div>
+            </>
+          )}
           {reportType === 'sales' && (
             <Button onClick={downloadExcel} disabled={downloading} className="gap-1.5 ml-auto">
               {downloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
