@@ -1,4 +1,7 @@
 // POST /api/upload — avatar upload
+// Body (multipart): file=File, userId?=string (admin uploading for another user)
+// If userId omitted → uploads for the current session user (self-service profile).
+// If userId provided → requires ADMIN role, uploads for that target user.
 import { NextResponse } from 'next/server';
 import { getAuthSession } from '@/lib/auth';
 import { uploadAvatar } from '@/lib/storage';
@@ -21,13 +24,19 @@ export async function POST(request: Request) {
     if (!file.type.startsWith('image/')) return NextResponse.json({ error: 'Debe ser una imagen' }, { status: 400 });
     if (file.size > 5 * 1024 * 1024) return NextResponse.json({ error: 'Máximo 5MB' }, { status: 400 });
 
-    const { url, publicId } = await uploadAvatar(file, session.user.id);
+    // Determine target user: optional userId param (admin only), defaults to self
+    const targetUserId = (formData.get('userId') as string) || session.user.id;
+    if (targetUserId !== session.user.id && session.user.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Forbidden: solo admin puede subir avatares para otros usuarios' }, { status: 403 });
+    }
+
+    const { url, publicId } = await uploadAvatar(file, targetUserId);
     const libsql = getTursoClient();
     await libsql.execute({
       sql: 'UPDATE User SET avatarUrl = ?, avatarPublicId = ?, avatarUpdatedAt = CURRENT_TIMESTAMP WHERE id = ?',
-      args: [url, publicId, session.user.id],
+      args: [url, publicId, targetUserId],
     });
-    return NextResponse.json({ url, publicId });
+    return NextResponse.json({ url, publicId, userId: targetUserId });
   } catch (e: any) {
     console.error('[upload] error:', e);
     return NextResponse.json(

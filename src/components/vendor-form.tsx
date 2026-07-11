@@ -10,9 +10,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
-import { ArrowLeft, Save, Loader2 } from 'lucide-react';
+import { ArrowLeft, Save, Loader2, Camera, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import { isBlobConfigured } from '@/lib/storage';
 
 // MapPicker uses react-leaflet which requires window → must be client-only (ssr: false)
 const MapPicker = dynamic(() => import('@/components/ui/MapPicker').then(m => ({ default: m.MapPicker })), {
@@ -35,6 +36,10 @@ export function VendorForm({ userId }: VendorFormProps) {
   });
   const [lat, setLat] = useState<number | null>(null);
   const [lng, setLng] = useState<number | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const blobEnabled = isBlobConfigured();
 
   useEffect(() => {
     if (!userId) return;
@@ -53,6 +58,7 @@ export function VendorForm({ userId }: VendorFormProps) {
         });
         setLat(u.latitude ?? null);
         setLng(u.longitude ?? null);
+        setAvatarUrl(u.avatarUrl ?? null);
       } catch (e: any) {
         toast.error(e.message || 'Error al cargar');
         router.push('/admin/vendedores');
@@ -79,6 +85,25 @@ export function VendorForm({ userId }: VendorFormProps) {
       const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
+
+      // After successful create/update, upload avatar if a new file was selected.
+      // - Edit mode: avatar may have been uploaded immediately on file select (with userId).
+      // - New mode: we couldn't upload before (user didn't exist), so upload now with the new id.
+      if (avatarFile && !isEdit && data.id) {
+        try {
+          const fd = new FormData();
+          fd.append('file', avatarFile);
+          fd.append('userId', data.id);
+          const upRes = await fetch('/api/upload', { method: 'POST', body: fd });
+          if (!upRes.ok) {
+            const upData = await upRes.json();
+            toast.warning(`Vendedor creado pero el avatar falló: ${upData.error}`);
+          }
+        } catch {
+          toast.warning('Vendedor creado pero el avatar falló al subir');
+        }
+      }
+
       toast.success(isEdit ? 'Vendedor actualizado' : 'Vendedor creado');
       router.push('/admin/vendedores');
       router.refresh();
@@ -100,6 +125,82 @@ export function VendorForm({ userId }: VendorFormProps) {
       </div>
 
       <form onSubmit={submit} className="space-y-6">
+        {/* Foto de perfil */}
+        <Card>
+          <CardHeader><CardTitle className="text-base">📸 Foto de perfil</CardTitle></CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-6">
+              <div className="relative group flex-shrink-0">
+                <div className="w-28 h-28 rounded-full overflow-hidden bg-gradient-to-br from-hominis-blue to-hominis-violet flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+                  {avatarUrl ? (
+                    <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    <span>{(form.nombre[0] || '?') + (form.apellido?.[0] || '')}</span>
+                  )}
+                </div>
+                {blobEnabled && (
+                  <button
+                    type="button"
+                    onClick={() => document.getElementById('avatar-input')?.click()}
+                    disabled={avatarUploading}
+                    className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white disabled:cursor-not-allowed"
+                  >
+                    {avatarUploading ? <Loader2 className="w-6 h-6 animate-spin" /> : <Camera className="w-6 h-6" />}
+                  </button>
+                )}
+                <input
+                  id="avatar-input"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={async (e) => {
+                    const f = e.target.files?.[0];
+                    if (!f) return;
+                    if (!f.type.startsWith('image/')) { toast.error('Debe ser una imagen'); return; }
+                    if (f.size > 5 * 1024 * 1024) { toast.error('Máximo 5MB'); return; }
+                    setAvatarFile(f);
+                    // Show local preview immediately
+                    setAvatarUrl(URL.createObjectURL(f));
+                    // In edit mode, upload right away (user already exists).
+                    // In new mode, defer upload until after create (see submit()).
+                    if (isEdit && userId) {
+                      setAvatarUploading(true);
+                      try {
+                        const fd = new FormData();
+                        fd.append('file', f);
+                        fd.append('userId', userId);
+                        const upRes = await fetch('/api/upload', { method: 'POST', body: fd });
+                        const upData = await upRes.json();
+                        if (!upRes.ok) throw new Error(upData.error);
+                        setAvatarUrl(upData.url);
+                        setAvatarFile(null); // already uploaded
+                        toast.success('Foto actualizada');
+                      } catch (err: any) {
+                        toast.error(err.message || 'Error al subir foto');
+                        setAvatarUrl(null);
+                        setAvatarFile(null);
+                      } finally { setAvatarUploading(false); }
+                    } else {
+                      toast.info('La foto se subirá al crear el vendedor');
+                    }
+                  }}
+                />
+              </div>
+              <div className="text-sm text-muted-foreground">
+                {blobEnabled ? (
+                  <>
+                    <p>Hacé clic en la imagen para subir una foto.</p>
+                    <p className="text-xs mt-1">JPG, PNG o WebP · máx 5MB</p>
+                    {!isEdit && <p className="text-xs mt-2 text-amber-600">La foto se guardará después de crear el vendedor.</p>}
+                  </>
+                ) : (
+                  <p className="flex items-center gap-1 text-amber-600"><AlertCircle className="w-4 h-4" /> Upload no configurado (Vercel Blob). Se usan iniciales como fallback.</p>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Datos básicos */}
         <Card>
           <CardHeader><CardTitle className="text-base">Datos básicos</CardTitle></CardHeader>
