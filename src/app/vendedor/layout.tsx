@@ -25,7 +25,7 @@ export default async function VendedorLayout({ children }: { children: React.Rea
         userEmail={session.user.email ?? ''}
       />
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8">{children}</main>
-      <footer className="border-t bg-white py-4">
+      <footer className="border-t bg-card py-4">
         <div className="mx-auto max-w-7xl px-4 text-center text-xs text-muted-foreground">
           Hominis — Panel de Vendedores © {new Date().getFullYear()}
         </div>

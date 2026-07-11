@@ -9,9 +9,12 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Shield, Eye, EyeOff, LogIn, ArrowLeft, AlertCircle } from 'lucide-react';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { LanguageSelector, useTranslation } from '@/components/language-selector';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -62,20 +65,26 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-hominis-gradient flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-hominis-gradient dark:bg-background flex items-center justify-center p-4 relative overflow-hidden">
       {/* Background decorations */}
       <div className="absolute top-20 right-10 w-72 h-72 bg-hominis-accent/10 rounded-full blur-3xl" />
       <div className="absolute bottom-20 left-10 w-96 h-96 bg-hominis-purple/10 rounded-full blur-3xl" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-hominis-accent/5 rounded-full blur-3xl" />
 
+      {/* Theme + Language toggle (top right) */}
+      <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+        <LanguageSelector />
+        <ThemeToggle />
+      </div>
+
       <div className="w-full max-w-md relative z-10">
         {/* Back to site link */}
         <a
           href="/"
-          className="inline-flex items-center gap-2 text-white/70 hover:text-white text-sm mb-6 transition-colors"
+          className="inline-flex items-center gap-2 text-white/70 hover:text-white text-sm mb-6 transition-colors dark:text-muted-foreground dark:hover:text-foreground"
         >
           <ArrowLeft className="w-4 h-4" />
-          Volver al sitio
+          {t('auth.login.back') || 'Volver al sitio'}
         </a>
 
         <Card className="border-0 shadow-2xl shadow-black/20 rounded-2xl overflow-hidden">
@@ -84,9 +93,9 @@ export default function LoginPage() {
             <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center mx-auto mb-4">
               <Shield className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-2xl font-serif font-bold text-white">Panel de Gestión</h1>
+            <h1 className="text-2xl font-serif font-bold text-white">{t('auth.login.title') || 'Panel de Gestión'}</h1>
             <p className="text-white/70 text-sm mt-2">
-              Ingresá tus credenciales para acceder al dashboard
+              {t('auth.login.subtitle') || 'Ingresá tus credenciales para acceder al dashboard'}
             </p>
           </div>
 
@@ -103,7 +112,7 @@ export default function LoginPage() {
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-sm font-medium">
-                  Email
+                  {t('auth.login.email') || 'Email'}
                 </Label>
                 <Input
                   id="email"
@@ -120,7 +129,7 @@ export default function LoginPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-sm font-medium">
-                  Contraseña
+                  {t('auth.login.password') || 'Contraseña'}
                 </Label>
                 <div className="relative">
                   <Input
@@ -162,7 +171,7 @@ export default function LoginPage() {
                 ) : (
                   <div className="flex items-center gap-2">
                     <LogIn className="w-5 h-5" />
-                    Ingresar
+                    {t('auth.login.submit') || 'Ingresar'}
                   </div>
                 )}
               </Button>

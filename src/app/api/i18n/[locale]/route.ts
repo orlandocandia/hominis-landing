@@ -47,6 +47,23 @@ const TRANSLATIONS: Record<string, any> = {
     },
     theme: { light: 'Claro', dark: 'Oscuro', system: 'Sistema' },
     language: { es: 'Español', en: 'English', pt: 'Português' },
+    auth: {
+      login: {
+        title: 'Panel de Gestión',
+        subtitle: 'Ingresá tus credenciales para acceder al dashboard',
+        email: 'Email',
+        password: 'Contraseña',
+        submit: 'Ingresar',
+        error: 'Credenciales inválidas',
+        back: 'Volver al sitio',
+        note: 'Acceso exclusivo para personal autorizado. Las credenciales son encriptadas y protegidas.',
+      },
+    },
+    dashboard: {
+      title: 'Panel de Control',
+      welcome: 'Bienvenido/a',
+      stats: { total: 'Total Contactos', new: 'Nuevos', attended: 'Atendidos', rejected: 'Rechazados' },
+    },
   },
   en: {
     landing: {
@@ -93,6 +110,23 @@ const TRANSLATIONS: Record<string, any> = {
     },
     theme: { light: 'Light', dark: 'Dark', system: 'System' },
     language: { es: 'Español', en: 'English', pt: 'Português' },
+    auth: {
+      login: {
+        title: 'Management Panel',
+        subtitle: 'Enter your credentials to access the dashboard',
+        email: 'Email',
+        password: 'Password',
+        submit: 'Sign In',
+        error: 'Invalid credentials',
+        back: 'Back to site',
+        note: 'Exclusive access for authorized personnel. Credentials are encrypted and protected.',
+      },
+    },
+    dashboard: {
+      title: 'Dashboard',
+      welcome: 'Welcome',
+      stats: { total: 'Total Contacts', new: 'New', attended: 'Attended', rejected: 'Rejected' },
+    },
   },
   pt: {
     landing: {
@@ -139,6 +173,23 @@ const TRANSLATIONS: Record<string, any> = {
     },
     theme: { light: 'Claro', dark: 'Escuro', system: 'Sistema' },
     language: { es: 'Español', en: 'English', pt: 'Português' },
+    auth: {
+      login: {
+        title: 'Painel de Gestão',
+        subtitle: 'Digite suas credenciais para acessar o painel',
+        email: 'Email',
+        password: 'Senha',
+        submit: 'Entrar',
+        error: 'Credenciais inválidas',
+        back: 'Voltar ao site',
+        note: 'Acesso exclusivo para pessoal autorizado. As credenciais são criptografadas e protegidas.',
+      },
+    },
+    dashboard: {
+      title: 'Painel de Controle',
+      welcome: 'Bem-vindo/a',
+      stats: { total: 'Total Contatos', new: 'Novos', attended: 'Atendidos', rejected: 'Rejeitados' },
+    },
   },
 };
 
