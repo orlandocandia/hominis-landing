@@ -46,6 +46,7 @@ export function DashboardNav({ role, userName, userEmail }: DashboardNavProps) {
               <>
                 <NavLink href={`${basePath}/vendedores`} icon={<Users className="h-4 w-4" />} label="Vendedores" />
                 <NavLink href={`${basePath}/contactos`} icon={<FileText className="h-4 w-4" />} label="Contactos" />
+                <NavLink href={`${basePath}/mapa`} icon={<MapPin className="h-4 w-4" />} label="Mapa" />
               </>
             )}
             {!isAdmin && (
