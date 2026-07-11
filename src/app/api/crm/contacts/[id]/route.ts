@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { getAuthSession } from '@/lib/auth';
 import { getTursoClient } from '@/lib/turso-config';
 import { geocodeAddress } from '@/lib/geocoding';
+import { isValidTransition } from '@/lib/constants';
 
 const VALID_SEGMENTS = ['RECIBO_DE_SUELDO', 'MONOTRIBUTO', 'PARTICULAR'];
 const VALID_COVERAGE = ['CABA', 'GBA'];
@@ -93,8 +94,15 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     if (lng !== null) { sets.push('longitude = ?'); args.push(lng); }
     if (geocodingStatus) { sets.push('geocodingStatus = ?'); args.push(geocodingStatus); }
 
-    // Status change → log activity + update owner metrics
+    // Status change → validate transition + log activity + update owner metrics
     if (status && VALID_STATUS.includes(status) && status !== old.status) {
+      // Validate transition (ADMIN/PRODUCTOR can bypass)
+      if (!isValidTransition(old.status, status, session.user.role)) {
+        return NextResponse.json(
+          { error: `No podés mover un contacto de "${old.status}" a "${status}" directamente. Revisá el flujo del pipeline.` },
+          { status: 400 }
+        );
+      }
       sets.push('status = ?'); args.push(status);
       // Log activity
       const actId = 'act_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);

@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { Loader2, MapPin, Phone, GripVertical } from 'lucide-react';
 import { LeadScoreBadge } from '@/components/lead-score-badge';
 import { toast } from 'sonner';
+import { VALID_TRANSITIONS } from '@/lib/constants';
 
 interface Contact {
   id: string;
@@ -83,6 +84,13 @@ export default function PipelinePage() {
     const newStatus = over.id as string;
     const contact = contacts.find((c) => c.id === contactId);
     if (!contact || contact.status === newStatus) return;
+
+    // Validate transition (client-side — API also validates server-side)
+    const allowed = VALID_TRANSITIONS[contact.status] || [];
+    if (!allowed.includes(newStatus)) {
+      toast.error(`No podés mover de "${contact.status}" a "${newStatus}" directamente.`);
+      return;
+    }
 
     // Optimistic update
     setContacts((prev) => prev.map((c) => (c.id === contactId ? { ...c, status: newStatus } : c)));
