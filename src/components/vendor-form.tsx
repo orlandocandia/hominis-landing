@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,10 +10,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
-import { MapPicker } from '@/components/ui/MapPicker';
 import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import Link from 'next/link';
+
+// MapPicker uses react-leaflet which requires window → must be client-only (ssr: false)
+const MapPicker = dynamic(() => import('@/components/ui/MapPicker').then(m => ({ default: m.MapPicker })), {
+  ssr: false,
+  loading: () => <div className="h-[300px] rounded-lg border bg-muted/30 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground" /></div>,
+});
 
 interface VendorFormProps {
   userId?: string; // if provided → edit mode
