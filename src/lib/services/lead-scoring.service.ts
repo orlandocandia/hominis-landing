@@ -48,8 +48,11 @@ export class LeadScoringService {
       else if (contact.age < 25) score += 5;
     }
 
-    // Message length
-    if (contact.message && contact.message.length > 50) score += 10;
+    // Message length (tiered)
+    if (contact.message) {
+      if (contact.message.length > 100) score += 10;
+      else if (contact.message.length > 50) score += 5;
+    }
 
     // Completeness
     if (contact.address) score += 5;
@@ -136,5 +139,24 @@ export class LeadScoringService {
       }
     }
     return { total: ids.length, scored };
+  }
+
+  // Alias matching the optimization spec naming
+  static async recalculateAllScores(): Promise<{ processed: number; scored: number }> {
+    const r = await this.rescoreAll();
+    return { processed: r.total, scored: r.scored };
+  }
+
+  /**
+   * Get priority color classes (for UI).
+   */
+  static getPriorityColor(priority: string): string {
+    const colors: Record<string, string> = {
+      ALTA: 'bg-green-100 text-green-800 border-green-300',
+      MEDIA: 'bg-yellow-100 text-yellow-800 border-yellow-300',
+      BAJA: 'bg-orange-100 text-orange-800 border-orange-300',
+      NULA: 'bg-gray-100 text-gray-800 border-gray-300',
+    };
+    return colors[priority] || colors.NULA;
   }
 }
