@@ -10,7 +10,12 @@ export async function POST(request: Request) {
     if (!session?.user) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
-    const formData = await request.formData();
+    let formData: FormData;
+    try {
+      formData = await request.formData();
+    } catch {
+      return NextResponse.json({ error: 'Se requiere multipart/form-data con un campo "file"' }, { status: 400 });
+    }
     const file = formData.get('file') as File | null;
     if (!file) return NextResponse.json({ error: 'Archivo no proporcionado' }, { status: 400 });
     if (!file.type.startsWith('image/')) return NextResponse.json({ error: 'Debe ser una imagen' }, { status: 400 });
