@@ -8,6 +8,8 @@ const POINTS_MAP: Record<string, number> = {
   LEAD_SCORE_ALTA: 20,
   FAST_RESPONSE: 15,
   CONVERSION: 100,
+  REUNION_AGENDADA: 30,
+  PRESUPUESTO_ENVIADO: 40,
 };
 
 export class GamificationService {
@@ -157,5 +159,38 @@ export class GamificationService {
     const libsql = getTursoClient();
     const res = await libsql.execute({ sql: 'SELECT * FROM "Badge" ORDER BY conditionValue' });
     return res.rows;
+  }
+
+  /**
+   * Get user progress with level info + next level progress.
+   */
+  static async getUserProgress(userId: string): Promise<any> {
+    const libsql = getTursoClient();
+    const res = await libsql.execute({
+      sql: 'SELECT points, level, badges FROM "Gamification" WHERE userId = ?',
+      args: [userId],
+    });
+    if (res.rows.length === 0) {
+      return { points: 0, level: 1, badges: [], nextLevelPoints: 100, progressToNextLevel: 0 };
+    }
+    const g = res.rows[0] as any;
+    const badges = g.badges ? JSON.parse(g.badges) : [];
+    const currentLevelPoints = (Number(g.level) - 1) * 100;
+    const nextLevelPoints = Number(g.level) * 100;
+    const progressToNextLevel = Math.min(((Number(g.points) - currentLevelPoints) / 100) * 100, 100);
+    return {
+      points: Number(g.points),
+      level: Number(g.level),
+      badges,
+      nextLevelPoints,
+      progressToNextLevel: Math.max(progressToNextLevel, 0),
+    };
+  }
+
+  /**
+   * Get available badges (alias for getAllBadges, matching spec naming).
+   */
+  static async getAvailableBadges(): Promise<any[]> {
+    return this.getAllBadges();
   }
 }

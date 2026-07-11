@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { FileText, Phone, Clock, CheckCircle2, TrendingUp, MapPin } from 'lucide-react';
 import { LeadScoreBadge } from '@/components/lead-score-badge';
 import { UpcomingReminders } from '@/components/upcoming-reminders';
+import { GamificationWidget } from '@/components/gamification-widget';
 import Link from 'next/link';
 
 export default async function VendedorDashboardPage() {
@@ -57,10 +58,10 @@ export default async function VendedorDashboardPage() {
         <StatCard title="Conversión" value={`${conversion}%`} icon={<TrendingUp className="h-5 w-5" />} />
       </div>
 
-      {/* Quick actions */}
-      <div className="grid gap-4 sm:grid-cols-2">
+      {/* Quick actions + gamification */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Link href="/vendedor/contactos/nuevo" className="block">
-          <Card className="hover:shadow-md transition-shadow cursor-pointer">
+          <Card className="hover:shadow-md transition-shadow cursor-pointer h-full">
             <CardContent className="flex items-center gap-4 p-5">
               <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
                 <FileText className="w-6 h-6" />
@@ -73,7 +74,7 @@ export default async function VendedorDashboardPage() {
           </Card>
         </Link>
         <Link href="/vendedor/contactos" className="block">
-          <Card className="hover:shadow-md transition-shadow cursor-pointer">
+          <Card className="hover:shadow-md transition-shadow cursor-pointer h-full">
             <CardContent className="flex items-center gap-4 p-5">
               <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
                 <Clock className="w-6 h-6" />
@@ -85,6 +86,7 @@ export default async function VendedorDashboardPage() {
             </CardContent>
           </Card>
         </Link>
+        <GamificationWidget />
       </div>
 
       {/* Upcoming reminders + follow-ups */}

@@ -69,6 +69,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
           await TrackingService.trackConversion(id);
         } catch {}
       }
+      if (action === 'REUNION') {
+        try { await GamificationService.awardPoints(ownerId, 'REUNION_AGENDADA'); } catch {}
+      }
+      if (action === 'PRESUPUESTO') {
+        try { await GamificationService.awardPoints(ownerId, 'PRESUPUESTO_ENVIADO'); } catch {}
+      }
     } else {
       await libsql.execute({ sql: 'UPDATE Contact SET lastContact = CURRENT_TIMESTAMP, updatedAt = CURRENT_TIMESTAMP WHERE id = ?', args: [id] });
     }
