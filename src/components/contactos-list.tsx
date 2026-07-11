@@ -30,6 +30,9 @@ interface Contact {
 const STATUS_COLORS: Record<string, 'default' | 'secondary' | 'outline' | 'destructive'> = {
   NUEVO: 'default',
   LEIDO: 'secondary',
+  EN_CONTACTO: 'secondary',
+  REUNION: 'secondary',
+  PRESUPUESTO: 'secondary',
   ATENDIDO: 'secondary',
   RECHAZADO: 'destructive',
 };
@@ -82,7 +85,7 @@ export function ContactosList({ newLinkBase = '/vendedor/contactos', detailLinkB
           <Button size="sm" variant={sortByScore ? 'default' : 'outline'} onClick={() => setSortByScore(!sortByScore)} className="gap-1.5" title="Ordenar por score de lead">
             <ArrowDownUp className="w-3.5 h-3.5" /> Score
           </Button>
-          {['', 'NUEVO', 'LEIDO', 'ATENDIDO', 'RECHAZADO'].map((s) => (
+          {['', 'NUEVO', 'LEIDO', 'EN_CONTACTO', 'REUNION', 'PRESUPUESTO', 'ATENDIDO', 'RECHAZADO'].map((s) => (
             <Button key={s || 'ALL'} size="sm" variant={statusFilter === s ? 'default' : 'outline'} onClick={() => setStatusFilter(s)}>
               {s || 'Todos'}
             </Button>

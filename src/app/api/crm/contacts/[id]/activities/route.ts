@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 import { getAuthSession } from '@/lib/auth';
 import { getTursoClient } from '@/lib/turso-config';
 
-const VALID_ACTIONS = ['NOTA', 'LLAMADA', 'WHATSAPP', 'EMAIL', 'VISITA', 'LEIDO', 'ATENDIDO', 'RECHAZADO'];
+const VALID_ACTIONS = ['NOTA', 'LLAMADA', 'WHATSAPP', 'EMAIL', 'VISITA', 'LEIDO', 'EN_CONTACTO', 'REUNION', 'PRESUPUESTO', 'ATENDIDO', 'RECHAZADO'];
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -50,7 +50,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       args: [actId, id, session.user.id, action, note || null, metadata ? JSON.stringify(metadata) : null],
     });
     // If action is a status change, update contact + owner metrics
-    if (['LEIDO', 'ATENDIDO', 'RECHAZADO'].includes(action)) {
+    if (['LEIDO', 'EN_CONTACTO', 'REUNION', 'PRESUPUESTO', 'ATENDIDO', 'RECHAZADO'].includes(action)) {
       await libsql.execute({ sql: 'UPDATE Contact SET status = ?, lastContact = CURRENT_TIMESTAMP, updatedAt = CURRENT_TIMESTAMP WHERE id = ?', args: [action, id] });
       await libsql.execute({
         sql: `UPDATE "User" SET

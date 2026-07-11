@@ -68,6 +68,9 @@ enum ContactCoverage {
 enum ContactStatus {
   NUEVO
   LEIDO
+  EN_CONTACTO
+  REUNION
+  PRESUPUESTO
   ATENDIDO
   RECHAZADO
 }
@@ -75,6 +78,9 @@ enum ContactStatus {
 enum ActivityAction {
   CREADO
   LEIDO
+  EN_CONTACTO
+  REUNION
+  PRESUPUESTO
   ATENDIDO
   RECHAZADO
   NOTA

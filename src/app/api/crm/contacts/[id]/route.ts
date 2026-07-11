@@ -6,7 +6,7 @@ import { geocodeAddress } from '@/lib/geocoding';
 
 const VALID_SEGMENTS = ['RECIBO_DE_SUELDO', 'MONOTRIBUTO', 'PARTICULAR'];
 const VALID_COVERAGE = ['CABA', 'GBA'];
-const VALID_STATUS = ['NUEVO', 'LEIDO', 'ATENDIDO', 'RECHAZADO'];
+const VALID_STATUS = ['NUEVO', 'LEIDO', 'EN_CONTACTO', 'REUNION', 'PRESUPUESTO', 'ATENDIDO', 'RECHAZADO'];
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
