@@ -1,4 +1,7 @@
-// Prisma Schema - ContactoModel (Leads) + User Auth
+// Prisma Schema — Hominis CRM (Fase 1: Fundación de datos)
+// =========================================================
+// 12 modelos CRM + Contacto (legacy, leads de la landing).
+// Los triggers del SQL spec se implementan como lógica de app (decisión B: Prisma).
 
 generator client {
   provider = "prisma-client-js"
@@ -9,18 +12,387 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ─── ENUMS ───
+
+enum Rol {
+  ADMIN
+  VENDEDOR
+  PRODUCTOR
+}
+
+enum GeocodingStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+enum PhoneType {
+  PERSONAL
+  LABORAL
+  WHATSAPP
+  URGENCIAS
+  OTRO
+}
+
+enum EmailType {
+  PERSONAL
+  LABORAL
+  ALTERNATIVO
+  OTRO
+}
+
+enum SocialPlatform {
+  INSTAGRAM
+  FACEBOOK
+  LINKEDIN
+  TWITTER
+  TIKTOK
+  YOUTUBE
+  TELEGRAM
+  DISCORD
+  SNAPCHAT
+  OTRO
+}
+
+enum ContactSegment {
+  RECIBO_DE_SUELDO
+  MONOTRIBUTO
+  PARTICULAR
+}
+
+enum ContactCoverage {
+  CABA
+  GBA
+}
+
+enum ContactStatus {
+  NUEVO
+  LEIDO
+  ATENDIDO
+  RECHAZADO
+}
+
+enum ActivityAction {
+  CREADO
+  LEIDO
+  ATENDIDO
+  RECHAZADO
+  NOTA
+  LLAMADA
+  WHATSAPP
+  EMAIL
+  VISITA
+}
+
+enum AssignmentMethod {
+  ROUND_ROBIN
+  GEOGRAPHIC
+  CAPACITY
+  MANUAL
+}
+
+enum NotificationType {
+  CONTACT
+  ASSIGNMENT
+  REMINDER
+  SYSTEM
+}
+
+enum InvitationRole {
+  VENDEDOR
+  PRODUCTOR
+}
+
+// ═══════════════════════════════════════════════════════
+// USER (existente, extendido con perfil CRM)
+// ═══════════════════════════════════════════════════════
+
+model User {
+  id              String          @id @default(cuid())
+  email           String          @unique
+  password        String          // bcrypt hash
+  nombre          String
+  apellido        String?
+  telefono        String?         // legacy; multicanal en UserPhone
+  rol             Rol             @default(VENDEDOR)
+  activo          Boolean         @default(true)
+  fechaAlta       DateTime        @default(now())
+  ultimoAcceso    DateTime?
+  intentosLogin   Int             @default(0)
+  bloqueadoHasta  DateTime?
+
+  // Perfil extendido (Fase 1)
+  avatarUrl       String?
+  avatarPublicId  String?
+  avatarUpdatedAt DateTime?
+  address         String?
+  city            String?
+  province        String?
+  postalCode      String?
+  latitude        Float?
+  longitude       Float?
+  geocodingStatus GeocodingStatus @default(PENDING)
+  serviceRadius   Int             @default(50)
+  coverageAreas   String?         // JSON string
+  documentNumber  String?
+  hireDate        DateTime?
+
+  // Métricas (actualizadas por lógica de app, ver lib/metrics.ts en Fase 3)
+  totalContacts   Int             @default(0)
+  conversionRate  Float           @default(0)
+
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  // Relaciones
+  phones           UserPhone[]
+  emails           UserEmail[]
+  socialNetworks   UserSocialNetwork[]
+  ownedContacts    Contact[]           @relation("ContactOwner")
+  assignedContacts Contact[]           @relation("ContactAssignedBy")
+  activities       ContactActivity[]
+  assignments      AutomaticAssignment[] @relation("AssignmentAssignedTo")
+  invitationsSent  Invitation[]        @relation("InvitationInvitedBy")
+  notifications    Notification[]
+
+  @@index([email])
+  @@index([latitude, longitude])
+}
+
+// ═══════════════════════════════════════════════════════
+// MULTICANAL — USER
+// ═══════════════════════════════════════════════════════
+
+model UserPhone {
+  id          String    @id @default(cuid())
+  userId      String
+  phoneNumber String
+  phoneType   PhoneType
+  isPrimary   Boolean   @default(false)
+  isWhatsapp  Boolean   @default(false)
+  isVerified  Boolean   @default(false)
+  notes       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, phoneNumber])
+  @@index([phoneNumber])
+}
+
+model UserEmail {
+  id         String   @id @default(cuid())
+  userId     String
+  email      String
+  emailType  EmailType
+  isPrimary  Boolean  @default(false)
+  isVerified Boolean  @default(false)
+  notes      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, email])
+  @@index([email])
+}
+
+model UserSocialNetwork {
+  id        String         @id @default(cuid())
+  userId    String
+  platform  SocialPlatform
+  username  String
+  url       String?
+  isPrimary Boolean        @default(false)
+  notes     String?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, platform, username])
+}
+
+// ═══════════════════════════════════════════════════════
+// CONTACT (CRM)
+// Distinto de Contacto (legacy, leads de landing).
+// En Fase 3 se migrarán los Contacto → Contact.
+// ═══════════════════════════════════════════════════════
+
+model Contact {
+  id              String          @id @default(cuid())
+  name            String
+  primaryEmail    String?
+  primaryPhone    String?
+  address         String
+  city            String?
+  province        String?
+  postalCode      String?
+  latitude        Float
+  longitude       Float
+  geocodingStatus GeocodingStatus @default(PENDING)
+  photoUrl        String?
+  photoPublicId   String?
+  segment         ContactSegment?
+  age             Int?
+  coverage        ContactCoverage?
+  message         String?
+  status          ContactStatus   @default(NUEVO)
+  ownerId         String
+  assignedBy      String?
+  assignedAt      DateTime        @default(now())
+  lastContact     DateTime?
+  nextFollowup    DateTime?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  owner          User  @relation("ContactOwner", fields: [ownerId], references: [id], onDelete: Restrict)
+  assignedByUser User? @relation("ContactAssignedBy", fields: [assignedBy], references: [id])
+  phones         ContactPhone[]
+  emails         ContactEmail[]
+  socialNetworks ContactSocialNetwork[]
+  activities     ContactActivity[]
+  assignments    AutomaticAssignment[]
+
+  @@index([latitude, longitude])
+  @@index([ownerId])
+  @@index([status])
+}
+
+model ContactPhone {
+  id          String    @id @default(cuid())
+  contactId   String
+  phoneNumber String
+  phoneType   PhoneType
+  isPrimary   Boolean   @default(false)
+  isWhatsapp  Boolean   @default(false)
+  isVerified  Boolean   @default(false)
+  notes       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@unique([contactId, phoneNumber])
+  @@index([phoneNumber])
+}
+
+model ContactEmail {
+  id         String   @id @default(cuid())
+  contactId  String
+  email      String
+  emailType  EmailType
+  isPrimary  Boolean  @default(false)
+  isVerified Boolean  @default(false)
+  notes      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@unique([contactId, email])
+  @@index([email])
+}
+
+model ContactSocialNetwork {
+  id        String         @id @default(cuid())
+  contactId String
+  platform  SocialPlatform
+  username  String
+  url       String?
+  isPrimary Boolean        @default(false)
+  notes     String?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@unique([contactId, platform, username])
+}
+
+// ═══════════════════════════════════════════════════════
+// ACTIVIDADES + ASIGNACIONES + INVITACIONES + NOTIFICACIONES
+// ═══════════════════════════════════════════════════════
+
+model ContactActivity {
+  id        String         @id @default(cuid())
+  contactId String
+  userId    String
+  action    ActivityAction
+  note      String?
+  metadata  String? // JSON string
+  createdAt DateTime       @default(now())
+
+  contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@index([contactId])
+  @@index([userId])
+}
+
+model AutomaticAssignment {
+  id         String           @id @default(cuid())
+  contactId  String
+  assignedTo String
+  method     AssignmentMethod
+  distanceKm Float?
+  reason     String?
+  createdAt  DateTime         @default(now())
+
+  contact        Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  assignedToUser User    @relation("AssignmentAssignedTo", fields: [assignedTo], references: [id])
+
+  @@index([assignedTo])
+}
+
+model Invitation {
+  id        String          @id @default(cuid())
+  email     String
+  role      InvitationRole
+  token     String          @unique
+  invitedBy String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime        @default(now())
+
+  invitedByUser User @relation("InvitationInvitedBy", fields: [invitedBy], references: [id])
+
+  @@index([email])
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  read      Boolean          @default(false)
+  link      String?
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// ═══════════════════════════════════════════════════════
+// CONTACTO (LEGACY — leads de la landing pública)
+// Se preserva tal cual. En Fase 3 se migrarán a Contact.
+// ═══════════════════════════════════════════════════════
+
 model Contacto {
   id        String   @id @default(cuid())
-  nombre    String   // Full name
-  email     String   // Email address
-  telefono  String   // Phone number (WhatsApp)
-  segmento  String   // Segment: RECIBO_DE_SUELDO, MONOTRIBUTO, PARTICULAR
-  mensaje   String?  // Optional message
-  cobertura String?  // Coverage interest: CABA_GBA
-  edad      Int?     // Age (must be <= 64)
-  origen    String   @default("landing") // Lead origin tracking
-  ip        String?  // Client IP for security
-  estado    String   @default("NUEVO") // NUEVO, LEIDO, ATENDIDO
+  nombre    String
+  email     String
+  telefono  String
+  segmento  String
+  mensaje   String?
+  cobertura String?
+  edad      Int?
+  origen    String   @default("landing")
+  ip        String?
+  estado    String   @default("NUEVO")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -28,28 +400,4 @@ model Contacto {
   @@index([segmento])
   @@index([createdAt])
   @@index([estado])
-}
-
-model User {
-  id              String    @id @default(cuid())
-  email           String    @unique // Login email
-  password        String    // Hashed password (bcrypt)
-  nombre          String    // First name
-  apellido        String?   // Last name (optional)
-  telefono        String?   // Phone (optional)
-  rol             Rol       @default(ASESOR) // ADMIN o ASESOR
-  activo          Boolean   @default(true)
-  fechaAlta       DateTime  @default(now()) // Registration date
-  ultimoAcceso    DateTime? // Last successful login
-  intentosLogin   Int       @default(0) // Brute-force protection: failed attempts
-  bloqueadoHasta  DateTime? // Brute-force protection: lockout until
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-
-  @@index([email])
-}
-
-enum Rol {
-  ADMIN
-  ASESOR
 }

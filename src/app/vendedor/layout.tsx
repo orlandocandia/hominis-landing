@@ -1,21 +1,20 @@
-// Asesor layout — server component.
-// Defense-in-depth: middleware already protects /asesor/*, but this layout
-// re-verifies the session + role on the server and renders the asesor shell.
+// Vendedor layout — server component.
+// Permite acceso a VENDEDOR y PRODUCTOR (productor = vendedor extendido).
 import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { DashboardNav } from '@/components/dashboard-nav';
 
-export default async function AsesorLayout({ children }: { children: React.ReactNode }) {
+export default async function VendedorLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
 
   if (!session?.user) {
     redirect('/login');
   }
 
-  if (session.user.role !== 'ASESOR') {
-    // Authenticated but not asesor → send to their own area
-    redirect('/admin/dashboard');
+  if (session.user.role !== 'VENDEDOR' && session.user.role !== 'PRODUCTOR') {
+    // ADMIN no pertenece al área de vendedor
+    redirect('/admin');
   }
 
   return (
@@ -28,7 +27,7 @@ export default async function AsesorLayout({ children }: { children: React.React
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8">{children}</main>
       <footer className="border-t bg-white py-4">
         <div className="mx-auto max-w-7xl px-4 text-center text-xs text-muted-foreground">
-          Hominis — Panel de Asesores © {new Date().getFullYear()}
+          Hominis — Panel de Vendedores © {new Date().getFullYear()}
         </div>
       </footer>
     </div>

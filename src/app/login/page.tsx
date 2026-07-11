@@ -42,10 +42,12 @@ export default function LoginPage() {
           const role = data?.user?.role;
           const dest =
             role === 'ADMIN'
-              ? '/admin/dashboard'
-              : role === 'ASESOR'
-                ? '/asesor/dashboard'
-                : '/dashboard';
+              ? '/admin'
+              : role === 'VENDEDOR'
+                ? '/vendedor'
+                : role === 'PRODUCTOR'
+                  ? '/productor'
+                  : '/dashboard';
           window.location.href = dest;
         } catch {
           // Fallback to generic dashboard if session fetch fails

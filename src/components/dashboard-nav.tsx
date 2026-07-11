@@ -3,10 +3,10 @@
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { LogOut, Shield, LayoutDashboard, Users, FileText } from 'lucide-react';
+import { LogOut, Shield, LayoutDashboard, Users, FileText, MapPin, UserCircle } from 'lucide-react';
 
 interface DashboardNavProps {
-  role: string; // 'ADMIN' | 'ASESOR'
+  role: string; // 'ADMIN' | 'VENDEDOR' | 'PRODUCTOR'
   userName: string;
   userEmail: string;
 }
@@ -14,7 +14,9 @@ interface DashboardNavProps {
 export function DashboardNav({ role, userName, userEmail }: DashboardNavProps) {
   const router = useRouter();
   const isAdmin = role === 'ADMIN';
-  const basePath = isAdmin ? '/admin' : '/asesor';
+  const isProductor = role === 'PRODUCTOR';
+  const basePath = isAdmin ? '/admin' : isProductor ? '/productor' : '/vendedor';
+  const label = isAdmin ? 'Panel Admin' : isProductor ? 'Panel Productor' : 'Panel Vendedor';
 
   const handleLogout = async () => {
     await signOut({ redirect: false });
@@ -33,19 +35,26 @@ export function DashboardNav({ role, userName, userEmail }: DashboardNavProps) {
             </div>
             <div className="leading-tight">
               <span className="block text-sm font-bold text-foreground">Hominis</span>
-              <span className="block text-[11px] text-muted-foreground">
-                {isAdmin ? 'Panel Admin' : 'Panel Asesor'}
-              </span>
+              <span className="block text-[11px] text-muted-foreground">{label}</span>
             </div>
           </div>
 
           {/* Nav links */}
           <nav className="hidden items-center gap-1 md:flex">
-            <NavLink href={`${basePath}/dashboard`} icon={<LayoutDashboard className="h-4 w-4" />} label="Dashboard" />
+            <NavLink href={basePath} icon={<LayoutDashboard className="h-4 w-4" />} label="Dashboard" />
             {isAdmin && (
-              <NavLink href={`${basePath}/usuarios`} icon={<Users className="h-4 w-4" />} label="Usuarios" />
+              <>
+                <NavLink href={`${basePath}/vendedores`} icon={<Users className="h-4 w-4" />} label="Vendedores" />
+                <NavLink href={`${basePath}/contactos`} icon={<FileText className="h-4 w-4" />} label="Contactos" />
+              </>
             )}
-            <NavLink href={`${basePath}/contactos`} icon={<FileText className="h-4 w-4" />} label="Contactos" />
+            {!isAdmin && (
+              <>
+                <NavLink href={`${basePath}/contactos`} icon={<FileText className="h-4 w-4" />} label="Contactos" />
+                <NavLink href={`${basePath}/mapa`} icon={<MapPin className="h-4 w-4" />} label="Mapa" />
+                <NavLink href={`${basePath}/perfil`} icon={<UserCircle className="h-4 w-4" />} label="Perfil" />
+              </>
+            )}
           </nav>
         </div>
 

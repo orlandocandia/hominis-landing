@@ -76,7 +76,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id as string,
           email: user.email as string,
           name: user.nombre as string,
-          role: (user.rol as string) || 'ASESOR',
+          role: (user.rol as string) || 'VENDEDOR',
         };
       },
     }),

@@ -1,8 +1,12 @@
-// Middleware — role-based route protection
-// Protects /admin/*, /asesor/*, /api/admin/*, /api/asesor/*
-// - Unauthenticated → redirected to /login (by withAuth signIn page)
-// - Authenticated but wrong role → redirected to their own dashboard (pages)
-//   or 403 JSON (API routes)
+// Middleware — role-based route protection (Fase 1)
+// ──────────────────────────────────────────────────────
+// /admin/*          → ADMIN only
+// /productor/*      → PRODUCTOR only
+// /vendedor/*       → VENDEDOR or PRODUCTOR (productor = vendedor extendido)
+// /api/admin/*      → ADMIN only (403 JSON if wrong role)
+// /api/productor/*  → PRODUCTOR only (403 JSON if wrong role)
+// /api/vendedor/*   → VENDEDOR or PRODUCTOR (403 JSON if wrong role)
+// Unauthenticated → redirect to /login (by withAuth)
 import { withAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
 
@@ -10,26 +14,36 @@ export default withAuth(
   (req) => {
     const role = req.nextauth.token?.role;
     const path = req.nextUrl.pathname;
-    const isAdminArea = path.startsWith('/admin') || path.startsWith('/api/admin');
-    const isAsesorArea = path.startsWith('/asesor') || path.startsWith('/api/asesor');
-
-    // API routes: respond with 403 JSON instead of redirecting
     const isApi = path.startsWith('/api/');
 
-    if (isAdminArea && role !== 'ADMIN') {
-      if (isApi) {
-        return NextResponse.json({ error: 'Forbidden: se requiere rol ADMIN' }, { status: 403 });
+    // ─── ADMIN area ───
+    if (path.startsWith('/admin') || path.startsWith('/api/admin')) {
+      if (role !== 'ADMIN') {
+        if (isApi) return NextResponse.json({ error: 'Forbidden: se requiere rol ADMIN' }, { status: 403 });
+        const dest = role === 'PRODUCTOR' ? '/productor' : role === 'VENDEDOR' ? '/vendedor' : '/login';
+        return NextResponse.redirect(new URL(dest, req.url));
       }
-      const dest = role === 'ASESOR' ? '/asesor/dashboard' : '/login';
-      return NextResponse.redirect(new URL(dest, req.url));
+      return NextResponse.next();
     }
 
-    if (isAsesorArea && role !== 'ASESOR') {
-      if (isApi) {
-        return NextResponse.json({ error: 'Forbidden: se requiere rol ASESOR' }, { status: 403 });
+    // ─── PRODUCTOR area (extended vendor) ───
+    if (path.startsWith('/productor') || path.startsWith('/api/productor')) {
+      if (role !== 'PRODUCTOR') {
+        if (isApi) return NextResponse.json({ error: 'Forbidden: se requiere rol PRODUCTOR' }, { status: 403 });
+        const dest = role === 'ADMIN' ? '/admin' : role === 'VENDEDOR' ? '/vendedor' : '/login';
+        return NextResponse.redirect(new URL(dest, req.url));
       }
-      const dest = role === 'ADMIN' ? '/admin/dashboard' : '/login';
-      return NextResponse.redirect(new URL(dest, req.url));
+      return NextResponse.next();
+    }
+
+    // ─── VENDEDOR area (productor also has access — extended vendor) ───
+    if (path.startsWith('/vendedor') || path.startsWith('/api/vendedor')) {
+      if (role !== 'VENDEDOR' && role !== 'PRODUCTOR') {
+        if (isApi) return NextResponse.json({ error: 'Forbidden: se requiere rol VENDEDOR o PRODUCTOR' }, { status: 403 });
+        const dest = role === 'ADMIN' ? '/admin' : '/login';
+        return NextResponse.redirect(new URL(dest, req.url));
+      }
+      return NextResponse.next();
     }
 
     return NextResponse.next();
@@ -37,13 +51,18 @@ export default withAuth(
   {
     pages: { signIn: '/login' },
     callbacks: {
-      // Require a valid token to access any matched route.
-      // If absent, withAuth redirects to /login.
       authorized: ({ token }) => !!token,
     },
   }
 );
 
 export const config = {
-  matcher: ['/admin/:path*', '/asesor/:path*', '/api/admin/:path*', '/api/asesor/:path*'],
+  matcher: [
+    '/admin/:path*',
+    '/vendedor/:path*',
+    '/productor/:path*',
+    '/api/admin/:path*',
+    '/api/vendedor/:path*',
+    '/api/productor/:path*',
+  ],
 };
