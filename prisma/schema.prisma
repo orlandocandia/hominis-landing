@@ -245,8 +245,8 @@ model Contact {
   city            String?
   province        String?
   postalCode      String?
-  latitude        Float
-  longitude       Float
+  latitude        Float?
+  longitude       Float?
   geocodingStatus GeocodingStatus @default(PENDING)
   photoUrl        String?
   photoPublicId   String?

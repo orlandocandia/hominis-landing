@@ -100,8 +100,8 @@ export async function POST(request: Request) {
     const libsql = getTursoClient();
 
     // Geocode address
-    let lat: number | null = null;
-    let lng: number | null = null;
+    let lat: number = 0;
+    let lng: number = 0;
     let geocodingStatus = 'PENDING';
     let city: string | null = null;
     let province: string | null = null;

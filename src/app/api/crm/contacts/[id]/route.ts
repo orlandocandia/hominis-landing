@@ -64,8 +64,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     }
 
     // Geocode if address changed
-    let lat = old.latitude;
-    let lng = old.longitude;
+    let lat = old.latitude ?? 0;
+    let lng = old.longitude ?? 0;
     let geocodingStatus = old.geocodingStatus;
     let city = old.city;
     let province = old.province;
