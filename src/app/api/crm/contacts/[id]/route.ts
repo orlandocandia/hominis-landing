@@ -112,13 +112,6 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
           ), updatedAt = CURRENT_TIMESTAMP WHERE id = ?`,
         args: [old.ownerId, old.ownerId, old.ownerId],
       });
-      // Recalculate lead score (RECHAZADO resets score to 0)
-      try {
-        const { LeadScoringService } = await import('@/lib/services/lead-scoring.service');
-        await LeadScoringService.scoreContact(id);
-      } catch (e) {
-        console.warn('[crm/contact PUT] lead score recalculation failed:', e);
-      }
     }
 
     // Reassignment (ADMIN/PRODUCTOR only)
@@ -144,6 +137,17 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     sets.push('updatedAt = CURRENT_TIMESTAMP');
     args.push(id);
     await libsql.execute({ sql: `UPDATE Contact SET ${sets.join(', ')} WHERE id = ?`, args });
+
+    // Recalculate lead score AFTER the status update is persisted
+    // (so scoreContact reads the new status, e.g. RECHAZADO → score 0)
+    if (status && VALID_STATUS.includes(status) && status !== old.status) {
+      try {
+        const { LeadScoringService } = await import('@/lib/services/lead-scoring.service');
+        await LeadScoringService.scoreContact(id);
+      } catch (e) {
+        console.warn('[crm/contact PUT] lead score recalculation failed:', e);
+      }
+    }
 
     return NextResponse.json({ ok: true });
   } catch (e: any) {
