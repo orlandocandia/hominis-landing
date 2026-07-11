@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import { useTranslation } from '@/components/language-selector';
 
 interface Vendor {
   id: string;
@@ -29,6 +30,7 @@ interface Vendor {
 
 export default function VendedoresListPage() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'ALL' | 'VENDEDOR' | 'PRODUCTOR'>('ALL');
@@ -66,8 +68,8 @@ export default function VendedoresListPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Vendedores</h1>
-          <p className="text-sm text-muted-foreground">{vendors.length} {vendors.length === 1 ? 'usuario' : 'usuarios'} activos</p>
+          <h1 className="text-2xl font-bold tracking-tight">{t('admin.vendedores.title')}</h1>
+          <p className="text-sm text-muted-foreground">{vendors.length} {t('admin.vendedores.activeUsers', { count: String(vendors.length) })}</p>
         </div>
         <Button onClick={() => router.push('/admin/vendedores/nuevo')} className="gap-2">
           <Plus className="w-4 h-4" /> Nuevo vendedor
@@ -78,7 +80,7 @@ export default function VendedoresListPage() {
       <div className="flex gap-2">
         {(['ALL', 'VENDEDOR', 'PRODUCTOR'] as const).map((f) => (
           <Button key={f} size="sm" variant={filter === f ? 'default' : 'outline'} onClick={() => setFilter(f)}>
-            {f === 'ALL' ? 'Todos' : f === 'VENDEDOR' ? 'Vendedores' : 'Productores'}
+            {f === 'ALL' ? t('admin.vendedores.all') : t(`admin.vendedores.filters.${f.toLowerCase()}`)}
           </Button>
         ))}
       </div>

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { LogOut, Shield, LayoutDashboard, Users, FileText, MapPin, UserCircle, Mail, Megaphone, KanbanSquare, BarChart3, Trophy } from 'lucide-react';
 import { NotificationBell } from '@/components/notification-bell';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { LanguageSelector } from '@/components/language-selector';
+import { LanguageSelector, useTranslation } from '@/components/language-selector';
 
 interface DashboardNavProps {
   role: string; // 'ADMIN' | 'VENDEDOR' | 'PRODUCTOR'
@@ -16,10 +16,15 @@ interface DashboardNavProps {
 
 export function DashboardNav({ role, userName, userEmail }: DashboardNavProps) {
   const router = useRouter();
+  const { t } = useTranslation();
   const isAdmin = role === 'ADMIN';
   const isProductor = role === 'PRODUCTOR';
   const basePath = isAdmin ? '/admin' : isProductor ? '/productor' : '/vendedor';
-  const label = isAdmin ? 'Panel Admin' : isProductor ? 'Panel Productor' : 'Panel Vendedor';
+  const label = isAdmin
+    ? (t('dashboard.title') || 'Panel Admin')
+    : isProductor
+      ? (t('dashboard.productor_title') || 'Panel Productor')
+      : (t('dashboard.vendedor_title') || 'Panel Vendedor');
 
   const handleLogout = async () => {
     await signOut({ redirect: false });
@@ -44,24 +49,24 @@ export function DashboardNav({ role, userName, userEmail }: DashboardNavProps) {
 
           {/* Nav links */}
           <nav className="hidden items-center gap-1 md:flex">
-            <NavLink href={basePath} icon={<LayoutDashboard className="h-4 w-4" />} label="Dashboard" />
+            <NavLink href={basePath} icon={<LayoutDashboard className="h-4 w-4" />} label={t('dashboard.sidebar.dashboard') || 'Dashboard'} />
             {isAdmin && (
               <>
-                <NavLink href={`${basePath}/vendedores`} icon={<Users className="h-4 w-4" />} label="Vendedores" />
-                <NavLink href={`${basePath}/contactos`} icon={<FileText className="h-4 w-4" />} label="Contactos" />
-                <NavLink href={`${basePath}/mapa`} icon={<MapPin className="h-4 w-4" />} label="Mapa" />
-                <NavLink href={`${basePath}/invitaciones`} icon={<Mail className="h-4 w-4" />} label="Invitaciones" />
-                <NavLink href={`${basePath}/marketing`} icon={<Megaphone className="h-4 w-4" />} label="Marketing" />
-                <NavLink href={`${basePath}/reportes`} icon={<BarChart3 className="h-4 w-4" />} label="Reportes" />
-                <NavLink href={`${basePath}/leaderboard`} icon={<Trophy className="h-4 w-4" />} label="Ranking" />
+                <NavLink href={`${basePath}/vendedores`} icon={<Users className="h-4 w-4" />} label={t('dashboard.sidebar.vendedores') || 'Vendedores'} />
+                <NavLink href={`${basePath}/contactos`} icon={<FileText className="h-4 w-4" />} label={t('dashboard.sidebar.contactos') || 'Contactos'} />
+                <NavLink href={`${basePath}/mapa`} icon={<MapPin className="h-4 w-4" />} label={t('dashboard.sidebar.mapa') || 'Mapa'} />
+                <NavLink href={`${basePath}/invitaciones`} icon={<Mail className="h-4 w-4" />} label={t('dashboard.sidebar.invitaciones') || 'Invitaciones'} />
+                <NavLink href={`${basePath}/marketing`} icon={<Megaphone className="h-4 w-4" />} label={t('dashboard.sidebar.marketing') || 'Marketing'} />
+                <NavLink href={`${basePath}/reportes`} icon={<BarChart3 className="h-4 w-4" />} label={t('dashboard.sidebar.reportes') || 'Reportes'} />
+                <NavLink href={`${basePath}/leaderboard`} icon={<Trophy className="h-4 w-4" />} label={t('dashboard.sidebar.ranking') || 'Ranking'} />
               </>
             )}
             {!isAdmin && (
               <>
-                <NavLink href={`${basePath}/contactos`} icon={<FileText className="h-4 w-4" />} label="Contactos" />
-                <NavLink href="/vendedor/pipeline" icon={<KanbanSquare className="h-4 w-4" />} label="Pipeline" />
-                <NavLink href={`${basePath}/mapa`} icon={<MapPin className="h-4 w-4" />} label="Mapa" />
-                <NavLink href={`${basePath}/perfil`} icon={<UserCircle className="h-4 w-4" />} label="Perfil" />
+                <NavLink href={`${basePath}/contactos`} icon={<FileText className="h-4 w-4" />} label={t('dashboard.sidebar.contactos') || 'Contactos'} />
+                <NavLink href="/vendedor/pipeline" icon={<KanbanSquare className="h-4 w-4" />} label={t('dashboard.sidebar.pipeline') || 'Pipeline'} />
+                <NavLink href={`${basePath}/mapa`} icon={<MapPin className="h-4 w-4" />} label={t('dashboard.sidebar.mapa') || 'Mapa'} />
+                <NavLink href={`${basePath}/perfil`} icon={<UserCircle className="h-4 w-4" />} label={t('dashboard.sidebar.perfil') || 'Perfil'} />
               </>
             )}
           </nav>

@@ -66,6 +66,15 @@ const TRANSLATIONS: Record<string, any> = {
       welcome: 'Bienvenida/o',
       stats: { total: 'Total Contactos', new: 'Nuevos', attended: 'Atendidos', rejected: 'Rechazados', conversion: 'Conversión', activeVendors: 'Vendedores Activos', teamContacts: 'Contactos del Equipo', teamConversion: 'Conversión Equipo', leads: 'Leads Totales', newLeads: 'Leads sin Atender' },
       actions: { newContact: 'Nuevo contacto', viewPipeline: 'Pipeline', viewMap: 'Mapa', viewProfile: 'Mi Perfil', viewContacts: 'Contactos', viewTeam: 'Equipo', viewMarketing: 'Marketing', viewReports: 'Reportes', viewRanking: 'Ranking', viewInvitations: 'Invitaciones' },
+      sidebar: { dashboard: 'Dashboard', vendedores: 'Vendedores', contactos: 'Contactos', mapa: 'Mapa', invitaciones: 'Invitaciones', marketing: 'Marketing', reportes: 'Reportes', ranking: 'Ranking', pipeline: 'Pipeline', perfil: 'Perfil' },
+    },
+    admin: {
+      vendedores: {
+        title: 'Vendedores', activeUsers: '{count} usuarios activos', all: 'Todos',
+        filters: { all: 'Todos', vendedor: 'Vendedores', productor: 'Productores' },
+        stats: { contacts: 'contactos', conversion: 'conversión' },
+        empty: 'No hay vendedores cargados.', create: 'Nuevo vendedor',
+      },
     },
   },
   en: {
@@ -132,6 +141,15 @@ const TRANSLATIONS: Record<string, any> = {
       welcome: 'Welcome',
       stats: { total: 'Total Contacts', new: 'New', attended: 'Attended', rejected: 'Rejected', conversion: 'Conversion', activeVendors: 'Active Vendors', teamContacts: 'Team Contacts', teamConversion: 'Team Conversion', leads: 'Total Leads', newLeads: 'Unattended Leads' },
       actions: { newContact: 'New Contact', viewPipeline: 'Pipeline', viewMap: 'Map', viewProfile: 'My Profile', viewContacts: 'Contacts', viewTeam: 'Team', viewMarketing: 'Marketing', viewReports: 'Reports', viewRanking: 'Ranking', viewInvitations: 'Invitations' },
+      sidebar: { dashboard: 'Dashboard', vendedores: 'Vendors', contactos: 'Contacts', mapa: 'Map', invitaciones: 'Invitations', marketing: 'Marketing', reportes: 'Reports', ranking: 'Ranking', pipeline: 'Pipeline', perfil: 'Profile' },
+    },
+    admin: {
+      vendedores: {
+        title: 'Vendors', activeUsers: '{count} active users', all: 'All',
+        filters: { all: 'All', vendedor: 'Vendors', productor: 'Producers' },
+        stats: { contacts: 'contacts', conversion: 'conversion' },
+        empty: 'No vendors found.', create: 'New Vendor',
+      },
     },
   },
   pt: {
@@ -198,6 +216,15 @@ const TRANSLATIONS: Record<string, any> = {
       welcome: 'Bem-vindo/a',
       stats: { total: 'Total Contatos', new: 'Novos', attended: 'Atendidos', rejected: 'Rejeitados', conversion: 'Conversão', activeVendors: 'Vendedores Ativos', teamContacts: 'Contatos da Equipe', teamConversion: 'Conversão da Equipe', leads: 'Total Leads', newLeads: 'Leads não atendidos' },
       actions: { newContact: 'Novo Contato', viewPipeline: 'Pipeline', viewMap: 'Mapa', viewProfile: 'Meu Perfil', viewContacts: 'Contatos', viewTeam: 'Equipe', viewMarketing: 'Marketing', viewReports: 'Relatórios', viewRanking: 'Ranking', viewInvitations: 'Convites' },
+      sidebar: { dashboard: 'Painel', vendedores: 'Vendedores', contactos: 'Contatos', mapa: 'Mapa', invitaciones: 'Convites', marketing: 'Marketing', reportes: 'Relatórios', ranking: 'Ranking', pipeline: 'Pipeline', perfil: 'Perfil' },
+    },
+    admin: {
+      vendedores: {
+        title: 'Vendedores', activeUsers: '{count} usuários ativos', all: 'Todos',
+        filters: { all: 'Todos', vendedor: 'Vendedores', productor: 'Produtores' },
+        stats: { contacts: 'contatos', conversion: 'conversão' },
+        empty: 'Nenhum vendedor encontrado.', create: 'Novo Vendedor',
+      },
     },
   },
 };
