@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: [
     ".space-z.ai",
   ],
+  turbopack: {
+    root: __dirname,
+  },
 };
 
 export default nextConfig;
