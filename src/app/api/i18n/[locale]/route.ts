@@ -1,36 +1,144 @@
-// GET /api/i18n/[locale] — returns translation JSON for the requested locale
+// GET /api/i18n/[locale] — returns full translation JSON for the requested locale
 import { NextResponse } from 'next/server';
 
 const TRANSLATIONS: Record<string, any> = {
   es: {
     landing: {
-      title: 'Tu bienestar, mi compromiso',
-      subtitle: 'Asesoría personalizada en planes de salud Hominis',
-      cta: 'Solicitar Asesoramiento',
-      nav: { home: 'Inicio', about: 'Sobre Mí', plans: 'Planes', promotions: 'Promociones', services: 'Servicios', branch: 'Sucursal', contact: 'Contacto' },
+      nav: { home: 'Inicio', about: 'Sobre Mí', plans: 'Planes', promotions: 'Promos', services: 'Servicios', branch: 'Sucursal', contact: 'Contacto' },
+      hero: {
+        title: 'Tu bienestar,',
+        titleHighlight: 'mi compromiso',
+        subtitle: 'Soy Agustina C. Candia, asesora comercial de Hominis. Te ayudo a elegir entre Vita Más y Aqua Más, dos planes con la misma calidad médica y diferente forma de pagar.',
+        cta: 'Solicitar Asesoramiento',
+        stats: { clients: 'Clientes Asesorados', experience: 'Años de Experiencia', satisfaction: 'Satisfacción' },
+      },
+      about: {
+        title: 'Sobre Mí',
+        description: 'Soy Agustina C. Candia, asesora comercial de Hominis con más de 10 años de experiencia en el sector salud.',
+        features: ['Atención personalizada', 'Respuesta inmediata', 'Asesoramiento gratuito'],
+      },
+      plans: {
+        title: 'Planes de Salud',
+        subtitle: 'Elegí el plan que se adapte a tu forma de pagar',
+        vita: { name: 'Vita Más', badge: 'Premium', features: ['Sin copagos', 'Urgencias 24/7 sin copagos', 'Odontología sin cargo', 'Experiencia Concierge 24/7', 'Asistencia al viajero incluida', 'Farmacia incluida'], cta: 'Contratar Vita Más' },
+        aqua: { name: 'Aqua Más', badge: 'Ahorro', features: ['Copagos flexibles', 'Urgencias 24/7 sin copagos', 'Odontología con coseguro', 'Asistencia al viajero incluida', 'Farmacia 40% descuento'], cta: 'Contratar Aqua Más' },
+      },
+      promotions: {
+        title: 'Promociones',
+        subtitle: 'Descuentos escalonados para nuevos socios que adhieran al débito automático',
+        period: 'Período', aqua: 'Aqua Más', vita: 'Vita Más',
+        months: { '1_3': 'Meses 1 a 3', '4_6': 'Meses 4 a 6', '7_12': 'Meses 7 a 12' },
+        note: 'Las promociones aplican para nuevos socios de hasta 39 años.',
+      },
+      services: {
+        title: 'Servicios Digitales',
+        virtual_doctor: { title: 'Médico Virtual', description: 'Consultas por videollamada desde la app Hominis, sin necesidad de moverte de tu casa.' },
+        virtual_pharmacy: { title: 'Farmacia Virtual', description: 'Pedí tus medicamentos con 40% de cobertura y recibilos en tu domicilio.' },
+        digital_management: { title: 'Gestión Digital', description: 'Accedé a tu historial médico, turnos y documentación desde cualquier dispositivo.' },
+      },
+      branch: { title: 'Sucursal', address: 'Portela 266, Lomas de Zamora, PBA', schedule: 'Lunes a Viernes de 9:00 a 18:00', closed: 'Sábados y Domingos: Cerrado', phone: '11-6555-5534', cta: 'Coordinar visita por WhatsApp' },
+      contact: {
+        title: 'Contacto', subtitle: 'Completá el formulario y me comunico con vos en menos de 24 horas.',
+        form: { name: 'Nombre completo', name_placeholder: 'Ej: María González', email: 'Email', email_placeholder: 'ej: maria@email.com', phone: 'Teléfono / WhatsApp', phone_placeholder: 'Ej: 11-5555-1234', segment: 'Situación laboral', age: 'Edad', age_placeholder: 'Ej: 32', coverage: 'Cobertura de interés', message: 'Mensaje', message_placeholder: 'Contanos qué plan te interesa...', submit: 'Enviar Solicitud' },
+        options: { segment: { payroll: 'Recibo de sueldo', monotributo: 'Monotributo', selfEmployed: 'Particular' }, coverage: { caba: 'CABA', gba: 'GBA' } },
+        success: '¡Solicitud enviada con éxito! Te contactaré en menos de 24 horas.',
+      },
+      footer: { copyright: '© 2025 Hominis - Asesoría de Salud. Todos los derechos reservados.' },
     },
     theme: { light: 'Claro', dark: 'Oscuro', system: 'Sistema' },
-    language: { select: 'Idioma', es: 'Español', en: 'English', pt: 'Portugués' },
+    language: { es: 'Español', en: 'English', pt: 'Português' },
   },
   en: {
     landing: {
-      title: 'Your well-being, my commitment',
-      subtitle: 'Personalized advice on Hominis health plans',
-      cta: 'Request Consultation',
-      nav: { home: 'Home', about: 'About Me', plans: 'Plans', promotions: 'Promotions', services: 'Services', branch: 'Branch', contact: 'Contact' },
+      nav: { home: 'Home', about: 'About Me', plans: 'Plans', promotions: 'Promos', services: 'Services', branch: 'Branch', contact: 'Contact' },
+      hero: {
+        title: 'Your well-being,',
+        titleHighlight: 'my commitment',
+        subtitle: 'I am Agustina C. Candia, a commercial advisor at Hominis. I help you choose between Vita Más and Aqua Más, two plans with the same medical quality and different ways to pay.',
+        cta: 'Request Consultation',
+        stats: { clients: 'Clients Advised', experience: 'Years of Experience', satisfaction: 'Satisfaction' },
+      },
+      about: {
+        title: 'About Me',
+        description: 'I am Agustina C. Candia, a commercial advisor at Hominis with over 10 years of experience in the healthcare sector.',
+        features: ['Personalized attention', 'Immediate response', 'Free consultation'],
+      },
+      plans: {
+        title: 'Health Plans',
+        subtitle: 'Choose the plan that fits your way of paying',
+        vita: { name: 'Vita Más', badge: 'Premium', features: ['No copays', '24/7 emergencies without copays', 'Dentistry at no cost', 'Concierge experience 24/7', 'Travel assistance included', 'Pharmacy included'], cta: 'Get Vita Más' },
+        aqua: { name: 'Aqua Más', badge: 'Savings', features: ['Flexible copays', '24/7 emergencies without copays', 'Dentistry with co-insurance', 'Travel assistance included', 'Pharmacy 40% discount'], cta: 'Get Aqua Más' },
+      },
+      promotions: {
+        title: 'Promotions',
+        subtitle: 'Tiered discounts for new members who sign up for automatic debit',
+        period: 'Period', aqua: 'Aqua Más', vita: 'Vita Más',
+        months: { '1_3': 'Months 1 to 3', '4_6': 'Months 4 to 6', '7_12': 'Months 7 to 12' },
+        note: 'Promotions apply to new members up to 39 years old.',
+      },
+      services: {
+        title: 'Digital Services',
+        virtual_doctor: { title: 'Virtual Doctor', description: 'Video call consultations from the Hominis app, without leaving your home.' },
+        virtual_pharmacy: { title: 'Virtual Pharmacy', description: 'Order your medications with 40% coverage and get them delivered to your home.' },
+        digital_management: { title: 'Digital Management', description: 'Access your medical history, appointments and documentation from any device.' },
+      },
+      branch: { title: 'Branch', address: 'Portela 266, Lomas de Zamora, PBA', schedule: 'Monday to Friday 9:00 AM to 6:00 PM', closed: 'Saturdays and Sundays: Closed', phone: '11-6555-5534', cta: 'Schedule a visit via WhatsApp' },
+      contact: {
+        title: 'Contact', subtitle: "Fill out the form and I'll get back to you in less than 24 hours.",
+        form: { name: 'Full name', name_placeholder: 'e.g. Maria Gonzalez', email: 'Email', email_placeholder: 'e.g. maria@email.com', phone: 'Phone / WhatsApp', phone_placeholder: 'e.g. 11-5555-1234', segment: 'Employment status', age: 'Age', age_placeholder: 'e.g. 32', coverage: 'Area of interest', message: 'Message', message_placeholder: 'Tell us which plan you are interested in...', submit: 'Send Request' },
+        options: { segment: { payroll: 'Payroll employee', monotributo: 'Monotributo', selfEmployed: 'Self-employed' }, coverage: { caba: 'CABA', gba: 'GBA' } },
+        success: 'Request sent successfully! I will contact you within 24 hours.',
+      },
+      footer: { copyright: '© 2025 Hominis - Health Advisory. All rights reserved.' },
     },
     theme: { light: 'Light', dark: 'Dark', system: 'System' },
-    language: { select: 'Language', es: 'Español', en: 'English', pt: 'Português' },
+    language: { es: 'Español', en: 'English', pt: 'Português' },
   },
   pt: {
     landing: {
-      title: 'Seu bem-estar, meu compromisso',
-      subtitle: 'Aconselhamento personalizado em planos de saúde Hominis',
-      cta: 'Solicitar Assessoria',
-      nav: { home: 'Início', about: 'Sobre Mim', plans: 'Planos', promotions: 'Promoções', services: 'Serviços', branch: 'Agência', contact: 'Contato' },
+      nav: { home: 'Início', about: 'Sobre Mim', plans: 'Planos', promotions: 'Promoções', services: 'Serviços', branch: 'Filial', contact: 'Contato' },
+      hero: {
+        title: 'Seu bem-estar,',
+        titleHighlight: 'meu compromisso',
+        subtitle: 'Sou Agustina C. Candia, assessora comercial da Hominis. Ajudo você a escolher entre Vita Más e Aqua Más, dois planos com a mesma qualidade médica e diferentes formas de pagamento.',
+        cta: 'Solicitar Assessoria',
+        stats: { clients: 'Clientes Assessorados', experience: 'Anos de Experiência', satisfaction: 'Satisfação' },
+      },
+      about: {
+        title: 'Sobre Mim',
+        description: 'Sou Agustina C. Candia, assessora comercial da Hominis com mais de 10 anos de experiência no setor de saúde.',
+        features: ['Atendimento personalizado', 'Resposta imediata', 'Assessoria gratuita'],
+      },
+      plans: {
+        title: 'Planos de Saúde',
+        subtitle: 'Escolha o plano que se adapta à sua forma de pagamento',
+        vita: { name: 'Vita Más', badge: 'Premium', features: ['Sem coparticipação', 'Emergências 24/7 sem coparticipação', 'Odontologia sem custo', 'Experiência Concierge 24/7', 'Assistência ao viajante incluída', 'Farmácia incluída'], cta: 'Contratar Vita Más' },
+        aqua: { name: 'Aqua Más', badge: 'Economia', features: ['Coparticipação flexível', 'Emergências 24/7 sem coparticipação', 'Odontologia com co-seguro', 'Assistência ao viajante incluída', 'Farmácia 40% desconto'], cta: 'Contratar Aqua Más' },
+      },
+      promotions: {
+        title: 'Promoções',
+        subtitle: 'Descontos escalonados para novos associados que aderirem ao débito automático',
+        period: 'Período', aqua: 'Aqua Más', vita: 'Vita Más',
+        months: { '1_3': 'Meses 1 a 3', '4_6': 'Meses 4 a 6', '7_12': 'Meses 7 a 12' },
+        note: 'As promoções aplicam-se a novos associados de até 39 anos.',
+      },
+      services: {
+        title: 'Serviços Digitais',
+        virtual_doctor: { title: 'Médico Virtual', description: 'Consultas por videoconferência no app Hominis, sem sair de casa.' },
+        virtual_pharmacy: { title: 'Farmácia Virtual', description: 'Peça seus medicamentos com 40% de cobertura e receba em sua casa.' },
+        digital_management: { title: 'Gestão Digital', description: 'Acesse seu histórico médico, consultas e documentação de qualquer dispositivo.' },
+      },
+      branch: { title: 'Filial', address: 'Portela 266, Lomas de Zamora, PBA', schedule: 'Segunda a Sexta das 9:00 às 18:00', closed: 'Sábados e Domingos: Fechado', phone: '11-6555-5534', cta: 'Agendar visita por WhatsApp' },
+      contact: {
+        title: 'Contato', subtitle: 'Preencha o formulário e entrarei em contato em menos de 24 horas.',
+        form: { name: 'Nome completo', name_placeholder: 'Ex: Maria González', email: 'Email', email_placeholder: 'ex: maria@email.com', phone: 'Telefone / WhatsApp', phone_placeholder: 'Ex: 11-5555-1234', segment: 'Situação profissional', age: 'Idade', age_placeholder: 'Ex: 32', coverage: 'Área de interesse', message: 'Mensagem', message_placeholder: 'Conte-nos qual plano lhe interessa...', submit: 'Enviar Solicitação' },
+        options: { segment: { payroll: 'Assalariado', monotributo: 'Monotributo', selfEmployed: 'Autônomo' }, coverage: { caba: 'CABA', gba: 'GBA' } },
+        success: 'Solicitação enviada com sucesso! Entrarei em contato em menos de 24 horas.',
+      },
+      footer: { copyright: '© 2025 Hominis - Assessoria de Saúde. Todos os direitos reservados.' },
     },
     theme: { light: 'Claro', dark: 'Escuro', system: 'Sistema' },
-    language: { select: 'Idioma', es: 'Español', en: 'English', pt: 'Português' },
+    language: { es: 'Español', en: 'English', pt: 'Português' },
   },
 };
 

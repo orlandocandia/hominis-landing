@@ -44,7 +44,7 @@ import { QRCodeSVG } from 'qrcode.react';
 import { WhatsAppButton } from '@/components/whatsapp-button';
 import { UtmCapturer } from '@/components/utm-capturer';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { LanguageSelector } from '@/components/language-selector';
+import { LanguageSelector, useTranslation } from '@/components/language-selector';
 import dynamic from 'next/dynamic';
 
 const MapWithAgustina = dynamic(() => import('@/components/MapWithAgustina'), {
@@ -89,6 +89,7 @@ function AnimatedSection({
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -97,13 +98,13 @@ function Navbar() {
   }, []);
 
   const navLinks = [
-    { href: '#inicio', label: 'Inicio' },
-    { href: '#sobre-mi', label: 'Sobre Mí' },
-    { href: '#planes', label: 'Planes' },
-    { href: '#promociones', label: 'Promos' },
-    { href: '#servicios', label: 'Servicios' },
-    { href: '#sucursal', label: 'Sucursal' },
-    { href: '#contacto', label: 'Contacto' },
+    { href: '#inicio', label: t('landing.nav.home') },
+    { href: '#sobre-mi', label: t('landing.nav.about') },
+    { href: '#planes', label: t('landing.nav.plans') },
+    { href: '#promociones', label: t('landing.nav.promotions') },
+    { href: '#servicios', label: t('landing.nav.services') },
+    { href: '#sucursal', label: t('landing.nav.branch') },
+    { href: '#contacto', label: t('landing.nav.contact') },
   ];
 
   return (
@@ -139,6 +140,10 @@ function Navbar() {
                 {link.label}
               </a>
             ))}
+            <div className="flex items-center gap-1 ml-2">
+              <ThemeToggle />
+              <LanguageSelector />
+            </div>
             <a href="#contacto">
               <Button
                 size="sm"
@@ -150,10 +155,13 @@ function Navbar() {
             </a>
           </div>
 
-          {/* Mobile Menu Toggle */}
-          <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-primary/5"
+          {/* Mobile Menu Toggle + theme/lang */}
+          <div className="md:hidden flex items-center gap-1">
+            <ThemeToggle />
+            <LanguageSelector />
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="md:hidden p-2 rounded-lg hover:bg-primary/5"
             aria-label="Abrir menú"
           >
             <div className="space-y-1.5">
@@ -174,6 +182,7 @@ function Navbar() {
               />
             </div>
           </button>
+          </div>
         </div>
       </div>
 
@@ -210,6 +219,7 @@ function Navbar() {
 
 /* ─── HERO SECTION ─── */
 function HeroSection() {
+  const { t } = useTranslation();
   return (
     <section
       id="inicio"
@@ -242,19 +252,12 @@ function HeroSection() {
             </Badge>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-serif font-bold text-white leading-tight mb-6">
-              Tu bienestar,{' '}
-              <span className="text-hominis-gold">mi compromiso</span>
+              {t('landing.hero.title')}{' '}
+              <span className="text-hominis-gold">{t('landing.hero.titleHighlight')}</span>
             </h1>
 
             <p className="text-lg sm:text-xl text-white/80 max-w-xl mb-8 leading-relaxed">
-              Soy{' '}
-              <strong className="text-white font-semibold">
-                Agustina C. Candia
-              </strong>
-              , asesora comercial de Hominis. Te ayudo a elegir entre{' '}
-              <strong className="text-hominis-gold font-semibold">Vita Más</strong> y{' '}
-              <strong className="text-hominis-gold font-semibold">Aqua Más</strong>,
-              dos planes con la misma calidad médica y diferente forma de pagar.
+              {t('landing.hero.subtitle')}
             </p>
 
             <div className="flex flex-col items-center lg:items-start gap-5">
@@ -263,7 +266,7 @@ function HeroSection() {
                   size="lg"
                   className="bg-white text-hominis-blue hover:bg-white/90 font-semibold px-8 shadow-2xl shadow-black/20 text-base"
                 >
-                  Solicitar Asesoramiento
+                  {t('landing.hero.cta')}
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </a>
@@ -422,13 +425,14 @@ function AboutSection() {
 
 /* ─── PLANS SECTION (Vita Más vs Aqua Más) ─── */
 function PlansSection() {
+  const { t } = useTranslation();
   return (
-    <AnimatedSection id="planes" className="py-20 lg:py-28 bg-white">
+    <AnimatedSection id="planes" className="py-20 lg:py-28 bg-white dark:bg-card/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
             <Badge variant="secondary" className="mb-4 text-hominis-violet bg-hominis-violet/10 border-hominis-violet/20">
-            Planes de Salud
+            {t('landing.plans.title')}
           </Badge>
           <h2 className="text-3xl sm:text-4xl font-serif font-bold gradient-text mb-4">
             Misma calidad médica, diferente forma de pagar
@@ -583,6 +587,7 @@ function PlansSection() {
 
 /* ─── PROMOTIONS SECTION ─── */
 function PromotionsSection() {
+  const { t } = useTranslation();
   const promos = [
     {
       plan: 'Aqua Más',
@@ -693,6 +698,7 @@ function PromotionsSection() {
 
 /* ─── DIGITAL SERVICES SECTION ─── */
 function ServicesSection() {
+  const { t } = useTranslation();
   const services = [
     {
       icon: (
@@ -733,7 +739,7 @@ function ServicesSection() {
   ];
 
   return (
-    <AnimatedSection id="servicios" className="py-20 lg:py-28 bg-white">
+    <AnimatedSection id="servicios" className="py-20 lg:py-28 bg-white dark:bg-card/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
@@ -788,6 +794,7 @@ function ServicesSection() {
 
 /* ─── SUCURSAL / OFICINA SECTION ─── */
 function SucursalSection() {
+  const { t } = useTranslation();
   return (
     <AnimatedSection id="sucursal" className="py-20 lg:py-28 bg-hominis-gradient-light">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -913,6 +920,7 @@ function SucursalSection() {
 
 /* ─── CONTACT FORM SECTION ─── */
 function ContactSection() {
+  const { t } = useTranslation();
   const [csrfToken, setCsrfToken] = useState('');
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -998,7 +1006,7 @@ function ContactSection() {
   };
 
   return (
-    <AnimatedSection id="contacto" className="py-20 lg:py-28 bg-white">
+    <AnimatedSection id="contacto" className="py-20 lg:py-28 bg-white dark:bg-card/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16 items-start">
           {/* Left side - Info */}
@@ -1418,8 +1426,6 @@ function Footer() {
             <p>
               Promociones válidas para nuevos socios hasta 39 años. Sujetas a condiciones según edad y modalidad de pago.
             </p>
-            <ThemeToggle />
-            <LanguageSelector />
             <a
               href="/login"
               className="text-white/40 hover:text-white/80 transition-colors"
