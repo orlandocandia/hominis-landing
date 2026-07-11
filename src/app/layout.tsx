@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/components/auth-provider";
 import { ThemeProvider } from "next-themes";
+import { I18nProvider } from "@/components/language-selector";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -153,10 +154,12 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <AuthProvider>
-            {children}
-          </AuthProvider>
-          <Toaster position="top-center" richColors />
+          <I18nProvider>
+            <AuthProvider>
+              {children}
+            </AuthProvider>
+            <Toaster position="top-center" richColors />
+          </I18nProvider>
         </ThemeProvider>
       </body>
     </html>
