@@ -111,3 +111,80 @@ export async function sendNewContactEmail(contact: ContactNotification): Promise
     return false;
   }
 }
+
+/**
+ * Send an invitation email to a new vendor/productor.
+ * The email contains a link with the invitation token to complete registration.
+ */
+export async function sendInvitationEmail(params: {
+  to: string;
+  inviteeName: string;
+  inviterName: string;
+  role: 'VENDEDOR' | 'PRODUCTOR';
+  token: string;
+  baseUrl: string;
+}): Promise<boolean> {
+  const resend = getResendClient();
+  if (!resend) {
+    console.warn('[Email] Resend no configurado — invitación no enviada por email (el token sigue siendo válido)');
+    return false;
+  }
+
+  const { to, inviteeName, inviterName, role, token, baseUrl } = params;
+  const registerUrl = `${baseUrl}/register?token=${token}`;
+  const roleLabel = role === 'PRODUCTOR' ? 'Productor (vendedor extendido)' : 'Vendedor';
+  const expiryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  try {
+    const { error } = await resend.emails.send({
+      from: 'Hominis CRM <onboarding@resend.dev>',
+      to: [to],
+      subject: `Invitación a Hominis CRM — ${roleLabel}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f9fafb; border-radius: 12px; overflow: hidden;">
+          <div style="background: linear-gradient(135deg, #6366f1, #8b5cf6); padding: 32px 24px; text-align: center;">
+            <h1 style="color: white; margin: 0; font-size: 24px;">¡Bienvenido/a a Hominis CRM!</h1>
+            <p style="color: rgba(255,255,255,0.85); margin: 8px 0 0;">Fuiste invitado/a como <strong>${roleLabel}</strong></p>
+          </div>
+          <div style="padding: 32px 24px;">
+            <p style="color: #374151; font-size: 16px; line-height: 1.6;">Hola <strong>${inviteeName}</strong>,</p>
+            <p style="color: #374151; font-size: 16px; line-height: 1.6;">
+              <strong>${inviterName}</strong> te invitó a unirte al equipo de Hominis como <strong>${roleLabel}</strong>.
+              Para completar tu registro y crear tu contraseña, hacé clic en el siguiente botón:
+            </p>
+            <div style="text-align: center; margin: 32px 0;">
+              <a href="${registerUrl}" style="display: inline-block; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">
+                Completar mi registro
+              </a>
+            </div>
+            <p style="color: #6b7280; font-size: 14px; line-height: 1.6;">
+              Si el botón no funciona, copiá y pegá este enlace en tu navegador:<br>
+              <a href="${registerUrl}" style="color: #6366f1; word-break: break-all;">${registerUrl}</a>
+            </p>
+            <div style="background: #fef3c7; border-radius: 8px; padding: 16px; margin-top: 24px;">
+              <p style="color: #92400e; font-size: 13px; margin: 0;">
+                ⏰ <strong>Esta invitación expira el ${expiryDate}.</strong> Si no la usás a tiempo, pedile a ${inviterName} que te reenvíe.
+              </p>
+            </div>
+            <p style="color: #9ca3af; font-size: 13px; margin-top: 24px;">
+              Si no esperabas esta invitación, podés ignorar este email.
+            </p>
+          </div>
+          <div style="background: #f3f4f6; padding: 16px; text-align: center; font-size: 12px; color: #9ca3af;">
+            Hominis CRM — Sistema de gestión • ${new Date().toLocaleDateString('es-AR')}
+          </div>
+        </div>
+      `,
+    });
+
+    if (error) {
+      console.error('[Email] Invitation send error:', error);
+      return false;
+    }
+    console.log('[Email] Invitación enviada a', to);
+    return true;
+  } catch (error) {
+    console.error('[Email] Error enviando invitación:', error);
+    return false;
+  }
+}

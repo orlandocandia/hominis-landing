@@ -3,7 +3,8 @@
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { LogOut, Shield, LayoutDashboard, Users, FileText, MapPin, UserCircle } from 'lucide-react';
+import { LogOut, Shield, LayoutDashboard, Users, FileText, MapPin, UserCircle, Mail } from 'lucide-react';
+import { NotificationBell } from '@/components/notification-bell';
 
 interface DashboardNavProps {
   role: string; // 'ADMIN' | 'VENDEDOR' | 'PRODUCTOR'
@@ -47,6 +48,7 @@ export function DashboardNav({ role, userName, userEmail }: DashboardNavProps) {
                 <NavLink href={`${basePath}/vendedores`} icon={<Users className="h-4 w-4" />} label="Vendedores" />
                 <NavLink href={`${basePath}/contactos`} icon={<FileText className="h-4 w-4" />} label="Contactos" />
                 <NavLink href={`${basePath}/mapa`} icon={<MapPin className="h-4 w-4" />} label="Mapa" />
+                <NavLink href={`${basePath}/invitaciones`} icon={<Mail className="h-4 w-4" />} label="Invitaciones" />
               </>
             )}
             {!isAdmin && (
@@ -59,8 +61,9 @@ export function DashboardNav({ role, userName, userEmail }: DashboardNavProps) {
           </nav>
         </div>
 
-        {/* User + logout */}
-        <div className="flex items-center gap-3">
+        {/* User + notifications + logout */}
+        <div className="flex items-center gap-2">
+          <NotificationBell />
           <div className="hidden text-right sm:block">
             <div className="text-sm font-medium text-foreground">{userName}</div>
             <div className="text-[11px] text-muted-foreground">{userEmail}</div>
