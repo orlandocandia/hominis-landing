@@ -43,6 +43,8 @@ import { toast } from 'sonner';
 import { QRCodeSVG } from 'qrcode.react';
 import { WhatsAppButton } from '@/components/whatsapp-button';
 import { UtmCapturer } from '@/components/utm-capturer';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { LanguageSelector } from '@/components/language-selector';
 import dynamic from 'next/dynamic';
 
 const MapWithAgustina = dynamic(() => import('@/components/MapWithAgustina'), {
@@ -1416,6 +1418,8 @@ function Footer() {
             <p>
               Promociones válidas para nuevos socios hasta 39 años. Sujetas a condiciones según edad y modalidad de pago.
             </p>
+            <ThemeToggle />
+            <LanguageSelector />
             <a
               href="/login"
               className="text-white/40 hover:text-white/80 transition-colors"

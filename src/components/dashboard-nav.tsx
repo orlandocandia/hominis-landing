@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { LogOut, Shield, LayoutDashboard, Users, FileText, MapPin, UserCircle, Mail, Megaphone, KanbanSquare, BarChart3, Trophy } from 'lucide-react';
 import { NotificationBell } from '@/components/notification-bell';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { LanguageSelector } from '@/components/language-selector';
 
 interface DashboardNavProps {
   role: string; // 'ADMIN' | 'VENDEDOR' | 'PRODUCTOR'
@@ -65,8 +67,10 @@ export function DashboardNav({ role, userName, userEmail }: DashboardNavProps) {
           </nav>
         </div>
 
-        {/* User + notifications + logout */}
-        <div className="flex items-center gap-2">
+        {/* User + notifications + theme + language + logout */}
+        <div className="flex items-center gap-1">
+          <LanguageSelector />
+          <ThemeToggle />
           <NotificationBell />
           <div className="hidden text-right sm:block">
             <div className="text-sm font-medium text-foreground">{userName}</div>
