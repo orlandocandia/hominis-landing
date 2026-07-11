@@ -42,6 +42,7 @@ import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 import { QRCodeSVG } from 'qrcode.react';
 import { WhatsAppButton } from '@/components/whatsapp-button';
+import { UtmCapturer } from '@/components/utm-capturer';
 import dynamic from 'next/dynamic';
 
 const MapWithAgustina = dynamic(() => import('@/components/MapWithAgustina'), {
@@ -940,13 +941,25 @@ function ContactSection() {
     setLoading(true);
 
     try {
+      // Read UTM cookies (set by UtmCapturer) and append to form data
+      const getCookie = (name: string) => {
+        const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+        return m ? decodeURIComponent(m[1]) : '';
+      };
+      const payload = {
+        ...formData,
+        utmSource: getCookie('utm_source'),
+        utmMedium: getCookie('utm_medium'),
+        utmCampaign: getCookie('utm_campaign'),
+        referrer: getCookie('utm_referrer') || document.referrer,
+      };
       const res = await fetch('/api/leads', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'x-csrf-token': csrfToken,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
@@ -1419,6 +1432,7 @@ function Footer() {
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col">
+      <UtmCapturer />
       <Navbar />
       <main className="flex-1">
         <HeroSection />

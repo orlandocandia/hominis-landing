@@ -103,6 +103,14 @@ enum InvitationRole {
   PRODUCTOR
 }
 
+enum SourceCategory {
+  PAID
+  ORGANIC
+  SOCIAL
+  REFERRAL
+  DIRECT
+}
+
 // ═══════════════════════════════════════════════════════
 // USER (existente, extendido con perfil CRM)
 // ═══════════════════════════════════════════════════════
@@ -251,6 +259,13 @@ model Contact {
   leadScoredAt    DateTime?
   leadScoreHistory String?  // JSON string of [{score, priority, date}]
 
+  // Marketing analytics (Fase 2)
+  sourceId          String?
+  sourceUtmSource   String?
+  sourceUtmMedium   String?
+  sourceUtmCampaign String?
+  sourceReferrer    String?
+
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
 
@@ -381,6 +396,38 @@ model Notification {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+// ═══════════════════════════════════════════════════════
+// MARKETING ANALYTICS (Fase 2)
+// ═══════════════════════════════════════════════════════
+
+model LeadSource {
+  id        String         @id @default(cuid())
+  name      String         @unique
+  category  SourceCategory
+  isActive  Boolean        @default(true)
+  createdAt DateTime       @default(now())
+
+  metrics SourceMetric[]
+
+  @@index([category])
+}
+
+model SourceMetric {
+  id             String   @id @default(cuid())
+  sourceId       String
+  date           DateTime @default(now())
+  leads          Int      @default(0)
+  conversions    Int      @default(0)
+  conversionRate Float    @default(0)
+  cost           Float    @default(0)
+  createdAt      DateTime @default(now())
+
+  source LeadSource @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+
+  @@unique([sourceId, date])
+  @@index([date])
 }
 
 // ═══════════════════════════════════════════════════════

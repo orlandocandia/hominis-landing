@@ -60,10 +60,21 @@ export async function POST(request: Request) {
     const id = 'lead_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
     const now = new Date().toISOString();
 
+    // Build origen with UTM + referrer (marketing analytics)
+    const utmSource = body.utmSource || '';
+    const utmMedium = body.utmMedium || '';
+    const utmCampaign = body.utmCampaign || '';
+    const referrer = body.referrer || '';
+    const origenData: string[] = ['landing'];
+    if (utmSource) origenData.push(`utm_source=${utmSource}`);
+    if (utmMedium) origenData.push(`utm_medium=${utmMedium}`);
+    if (utmCampaign) origenData.push(`utm_campaign=${utmCampaign}`);
+    const origen = origenData.join('|');
+
     await libsql.execute({
       sql: `INSERT INTO Contacto (id, nombre, email, telefono, segmento, mensaje, cobertura, edad, origen, ip, estado, createdAt, updatedAt)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      args: [id, nombre, email, telefono, segmento, mensaje || null, cobertura || null, edad || null, 'landing', clientIp, 'NUEVO', now, now],
+      args: [id, nombre, email, telefono, segmento, mensaje || null, cobertura || null, edad || null, origen, clientIp, 'NUEVO', now, now],
     });
 
     // 2. Send notifications (don't block the response if they fail)

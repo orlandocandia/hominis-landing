@@ -89,7 +89,8 @@ export async function POST(request: Request) {
     if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
 
     const body = await request.json();
-    const { name, address, primaryEmail, primaryPhone, segment, coverage, age, message, phones, emails, assignMethod, manualOwnerId } = body;
+    const { name, address, primaryEmail, primaryPhone, segment, coverage, age, message, phones, emails, assignMethod, manualOwnerId,
+      sourceUtmSource, sourceUtmMedium, sourceUtmCampaign, sourceReferrer } = body;
 
     if (!name || !address) {
       return NextResponse.json({ error: 'name y address son obligatorios' }, { status: 400 });
@@ -137,11 +138,24 @@ export async function POST(request: Request) {
 
     const contactId = 'ct_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 
+    // Resolve sourceId from utm_source if provided (match by name)
+    let sourceId: string | null = null;
+    if (sourceUtmSource) {
+      try {
+        const srcRes = await libsql.execute({
+          sql: 'SELECT id FROM "LeadSource" WHERE name = ? AND isActive = 1 LIMIT 1',
+          args: [sourceUtmSource],
+        });
+        if (srcRes.rows.length > 0) sourceId = srcRes.rows[0].id as string;
+      } catch {}
+    }
+
     await libsql.execute({
       sql: `INSERT INTO Contact (id, name, primaryEmail, primaryPhone, address, city, province,
         latitude, longitude, geocodingStatus, segment, age, coverage, message, status,
-        ownerId, assignedBy, assignedAt, createdAt, updatedAt)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'NUEVO', ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
+        ownerId, assignedBy, assignedAt, createdAt, updatedAt,
+        sourceId, sourceUtmSource, sourceUtmMedium, sourceUtmCampaign, sourceReferrer)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'NUEVO', ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?)`,
       args: [
         contactId, name, primaryEmail || null, primaryPhone || null,
         address, city, province, lat, lng, geocodingStatus,
@@ -150,8 +164,22 @@ export async function POST(request: Request) {
         coverage && VALID_COVERAGE.includes(coverage) ? coverage : null,
         message || null,
         ownerId, session.user.id,
+        sourceId, sourceUtmSource || null, sourceUtmMedium || null, sourceUtmCampaign || null, sourceReferrer || null,
       ],
     });
+
+    // Update SourceMetric (increment leads for today)
+    if (sourceId) {
+      try {
+        const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+        await libsql.execute({
+          sql: `INSERT INTO "SourceMetric" (id, sourceId, date, leads, conversions, conversionRate, cost, createdAt)
+            VALUES (?, ?, ?, 1, 0, 0, 0, CURRENT_TIMESTAMP)
+            ON CONFLICT(sourceId, date) DO UPDATE SET leads = leads + 1`,
+          args: ['sm_' + sourceId + '_' + today, sourceId, today],
+        });
+      } catch (e) { console.warn('[crm/contacts] source metric update failed:', e); }
+    }
 
     // Insert multichannel phones/emails if provided
     if (Array.isArray(phones)) {

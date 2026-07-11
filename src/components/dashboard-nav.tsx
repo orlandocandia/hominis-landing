@@ -3,7 +3,7 @@
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { LogOut, Shield, LayoutDashboard, Users, FileText, MapPin, UserCircle, Mail } from 'lucide-react';
+import { LogOut, Shield, LayoutDashboard, Users, FileText, MapPin, UserCircle, Mail, Megaphone } from 'lucide-react';
 import { NotificationBell } from '@/components/notification-bell';
 
 interface DashboardNavProps {
@@ -49,6 +49,7 @@ export function DashboardNav({ role, userName, userEmail }: DashboardNavProps) {
                 <NavLink href={`${basePath}/contactos`} icon={<FileText className="h-4 w-4" />} label="Contactos" />
                 <NavLink href={`${basePath}/mapa`} icon={<MapPin className="h-4 w-4" />} label="Mapa" />
                 <NavLink href={`${basePath}/invitaciones`} icon={<Mail className="h-4 w-4" />} label="Invitaciones" />
+                <NavLink href={`${basePath}/marketing`} icon={<Megaphone className="h-4 w-4" />} label="Marketing" />
               </>
             )}
             {!isAdmin && (
