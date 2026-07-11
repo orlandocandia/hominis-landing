@@ -2,7 +2,8 @@
 // Methods: ROUND_ROBIN, GEOGRAPHIC (nearest), CAPACITY (least contacts), MANUAL.
 import { getTursoClient } from '@/lib/turso-config';
 import { distanceKm } from '@/lib/geocoding';
-import type { AssignmentMethod } from '@prisma/client';
+
+type AssignmentMethod = 'ROUND_ROBIN' | 'GEOGRAPHIC' | 'CAPACITY' | 'MANUAL';
 
 export interface AssignmentResult {
   userId: string;
