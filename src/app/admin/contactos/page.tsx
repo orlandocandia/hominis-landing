@@ -59,6 +59,9 @@ export default async function AdminContactosPage() {
                     {c.ownerNombre && (
                       <p className="text-xs text-muted-foreground/70 mt-0.5">Asignado a: {c.ownerNombre} {c.ownerApellido || ''}</p>
                     )}
+                    {c.message && (
+                      <p className="text-xs text-muted-foreground mt-1 bg-muted/50 px-2 py-1 rounded">💬 {c.message.substring(0, 100)}</p>
+                    )}
                   </div>
                 </div>
               </CardContent>

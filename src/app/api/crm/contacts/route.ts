@@ -61,7 +61,7 @@ export async function GET(request: Request) {
     const result = await libsql.execute({
       sql: `SELECT c.id, c.name, c.primaryEmail, c.primaryPhone, c.address, c.city, c.province,
         c.latitude, c.longitude, c.segment, c.coverage, c.age, c.status, c.ownerId,
-        c.leadScore, c.leadPriority, c.leadScoredAt, c.createdAt,
+        c.leadScore, c.leadPriority, c.leadScoredAt, c.createdAt, c.message,
         u.nombre as ownerNombre, u.apellido as ownerApellido
         FROM Contact c
         LEFT JOIN "User" u ON c.ownerId = u.id
