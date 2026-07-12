@@ -55,7 +55,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: errors.join('. ') }, { status: 400 });
     }
 
-    // 1. Store in database
+    // 1. Store in Contacto (legacy table — for backwards compat)
     const libsql = getTursoClient();
     const id = 'lead_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
     const now = new Date().toISOString();
@@ -67,6 +67,7 @@ export async function POST(request: Request) {
     const utmTerm = body.utmTerm || '';
     const utmContent = body.utmContent || '';
     const referrer = body.referrer || '';
+    const userAgent = body.userAgent || '';
     const origenData: string[] = ['landing'];
     if (utmSource) origenData.push(`utm_source=${utmSource}`);
     if (utmMedium) origenData.push(`utm_medium=${utmMedium}`);
@@ -80,6 +81,98 @@ export async function POST(request: Request) {
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       args: [id, nombre, email, telefono, segmento, mensaje || null, cobertura || null, edad || null, origen, clientIp, 'NUEVO', now, now],
     });
+
+    // 1b. ALSO store in Contact (CRM table — visible in /admin/contactos)
+    // This is the bridge that makes leads visible in the admin panel.
+    const contactId = 'ct_lead_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    const segmentCrm = segmento === 'RECIBO_DE_SUELDO' ? 'RECIBO_DE_SUELDO'
+      : segmento === 'MONOTRIBUTO' ? 'MONOTRIBUTO'
+      : segmento === 'PARTICULAR' ? 'PARTICULAR' : null;
+    const coverageCrm = cobertura === 'CABA' ? 'CABA' : cobertura === 'GBA' ? 'GBA' : null;
+
+    // Geocode the lead's area (use coverage as proxy for address since landing form doesn't send address)
+    let lat = 0, lng = 0;
+    try {
+      const { geocodeAddress } = await import('@/lib/geocoding');
+      const geoQuery = cobertura === 'CABA' ? 'Buenos Aires, CABA, Argentina' : 'Lomas de Zamora, GBA, Argentina';
+      const geo = await geocodeAddress(geoQuery);
+      if (geo) { lat = geo.latitude; lng = geo.longitude; }
+    } catch {}
+
+    // Assign to admin by default (landing leads go to admin, who can reassign)
+    const adminRes = await libsql.execute({ sql: "SELECT id FROM \"User\" WHERE rol = 'ADMIN' AND activo = 1 LIMIT 1" });
+    const adminId = adminRes.rows.length > 0 ? (adminRes.rows[0] as any).id : 'admin_001';
+
+    // Resolve sourceId from utm_source
+    let sourceId: string | null = null;
+    if (utmSource) {
+      try {
+        const srcRes = await libsql.execute({ sql: 'SELECT id FROM "LeadSource" WHERE name = ? AND isActive = 1 LIMIT 1', args: [utmSource] });
+        if (srcRes.rows.length > 0) sourceId = srcRes.rows[0].id as string;
+      } catch {}
+    }
+
+    await libsql.execute({
+      sql: `INSERT INTO Contact (id, name, primaryEmail, primaryPhone, address, city, province,
+        latitude, longitude, geocodingStatus, segment, age, coverage, message, status,
+        ownerId, assignedBy, assignedAt, createdAt, updatedAt,
+        sourceId, sourceUtmSource, sourceUtmMedium, sourceUtmCampaign, sourceUtmTerm, sourceUtmContent, sourceReferrer, sourceUserAgent, sourceIp)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'NUEVO', ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      args: [
+        contactId, nombre, email || null, telefono,
+        cobertura === 'CABA' ? 'CABA, Buenos Aires' : 'GBA, Buenos Aires',
+        cobertura === 'CABA' ? 'CABA' : 'Lomas de Zamora',
+        'Buenos Aires',
+        lat, lng, lat !== 0 ? 'SUCCESS' : 'PENDING',
+        segmentCrm, edad || null, coverageCrm, mensaje || null,
+        adminId, adminId,
+        sourceId, utmSource || null, utmMedium || null, utmCampaign || null,
+        utmTerm || null, utmContent || null, referrer || null, userAgent || null, clientIp,
+      ],
+    });
+
+    // Auto-score the lead
+    try {
+      const { LeadScoringService } = await import('@/lib/services/lead-scoring.service');
+      await LeadScoringService.scoreContact(contactId);
+    } catch (e) { console.warn('[leads] lead scoring failed:', e); }
+
+    // Schedule follow-ups
+    try {
+      const { FollowupService } = await import('@/lib/services/followup.service');
+      await FollowupService.scheduleFollowups(contactId, adminId);
+    } catch (e) { console.warn('[leads] followup scheduling failed:', e); }
+
+    // Track source metric
+    if (sourceId) {
+      try {
+        const today = new Date().toISOString().split('T')[0];
+        await libsql.execute({
+          sql: `INSERT INTO "SourceMetric" (id, sourceId, date, leads, conversions, conversionRate, cost, createdAt)
+            VALUES (?, ?, ?, 1, 0, 0, 0, CURRENT_TIMESTAMP)
+            ON CONFLICT(sourceId, date) DO UPDATE SET leads = leads + 1`,
+          args: ['sm_' + sourceId + '_' + today, sourceId, today],
+        });
+      } catch (e) { console.warn('[leads] source metric failed:', e); }
+    }
+
+    // Create notification for admin
+    try {
+      const notifId = 'notif_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+      await libsql.execute({
+        sql: `INSERT INTO Notification (id, userId, type, title, message, link, createdAt)
+          VALUES (?, ?, 'CONTACT', ?, ?, ?, CURRENT_TIMESTAMP)`,
+        args: [notifId, adminId, `📩 Nuevo lead: ${nombre}`, `${email} | ${telefono} | ${segmento}`, '/admin/contactos'],
+      });
+    } catch (e) { console.warn('[leads] notification failed:', e); }
+
+    // Update admin's totalContacts
+    try {
+      await libsql.execute({
+        sql: `UPDATE "User" SET totalContacts = (SELECT COUNT(*) FROM Contact WHERE ownerId = ?), updatedAt = CURRENT_TIMESTAMP WHERE id = ?`,
+        args: [adminId, adminId],
+      });
+    } catch (e) { console.warn('[leads] user metrics failed:', e); }
 
     // 2. Send notifications (don't block the response if they fail)
     const contactData = { nombre, email, telefono, segmento, cobertura, edad, mensaje };
