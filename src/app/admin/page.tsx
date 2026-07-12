@@ -151,7 +151,7 @@ export default function AdminDashboard() {
                         💬 WhatsApp
                       </a>
                     )}
-                    <Link href="/admin/contactos" className="text-xs bg-primary/10 text-primary px-2 py-1 rounded hover:bg-primary/20 transition text-center">
+                    <Link href={`/admin/contactos/${contact.id}`} className="text-xs bg-primary/10 text-primary px-2 py-1 rounded hover:bg-primary/20 transition text-center">
                       Ver
                     </Link>
                   </div>
