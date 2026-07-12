@@ -34,6 +34,7 @@ export function VendorForm({ userId }: VendorFormProps) {
     nombre: '', apellido: '', email: '', password: '', rol: 'VENDEDOR',
     phone: '', address: '', city: '', province: '', serviceRadius: 50,
   });
+  const [coverageAreas, setCoverageAreas] = useState<string[]>([]);
   const [lat, setLat] = useState<number | null>(null);
   const [lng, setLng] = useState<number | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -59,6 +60,7 @@ export function VendorForm({ userId }: VendorFormProps) {
         setLat(u.latitude ?? null);
         setLng(u.longitude ?? null);
         setAvatarUrl(u.avatarUrl ?? null);
+        setCoverageAreas(u.coverageAreas ? (typeof u.coverageAreas === 'string' ? JSON.parse(u.coverageAreas) : u.coverageAreas) : []);
       } catch (e: any) {
         toast.error(e.message || 'Error al cargar');
         router.push('/admin/vendedores');
@@ -78,7 +80,7 @@ export function VendorForm({ userId }: VendorFormProps) {
     }
     setSaving(true);
     try {
-      const payload: any = { ...form, latitude: lat, longitude: lng };
+      const payload: any = { ...form, latitude: lat, longitude: lng, coverageAreas };
       if (isEdit && !form.password) delete payload.password;
       const url = isEdit ? `/api/admin/users/${userId}` : '/api/admin/users';
       const method = isEdit ? 'PUT' : 'POST';
@@ -263,6 +265,29 @@ export function VendorForm({ userId }: VendorFormProps) {
               </div>
             </div>
             <MapPicker latitude={lat} longitude={lng} onChange={(la, ln) => { setLat(la); setLng(ln); }} address={form.address} />
+            {/* Coverage areas */}
+            <div className="space-y-1.5">
+              <Label>Zonas de cobertura</Label>
+              <div className="flex flex-wrap gap-2">
+                {['CABA', 'GBA_NORTE', 'GBA_SUR', 'GBA_OESTE', 'INTERIOR'].map((zona) => (
+                  <button
+                    key={zona}
+                    type="button"
+                    onClick={() => {
+                      setCoverageAreas(prev => prev.includes(zona) ? prev.filter(z => z !== zona) : [...prev, zona]);
+                    }}
+                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
+                      coverageAreas.includes(zona)
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted text-muted-foreground hover:bg-muted/70'
+                    }`}
+                  >
+                    {zona.replace(/_/g, ' ')}
+                  </button>
+                ))}
+              </div>
+              <p className="text-xs text-muted-foreground">Seleccioná las zonas donde este vendedor puede recibir leads</p>
+            </div>
           </CardContent>
         </Card>
 

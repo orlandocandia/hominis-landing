@@ -92,12 +92,13 @@ export async function POST(request: Request) {
 
     await libsql.execute({
       sql: `INSERT INTO "User" (id, email, password, nombre, apellido, rol, activo, fechaAlta,
-        address, city, province, latitude, longitude, geocodingStatus, serviceRadius)
-        VALUES (?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)`,
+        address, city, province, latitude, longitude, geocodingStatus, serviceRadius, coverageAreas)
+        VALUES (?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?)`,
       args: [
         id, email.toLowerCase(), hashedPassword, nombre, apellido || null, rol,
         address || null, finalCity, finalProvince,
         lat, lng, geocodingStatus, serviceRadius || 50,
+        body.coverageAreas ? JSON.stringify(body.coverageAreas) : null,
       ],
     });
 

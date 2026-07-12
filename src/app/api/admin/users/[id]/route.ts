@@ -36,7 +36,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     if (session.user.role !== 'ADMIN') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     const { id } = await params;
     const body = await request.json();
-    const { nombre, apellido, rol, activo, address, city, province, serviceRadius, password, phone } = body;
+    const { nombre, apellido, rol, activo, address, city, province, serviceRadius, password, phone, coverageAreas } = body;
 
     const libsql = getTursoClient();
     const existing = await libsql.execute({ sql: 'SELECT id, address FROM "User" WHERE id = ?', args: [id] });
@@ -73,6 +73,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     if (city !== undefined) { sets.push('city = ?'); args.push(finalCity); }
     if (province !== undefined) { sets.push('province = ?'); args.push(finalProvince); }
     if (serviceRadius !== undefined) { sets.push('serviceRadius = ?'); args.push(serviceRadius); }
+    if (coverageAreas !== undefined) { sets.push('coverageAreas = ?'); args.push(coverageAreas ? JSON.stringify(coverageAreas) : null); }
     if (lat !== null) { sets.push('latitude = ?'); args.push(lat); }
     if (lng !== null) { sets.push('longitude = ?'); args.push(lng); }
     if (geocodingStatus !== 'PENDING') { sets.push('geocodingStatus = ?'); args.push(geocodingStatus); }

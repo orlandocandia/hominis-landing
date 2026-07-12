@@ -5,10 +5,13 @@ import { useParams, useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Mail, Phone, MessageSquare, Trash2, Printer, Download, MessageCircle } from 'lucide-react';
+import { ArrowLeft, Mail, Phone, MessageSquare, Trash2, Printer, Download, MessageCircle, UserCog } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { isValidTransition } from '@/lib/constants';
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from '@/components/ui/select';
 
 const STATUS_LABELS: Record<string, string> = {
   NUEVO: '🆕 Nuevo',
@@ -38,19 +41,24 @@ export default function ContactDetailPage() {
   const [activities, setActivities] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
+  const [vendors, setVendors] = useState<any[]>([]);
+  const [reassigning, setReassigning] = useState(false);
 
   useEffect(() => {
     if (!id) return;
     (async () => {
       try {
-        const [contactRes, activitiesRes] = await Promise.all([
+        const [contactRes, activitiesRes, vendorsRes] = await Promise.all([
           fetch(`/api/crm/contacts/${id}`),
           fetch(`/api/crm/contacts/${id}/activities`),
+          fetch('/api/admin/users'),
         ]);
         const contactData = await contactRes.json();
         const activitiesData = await activitiesRes.json();
         setContact(contactData.contact || contactData);
         setActivities(activitiesData.activities || []);
+        const vendorsData = await vendorsRes.json();
+        setVendors(vendorsData.users || []);
       } catch (e: any) {
         toast.error('Error al cargar el contacto');
       } finally {
@@ -86,6 +94,32 @@ export default function ContactDetailPage() {
       toast.error(e.message);
     } finally {
       setUpdating(false);
+    }
+  };
+
+  const reassignLead = async (newOwnerId: string) => {
+    if (!newOwnerId || newOwnerId === contact.ownerId) return;
+    setReassigning(true);
+    try {
+      const res = await fetch(`/api/crm/contacts/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ownerId: newOwnerId }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Error al reasignar');
+      }
+      toast.success('Lead reasignado correctamente');
+      setContact({ ...contact, ownerId: newOwnerId });
+      // Refresh activities
+      const actRes = await fetch(`/api/crm/contacts/${id}/activities`);
+      const actData = await actRes.json();
+      setActivities(actData.activities || []);
+    } catch (e: any) {
+      toast.error(e.message);
+    } finally {
+      setReassigning(false);
     }
   };
 
@@ -206,6 +240,27 @@ export default function ContactDetailPage() {
       <Card>
         <CardHeader><CardTitle className="text-base">⚡ Acciones</CardTitle></CardHeader>
         <CardContent className="space-y-4">
+          {/* Reassign lead */}
+          <div className="mb-4">
+            <p className="text-sm font-medium mb-2 flex items-center gap-1"><UserCog className="w-4 h-4" /> Asignar a vendedor:</p>
+            <Select
+              value={contact.ownerId || ''}
+              onValueChange={(val) => reassignLead(val)}
+              disabled={reassigning}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Seleccionar vendedor..." />
+              </SelectTrigger>
+              <SelectContent>
+                {vendors.map((v: any) => (
+                  <SelectItem key={v.id} value={v.id}>
+                    {v.nombre} {v.apellido || ''} ({v.rol})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           {/* Status buttons */}
           <div>
             <p className="text-sm font-medium mb-2">Cambiar estado:</p>
