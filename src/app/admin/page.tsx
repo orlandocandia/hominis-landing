@@ -13,7 +13,7 @@ export default async function AdminDashboardPage() {
   const libsql = getTursoClient();
 
   // Run stats queries in parallel
-  const [vendorsRes, vendedoresRes, productoresRes, contactsRes, newContactsRes, attendedRes, leadsRes, geoRes, topRes] = await Promise.all([
+  const [vendorsRes, vendedoresRes, productoresRes, contactsRes, newContactsRes, attendedRes, leadsRes, geoRes, topRes, recentContactsRes] = await Promise.all([
     libsql.execute(`SELECT COUNT(*) as n FROM "User" WHERE rol IN ('VENDEDOR','PRODUCTOR') AND activo = 1`),
     libsql.execute(`SELECT COUNT(*) as n FROM "User" WHERE rol = 'VENDEDOR' AND activo = 1`),
     libsql.execute(`SELECT COUNT(*) as n FROM "User" WHERE rol = 'PRODUCTOR' AND activo = 1`),
@@ -26,6 +26,10 @@ export default async function AdminDashboardPage() {
       sql: `SELECT u.id, u.nombre, u.apellido, u.email, u.totalContacts, u.conversionRate, u.city
         FROM "User" u WHERE u.rol IN ('VENDEDOR','PRODUCTOR') AND u.activo = 1
         ORDER BY u.totalContacts DESC LIMIT 5`,
+    }),
+    libsql.execute({
+      sql: `SELECT id, name, primaryEmail, primaryPhone, status, message, segment, createdAt
+        FROM Contact ORDER BY createdAt DESC LIMIT 8`,
     }),
   ]);
 
@@ -40,6 +44,7 @@ export default async function AdminDashboardPage() {
   const geoVendors = num(geoRes);
   const conversionRate = totalContacts > 0 ? Number(((attendedContacts / totalContacts) * 100).toFixed(2)) : 0;
   const topVendors = topRes.rows as any[];
+  const recentContacts = recentContactsRes.rows as any[];
 
   return (
     <div className="space-y-6">
@@ -115,6 +120,55 @@ export default async function AdminDashboardPage() {
               ({activeVendors > 0 ? Math.round((geoVendors / activeVendors) * 100) : 0}%).
             </p>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Recent leads / messages */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base flex items-center justify-between">
+            <span>📩 Últimos mensajes</span>
+            <Link href="/admin/contactos" className="text-sm text-primary hover:underline">Ver todos →</Link>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {recentContacts.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-8">
+              No hay mensajes aún. Los leads aparecerán aquí cuando alguien complete el formulario.
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {recentContacts.map((c: any) => (
+                <div key={c.id} className="flex items-start justify-between p-3 rounded-lg border hover:bg-accent/50 transition-colors">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-medium text-sm">{c.name}</span>
+                      <Badge variant={c.status === 'NUEVO' ? 'default' : c.status === 'ATENDIDO' ? 'secondary' : 'outline'} className="text-[10px] py-0">
+                        {c.status}
+                      </Badge>
+                      {c.segment && <Badge variant="outline" className="text-[10px] py-0">{c.segment.replace('_', ' ')}</Badge>}
+                    </div>
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1 flex-wrap">
+                      {c.primaryPhone && <span>📱 {c.primaryPhone}</span>}
+                      {c.primaryEmail && <span>📧 {c.primaryEmail}</span>}
+                    </div>
+                    {c.message && (
+                      <p className="text-xs text-muted-foreground mt-1 bg-muted/50 px-2 py-1 rounded">💬 {c.message.substring(0, 120)}</p>
+                    )}
+                    <p className="text-[10px] text-muted-foreground/70 mt-1">
+                      {new Date(c.createdAt as string).toLocaleString('es-AR')}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1 flex-shrink-0 ml-2">
+                    <Link href={`/admin/contactos`} className="text-xs bg-primary/10 text-primary px-2 py-1 rounded hover:bg-primary/20 transition">Ver</Link>
+                    {c.primaryPhone && (
+                      <a href={`https://wa.me/${c.primaryPhone.replace(/[^\d]/g, '')}`} target="_blank" rel="noopener noreferrer" className="text-xs bg-green-500/10 text-green-600 px-2 py-1 rounded hover:bg-green-500/20 transition">WhatsApp</a>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
