@@ -16,6 +16,12 @@ export async function GET(request: Request) {
     const estado = searchParams.get('estado');
     const vendedorId = searchParams.get('vendedorId');
 
+    // Multiempresa: VENDEDOR solo ve su empresa; ADMIN puede filtrar por ?empresaId=
+    const empresaFiltro =
+      session.user.role === 'ADMIN'
+        ? searchParams.get('empresaId') || null
+        : session.user.empresaId || null;
+
     const libsql = getTursoClient();
     let sql = `SELECT t.*, u.nombre as vendedorNombre, u.apellido as vendedorApellido, u.email as vendedorEmail,
       u2.nombre as adminNombre, c.name as contactoNombre, c.primaryPhone as contactoPhone
@@ -25,6 +31,12 @@ export async function GET(request: Request) {
       LEFT JOIN Contact c ON t.contactoId = c.id`;
     const conditions: string[] = [];
     const args: any[] = [];
+
+    // Filtro por empresa (seguridad multiempresa)
+    if (empresaFiltro) {
+      conditions.push('t.empresaId = ?');
+      args.push(empresaFiltro);
+    }
 
     if (session.user.role !== 'ADMIN') {
       conditions.push('t.asignadoA = ?');
@@ -66,18 +78,21 @@ export async function POST(request: Request) {
     const libsql = getTursoClient();
     const id = 'tarea_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 
+    // Multiempresa: la tarea hereda la empresa del admin (o del query param)
+    const tareaEmpresaId = (new URL(request.url).searchParams.get('empresaId')) || session.user.empresaId || null;
+
     await libsql.execute({
-      sql: `INSERT INTO "Tarea" (id, titulo, descripcion, tipo, estado, fechaLimite, asignadoA, asignadoPor, contactoId, createdAt, updatedAt)
-        VALUES (?, ?, ?, ?, 'PENDIENTE', ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
-      args: [id, titulo, descripcion || null, tipoTarea, new Date(fechaLimite).toISOString(), asignadoA, session.user.id, contactoId || null],
+      sql: `INSERT INTO "Tarea" (id, titulo, descripcion, tipo, estado, fechaLimite, asignadoA, asignadoPor, contactoId, empresaId, createdAt, updatedAt)
+        VALUES (?, ?, ?, ?, 'PENDIENTE', ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
+      args: [id, titulo, descripcion || null, tipoTarea, new Date(fechaLimite).toISOString(), asignadoA, session.user.id, contactoId || null, tareaEmpresaId],
     });
 
-    // Create notification for the vendor
+    // Create notification for the vendor (with empresaId)
     const notifId = 'notif_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
     await libsql.execute({
-      sql: `INSERT INTO Notification (id, userId, type, title, message, link, createdAt)
-        VALUES (?, ?, 'SYSTEM', ?, ?, '/vendedor/tareas', CURRENT_TIMESTAMP)`,
-      args: [notifId, asignadoA, `📋 Nueva tarea: ${titulo}`, descripcion || 'Tienes una nueva tarea asignada'],
+      sql: `INSERT INTO Notification (id, userId, type, title, message, link, empresaId, createdAt)
+        VALUES (?, ?, 'SYSTEM', ?, ?, '/vendedor/tareas', ?, CURRENT_TIMESTAMP)`,
+      args: [notifId, asignadoA, `📋 Nueva tarea: ${titulo}`, descripcion || 'Tienes una nueva tarea asignada', tareaEmpresaId],
     });
 
     return NextResponse.json({ id, titulo, tipo: tipoTarea, estado: 'PENDIENTE', asignadoA });
@@ -86,3 +101,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Error del servidor' }, { status: 500 });
   }
 }
+
