@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { LogOut, Shield, LayoutDashboard, Users, FileText, MapPin, UserCircle, Mail, Megaphone, KanbanSquare, BarChart3, Trophy, ClipboardList, Building2 } from 'lucide-react';
 import { NotificationBell } from '@/components/notification-bell';
+import { EmpresaSelector } from '@/components/empresa-selector';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSelector, useTranslation } from '@/components/language-selector';
 
@@ -75,6 +76,7 @@ export function DashboardNav({ role, userName, userEmail }: DashboardNavProps) {
 
         {/* User + notifications + theme + language + logout */}
         <div className="flex items-center gap-1">
+          <EmpresaSelector />
           <LanguageSelector />
           <ThemeToggle />
           <NotificationBell />
@@ -103,4 +105,5 @@ function NavLink({ href, icon, label }: { href: string; icon: React.ReactNode; l
     </a>
   );
 }
+
 
