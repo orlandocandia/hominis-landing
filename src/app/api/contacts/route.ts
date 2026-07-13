@@ -17,11 +17,10 @@ export async function GET(request: Request) {
     const segmento = searchParams.get('segmento');
     const search = searchParams.get('search');
 
-    // Multiempresa: VENDEDOR solo ve su empresa; ADMIN puede filtrar por ?empresaId=
-    const empresaFiltro =
-      session.user.role === 'ADMIN'
-        ? searchParams.get('empresaId') || null
-        : session.user.empresaId || null;
+    // Multiempresa: la empresa activa viene de la sesión (ADMIN puede cambiarla via selector)
+    // ADMIN: empresaId puede ser null (ver todas) o un valor específico
+    // VENDEDOR: empresaId siempre es su empresa fija
+    const empresaFiltro = session.user.empresaId || null;
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '20');
     const skip = (page - 1) * limit;
@@ -117,4 +116,5 @@ export async function GET(request: Request) {
     );
   }
 }
+
 
