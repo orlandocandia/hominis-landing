@@ -13,7 +13,7 @@ export async function GET() {
     if (!session?.user) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
-    if (session.user.role !== 'ADMIN' && session.user.role !== 'PRODUCTOR') {
+    if (session.user.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -89,3 +89,4 @@ export async function GET() {
     return NextResponse.json({ error: 'Error del servidor' }, { status: 500 });
   }
 }
+
