@@ -7,7 +7,7 @@ import { getTursoClient } from '@/lib/turso-config';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const session = await getAuthSession();
     if (!session?.user) {
@@ -17,16 +17,32 @@ export async function GET() {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
+    // Multiempresa: ADMIN puede filtrar por ?empresaId= (si no, totales globales)
+    const { searchParams } = new URL(request.url);
+    const empresaFiltro = searchParams.get('empresaId') || null;
+    const empArgs = empresaFiltro ? [empresaFiltro] : [];
+
     const libsql = getTursoClient();
 
-    // --- Totales ---
+    // --- Totales (filtrados por empresa si aplica) ---
     const [vRes, lRes, tRes] = await Promise.all([
       libsql.execute({
-        sql: `SELECT COUNT(*) AS n FROM "User" WHERE rol = 'VENDEDOR' AND activo = 1`,
+        sql: empresaFiltro
+          ? `SELECT COUNT(*) AS n FROM "User" WHERE rol = 'VENDEDOR' AND activo = 1 AND empresaId = ?`
+          : `SELECT COUNT(*) AS n FROM "User" WHERE rol = 'VENDEDOR' AND activo = 1`,
+        args: empArgs,
       }),
-      libsql.execute({ sql: `SELECT COUNT(*) AS n FROM "Contact"` }),
       libsql.execute({
-        sql: `SELECT COUNT(*) AS n FROM "Tarea" WHERE estado IN ('PENDIENTE','EN_PROGRESO')`,
+        sql: empresaFiltro
+          ? `SELECT COUNT(*) AS n FROM "Contact" WHERE empresaId = ?`
+          : `SELECT COUNT(*) AS n FROM "Contact"`,
+        args: empArgs,
+      }),
+      libsql.execute({
+        sql: empresaFiltro
+          ? `SELECT COUNT(*) AS n FROM "Tarea" WHERE estado IN ('PENDIENTE','EN_PROGRESO') AND empresaId = ?`
+          : `SELECT COUNT(*) AS n FROM "Tarea" WHERE estado IN ('PENDIENTE','EN_PROGRESO')`,
+        args: empArgs,
       }),
     ]);
 
@@ -34,7 +50,7 @@ export async function GET() {
     const totalLeads = Number((lRes.rows[0] as Record<string, unknown>).n ?? 0);
     const totalTareas = Number((tRes.rows[0] as Record<string, unknown>).n ?? 0);
 
-    // --- Vendedores con métricas ---
+    // --- Vendedores con métricas (filtrados por empresa si aplica) ---
     const vendedoresRes = await libsql.execute({
       sql: `
         SELECT
@@ -46,17 +62,24 @@ export async function GET() {
           u."avatarUrl",
           u."coverageAreas",
           u."fechaAlta",
-          (SELECT COUNT(*) FROM "Contact" c WHERE c."ownerId" = u.id) AS leads,
+          (SELECT COUNT(*) FROM "Contact" c WHERE c."ownerId" = u.id
+            ${empresaFiltro ? 'AND c.empresaId = ?' : ''}) AS leads,
           (SELECT COUNT(*) FROM "Contact" c
             WHERE c."ownerId" = u.id
-              AND c.status IN ('REUNION','PRESUPUESTO','ATENDIDO')) AS atendidos,
+              AND c.status IN ('REUNION','PRESUPUESTO','ATENDIDO')
+            ${empresaFiltro ? 'AND c.empresaId = ?' : ''}) AS atendidos,
           (SELECT COUNT(*) FROM "Tarea" t
             WHERE t."asignadoA" = u.id
-              AND t.estado IN ('PENDIENTE','EN_PROGRESO')) AS "tareasPendientes"
+              AND t.estado IN ('PENDIENTE','EN_PROGRESO')
+            ${empresaFiltro ? 'AND t.empresaId = ?' : ''}) AS "tareasPendientes"
         FROM "User" u
         WHERE u.rol = 'VENDEDOR'
+        ${empresaFiltro ? 'AND u.empresaId = ?' : ''}
         ORDER BY u."fechaAlta" ASC
       `,
+      args: empresaFiltro
+        ? [empresaFiltro, empresaFiltro, empresaFiltro, empresaFiltro]
+        : [],
     });
 
     const vendedores = vendedoresRes.rows.map((r) => {
@@ -89,4 +112,5 @@ export async function GET() {
     return NextResponse.json({ error: 'Error del servidor' }, { status: 500 });
   }
 }
+
 
