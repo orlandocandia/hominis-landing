@@ -15,8 +15,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     const libsql = getTursoClient();
 
     // Multiempresa: VENDEDOR solo puede acceder a tareas de su empresa
-    const empresaFiltro =
-      session.user.role === 'ADMIN' ? null : session.user.empresaId || null;
+    const empresaFiltro = session.user.empresaId || null;
     const existing = await libsql.execute({
       sql: empresaFiltro
         ? 'SELECT asignadoA, estado FROM "Tarea" WHERE id = ? AND empresaId = ?'
@@ -59,8 +58,8 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
     if (session.user.role !== 'ADMIN') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     const { id } = await params;
     const libsql = getTursoClient();
-    // Multiempresa: ADMIN puede filtrar por ?empresaId= (si no, borra de cualquier empresa)
-    const empresaFiltro = new URL(_request.url).searchParams.get('empresaId') || null;
+    // Multiempresa: filtrar por empresa de la sesión
+    const empresaFiltro = session.user.empresaId || null;
     await libsql.execute({
       sql: empresaFiltro ? 'DELETE FROM "Tarea" WHERE id = ? AND empresaId = ?' : 'DELETE FROM "Tarea" WHERE id = ?',
       args: empresaFiltro ? [id, empresaFiltro] : [id],
@@ -71,4 +70,5 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
     return NextResponse.json({ error: 'Error del servidor' }, { status: 500 });
   }
 }
+
 
