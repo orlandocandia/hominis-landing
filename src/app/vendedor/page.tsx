@@ -14,20 +14,21 @@ import Link from 'next/link';
 
 export default async function VendedorDashboardPage() {
   const session = await getServerSession(authOptions);
-  const isProductor = session?.user?.role === 'PRODUCTOR';
+  const isVendedor = session?.user?.role === 'VENDEDOR';
   const libsql = getTursoClient();
   const userId = session!.user.id;
+  const empresaId = session.user.empresaId || null;
 
   // Stats: my contacts by status
   const [totalRes, newRes, attendedRes, recentRes] = await Promise.all([
-    libsql.execute({ sql: 'SELECT COUNT(*) as n FROM Contact WHERE ownerId = ?', args: [userId] }),
-    libsql.execute({ sql: "SELECT COUNT(*) as n FROM Contact WHERE ownerId = ? AND status = 'NUEVO'", args: [userId] }),
-    libsql.execute({ sql: "SELECT COUNT(*) as n FROM Contact WHERE ownerId = ? AND status = 'ATENDIDO'", args: [userId] }),
+    libsql.execute({ sql: empresaId ? 'SELECT COUNT(*) as n FROM Contact WHERE ownerId = ? AND empresaId = ?' : 'SELECT COUNT(*) as n FROM Contact WHERE ownerId = ?', args: empresaId ? [userId, empresaId] : [userId] }),
+    libsql.execute({ sql: empresaId ? "SELECT COUNT(*) as n FROM Contact WHERE ownerId = ? AND status = 'NUEVO' AND empresaId = ?" : "SELECT COUNT(*) as n FROM Contact WHERE ownerId = ? AND status = 'NUEVO'", args: empresaId ? [userId, empresaId] : [userId] }),
+    libsql.execute({ sql: empresaId ? "SELECT COUNT(*) as n FROM Contact WHERE ownerId = ? AND status = 'ATENDIDO' AND empresaId = ?" : "SELECT COUNT(*) as n FROM Contact WHERE ownerId = ? AND status = 'ATENDIDO'", args: empresaId ? [userId, empresaId] : [userId] }),
     libsql.execute({
-      sql: `SELECT c.id, c.name, c.address, c.city, c.status, c.createdAt, c.latitude, c.longitude,
-        c.leadScore, c.leadPriority
-        FROM Contact c WHERE c.ownerId = ? ORDER BY c.createdAt DESC LIMIT 5`,
-      args: [userId],
+      sql: empresaId
+        ? `SELECT c.id, c.name, c.address, c.city, c.status, c.createdAt, c.latitude, c.longitude, c.leadScore, c.leadPriority FROM Contact c WHERE c.ownerId = ? AND c.empresaId = ? ORDER BY c.createdAt DESC LIMIT 5`
+        : `SELECT c.id, c.name, c.address, c.city, c.status, c.createdAt, c.latitude, c.longitude, c.leadScore, c.leadPriority FROM Contact c WHERE c.ownerId = ? ORDER BY c.createdAt DESC LIMIT 5`,
+      args: empresaId ? [userId, empresaId] : [userId],
     }),
   ]);
 
@@ -41,7 +42,7 @@ export default async function VendedorDashboardPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <DashboardTitle role={isProductor ? 'PRODUCTOR' : 'VENDEDOR'} name={session?.user?.name} />
+        <DashboardTitle role="VENDEDOR" name={session?.user?.name} />
         <Badge variant="secondary" className="w-fit gap-1">
           <CheckCircle2 className="h-3 w-3" /> Rol: {session?.user?.role}
         </Badge>
@@ -147,3 +148,4 @@ function StatCard({ title, value, icon, hint }: { title: string; value: string; 
     </Card>
   );
 }
+
