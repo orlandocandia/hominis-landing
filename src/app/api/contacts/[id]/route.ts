@@ -29,10 +29,16 @@ export async function PATCH(
 
     const libsql = getTursoClient();
 
-    // Check contact exists
+    // Multiempresa: verificar que el contacto pertenece a la empresa del usuario
+    const empresaFiltro =
+      session.user.role === 'ADMIN' ? null : session.user.empresaId || null;
+
+    // Check contact exists (and belongs to user's empresa if not admin)
     const existing = await libsql.execute({
-      sql: 'SELECT id FROM Contacto WHERE id = ?',
-      args: [id],
+      sql: empresaFiltro
+        ? 'SELECT id FROM Contacto WHERE id = ? AND empresaId = ?'
+        : 'SELECT id FROM Contacto WHERE id = ?',
+      args: empresaFiltro ? [id, empresaFiltro] : [id],
     });
 
     if (existing.rows.length === 0) {
@@ -68,9 +74,15 @@ export async function DELETE(
     const { id } = await params;
     const libsql = getTursoClient();
 
+    // Multiempresa: verificar pertenencia a la empresa
+    const empresaFiltro =
+      session.user.role === 'ADMIN' ? null : session.user.empresaId || null;
+
     const existing = await libsql.execute({
-      sql: 'SELECT id FROM Contacto WHERE id = ?',
-      args: [id],
+      sql: empresaFiltro
+        ? 'SELECT id FROM Contacto WHERE id = ? AND empresaId = ?'
+        : 'SELECT id FROM Contacto WHERE id = ?',
+      args: empresaFiltro ? [id, empresaFiltro] : [id],
     });
 
     if (existing.rows.length === 0) {
@@ -78,8 +90,10 @@ export async function DELETE(
     }
 
     await libsql.execute({
-      sql: 'DELETE FROM Contacto WHERE id = ?',
-      args: [id],
+      sql: empresaFiltro
+        ? 'DELETE FROM Contacto WHERE id = ? AND empresaId = ?'
+        : 'DELETE FROM Contacto WHERE id = ?',
+      args: empresaFiltro ? [id, empresaFiltro] : [id],
     });
 
     return NextResponse.json({ success: true });
@@ -88,3 +102,4 @@ export async function DELETE(
     return NextResponse.json({ error: 'Error al eliminar contacto' }, { status: 500 });
   }
 }
+
