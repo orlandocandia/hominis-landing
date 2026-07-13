@@ -53,6 +53,7 @@ export function DashboardNav({ role, userName, userEmail }: DashboardNavProps) {
             {isAdmin && (
               <>
                 <NavLink href={`${basePath}/vendedores`} icon={<Users className="h-4 w-4" />} label={t('dashboard.sidebar.vendedores') || 'Vendedores'} />
+                <NavLink href={`${basePath}/equipo`} icon={<Users className="h-4 w-4" />} label="Equipo" />
                 <NavLink href={`${basePath}/contactos`} icon={<FileText className="h-4 w-4" />} label={t('dashboard.sidebar.contactos') || 'Contactos'} />
                 <NavLink href={`${basePath}/mapa`} icon={<MapPin className="h-4 w-4" />} label={t('dashboard.sidebar.mapa') || 'Mapa'} />
                 <NavLink href={`${basePath}/invitaciones`} icon={<Mail className="h-4 w-4" />} label={t('dashboard.sidebar.invitaciones') || 'Invitaciones'} />
@@ -68,6 +69,7 @@ export function DashboardNav({ role, userName, userEmail }: DashboardNavProps) {
                 <NavLink href="/vendedor/pipeline" icon={<KanbanSquare className="h-4 w-4" />} label={t('dashboard.sidebar.pipeline') || 'Pipeline'} />
                 <NavLink href={`${basePath}/mapa`} icon={<MapPin className="h-4 w-4" />} label={t('dashboard.sidebar.mapa') || 'Mapa'} />
                 <NavLink href={`${basePath}/perfil`} icon={<UserCircle className="h-4 w-4" />} label={t('dashboard.sidebar.perfil') || 'Perfil'} />
+                <NavLink href="/vendedor/tareas" icon={<ClipboardList className="h-4 w-4" />} label="Mis Tareas" />
               </>
             )}
           </nav>
