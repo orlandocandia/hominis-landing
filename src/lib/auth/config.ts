@@ -113,12 +113,23 @@ export const authOptions: NextAuthOptions = {
     error: '/login',
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session: updateSession }) {
       if (user) {
         token.role = user.role;
         token.id = user.id;
         token.empresaId = (user as { empresaId?: string | null }).empresaId ?? null;
         token.empresaNombre = (user as { empresaNombre?: string | null }).empresaNombre ?? null;
+      }
+      // Multiempresa: permitir cambiar de empresa activa via useSession().update()
+      // Solo ADMIN puede cambiar; VENDEDOR siempre mantiene su empresa fija.
+      if (trigger === 'update' && updateSession) {
+        const newEmpresaId = (updateSession as { empresaId?: string | null }).empresaId ?? null;
+        const newEmpresaNombre = (updateSession as { empresaNombre?: string | null }).empresaNombre ?? null;
+        if (token.role === 'ADMIN') {
+          token.empresaId = newEmpresaId;
+          token.empresaNombre = newEmpresaNombre;
+        }
+        // VENDEDOR: el cambio se ignora (su empresa es fija)
       }
       return token;
     },
@@ -144,4 +155,5 @@ export const authOptions: NextAuthOptions = {
   // reads the same cookie name the route handler sets. In production (HTTPS),
   // NextAuth auto-uses the __Secure- prefix consistently everywhere.
 };
+
 
