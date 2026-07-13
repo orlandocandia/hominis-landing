@@ -16,6 +16,12 @@ export async function GET(request: Request) {
     const estado = searchParams.get('estado');
     const segmento = searchParams.get('segmento');
     const search = searchParams.get('search');
+
+    // Multiempresa: VENDEDOR solo ve su empresa; ADMIN puede filtrar por ?empresaId=
+    const empresaFiltro =
+      session.user.role === 'ADMIN'
+        ? searchParams.get('empresaId') || null
+        : session.user.empresaId || null;
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '20');
     const skip = (page - 1) * limit;
@@ -40,6 +46,11 @@ export async function GET(request: Request) {
       conditions.push('(nombre LIKE ? OR email LIKE ? OR telefono LIKE ? OR mensaje LIKE ?)');
       const searchPattern = `%${search}%`;
       args.push(searchPattern, searchPattern, searchPattern, searchPattern);
+    }
+
+    if (empresaFiltro) {
+      conditions.push('empresaId = ?');
+      args.push(empresaFiltro);
     }
 
     const whereClause = conditions.length > 0 ? 'WHERE ' + conditions.join(' AND ') : '';
@@ -74,8 +85,11 @@ export async function GET(request: Request) {
     }));
 
     // Get stats
+    const statsSql = empresaFiltro
+      ? `SELECT estado, COUNT(*) as count FROM Contacto WHERE empresaId = ? GROUP BY estado`
+      : `SELECT estado, COUNT(*) as count FROM Contacto GROUP BY estado`;
     const statsResult = await libsql.execute(
-      `SELECT estado, COUNT(*) as count FROM Contacto GROUP BY estado`
+      empresaFiltro ? { sql: statsSql, args: [empresaFiltro] } : { sql: statsSql }
     );
     const statsMap: Record<string, number> = { NUEVO: 0, LEIDO: 0, ATENDIDO: 0 };
     statsResult.rows.forEach((row) => {
@@ -103,3 +117,4 @@ export async function GET(request: Request) {
     );
   }
 }
+
