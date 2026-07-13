@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -8,18 +8,44 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Shield, Eye, EyeOff, LogIn, ArrowLeft, AlertCircle } from 'lucide-react';
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from '@/components/ui/select';
+import { Shield, Eye, EyeOff, LogIn, ArrowLeft, AlertCircle, Building2 } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSelector, useTranslation } from '@/components/language-selector';
+
+interface Empresa {
+  id: string;
+  nombre: string;
+  rubro: string;
+  logo: string | null;
+}
+
+// Sentinel for "all empresas" (admin can choose to skip empresa filter on login)
+const ALL = '__all__';
 
 export default function LoginPage() {
   const router = useRouter();
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [empresaId, setEmpresaId] = useState('');
+  const [empresas, setEmpresas] = useState<Empresa[]>([]);
+  const [empresasLoading, setEmpresasLoading] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/empresas')
+      .then((res) => res.json())
+      .then((data: Empresa[]) => {
+        setEmpresas(Array.isArray(data) ? data : data.empresas ?? []);
+      })
+      .catch((e) => console.error('Error fetching empresas:', e))
+      .finally(() => setEmpresasLoading(false));
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,14 +56,13 @@ export default function LoginPage() {
       const result = await signIn('credentials', {
         email,
         password,
+        empresaId: empresaId || '',
         redirect: false,
       });
 
       if (result?.error) {
         setError(result.error);
       } else if (result?.ok) {
-        // Fetch the session to read the role and redirect accordingly.
-        // Small delay to ensure the session cookie is readable.
         await new Promise((r) => setTimeout(r, 300));
         try {
           const res = await fetch('/api/auth/session');
@@ -48,13 +73,10 @@ export default function LoginPage() {
               ? '/admin'
               : role === 'VENDEDOR'
                 ? '/vendedor'
-                : role === 'PRODUCTOR'
-                  ? '/productor'
-                  : '/dashboard';
+                : '/login';
           window.location.href = dest;
         } catch {
-          // Fallback to generic dashboard if session fetch fails
-          window.location.href = '/dashboard';
+          window.location.href = '/login';
         }
       }
     } catch {
@@ -93,7 +115,9 @@ export default function LoginPage() {
             <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center mx-auto mb-4">
               <Shield className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-2xl font-serif font-bold text-white">{t('auth.login.title') || 'Panel de Gestión'}</h1>
+            <h1 className="text-2xl font-serif font-bold text-white">
+              {t('auth.login.title') || 'Panel de Gestión'}
+            </h1>
             <p className="text-white/70 text-sm mt-2">
               {t('auth.login.subtitle') || 'Ingresá tus credenciales para acceder al dashboard'}
             </p>
@@ -110,6 +134,30 @@ export default function LoginPage() {
 
             {/* Login form */}
             <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Empresa selector */}
+              <div className="space-y-2">
+                <Label htmlFor="empresa" className="text-sm font-medium">
+                  🏢 Empresa
+                </Label>
+                <Select value={empresaId} onValueChange={setEmpresaId} disabled={empresasLoading}>
+                  <SelectTrigger id="empresa" className="h-12 rounded-xl">
+                    <SelectValue
+                      placeholder={
+                        empresasLoading ? 'Cargando empresas...' : 'Seleccionar empresa...'
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={ALL}>Todas (Admin)</SelectItem>
+                    {empresas.map((emp) => (
+                      <SelectItem key={emp.id} value={emp.id}>
+                        {emp.nombre}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-sm font-medium">
                   {t('auth.login.email') || 'Email'}
