@@ -1,5 +1,5 @@
-// GET /api/admin/users — list users (vendedores/productores)
-// POST /api/admin/users — create a new vendedor/productor
+// GET /api/admin/users — list users (vendedores)
+// POST /api/admin/users — create a new vendedor
 import { NextResponse } from 'next/server';
 import { getAuthSession } from '@/lib/auth';
 import { getTursoClient } from '@/lib/turso-config';
@@ -13,14 +13,14 @@ export async function GET(request: Request) {
     if (session.user.role !== 'ADMIN') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
     const { searchParams } = new URL(request.url);
-    const role = searchParams.get('role'); // 'VENDEDOR' | 'PRODUCTOR' | null (all)
+    const role = searchParams.get('role'); // 'VENDEDOR' | null (all)
 
     const libsql = getTursoClient();
     let sql = `SELECT id, email, nombre, apellido, rol, activo, city, province, latitude, longitude,
       serviceRadius, totalContacts, conversionRate, fechaAlta, ultimoAcceso, avatarUrl
-      FROM "User" WHERE rol IN ('VENDEDOR', 'PRODUCTOR')`;
+      FROM "User" WHERE rol = 'VENDEDOR'`;
     const args: string[] = [];
-    if (role && ['VENDEDOR', 'PRODUCTOR'].includes(role)) {
+    if (role && role === 'VENDEDOR') {
       sql += ' AND rol = ?';
       args.push(role);
     }
@@ -46,8 +46,8 @@ export async function POST(request: Request) {
     if (!email || !password || !nombre || !rol) {
       return NextResponse.json({ error: 'email, password, nombre y rol son obligatorios' }, { status: 400 });
     }
-    if (!['VENDEDOR', 'PRODUCTOR'].includes(rol)) {
-      return NextResponse.json({ error: 'rol debe ser VENDEDOR o PRODUCTOR' }, { status: 400 });
+    if (rol !== 'VENDEDOR') {
+      return NextResponse.json({ error: 'rol debe ser VENDEDOR' }, { status: 400 });
     }
     if (password.length < 6) {
       return NextResponse.json({ error: 'La contraseña debe tener al menos 6 caracteres' }, { status: 400 });
@@ -118,3 +118,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Error del servidor' }, { status: 500 });
   }
 }
+
