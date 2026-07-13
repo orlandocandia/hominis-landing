@@ -109,6 +109,22 @@ enum InvitationRole {
   PRODUCTOR
 }
 
+enum TipoTarea {
+  VISITA
+  LLAMADA
+  WHATSAPP
+  EMAIL
+  REUNION
+  TAREA
+}
+
+enum EstadoTarea {
+  PENDIENTE
+  EN_PROGRESO
+  COMPLETADA
+  CANCELADA
+}
+
 enum SourceCategory {
   PAID
   ORGANIC
@@ -170,6 +186,8 @@ model User {
   notifications    Notification[]
   followups        Followup[]
   reminders        Reminder[]
+  tareasAsignadas  Tarea[] @relation("TareaVendedor")
+  tareasCreadas    Tarea[] @relation("TareaAdmin")
   gamification     Gamification?
 
   @@index([email])
@@ -293,6 +311,7 @@ model Contact {
   followups      Followup[]
   reminders      Reminder[]
   whatsappMessages WhatsAppMessage[]
+  tareas         Tarea[] @relation("TareaContacto")
 
   @@index([latitude, longitude])
   @@index([ownerId])
@@ -564,6 +583,32 @@ model SourceMetric {
 
   @@unique([sourceId, date])
   @@index([date])
+}
+
+// ═══════════════════════════════════════════════════════
+// SISTEMA DE TAREAS (Fase 2)
+// ═══════════════════════════════════════════════════════
+
+model Tarea {
+  id              String      @id @default(cuid())
+  titulo          String
+  descripcion     String?
+  tipo            TipoTarea
+  estado          EstadoTarea @default(PENDIENTE)
+  fechaLimite     DateTime
+  fechaCompletada DateTime?
+  asignadoA       String
+  asignadoPor     String
+  contactoId      String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  vendedor  User    @relation("TareaVendedor", fields: [asignadoA], references: [id], onDelete: Cascade)
+  admin     User    @relation("TareaAdmin", fields: [asignadoPor], references: [id])
+  contacto  Contact? @relation("TareaContacto", fields: [contactoId], references: [id], onDelete: SetNull)
+
+  @@index([asignadoA, estado])
+  @@index([fechaLimite])
 }
 
 // ═══════════════════════════════════════════════════════
