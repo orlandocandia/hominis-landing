@@ -20,3 +20,4 @@ export async function PATCH(_request: Request, { params }: { params: Promise<{ i
     return NextResponse.json({ error: 'Error del servidor' }, { status: 500 });
   }
 }
+
