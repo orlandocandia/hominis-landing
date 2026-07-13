@@ -122,7 +122,7 @@ export function VendorForm({ userId }: VendorFormProps) {
         <Button variant="ghost" size="icon" asChild><Link href="/admin/vendedores"><ArrowLeft className="w-4 h-4" /></Link></Button>
         <div>
           <h1 className="text-2xl font-bold tracking-tight">{isEdit ? 'Editar vendedor' : 'Nuevo vendedor'}</h1>
-          <p className="text-sm text-muted-foreground">{isEdit ? 'Actualizá los datos del usuario' : 'Creá una cuenta de vendedor o productor'}</p>
+          <p className="text-sm text-muted-foreground">{isEdit ? 'Actualizá los datos del usuario' : 'Creá una cuenta de vendedor'}</p>
         </div>
       </div>
 
@@ -226,7 +226,6 @@ export function VendorForm({ userId }: VendorFormProps) {
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="VENDEDOR">Vendedor</SelectItem>
-                  <SelectItem value="PRODUCTOR">Productor (vendedor extendido)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -303,3 +302,4 @@ export function VendorForm({ userId }: VendorFormProps) {
     </div>
   );
 }
+
