@@ -14,7 +14,15 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     const body = await request.json();
     const libsql = getTursoClient();
 
-    const existing = await libsql.execute({ sql: 'SELECT asignadoA, estado FROM "Tarea" WHERE id = ?', args: [id] });
+    // Multiempresa: VENDEDOR solo puede acceder a tareas de su empresa
+    const empresaFiltro =
+      session.user.role === 'ADMIN' ? null : session.user.empresaId || null;
+    const existing = await libsql.execute({
+      sql: empresaFiltro
+        ? 'SELECT asignadoA, estado FROM "Tarea" WHERE id = ? AND empresaId = ?'
+        : 'SELECT asignadoA, estado FROM "Tarea" WHERE id = ?',
+      args: empresaFiltro ? [id, empresaFiltro] : [id],
+    });
     if (existing.rows.length === 0) return NextResponse.json({ error: 'Tarea no encontrada' }, { status: 404 });
 
     if (session.user.role !== 'ADMIN' && existing.rows[0].asignadoA !== session.user.id) {
@@ -51,10 +59,16 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
     if (session.user.role !== 'ADMIN') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     const { id } = await params;
     const libsql = getTursoClient();
-    await libsql.execute({ sql: 'DELETE FROM "Tarea" WHERE id = ?', args: [id] });
+    // Multiempresa: ADMIN puede filtrar por ?empresaId= (si no, borra de cualquier empresa)
+    const empresaFiltro = new URL(_request.url).searchParams.get('empresaId') || null;
+    await libsql.execute({
+      sql: empresaFiltro ? 'DELETE FROM "Tarea" WHERE id = ? AND empresaId = ?' : 'DELETE FROM "Tarea" WHERE id = ?',
+      args: empresaFiltro ? [id, empresaFiltro] : [id],
+    });
     return NextResponse.json({ ok: true });
   } catch (e: any) {
     console.error('[tarea DELETE] error:', e);
     return NextResponse.json({ error: 'Error del servidor' }, { status: 500 });
   }
 }
+
