@@ -14,15 +14,21 @@ export async function GET(request: Request) {
 
     const { searchParams } = new URL(request.url);
     const role = searchParams.get('role'); // 'VENDEDOR' | null (all)
+    // Multiempresa: ADMIN puede filtrar por ?empresaId= (si no, ve vendedores de todas las empresas)
+    const empresaFiltro = searchParams.get('empresaId') || null;
 
     const libsql = getTursoClient();
     let sql = `SELECT id, email, nombre, apellido, rol, activo, city, province, latitude, longitude,
-      serviceRadius, totalContacts, conversionRate, fechaAlta, ultimoAcceso, avatarUrl
+      serviceRadius, totalContacts, conversionRate, fechaAlta, ultimoAcceso, avatarUrl, empresaId
       FROM "User" WHERE rol = 'VENDEDOR'`;
     const args: string[] = [];
     if (role && role === 'VENDEDOR') {
       sql += ' AND rol = ?';
       args.push(role);
+    }
+    if (empresaFiltro) {
+      sql += ' AND empresaId = ?';
+      args.push(empresaFiltro);
     }
     sql += ' ORDER BY fechaAlta DESC';
     const result = await libsql.execute({ sql, args });
@@ -40,7 +46,9 @@ export async function POST(request: Request) {
     if (session.user.role !== 'ADMIN') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
     const body = await request.json();
-    const { email, password, nombre, apellido, rol, address, city, province, phone, serviceRadius } = body;
+    const { email, password, nombre, apellido, rol, address, city, province, phone, serviceRadius, empresaId } = body;
+    // Multiempresa: asignar empresa al nuevo vendedor (del body, o heredar la del admin)
+    const nuevoEmpresaId = empresaId || session.user.empresaId || null;
 
     // Validation
     if (!email || !password || !nombre || !rol) {
@@ -92,13 +100,14 @@ export async function POST(request: Request) {
 
     await libsql.execute({
       sql: `INSERT INTO "User" (id, email, password, nombre, apellido, rol, activo, fechaAlta,
-        address, city, province, latitude, longitude, geocodingStatus, serviceRadius, coverageAreas)
-        VALUES (?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        address, city, province, latitude, longitude, geocodingStatus, serviceRadius, coverageAreas, empresaId)
+        VALUES (?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       args: [
         id, email.toLowerCase(), hashedPassword, nombre, apellido || null, rol,
         address || null, finalCity, finalProvince,
         lat, lng, geocodingStatus, serviceRadius || 50,
         body.coverageAreas ? JSON.stringify(body.coverageAreas) : null,
+        nuevoEmpresaId,
       ],
     });
 
@@ -118,4 +127,5 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Error del servidor' }, { status: 500 });
   }
 }
+
 
