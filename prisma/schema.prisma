@@ -164,6 +164,8 @@ model User {
   coverageAreas   String?         // JSON string
   documentNumber  String?
   hireDate        DateTime?
+  empresaId       String?  // multiempresa
+  empresa         Empresa? @relation(fields: [empresaId], references: [id])
 
   // Métricas (actualizadas por lógica de app, ver lib/metrics.ts en Fase 3)
   totalContacts   Int             @default(0)
@@ -208,7 +210,9 @@ model UserPhone {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  empresaId String?
+  empresa   Empresa? @relation(fields: [empresaId], references: [id])
 
   @@unique([userId, phoneNumber])
   @@index([phoneNumber])
@@ -310,6 +314,10 @@ model Contact {
   reminders      Reminder[]
   whatsappMessages WhatsAppMessage[]
   tareas         Tarea[] @relation("TareaContacto")
+  empresaId       String?
+  planId          String?
+  empresa         Empresa? @relation(fields: [empresaId], references: [id])
+  plan            Plan?    @relation(fields: [planId], references: [id])
 
   @@index([latitude, longitude])
   @@index([ownerId])
@@ -604,6 +612,8 @@ model Tarea {
   vendedor  User    @relation("TareaVendedor", fields: [asignadoA], references: [id], onDelete: Cascade)
   admin     User    @relation("TareaAdmin", fields: [asignadoPor], references: [id])
   contacto  Contact? @relation("TareaContacto", fields: [contactoId], references: [id], onDelete: SetNull)
+  empresaId String?
+  empresa   Empresa? @relation(fields: [empresaId], references: [id])
 
   @@index([asignadoA, estado])
   @@index([fechaLimite])
@@ -635,3 +645,43 @@ model Contacto {
   @@index([estado])
 }
 
+
+// ═══════════════════════════════════════════════════════
+// MULTIEMPRESA (Fase 4) — múltiples empresas de salud
+// ═══════════════════════════════════════════════════════
+
+model Empresa {
+  id          String         @id @default(cuid())
+  nombre      String         @unique
+  rubro       String         @default("SALUD") // SALUD, SEGUROS, FINANZAS
+  logo        String?
+  email       String         @unique
+  telefono    String?
+  direccion   String?
+  cuit        String?        @unique
+  isActive    Boolean        @default(true)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  users         User[]
+  planes        Plan[]
+  contacts      Contact[]
+  tareas        Tarea[]
+  notifications Notification[]
+}
+
+model Plan {
+  id              String   @id @default(cuid())
+  empresaId       String
+  nombre          String
+  descripcion     String?
+  precio          Float?
+  tipo            String?  // PREMIUM, AHORRO, BASICO
+  caracteristicas String?  // JSON array
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  empresa  Empresa   @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+  contacts Contact[]
+}
