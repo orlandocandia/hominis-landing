@@ -14,8 +14,8 @@ export async function GET(request: Request) {
 
     const { searchParams } = new URL(request.url);
     const role = searchParams.get('role'); // 'VENDEDOR' | null (all)
-    // Multiempresa: ADMIN puede filtrar por ?empresaId= (si no, ve vendedores de todas las empresas)
-    const empresaFiltro = searchParams.get('empresaId') || null;
+    // Multiempresa: la empresa activa viene de la sesión (ADMIN puede cambiarla via selector)
+    const empresaFiltro = session.user.empresaId || null;
 
     const libsql = getTursoClient();
     let sql = `SELECT id, email, nombre, apellido, rol, activo, city, province, latitude, longitude,
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { email, password, nombre, apellido, rol, address, city, province, phone, serviceRadius, empresaId } = body;
     // Multiempresa: asignar empresa al nuevo vendedor (del body, o heredar la del admin)
-    const nuevoEmpresaId = empresaId || session.user.empresaId || null;
+    const nuevoEmpresaId = session.user.empresaId || empresaId || null;
 
     // Validation
     if (!email || !password || !nombre || !rol) {
@@ -127,5 +127,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Error del servidor' }, { status: 500 });
   }
 }
+
 
 
