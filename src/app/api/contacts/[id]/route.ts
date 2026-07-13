@@ -30,8 +30,7 @@ export async function PATCH(
     const libsql = getTursoClient();
 
     // Multiempresa: verificar que el contacto pertenece a la empresa del usuario
-    const empresaFiltro =
-      session.user.role === 'ADMIN' ? null : session.user.empresaId || null;
+    const empresaFiltro = session.user.empresaId || null;
 
     // Check contact exists (and belongs to user's empresa if not admin)
     const existing = await libsql.execute({
@@ -75,8 +74,7 @@ export async function DELETE(
     const libsql = getTursoClient();
 
     // Multiempresa: verificar pertenencia a la empresa
-    const empresaFiltro =
-      session.user.role === 'ADMIN' ? null : session.user.empresaId || null;
+    const empresaFiltro = session.user.empresaId || null;
 
     const existing = await libsql.execute({
       sql: empresaFiltro
@@ -102,4 +100,5 @@ export async function DELETE(
     return NextResponse.json({ error: 'Error al eliminar contacto' }, { status: 500 });
   }
 }
+
 
