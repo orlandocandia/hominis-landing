@@ -14,6 +14,7 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Contraseña', type: 'password' },
+        empresaId: { label: 'Empresa', type: 'text' },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -72,11 +73,30 @@ export const authOptions: NextAuthOptions = {
           args: [new Date().toISOString(), user.id],
         });
 
+        // Multiempresa: resolver empresaId del usuario (si vino en credentials, validarlo; si no, usar el de la DB)
+        let userEmpresaId = (user.empresaId as string | null) ?? null;
+        let userEmpresaNombre: string | null = null;
+        const providedEmpresaId = (credentials as { empresaId?: string }).empresaId;
+        if (providedEmpresaId && providedEmpresaId !== 'all') {
+          // El usuario seleccionó una empresa en el login — debe coincidir con la suya
+          if (userEmpresaId && userEmpresaId !== providedEmpresaId) {
+            throw new Error('Este usuario no pertenece a la empresa seleccionada.');
+          }
+        }
+        if (userEmpresaId) {
+          const empRes = await libsql.execute({ sql: 'SELECT nombre FROM "Empresa" WHERE id = ?', args: [userEmpresaId] });
+          if (empRes.rows.length > 0) {
+            userEmpresaNombre = empRes.rows[0].nombre as string;
+          }
+        }
+
         return {
           id: user.id as string,
           email: user.email as string,
           name: user.nombre as string,
           role: (user.rol as string) || 'VENDEDOR',
+          empresaId: userEmpresaId,
+          empresaNombre: userEmpresaNombre,
         };
       },
     }),
@@ -97,6 +117,8 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.role = user.role;
         token.id = user.id;
+        token.empresaId = (user as { empresaId?: string | null }).empresaId ?? null;
+        token.empresaNombre = (user as { empresaNombre?: string | null }).empresaNombre ?? null;
       }
       return token;
     },
@@ -104,6 +126,8 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         session.user.role = token.role;
         session.user.id = token.id;
+        session.user.empresaId = (token.empresaId as string | null) ?? null;
+        session.user.empresaNombre = (token.empresaNombre as string | null) ?? null;
       }
       return session;
     },
@@ -120,3 +144,4 @@ export const authOptions: NextAuthOptions = {
   // reads the same cookie name the route handler sets. In production (HTTPS),
   // NextAuth auto-uses the __Secure- prefix consistently everywhere.
 };
+
