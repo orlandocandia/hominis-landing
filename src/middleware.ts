@@ -1,4 +1,4 @@
-// Middleware — role-based route protection (Fase 3+ — sin rol PRODUCTOR)
+// Middleware — role-based route protection
 // ──────────────────────────────────────────────────────────────────────
 // /admin/*          → ADMIN only
 // /vendedor/*       → VENDEDOR only
