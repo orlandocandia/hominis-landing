@@ -9,6 +9,8 @@ export async function GET() {
     const session = await getAuthSession();
     if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     const libsql = getTursoClient();
+    // Multiempresa: notificaciones del usuario; VENDEDOR implícitamente filtra por empresaId via su user
+    // (las notificaciones se crean con la empresaId del usuario destinatario)
     const result = await libsql.execute({
       sql: `SELECT * FROM Notification WHERE userId = ? ORDER BY read ASC, createdAt DESC LIMIT 50`,
       args: [session.user.id],
@@ -40,3 +42,4 @@ export async function DELETE() {
     return NextResponse.json({ error: 'Error del servidor' }, { status: 500 });
   }
 }
+
