@@ -211,8 +211,6 @@ model UserPhone {
   updatedAt   DateTime  @updatedAt
 
   user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  empresaId String?
-  empresa   Empresa? @relation(fields: [empresaId], references: [id])
 
   @@unique([userId, phoneNumber])
   @@index([phoneNumber])
@@ -435,7 +433,9 @@ model Notification {
   link      String?
   createdAt DateTime         @default(now())
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  empresaId String?
+  empresa   Empresa?  @relation(fields: [empresaId], references: [id])
 
   @@index([userId])
 }
@@ -685,3 +685,4 @@ model Plan {
   empresa  Empresa   @relation(fields: [empresaId], references: [id], onDelete: Cascade)
   contacts Contact[]
 }
+
