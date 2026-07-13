@@ -9,7 +9,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSelector, useTranslation } from '@/components/language-selector';
 
 interface DashboardNavProps {
-  role: string; // 'ADMIN' | 'VENDEDOR' | 'PRODUCTOR'
+  role: string; // 'ADMIN' | 'VENDEDOR'
   userName: string;
   userEmail: string;
 }
@@ -18,13 +18,10 @@ export function DashboardNav({ role, userName, userEmail }: DashboardNavProps) {
   const router = useRouter();
   const { t } = useTranslation();
   const isAdmin = role === 'ADMIN';
-  const isProductor = role === 'PRODUCTOR';
-  const basePath = isAdmin ? '/admin' : isProductor ? '/productor' : '/vendedor';
+  const basePath = isAdmin ? '/admin' : '/vendedor';
   const label = isAdmin
     ? (t('dashboard.title') || 'Panel Admin')
-    : isProductor
-      ? (t('dashboard.productor_title') || 'Panel Productor')
-      : (t('dashboard.vendedor_title') || 'Panel Vendedor');
+    : (t('dashboard.vendedor_title') || 'Panel Vendedor');
 
   const handleLogout = async () => {
     await signOut({ redirect: false });
