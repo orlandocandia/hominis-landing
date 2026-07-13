@@ -16,11 +16,8 @@ export async function GET(request: Request) {
     const estado = searchParams.get('estado');
     const vendedorId = searchParams.get('vendedorId');
 
-    // Multiempresa: VENDEDOR solo ve su empresa; ADMIN puede filtrar por ?empresaId=
-    const empresaFiltro =
-      session.user.role === 'ADMIN'
-        ? searchParams.get('empresaId') || null
-        : session.user.empresaId || null;
+    // Multiempresa: la empresa activa viene de la sesión
+    const empresaFiltro = session.user.empresaId || null;
 
     const libsql = getTursoClient();
     let sql = `SELECT t.*, u.nombre as vendedorNombre, u.apellido as vendedorApellido, u.email as vendedorEmail,
@@ -79,7 +76,7 @@ export async function POST(request: Request) {
     const id = 'tarea_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 
     // Multiempresa: la tarea hereda la empresa del admin (o del query param)
-    const tareaEmpresaId = (new URL(request.url).searchParams.get('empresaId')) || session.user.empresaId || null;
+    const tareaEmpresaId = session.user.empresaId || null;
 
     await libsql.execute({
       sql: `INSERT INTO "Tarea" (id, titulo, descripcion, tipo, estado, fechaLimite, asignadoA, asignadoPor, contactoId, empresaId, createdAt, updatedAt)
@@ -101,4 +98,5 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Error del servidor' }, { status: 500 });
   }
 }
+
 
