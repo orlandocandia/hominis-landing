@@ -1,5 +1,5 @@
 // Vendedor layout — server component.
-// Permite acceso a VENDEDOR y PRODUCTOR (productor = vendedor extendido).
+// Solo VENDEDOR.
 import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -12,7 +12,7 @@ export default async function VendedorLayout({ children }: { children: React.Rea
     redirect('/login');
   }
 
-  if (session.user.role !== 'VENDEDOR' && session.user.role !== 'PRODUCTOR') {
+  if (session.user.role !== 'VENDEDOR') {
     // ADMIN no pertenece al área de vendedor
     redirect('/admin');
   }
