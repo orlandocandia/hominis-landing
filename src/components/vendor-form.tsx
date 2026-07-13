@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
-import { ArrowLeft, Save, Loader2, Camera, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Save, Loader2, Camera, AlertCircle, Building2 } from 'lucide-react';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import { isBlobConfigured } from '@/lib/storage';
@@ -31,7 +31,7 @@ export function VendorForm({ userId }: VendorFormProps) {
   const [loading, setLoading] = useState(isEdit);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
-    nombre: '', apellido: '', email: '', password: '', rol: 'VENDEDOR',
+    nombre: '', apellido: '', email: '', password: '', rol: 'VENDEDOR', empresaId: '',
     phone: '', address: '', city: '', province: '', serviceRadius: 50,
   });
   const [coverageAreas, setCoverageAreas] = useState<string[]>([]);
@@ -52,7 +52,7 @@ export function VendorForm({ userId }: VendorFormProps) {
         const u = data.user;
         setForm({
           nombre: u.nombre || '', apellido: u.apellido || '', email: u.email || '',
-          password: '', rol: u.rol || 'VENDEDOR',
+          password: '', rol: u.rol || 'VENDEDOR', empresaId: u.empresaId || '',
           phone: data.phones?.[0]?.phoneNumber || '',
           address: u.address || '', city: u.city || '', province: u.province || '',
           serviceRadius: u.serviceRadius || 50,
@@ -70,8 +70,8 @@ export function VendorForm({ userId }: VendorFormProps) {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.nombre || !form.email || !form.rol) {
-      toast.error('Nombre, email y rol son obligatorios');
+    if (!form.nombre || !form.email || !form.rol || (!isEdit && !form.empresaId)) {
+      toast.error('Nombre, email, rol y empresa son obligatorios');
       return;
     }
     if (!isEdit && !form.password) {
@@ -230,6 +230,16 @@ export function VendorForm({ userId }: VendorFormProps) {
               </Select>
             </div>
             <div className="space-y-1.5">
+              <Label htmlFor="empresaId">🏢 Empresa *</Label>
+              <Select value={form.empresaId} onValueChange={(v) => setForm({ ...form, empresaId: v })}>
+                <SelectTrigger><SelectValue placeholder="Seleccionar empresa..." /></SelectTrigger>
+                <SelectContent>
+                  {empresas.map((emp) => <SelectItem key={emp.id} value={emp.id}>{emp.nombre}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">El vendedor solo verá datos de esta empresa</p>
+            </div>
+            <div className="space-y-1.5">
               <Label htmlFor="password">{isEdit ? 'Nueva contraseña (dejar vacío para no cambiar)' : 'Contraseña *'}</Label>
               <Input id="password" type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="Mínimo 6 caracteres" />
             </div>
@@ -302,4 +312,5 @@ export function VendorForm({ userId }: VendorFormProps) {
     </div>
   );
 }
+
 
