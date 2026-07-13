@@ -24,6 +24,10 @@ const ESTADO_STYLES: Record<string, string> = {
   CANCELADA: 'bg-gray-100 text-gray-600',
 };
 
+// Sentinel values for Radix Select (cannot use empty string "")
+const ALL = '__all__';
+const NONE = '__none__';
+
 interface Tarea {
   id: string; titulo: string; descripcion: string | null; tipo: string; estado: string;
   fechaLimite: string; fechaCompletada: string | null; asignadoA: string;
@@ -38,20 +42,20 @@ export default function AdminTareasPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [filtroEstado, setFiltroEstado] = useState('');
-  const [filtroVendedor, setFiltroVendedor] = useState('');
+  const [filtroEstado, setFiltroEstado] = useState(ALL);
+  const [filtroVendedor, setFiltroVendedor] = useState(ALL);
   const [form, setForm] = useState({
     titulo: '', descripcion: '', tipo: 'TAREA', asignadoA: '',
     fechaLimite: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
-    contactoId: '',
+    contactoId: NONE,
   });
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
-      if (filtroEstado) params.set('estado', filtroEstado);
-      if (filtroVendedor) params.set('vendedorId', filtroVendedor);
+      if (filtroEstado !== ALL) params.set('estado', filtroEstado);
+      if (filtroVendedor !== ALL) params.set('vendedorId', filtroVendedor);
       const [tareasRes, vendorsRes, contactsRes] = await Promise.all([
         fetch(`/api/tareas?${params}`),
         fetch('/api/admin/users'),
@@ -74,15 +78,23 @@ export default function AdminTareasPage() {
     if (!form.titulo || !form.asignadoA) { toast.error('Título y vendedor son obligatorios'); return; }
     setSaving(true);
     try {
+      const payload = {
+        titulo: form.titulo,
+        descripcion: form.descripcion,
+        tipo: form.tipo,
+        asignadoA: form.asignadoA,
+        fechaLimite: form.fechaLimite,
+        contactoId: form.contactoId === NONE ? '' : form.contactoId,
+      };
       const res = await fetch('/api/tareas', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       toast.success('Tarea creada y asignada');
       setShowForm(false);
-      setForm({ titulo: '', descripcion: '', tipo: 'TAREA', asignadoA: '', fechaLimite: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 16), contactoId: '' });
+      setForm({ titulo: '', descripcion: '', tipo: 'TAREA', asignadoA: '', fechaLimite: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 16), contactoId: NONE });
       load();
     } catch (e: any) { toast.error(e.message); }
     finally { setSaving(false); }
@@ -127,7 +139,7 @@ export default function AdminTareasPage() {
         <Select value={filtroEstado} onValueChange={setFiltroEstado}>
           <SelectTrigger className="w-[180px]"><SelectValue placeholder="Todos los estados" /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Todos</SelectItem>
+            <SelectItem value={ALL}>Todos</SelectItem>
             <SelectItem value="PENDIENTE">⏳ Pendiente</SelectItem>
             <SelectItem value="EN_PROGRESO">🔄 En Progreso</SelectItem>
             <SelectItem value="COMPLETADA">✅ Completada</SelectItem>
@@ -137,7 +149,7 @@ export default function AdminTareasPage() {
         <Select value={filtroVendedor} onValueChange={setFiltroVendedor}>
           <SelectTrigger className="w-[200px]"><SelectValue placeholder="Todos los vendedores" /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Todos</SelectItem>
+            <SelectItem value={ALL}>Todos</SelectItem>
             {vendors.map((v: any) => <SelectItem key={v.id} value={v.id}>{v.nombre} {v.apellido || ''}</SelectItem>)}
           </SelectContent>
         </Select>
@@ -187,7 +199,7 @@ export default function AdminTareasPage() {
                   <Select value={form.contactoId} onValueChange={(v) => setForm({ ...form, contactoId: v })}>
                     <SelectTrigger><SelectValue placeholder="Ninguno" /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Ninguno</SelectItem>
+                      <SelectItem value={NONE}>Ninguno</SelectItem>
                       {contacts.map((c: any) => <SelectItem key={c.id} value={c.id}>{c.name} ({c.primaryPhone || 'sin teléfono'})</SelectItem>)}
                     </SelectContent>
                   </Select>
