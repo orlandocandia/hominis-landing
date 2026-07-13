@@ -17,7 +17,6 @@ datasource db {
 enum Rol {
   ADMIN
   VENDEDOR
-  PRODUCTOR
 }
 
 enum GeocodingStatus {
@@ -106,7 +105,6 @@ enum NotificationType {
 
 enum InvitationRole {
   VENDEDOR
-  PRODUCTOR
 }
 
 enum TipoTarea {
@@ -636,3 +634,4 @@ model Contacto {
   @@index([createdAt])
   @@index([estado])
 }
+
