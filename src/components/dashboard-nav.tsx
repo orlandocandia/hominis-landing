@@ -3,7 +3,7 @@
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { LogOut, Shield, LayoutDashboard, Users, FileText, MapPin, UserCircle, Mail, Megaphone, KanbanSquare, BarChart3, Trophy, ClipboardList } from 'lucide-react';
+import { LogOut, Shield, LayoutDashboard, Users, FileText, MapPin, UserCircle, Mail, Megaphone, KanbanSquare, BarChart3, Trophy, ClipboardList, Building2 } from 'lucide-react';
 import { NotificationBell } from '@/components/notification-bell';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSelector, useTranslation } from '@/components/language-selector';
@@ -51,6 +51,7 @@ export function DashboardNav({ role, userName, userEmail }: DashboardNavProps) {
               <>
                 <NavLink href={`${basePath}/vendedores`} icon={<Users className="h-4 w-4" />} label={t('dashboard.sidebar.vendedores') || 'Vendedores'} />
                 <NavLink href={`${basePath}/equipo`} icon={<Users className="h-4 w-4" />} label="Equipo" />
+                <NavLink href={`${basePath}/empresas`} icon={<Building2 className="h-4 w-4" />} label="Empresas" />
                 <NavLink href={`${basePath}/contactos`} icon={<FileText className="h-4 w-4" />} label={t('dashboard.sidebar.contactos') || 'Contactos'} />
                 <NavLink href={`${basePath}/mapa`} icon={<MapPin className="h-4 w-4" />} label={t('dashboard.sidebar.mapa') || 'Mapa'} />
                 <NavLink href={`${basePath}/invitaciones`} icon={<Mail className="h-4 w-4" />} label={t('dashboard.sidebar.invitaciones') || 'Invitaciones'} />
@@ -102,3 +103,4 @@ function NavLink({ href, icon, label }: { href: string; icon: React.ReactNode; l
     </a>
   );
 }
+
