@@ -17,9 +17,8 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    // Multiempresa: ADMIN puede filtrar por ?empresaId= (si no, totales globales)
-    const { searchParams } = new URL(request.url);
-    const empresaFiltro = searchParams.get('empresaId') || null;
+    // Multiempresa: la empresa activa viene de la sesión
+    const empresaFiltro = session.user.empresaId || null;
     const empArgs = empresaFiltro ? [empresaFiltro] : [];
 
     const libsql = getTursoClient();
@@ -112,5 +111,6 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Error del servidor' }, { status: 500 });
   }
 }
+
 
 
