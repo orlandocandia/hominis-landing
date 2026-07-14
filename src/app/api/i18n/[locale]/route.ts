@@ -1,6 +1,17 @@
 // GET /api/i18n/[locale] — returns full translation JSON for the requested locale
 import { NextResponse } from 'next/server';
 
+// Dashboard translations from messages/{locale}.json (loaded at build time)
+import dashboardEs from '@/../messages/es.json';
+import dashboardEn from '@/../messages/en.json';
+import dashboardPt from '@/../messages/pt.json';
+
+const DASHBOARD_TRANSLATIONS: Record<string, any> = {
+  es: dashboardEs,
+  en: dashboardEn,
+  pt: dashboardPt,
+};
+
 const ES = {
   landing: {
     nav: { home: 'Inicio', about: 'Sobre Mí', plans: 'Planes', promotions: 'Promos', services: 'Servicios', branch: 'Sucursal', contact: 'Contacto' },
@@ -173,6 +184,12 @@ const TRANSLATIONS: Record<string, any> = { es: ES, en: EN, pt: PT };
 
 export async function GET(_request: Request, { params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const translations = TRANSLATIONS[locale] || TRANSLATIONS.es;
-  return NextResponse.json(translations);
+  const inlineTranslations = TRANSLATIONS[locale] || TRANSLATIONS.es;
+  const dashboardTranslations = DASHBOARD_TRANSLATIONS[locale] || DASHBOARD_TRANSLATIONS.es;
+
+  // Merge: inline translations (landing, dashboard, vendedor) + dashboard JSON (admin, vendor, auth, help, notifications)
+  const merged = { ...inlineTranslations, ...dashboardTranslations };
+
+  return NextResponse.json(merged);
 }
+
