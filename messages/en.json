@@ -1,0 +1,106 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "search": "Search",
+    "filter": "Filter",
+    "all": "All",
+    "none": "None",
+    "yes": "Yes",
+    "no": "No",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "actions": "Actions",
+    "status": "Status",
+    "date": "Date",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "company": "Company",
+    "role": "Role",
+    "active": "Active",
+    "inactive": "Inactive",
+    "confirm": "Confirm",
+    "logout": "Logout",
+    "refresh": "Refresh",
+    "create": "Create",
+    "new": "New",
+    "noData": "No data"
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "welcome": "Welcome, {name}",
+    "leads": {
+      "title": "Messages",
+      "total": "messages received",
+      "new": "New",
+      "attended": "Attended",
+      "conversion": "Conversion",
+      "filters": { "status": "Status", "search": "Search messages...", "dateFrom": "Date from", "dateTo": "Date to", "apply": "Apply", "clear": "Clear" },
+      "bulk": { "selected": "selected", "markAsRead": "Mark as read", "markAsAttended": "Mark as attended", "delete": "Delete" },
+      "empty": "No messages with these filters",
+      "exportExcel": "Excel",
+      "exportPdf": "PDF"
+    },
+    "companies": {
+      "title": "Companies",
+      "new": "New Company",
+      "edit": "Edit Company",
+      "active": "Active",
+      "inactive": "Inactive",
+      "empty": "No companies registered",
+      "form": { "name": "Name", "email": "Email", "phone": "Phone", "address": "Address", "active": "Company active" }
+    },
+    "vendors": {
+      "title": "Vendors",
+      "new": "New Vendor",
+      "stats": { "leads": "Leads", "pending": "Pending", "completed": "Completed" },
+      "actions": { "view": "View", "activate": "Activate", "deactivate": "Deactivate", "delete": "Delete" },
+      "empty": "No vendors to show",
+      "form": { "name": "Full name", "email": "Email", "password": "Password", "phone": "Phone", "company": "Company" }
+    },
+    "tasks": {
+      "title": "Tasks",
+      "new": "New Task",
+      "form": { "title": "Title", "description": "Description", "type": "Type", "priority": "Priority", "dueDate": "Due date", "assignTo": "Assign to", "relatedLead": "Related lead" },
+      "actions": { "complete": "Complete", "delete": "Delete" },
+      "empty": "No tasks with these filters",
+      "expired": "Expired"
+    },
+    "team": {
+      "title": "Sales Team",
+      "vendors": "Vendors",
+      "totalLeads": "Total leads",
+      "pendingTasks": "Pending tasks"
+    },
+    "activity": {
+      "title": "Activity",
+      "total": "actions recorded",
+      "exportCsv": "Export CSV",
+      "empty": "No activity with these filters"
+    }
+  },
+  "vendor": {
+    "title": "My Panel",
+    "welcome": "Welcome, {name}",
+    "tasks": { "title": "My Tasks", "empty": "You have no tasks", "complete": "Complete" },
+    "leads": { "title": "My Leads", "empty": "You have no assigned leads", "whatsapp": "WhatsApp" },
+    "profile": { "title": "My Profile", "save": "Save changes", "cancel": "Cancel", "success": "Profile updated" }
+  },
+  "auth": {
+    "login": { "title": "Management Panel", "email": "Email", "password": "Password", "submit": "Sign In", "forgot": "Forgot password?" },
+    "forgotPassword": { "title": "Reset Password", "submit": "Send link", "success": "Email sent", "back": "Back to login" },
+    "resetPassword": { "title": "New Password", "submit": "Reset", "success": "Password updated", "back": "Go to login" }
+  },
+  "notifications": { "title": "Notifications", "markAllRead": "Mark all as read", "empty": "No notifications", "view": "View →" },
+  "help": { "title": "Help", "guide": "Guide", "chat": "AI Chat", "chatPlaceholder": "Type your question..." }
+}
