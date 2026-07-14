@@ -5,35 +5,47 @@ import { useSession } from 'next-auth/react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { DashboardTitle } from '@/components/dashboard-i18n';
-import { ShieldCheck, FileText, Users, TrendingUp, Mail, Phone, Clock, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, FileText, Users, TrendingUp, Mail, Phone, Clock, CheckCircle2, ListTodo } from 'lucide-react';
+import { StatCard } from '@/components/ui/stat-card';
 import Link from 'next/link';
 
 export default function AdminDashboard() {
   const { data: session } = useSession();
   const [contacts, setContacts] = useState<any[]>([]);
+  const [stats, setStats] = useState({ totalLeads: 0, totalVendedores: 0, totalTareas: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchContacts() {
+    async function fetchData() {
       try {
-        const res = await fetch('/api/crm/contacts?limit=50');
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        setContacts(data.contacts || []);
+        const [contactsRes, statsRes] = await Promise.all([
+          fetch('/api/crm/contacts?limit=50'),
+          fetch('/api/admin/stats/equipo'),
+        ]);
+        if (!contactsRes.ok) throw new Error(`HTTP ${contactsRes.status}`);
+        const contactsData = await contactsRes.json();
+        setContacts(contactsData.contacts || []);
+        if (statsRes.ok) {
+          const statsData = await statsRes.json();
+          setStats({
+            totalLeads: statsData.totalLeads || 0,
+            totalVendedores: statsData.totalVendedores || 0,
+            totalTareas: statsData.totalTareas || 0,
+          });
+        }
       } catch (err: any) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     }
-    fetchContacts();
+    fetchData();
   }, []);
 
-  const totalLeads = contacts.length;
   const nuevos = contacts.filter(c => c.status === 'NUEVO').length;
   const atendidos = contacts.filter(c => c.status === 'ATENDIDO').length;
-  const conversionRate = totalLeads > 0 ? Math.round((atendidos / totalLeads) * 100) : 0;
+  const conversionRate = stats.totalLeads > 0 ? Math.round((atendidos / stats.totalLeads) * 100) : 0;
 
   if (loading) {
     return (
@@ -62,51 +74,12 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardContent className="flex items-center justify-between p-5">
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Total Leads</p>
-              <p className="mt-1 text-2xl font-bold">{totalLeads}</p>
-            </div>
-            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
-              <FileText className="h-5 w-5" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="flex items-center justify-between p-5">
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Nuevos</p>
-              <p className="mt-1 text-2xl font-bold">{nuevos}</p>
-            </div>
-            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-red-500/10 text-red-500">
-              <Clock className="h-5 w-5" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="flex items-center justify-between p-5">
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Atendidos</p>
-              <p className="mt-1 text-2xl font-bold">{atendidos}</p>
-            </div>
-            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-green-500/10 text-green-500">
-              <CheckCircle2 className="h-5 w-5" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="flex items-center justify-between p-5">
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Conversión</p>
-              <p className="mt-1 text-2xl font-bold">{conversionRate}%</p>
-            </div>
-            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
-              <TrendingUp className="h-5 w-5" />
-            </div>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
+        <StatCard title="Total Leads" value={stats.totalLeads} icon={FileText} color="blue" />
+        <StatCard title="Nuevos" value={nuevos} icon={Clock} color="red" hint="sin atender" />
+        <StatCard title="Atendidos" value={atendidos} icon={CheckCircle2} color="green" />
+        <StatCard title="Conversión" value={`${conversionRate}%`} icon={TrendingUp} color="purple" />
+        <StatCard title="Vendedores" value={stats.totalVendedores} icon={Users} color="yellow" />
       </div>
 
       {/* Messages from form */}
@@ -164,3 +137,4 @@ export default function AdminDashboard() {
     </div>
   );
 }
+
