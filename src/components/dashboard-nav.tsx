@@ -3,7 +3,7 @@
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { LogOut, Shield, LayoutDashboard, Users, FileText, MapPin, UserCircle, Mail, Megaphone, KanbanSquare, BarChart3, Trophy, ClipboardList, Building2, Activity } from 'lucide-react';
+import { LogOut, Shield, LayoutDashboard, Users, FileText, UserCircle, ClipboardList, Building2, Activity } from 'lucide-react';
 import { NotificationBell } from '@/components/notification-bell';
 import { EmpresaSelector } from '@/components/empresa-selector';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -55,22 +55,15 @@ export function DashboardNav({ role, userName, userEmail }: DashboardNavProps) {
                 <NavLink href={`${basePath}/vendedores`} icon={<Users className="h-4 w-4" />} label={t('dashboard.sidebar.vendedores') || 'Vendedores'} />
                 <NavLink href={`${basePath}/equipo`} icon={<Users className="h-4 w-4" />} label="Equipo" />
                 <NavLink href={`${basePath}/tareas`} icon={<ClipboardList className="h-4 w-4" />} label="📋 Tareas" />
-                <NavLink href={`${basePath}/contactos`} icon={<FileText className="h-4 w-4" />} label={t('dashboard.sidebar.contactos') || 'Contactos'} />
-                <NavLink href={`${basePath}/mapa`} icon={<MapPin className="h-4 w-4" />} label={t('dashboard.sidebar.mapa') || 'Mapa'} />
-                <NavLink href={`${basePath}/invitaciones`} icon={<Mail className="h-4 w-4" />} label={t('dashboard.sidebar.invitaciones') || 'Invitaciones'} />
-                <NavLink href={`${basePath}/marketing`} icon={<Megaphone className="h-4 w-4" />} label={t('dashboard.sidebar.marketing') || 'Marketing'} />
-                <NavLink href={`${basePath}/reportes`} icon={<BarChart3 className="h-4 w-4" />} label={t('dashboard.sidebar.reportes') || 'Reportes'} />
-                <NavLink href={`${basePath}/leaderboard`} icon={<Trophy className="h-4 w-4" />} label={t('dashboard.sidebar.ranking') || 'Ranking'} />
                 <NavLink href={`${basePath}/actividad`} icon={<Activity className="h-4 w-4" />} label="📊 Actividad" />
               </>
             )}
             {!isAdmin && (
               <>
-                <NavLink href={`${basePath}/contactos`} icon={<FileText className="h-4 w-4" />} label={t('dashboard.sidebar.contactos') || 'Contactos'} />
-                <NavLink href="/vendedor/pipeline" icon={<KanbanSquare className="h-4 w-4" />} label={t('dashboard.sidebar.pipeline') || 'Pipeline'} />
-                <NavLink href={`${basePath}/mapa`} icon={<MapPin className="h-4 w-4" />} label={t('dashboard.sidebar.mapa') || 'Mapa'} />
-                <NavLink href={`${basePath}/perfil`} icon={<UserCircle className="h-4 w-4" />} label={t('dashboard.sidebar.perfil') || 'Perfil'} />
-                <NavLink href="/vendedor/tareas" icon={<ClipboardList className="h-4 w-4" />} label="Mis Tareas" />
+                <NavLink href={basePath} icon={<LayoutDashboard className="h-4 w-4" />} label={t('dashboard.sidebar.dashboard') || 'Dashboard'} />
+                <NavLink href="/vendedor/tareas" icon={<ClipboardList className="h-4 w-4" />} label="📋 Mis Tareas" />
+                <NavLink href="/vendedor/leads" icon={<Users className="h-4 w-4" />} label="👥 Mis Leads" />
+                <NavLink href={`${basePath}/perfil`} icon={<UserCircle className="h-4 w-4" />} label={t('dashboard.sidebar.perfil') || 'Mi Perfil'} />
               </>
             )}
           </nav>
@@ -107,7 +100,3 @@ function NavLink({ href, icon, label }: { href: string; icon: React.ReactNode; l
     </a>
   );
 }
-
-
-
-
