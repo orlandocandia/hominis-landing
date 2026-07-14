@@ -1,191 +1,189 @@
 'use client';
 
-// /vendedor/leads — Lista paginada de leads asignados al vendedor.
-// Multiempresa: el backend filtra por session.user.empresaId automáticamente.
+// /vendedor/leads — Mis Leads (lista paginada, filtros, WhatsApp, cambiar estado).
 import { useState, useEffect, useCallback } from 'react';
 import {
-  Users, MessageCircle, ChevronLeft, ChevronRight, Search, Loader2,
+  Search, RefreshCw, ChevronLeft, ChevronRight, Loader2,
+  MessageCircle, Users,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from '@/components/ui/select';
 import { toast } from 'sonner';
 
-interface Lead {
-  id: string;
-  name: string;
-  primaryEmail: string | null;
-  primaryPhone: string | null;
-  address: string | null;
-  city: string | null;
-  status: string;
-  leadScore: number | null;
-  leadPriority: string | null;
-  createdAt: string;
-}
-
-interface Pagination {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
-}
-
-const ALL = '__all__';
-const STATUS_OPTIONS = [
-  { value: ALL, label: 'Todos' },
-  { value: 'NUEVO', label: 'Nuevo' },
-  { value: 'LEIDO', label: 'Leído' },
-  { value: 'EN_CONTACTO', label: 'En contacto' },
-  { value: 'REUNION', label: 'Reunión' },
-  { value: 'PRESUPUESTO', label: 'Presupuesto' },
-  { value: 'ATENDIDO', label: 'Atendido' },
-];
-
-const STATUS_COLOR: Record<string, string> = {
+const STATUS_COLORS: Record<string, string> = {
   NUEVO: 'bg-sky-500/15 text-sky-600 dark:text-sky-400',
   LEIDO: 'bg-violet-500/15 text-violet-600 dark:text-violet-400',
   EN_CONTACTO: 'bg-amber-500/15 text-amber-600 dark:text-amber-400',
-  REUNION: 'bg-orange-500/15 text-orange-600 dark:text-orange-400',
-  PRESUPUESTO: 'bg-fuchsia-500/15 text-fuchsia-600 dark:text-fuchsia-400',
+  REUNION: 'bg-fuchsia-500/15 text-fuchsia-600 dark:text-fuchsia-400',
+  PRESUPUESTO: 'bg-orange-500/15 text-orange-600 dark:text-orange-400',
   ATENDIDO: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400',
   RECHAZADO: 'bg-zinc-500/15 text-zinc-500',
 };
 
+const STATUS_OPTIONS = [
+  { value: 'NUEVO', label: '🆕 Nuevo' },
+  { value: 'LEIDO', label: '📖 Leído' },
+  { value: 'EN_CONTACTO', label: '💬 En contacto' },
+  { value: 'REUNION', label: '🤝 Reunión' },
+  { value: 'PRESUPUESTO', label: '💰 Presupuesto' },
+  { value: 'ATENDIDO', label: '✅ Atendido' },
+  { value: 'RECHAZADO', label: '❌ Rechazado' },
+];
+
 function formatDate(iso: string): string {
   try {
-    return new Date(iso).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: '2-digit' });
-  } catch {
-    return '—';
-  }
+    return new Date(iso).toLocaleString('es-AR', {
+      day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit',
+    });
+  } catch { return '—'; }
 }
 
 export default function VendedorLeadsPage() {
-  const [leads, setLeads] = useState<Lead[]>([]);
-  const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 10, total: 0, totalPages: 0 });
+  const [leads, setLeads] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [status, setStatus] = useState(ALL);
-  const [search, setSearch] = useState('');
-  const [searchInput, setSearchInput] = useState('');
+  const [filtros, setFiltros] = useState({ status: '', search: '' });
+  const [pagination, setPagination] = useState({ page: 1, total: 0, totalPages: 1, limit: 10 });
 
   const fetchLeads = useCallback(async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams({ page: String(page), limit: '10' });
-      if (status !== ALL) params.set('status', status);
-      if (search) params.set('search', search);
+      const params = new URLSearchParams({ page: String(pagination.page), limit: String(pagination.limit) });
+      if (filtros.status) params.set('status', filtros.status);
+      if (filtros.search) params.set('search', filtros.search);
+
       const res = await fetch(`/api/vendedor/leads?${params}`, { cache: 'no-store' });
       if (!res.ok) throw new Error();
       const data = await res.json();
-      setLeads(data.leads ?? []);
-      setPagination(data.pagination ?? { page: 1, limit: 10, total: 0, totalPages: 0 });
+      setLeads(data.leads || []);
+      setPagination(data.pagination || { page: 1, total: 0, totalPages: 1, limit: 10 });
     } catch {
       toast.error('Error al cargar leads');
     } finally {
       setLoading(false);
     }
-  }, [page, status, search]);
+  }, [pagination.page, filtros]);
 
   useEffect(() => { fetchLeads(); }, [fetchLeads]);
 
-  const handleSearch = () => {
-    setPage(1);
-    setSearch(searchInput);
+  const handlePageChange = (newPage: number) => {
+    setPagination((prev) => ({ ...prev, page: newPage }));
   };
 
-  const whatsappUrl = (phone: string | null) => {
-    if (!phone) return null;
-    const digits = phone.replace(/[^0-9]/g, '');
-    return `https://wa.me/${digits}`;
+  const handleChangeStatus = async (id: string, status: string) => {
+    try {
+      const res = await fetch(`/api/vendedor/leads/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
+      if (!res.ok) throw new Error();
+      toast.success('Estado actualizado');
+      fetchLeads();
+    } catch {
+      toast.error('Error al cambiar estado');
+    }
   };
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight">
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-            <Users className="h-5 w-5 text-primary" />
-          </span>
-          Mis Leads
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          {pagination.total} lead{pagination.total !== 1 ? 's' : ''} asignado{pagination.total !== 1 ? 's' : ''}
-        </p>
+      {/* Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+              <Users className="h-5 w-5 text-primary" />
+            </span>
+            Mis Leads
+          </h1>
+          <p className="text-sm text-muted-foreground">{pagination.total} leads asignados</p>
+        </div>
+        <Button variant="outline" onClick={fetchLeads} className="gap-2">
+          <RefreshCw className="h-4 w-4" /> Actualizar
+        </Button>
       </div>
 
       {/* Filtros */}
-      <div className="flex flex-wrap gap-2">
-        <Select value={status} onValueChange={(v) => { setPage(1); setStatus(v); }}>
-          <SelectTrigger className="w-[180px]"><SelectValue /></SelectTrigger>
-          <SelectContent>
-            {STATUS_OPTIONS.map((o) => (
-              <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <div className="flex flex-1 gap-2">
+      <div className="flex flex-col gap-3 sm:flex-row">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Buscar por nombre, email o teléfono..."
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            className="flex-1"
+            value={filtros.search}
+            onChange={(e) => setFiltros({ ...filtros, search: e.target.value })}
+            onKeyDown={(e) => e.key === 'Enter' && fetchLeads()}
+            className="pl-9"
           />
-          <Button variant="outline" size="icon" onClick={handleSearch}>
-            <Search className="h-4 w-4" />
-          </Button>
         </div>
+        <select
+          value={filtros.status}
+          onChange={(e) => setFiltros({ ...filtros, status: e.target.value })}
+          className="rounded-lg border border-input bg-background px-4 py-2 text-sm text-foreground"
+        >
+          <option value="">Todos los estados</option>
+          {STATUS_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+        </select>
       </div>
 
       {/* Lista */}
       {loading ? (
         <div className="space-y-2">
-          {[0, 1, 2, 3].map((i) => <Skeleton key={i} className="h-20 w-full" />)}
+          {[0, 1, 2, 3].map((i) => <Skeleton key={i} className="h-28 w-full" />)}
         </div>
       ) : leads.length === 0 ? (
         <Card className="border-dashed">
           <CardContent className="flex flex-col items-center gap-2 py-12 text-center text-muted-foreground">
-            <Users className="h-10 w-10 opacity-50" />
-            <p>No tenés leads asignados con estos filtros.</p>
+            <MessageCircle className="h-10 w-10 opacity-50" />
+            <p>No tenés leads asignados</p>
+            <p className="text-sm">Los leads aparecerán aquí cuando te los asignen</p>
           </CardContent>
         </Card>
       ) : (
         <div className="space-y-2">
           {leads.map((lead) => (
-            <Card key={lead.id} className="hover:shadow-md transition-shadow">
-              <CardContent className="flex items-start justify-between gap-4 p-4">
+            <Card key={lead.id} className="transition-shadow hover:shadow-md">
+              <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-start sm:justify-between">
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-semibold truncate">{lead.name}</h3>
-                    <Badge variant="secondary" className={STATUS_COLOR[lead.status] || ''}>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="font-semibold">{lead.name}</h3>
+                    <Badge variant="secondary" className={STATUS_COLORS[lead.status] || ''}>
                       {lead.status.replace('_', ' ')}
                     </Badge>
-                    {lead.leadScore != null && lead.leadScore > 0 && (
-                      <Badge variant="outline" className="text-[10px]">
-                        ⭐ {lead.leadScore}
-                      </Badge>
-                    )}
                   </div>
-                  <div className="flex flex-wrap gap-3 mt-1 text-xs text-muted-foreground">
-                    {lead.primaryPhone && <span>📞 {lead.primaryPhone}</span>}
-                    {lead.primaryEmail && <span className="truncate">✉️ {lead.primaryEmail}</span>}
-                    {lead.address && <span className="truncate">📍 {lead.address}</span>}
-                    <span>📅 {formatDate(lead.createdAt)}</span>
+                  <div className="mt-1 flex flex-wrap gap-3 text-sm text-muted-foreground">
+                    {lead.primaryPhone && <span>📱 {lead.primaryPhone}</span>}
+                    {lead.primaryEmail && <span className="truncate">📧 {lead.primaryEmail}</span>}
                   </div>
+                  {lead.mensaje && (
+                    <p className="mt-2 line-clamp-2 rounded-lg bg-muted/30 p-2 text-sm">
+                      💬 {lead.mensaje}
+                    </p>
+                  )}
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    📅 {formatDate(lead.createdAt)}
+                  </p>
                 </div>
-                <div className="flex gap-1 flex-shrink-0">
-                  {whatsappUrl(lead.primaryPhone) && (
-                    <Button size="sm" variant="outline" asChild title="WhatsApp">
-                      <a href={whatsappUrl(lead.primaryPhone)!} target="_blank" rel="noopener noreferrer">
-                        <MessageCircle className="h-4 w-4" />
-                      </a>
-                    </Button>
+                <div className="flex flex-wrap gap-2 flex-shrink-0">
+                  {lead.primaryPhone && (
+                    <a
+                      href={`https://wa.me/${lead.primaryPhone.replace(/[^0-9]/g, '')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 rounded-lg bg-green-500 px-3 py-1.5 text-sm text-white transition hover:bg-green-600"
+                    >
+                      <MessageCircle className="h-3.5 w-3.5" /> WhatsApp
+                    </a>
+                  )}
+                  {lead.status !== 'ATENDIDO' && lead.status !== 'RECHAZADO' && (
+                    <select
+                      value={lead.status}
+                      onChange={(e) => handleChangeStatus(lead.id, e.target.value)}
+                      className="rounded-lg border border-input bg-background px-2 py-1.5 text-sm text-foreground"
+                    >
+                      {STATUS_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+                    </select>
                   )}
                 </div>
               </CardContent>
@@ -196,26 +194,22 @@ export default function VendedorLeadsPage() {
 
       {/* Paginación */}
       {pagination.totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 pt-4">
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={page <= 1 || loading}
-            onClick={() => setPage(page - 1)}
-          >
-            <ChevronLeft className="h-4 w-4" /> Anterior
-          </Button>
-          <span className="text-sm text-muted-foreground px-2">
-            Página {page} de {pagination.totalPages}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={page >= pagination.totalPages || loading}
-            onClick={() => setPage(page + 1)}
-          >
-            Siguiente <ChevronRight className="h-4 w-4" />
-          </Button>
+        <div className="flex items-center justify-between gap-4 border-t border-border pt-4">
+          <div className="text-sm text-muted-foreground">
+            Mostrando {(pagination.page - 1) * pagination.limit + 1} -{' '}
+            {Math.min(pagination.page * pagination.limit, pagination.total)} de {pagination.total}
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="icon" disabled={pagination.page === 1} onClick={() => handlePageChange(pagination.page - 1)}>
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <span className="rounded-lg bg-primary/10 px-3 py-1 text-sm">
+              {pagination.page} / {pagination.totalPages}
+            </span>
+            <Button variant="outline" size="icon" disabled={pagination.page === pagination.totalPages} onClick={() => handlePageChange(pagination.page + 1)}>
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       )}
     </div>
