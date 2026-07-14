@@ -1,1 +1,66 @@
-J3VzZSBjbGllbnQnOwoKaW1wb3J0IHsgdXNlU3RhdGUsIHVzZUVmZmVjdCB9IGZyb20gJ3JlYWN0JzsKaW1wb3J0IHsgdXNlU2Vzc2lvbiB9IGZyb20gJ25leHQtYXV0aC9yZWFjdCc7CmltcG9ydCB7IFN0YXRDYXJkIH0gZnJvbSAnQC9jb21wb25lbnRzL3VpL3N0YXQtY2FyZCc7CmltcG9ydCB7IFNrZWxldG9uIH0gZnJvbSAnQC9jb21wb25lbnRzL3VpL3NrZWxldG9uJzsKCmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIFZlbmRlZG9yRGFzaGJvYXJkKCkgewogIGNvbnN0IHsgZGF0YTogc2Vzc2lvbiB9ID0gdXNlU2Vzc2lvbigpOwogIGNvbnN0IFtzdGF0cywgc2V0U3RhdHNdID0gdXNlU3RhdGUoewogICAgdGFyZWFzUGVuZGllbnRlczogMCwKICAgIHRhcmVhc0NvbXBsZXRhZGFzOiAwLAogICAgbGVhZHNBc2lnbmFkb3M6IDAsCiAgICBsZWFkc0F0ZW5kaWRvczogMCwKICB9KTsKICBjb25zdCBbbG9hZGluZywgc2V0TG9hZGluZ10gPSB1c2VTdGF0ZSh0cnVlKTsKCiAgdXNlRWZmZWN0KCgpID0+IHsKICAgIGZldGNoKCcvYXBpL3ZlbmRlZG9yL3N0YXRzJykKICAgICAgLnRoZW4oKHIpID0+IHIuanNvbigpKQogICAgICAudGhlbigoZGF0YSkgPT4gewogICAgICAgIHNldFN0YXRzKHsKICAgICAgICAgIHRhcmVhc1BlbmRpZW50ZXM6IGRhdGEudGFyZWFzUGVuZGllbnRlcyB8fCAwLAogICAgICAgICAgdGFyZWFzQ29tcGxldGFkYXM6IGRhdGEudGFyZWFzQ29tcGxldGFkYXMgfHwgMCwKICAgICAgICAgIGxlYWRzQXNpZ25hZG9zOiBkYXRhLmxlYWRzQXNpZ25hZG9zIHx8IGRhdGEubGVhZHNUb3RhbCB8fCAwLAogICAgICAgICAgbGVhZHNBdGVuZGlkb3M6IGRhdGEubGVhZHNBdGVuZGlkb3MgfHwgMCwKICAgICAgICB9KTsKICAgICAgICBzZXRMb2FkaW5nKGZhbHNlKTsKICAgICAgfSkKICAgICAgLmNhdGNoKChlKSA9PiB7CiAgICAgICAgY29uc29sZS5lcnJvcignRXJyb3IgZmV0Y2hpbmcgc3RhdHM6JywgZSk7CiAgICAgICAgc2V0TG9hZGluZyhmYWxzZSk7CiAgICAgIH0pOwogIH0sIFtdKTsKCiAgaWYgKGxvYWRpbmcpIHsKICAgIHJldHVybiAoCiAgICAgIDxkaXYgY2xhc3NOYW1lPSJzcGFjZS15LTYiPgogICAgICAgIDxTa2VsZXRvbiBjbGFzc05hbWU9ImgtMTYgdy1mdWxsIiAvPgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJncmlkIGdyaWQtY29scy0xIGdhcC00IHNtOmdyaWQtY29scy0yIGxnOmdyaWQtY29scy00Ij4KICAgICAgICAgIHtbMCwgMSwgMiwgM10ubWFwKChpKSA9PiAoCiAgICAgICAgICAgIDxTa2VsZXRvbiBrZXk9e2l9IGNsYXNzTmFtZT0iaC0yNCB3LWZ1bGwiIC8+CiAgICAgICAgICApKX0KICAgICAgICA8L2Rpdj4KICAgICAgPC9kaXY+CiAgICApOwogIH0KCiAgcmV0dXJuICgKICAgIDxkaXYgY2xhc3NOYW1lPSJzcGFjZS15LTYiPgogICAgICA8ZGl2PgogICAgICAgIDxoMSBjbGFzc05hbWU9InRleHQtMnhsIGZvbnQtYm9sZCB0ZXh0LWZvcmVncm91bmQiPk1pIFBhbmVsPC9oMT4KICAgICAgICA8cCBjbGFzc05hbWU9InRleHQtbXV0ZWQtZm9yZWdyb3VuZCI+CiAgICAgICAgICBCaWVudmVuaWRhL28sIHtzZXNzaW9uPy51c2VyPy5uYW1lfSDCtyB7c2Vzc2lvbj8udXNlcj8uZW1wcmVzYU5vbWJyZSB8fCAnU2luIGVtcHJlc2EnfQogICAgICAgIDwvcD4KICAgICAgPC9kaXY+CgogICAgICA8ZGl2IGNsYXNzTmFtZT0iZ3JpZCBncmlkLWNvbHMtMSBnYXAtNCBzbTpncmlkLWNvbHMtMiBsZzpncmlkLWNvbHMtNCI+CiAgICAgICAgPFN0YXRDYXJkIHRpdGxlPSJUYXJlYXMgcGVuZGllbnRlcyIgdmFsdWU9e3N0YXRzLnRhcmVhc1BlbmRpZW50ZXN9IGVtb2ppPSLwn5OLIiBjb2xvcj0icmVkIiAvPgogICAgICAgIDxTdGF0Q2FyZCB0aXRsZT0iVGFyZWFzIGNvbXBsZXRhZGFzIiB2YWx1ZT17c3RhdHMudGFyZWFzQ29tcGxldGFkYXN9IGVtb2ppPSLinIUiIGNvbG9yPSJncmVlbiIgLz4KICAgICAgICA8U3RhdENhcmQgdGl0bGU9IkxlYWRzIGFzaWduYWRvcyIgdmFsdWU9e3N0YXRzLmxlYWRzQXNpZ25hZG9zfSBlbW9qaT0i8J+RpSIgY29sb3I9ImJsdWUiIC8+CiAgICAgICAgPFN0YXRDYXJkIHRpdGxlPSJMZWFkcyBhdGVuZGlkb3MiIHZhbHVlPXtzdGF0cy5sZWFkc0F0ZW5kaWRvc30gZW1vamk9IuKtkCIgY29sb3I9InB1cnBsZSIgLz4KICAgICAgPC9kaXY+CiAgICA8L2Rpdj4KICApOwp9Cg==
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { StatCard } from '@/components/ui/stat-card';
+import { Skeleton } from '@/components/ui/skeleton';
+
+export default function VendedorDashboard() {
+  const { data: session } = useSession();
+  const [stats, setStats] = useState({
+    tareasPendientes: 0,
+    tareasCompletadas: 0,
+    leadsAsignados: 0,
+    leadsAtendidos: 0,
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/vendedor/stats')
+      .then((r) => r.json())
+      .then((data) => {
+        setStats({
+          tareasPendientes: data.tareasPendientes || 0,
+          tareasCompletadas: data.tareasCompletadas || 0,
+          leadsAsignados: data.leadsAsignados || data.leadsTotal || 0,
+          leadsAtendidos: data.leadsAtendidos || 0,
+        });
+        setLoading(false);
+      })
+      .catch((e) => {
+        console.error('Error fetching stats:', e);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <Skeleton className="h-16 w-full" />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {[0, 1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-24 w-full" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-foreground">Mi Panel</h1>
+        <p className="text-muted-foreground">
+          Bienvenida/o, {session?.user?.name} · {session?.user?.empresaNombre || 'Sin empresa'}
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StatCard title="Tareas pendientes" value={stats.tareasPendientes} emoji="📋" color="red" />
+        <StatCard title="Tareas completadas" value={stats.tareasCompletadas} emoji="✅" color="green" />
+        <StatCard title="Leads asignados" value={stats.leadsAsignados} emoji="👥" color="blue" />
+        <StatCard title="Leads atendidos" value={stats.leadsAtendidos} emoji="⭐" color="purple" />
+      </div>
+    </div>
+  );
+}
