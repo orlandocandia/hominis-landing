@@ -8,6 +8,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSelector } from '@/components/language-selector';
 import { NotificationBell } from '@/components/notification-bell';
 import { EmpresaSelector } from '@/components/empresa-selector';
+import { HelpButton } from '@/components/help/HelpButton';
 import { LogOut, Menu, X } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 
@@ -112,6 +113,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </header>
         <main className="flex-1 overflow-y-auto p-4 sm:p-6">{children}</main>
       </div>
+      <HelpButton />
     </div>
   );
 }
+
