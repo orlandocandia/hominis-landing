@@ -2,7 +2,6 @@
 // Uses raw SQL via Turso (no Prisma dependency)
 // Sends email + WhatsApp notifications to Agustina
 import { NextResponse } from 'next/server';
-import { verifyCsrf } from '@/lib/csrf';
 import {
   sanitizeString,
   sanitizeEmail,
@@ -18,10 +17,7 @@ import { getTursoClient } from '@/lib/turso-config';
 
 export async function POST(request: Request) {
   try {
-    // CSRF opcional para este endpoint público (el rate limiting es la protección principal)
-    // Si hay token, verificarlo; si no, permitir (el form de la landing puede no enviarlo)
-    const csrfValid = await verifyCsrf(request).catch(() => false);
-    // No bloqueamos si no hay CSRF — el rate limit ya protege contra abuso
+    console.log('[leads] POST received:', new Date().toISOString());
 
     const clientIp = getClientIp(request);
     const rateLimit = checkRateLimit(clientIp);
@@ -195,4 +191,5 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Error interno del servidor.' }, { status: 500 });
   }
 }
+
 
