@@ -3,6 +3,8 @@ import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import { getTursoClient } from '@/lib/turso-config';
+import { checkRateLimit } from '@/lib/rate-limit';
+import { checkLoginAttempts, recordFailedAttempt, resetLoginAttempts } from '@/lib/login-attempts';
 
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCKOUT_MINUTES = 15;
@@ -16,13 +18,30 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Contraseña', type: 'password' },
         empresaId: { label: 'Empresa', type: 'text' },
       },
-      async authorize(credentials) {
+      async authorize(credentials, req) {
         if (!credentials?.email || !credentials?.password) {
           throw new Error('Email y contraseña son obligatorios');
         }
 
         const libsql = getTursoClient();
         const email = credentials.email.toLowerCase().trim();
+
+        // === Seguridad: Rate limiting por IP (10/min) ===
+        const ip = req?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim()
+          || req?.headers?.get('x-real-ip')
+          || 'unknown';
+        const rateLimit = checkRateLimit(ip);
+        if (!rateLimit.allowed) {
+          const waitSec = Math.ceil((rateLimit.resetAt.getTime() - Date.now()) / 1000);
+          throw new Error(`Demasiados intentos. Esperá ${waitSec} segundos.`);
+        }
+
+        // === Seguridad: Bloqueo por intentos fallidos (in-memory, 5 intentos / 15 min) ===
+        const attempts = checkLoginAttempts(email, ip);
+        if (!attempts.allowed && attempts.blockedUntil) {
+          const minutes = Math.ceil((attempts.blockedUntil.getTime() - Date.now()) / 60000);
+          throw new Error(`Usuario bloqueado por ${minutes} minutos debido a múltiples intentos fallidos.`);
+        }
 
         const result = await libsql.execute({
           sql: 'SELECT * FROM User WHERE email = ? LIMIT 1',
@@ -61,12 +80,17 @@ export const authOptions: NextAuthOptions = {
             ],
           });
 
-          if (shouldLock) {
+          // Registrar intento fallido en memoria (capa adicional)
+          const memResult = recordFailedAttempt(email, ip);
+          if (memResult.blocked) {
             throw new Error(`Cuenta bloqueada por ${LOCKOUT_MINUTES} minutos debido a demasiados intentos fallidos.`);
           }
 
           throw new Error(`Credenciales inválidas. Intentos restantes: ${MAX_LOGIN_ATTEMPTS - newAttempts}`);
         }
+
+        // Reset intentos en memoria
+        resetLoginAttempts(email, ip);
 
         await libsql.execute({
           sql: 'UPDATE User SET intentosLogin = 0, bloqueadoHasta = NULL, ultimoAcceso = ? WHERE id = ?',
@@ -155,5 +179,6 @@ export const authOptions: NextAuthOptions = {
   // reads the same cookie name the route handler sets. In production (HTTPS),
   // NextAuth auto-uses the __Secure- prefix consistently everywhere.
 };
+
 
 
