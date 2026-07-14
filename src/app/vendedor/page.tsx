@@ -1,140 +1,164 @@
-// Vendedor dashboard — real stats from DB
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth/config';
-import { getTursoClient } from '@/lib/turso-config';
+'use client';
+
+// /vendedor — Dashboard del vendedor con stats + tareas/leads recientes.
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
+import { ArrowRight, Loader2, CheckCircle2, Users } from 'lucide-react';
+import { StatCard } from '@/components/ui/stat-card';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { FileText, Phone, Clock, CheckCircle2, TrendingUp, MapPin } from 'lucide-react';
-import { LeadScoreBadge } from '@/components/lead-score-badge';
-import { UpcomingReminders } from '@/components/upcoming-reminders';
-import { GamificationWidget } from '@/components/gamification-widget';
-import { TareasWidget } from '@/components/tareas-widget';
-import { DashboardTitle } from '@/components/dashboard-i18n';
-import { StatCard } from '@/components/ui/stat-card';
-import Link from 'next/link';
+import { Skeleton } from '@/components/ui/skeleton';
+import { toast } from 'sonner';
 
-export default async function VendedorDashboardPage() {
-  const session = await getServerSession(authOptions);
-  const isVendedor = session?.user?.role === 'VENDEDOR';
-  const libsql = getTursoClient();
-  const userId = session!.user.id;
-  const empresaId = session.user.empresaId || null;
+const PRIORIDAD_COLOR: Record<string, string> = {
+  ALTA: 'bg-red-500/15 text-red-600',
+  MEDIA: 'bg-amber-500/15 text-amber-600',
+  BAJA: 'bg-emerald-500/15 text-emerald-600',
+};
 
-  // Stats: my contacts by status
-  const [totalRes, newRes, attendedRes, recentRes] = await Promise.all([
-    libsql.execute({ sql: empresaId ? 'SELECT COUNT(*) as n FROM Contact WHERE ownerId = ? AND empresaId = ?' : 'SELECT COUNT(*) as n FROM Contact WHERE ownerId = ?', args: empresaId ? [userId, empresaId] : [userId] }),
-    libsql.execute({ sql: empresaId ? "SELECT COUNT(*) as n FROM Contact WHERE ownerId = ? AND status = 'NUEVO' AND empresaId = ?" : "SELECT COUNT(*) as n FROM Contact WHERE ownerId = ? AND status = 'NUEVO'", args: empresaId ? [userId, empresaId] : [userId] }),
-    libsql.execute({ sql: empresaId ? "SELECT COUNT(*) as n FROM Contact WHERE ownerId = ? AND status = 'ATENDIDO' AND empresaId = ?" : "SELECT COUNT(*) as n FROM Contact WHERE ownerId = ? AND status = 'ATENDIDO'", args: empresaId ? [userId, empresaId] : [userId] }),
-    libsql.execute({
-      sql: empresaId
-        ? `SELECT c.id, c.name, c.address, c.city, c.status, c.createdAt, c.latitude, c.longitude, c.leadScore, c.leadPriority FROM Contact c WHERE c.ownerId = ? AND c.empresaId = ? ORDER BY c.createdAt DESC LIMIT 5`
-        : `SELECT c.id, c.name, c.address, c.city, c.status, c.createdAt, c.latitude, c.longitude, c.leadScore, c.leadPriority FROM Contact c WHERE c.ownerId = ? ORDER BY c.createdAt DESC LIMIT 5`,
-      args: empresaId ? [userId, empresaId] : [userId],
-    }),
-  ]);
+export default function VendedorDashboard() {
+  const { data: session } = useSession();
+  const [stats, setStats] = useState({
+    tareasPendientes: 0, tareasCompletadas: 0, leadsTotal: 0, leadsAtendidos: 0,
+  });
+  const [tareasRecientes, setTareasRecientes] = useState<any[]>([]);
+  const [leadsRecientes, setLeadsRecientes] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const num = (r: any) => Number(r.rows[0]?.n || 0);
-  const total = num(totalRes);
-  const nuevos = num(newRes);
-  const attended = num(attendedRes);
-  const conversion = total > 0 ? Number(((attended / total) * 100).toFixed(2)) : 0;
-  const recent = recentRes.rows as any[];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [statsRes, tareasRes, leadsRes] = await Promise.all([
+          fetch('/api/vendedor/stats', { cache: 'no-store' }),
+          fetch('/api/vendedor/tareas?estado=PENDIENTE&limit=5', { cache: 'no-store' }),
+          fetch('/api/vendedor/leads?limit=5', { cache: 'no-store' }),
+        ]);
+        if (statsRes.ok) setStats(await statsRes.json());
+        if (tareasRes.ok) {
+          const d = await tareasRes.json();
+          setTareasRecientes(d.tareas || []);
+        }
+        if (leadsRes.ok) {
+          const d = await leadsRes.json();
+          setLeadsRecientes(d.leads || []);
+        }
+      } catch {
+        toast.error('Error al cargar dashboard');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <Skeleton className="h-16 w-full" />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {[0, 1, 2, 3].map((i) => <Skeleton key={i} className="h-24 w-full" />)}
+        </div>
+        <Skeleton className="h-48 w-full" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <DashboardTitle role="VENDEDOR" name={session?.user?.name} />
-        <Badge variant="secondary" className="w-fit gap-1">
-          <CheckCircle2 className="h-3 w-3" /> Rol: {session?.user?.role}
-        </Badge>
+      {/* Bienvenida */}
+      <div>
+        <h1 className="text-2xl font-bold text-foreground">
+          👋 Hola, {session?.user?.name}
+        </h1>
+        <p className="text-muted-foreground">
+          {session?.user?.empresaNombre || 'Sin empresa'} · {session?.user?.role}
+        </p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard title="Mis contactos" value={total} icon={FileText} color="blue" />
-        <StatCard title="Nuevos" value={nuevos} icon={Phone} color="red" hint="sin atender" />
-        <StatCard title="Atendidos" value={attended} icon={CheckCircle2} color="green" />
-        <StatCard title="Conversión" value={`${conversion}%`} icon={TrendingUp} color="purple" />
+        <StatCard title="Tareas pendientes" value={stats.tareasPendientes} emoji="📋" color="red" />
+        <StatCard title="Tareas completadas" value={stats.tareasCompletadas} emoji="✅" color="green" />
+        <StatCard title="Leads asignados" value={stats.leadsTotal} emoji="👥" color="blue" />
+        <StatCard title="Leads atendidos" value={stats.leadsAtendidos} emoji="⭐" color="purple" />
       </div>
 
-      {/* Quick actions + gamification */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <Link href="/vendedor/contactos/nuevo" className="block">
-          <Card className="hover:shadow-md transition-shadow cursor-pointer h-full">
-            <CardContent className="flex items-center gap-4 p-5">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <FileText className="w-6 h-6" />
-              </div>
-              <div>
-                <p className="font-semibold">Nuevo contacto</p>
-                <p className="text-sm text-muted-foreground">Crear y asignar automáticamente</p>
-              </div>
-            </CardContent>
-          </Card>
-        </Link>
-        <Link href="/vendedor/contactos" className="block">
-          <Card className="hover:shadow-md transition-shadow cursor-pointer h-full">
-            <CardContent className="flex items-center gap-4 p-5">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <Clock className="w-6 h-6" />
-              </div>
-              <div>
-                <p className="font-semibold">Mi cartera ({total})</p>
-                <p className="text-sm text-muted-foreground">Ver todos mis contactos</p>
-              </div>
-            </CardContent>
-          </Card>
-        </Link>
-        <GamificationWidget />
-      </div>
-
-      {/* Upcoming reminders + follow-ups */}
-      <UpcomingReminders />
-
-      {/* Tasks */}
-      <TareasWidget />
-
-      {/* Recent contacts */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Contactos recientes</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {recent.length === 0 ? (
-            <div className="text-center py-8">
-              <FileText className="w-12 h-12 text-muted-foreground/50 mx-auto mb-3" />
-              <p className="text-muted-foreground">No tenés contactos asignados todavía.</p>
-              <Link href="/vendedor/contactos/nuevo" className="text-primary hover:underline text-sm mt-2 inline-block">
-                Crear el primer contacto
+      {/* Tareas recientes + Leads recientes */}
+      <div className="grid gap-4 lg:grid-cols-2">
+        {/* Tareas */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between text-base">
+              <span>📋 Últimas tareas pendientes</span>
+              <Link href="/vendedor/tareas" className="flex items-center gap-1 text-sm text-primary hover:underline">
+                Ver todas <ArrowRight className="h-3.5 w-3.5" />
               </Link>
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {recent.map((c) => (
-                <Link key={c.id} href={`/vendedor/contactos/${c.id}`} className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent/50 transition-colors">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary flex-shrink-0">
-                      <MapPin className="w-4 h-4" />
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {tareasRecientes.length === 0 ? (
+              <p className="py-6 text-center text-muted-foreground">🎉 No tenés tareas pendientes</p>
+            ) : (
+              <div className="space-y-2">
+                {tareasRecientes.map((t) => (
+                  <Link key={t.id} href="/vendedor/tareas" className="flex items-center justify-between rounded-lg bg-muted/30 p-3 transition hover:bg-muted/50">
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-medium">{t.titulo}</p>
+                      <p className="text-sm text-muted-foreground">
+                        📅 {t.fechaLimite ? new Date(t.fechaLimite).toLocaleDateString('es-AR') : 'Sin fecha'}
+                      </p>
                     </div>
-                    <div className="min-w-0">
-                      <p className="font-medium truncate">{c.name}</p>
-                      <p className="text-xs text-muted-foreground truncate">{c.address}{c.city ? `, ${c.city}` : ''}</p>
-                      <div className="mt-1"><LeadScoreBadge score={c.leadScore} priority={c.leadPriority} size="sm" /></div>
+                    {t.prioridad && (
+                      <Badge variant="secondary" className={`ml-2 ${PRIORIDAD_COLOR[t.prioridad] || ''}`}>
+                        {t.prioridad}
+                      </Badge>
+                    )}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Leads */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between text-base">
+              <span>👥 Últimos leads asignados</span>
+              <Link href="/vendedor/leads" className="flex items-center gap-1 text-sm text-primary hover:underline">
+                Ver todos <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {leadsRecientes.length === 0 ? (
+              <p className="py-6 text-center text-muted-foreground">No tenés leads asignados</p>
+            ) : (
+              <div className="space-y-2">
+                {leadsRecientes.map((lead) => (
+                  <div key={lead.id} className="flex items-center justify-between rounded-lg bg-muted/30 p-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-medium">{lead.name}</p>
+                      <p className="text-sm text-muted-foreground">📱 {lead.primaryPhone || lead.primaryEmail || '—'}</p>
                     </div>
+                    {lead.primaryPhone && (
+                      <a
+                        href={`https://wa.me/${lead.primaryPhone.replace(/[^0-9]/g, '')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ml-2 rounded-lg bg-green-500 px-3 py-1 text-sm text-white transition hover:bg-green-600"
+                      >
+                        💬
+                      </a>
+                    )}
                   </div>
-                  <Badge variant={c.status === 'NUEVO' ? 'default' : c.status === 'ATENDIDO' ? 'secondary' : 'outline'} className="text-[10px]">
-                    {c.status}
-                  </Badge>
-                </Link>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
-
-
-
-
