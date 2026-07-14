@@ -1,1 +1,55 @@
-Ly8gR0VUIC9hcGkvdmVuZGVkb3Ivc3RhdHMg4oCUIGVzdGFkw61zdGljYXMgZGVsIHZlbmRlZG9yIGF1dGVudGljYWRvCmltcG9ydCB7IE5leHRSZXNwb25zZSB9IGZyb20gJ25leHQvc2VydmVyJzsKaW1wb3J0IHsgZ2V0VHVyc29DbGllbnQgfSBmcm9tICdAL2xpYi90dXJzby1jb25maWcnOwppbXBvcnQgeyBnZXRBdXRoU2Vzc2lvbiB9IGZyb20gJ0AvbGliL2F1dGgnOwoKZXhwb3J0IGNvbnN0IGR5bmFtaWMgPSAnZm9yY2UtZHluYW1pYyc7CgpleHBvcnQgYXN5bmMgZnVuY3Rpb24gR0VUKCkgewogIHRyeSB7CiAgICBjb25zdCBzZXNzaW9uID0gYXdhaXQgZ2V0QXV0aFNlc3Npb24oKTsKICAgIGlmICghc2Vzc2lvbj8udXNlcikgewogICAgICByZXR1cm4gbmV3IFJlc3BvbnNlKCdVbmF1dGhvcml6ZWQnLCB7IHN0YXR1czogNDAxIH0pOwogICAgfQoKICAgIGNvbnN0IGxpYnNxbCA9IGdldFR1cnNvQ2xpZW50KCk7CiAgICBjb25zdCB1c2VySWQgPSBzZXNzaW9uLnVzZXIuaWQ7CiAgICBjb25zdCBlbXByZXNhSWQgPSBzZXNzaW9uLnVzZXIuZW1wcmVzYUlkIHx8IG51bGw7CgogICAgLy8gRmlsdHJvIGRlIGVtcHJlc2EgcGFyYSBDb250YWN0IHkgVGFyZWEKICAgIGNvbnN0IGVtcENvbnRhY3QgPSBlbXByZXNhSWQgPyAnQU5EIGVtcHJlc2FJZCA9ID8nIDogJyc7CiAgICBjb25zdCBlbXBUYXJlYSA9IGVtcHJlc2FJZCA/ICdBTkQgZW1wcmVzYUlkID0gPycgOiAnJzsKICAgIGNvbnN0IGVtcEFyZ3MgPSBlbXByZXNhSWQgPyBbZW1wcmVzYUlkXSA6IFtdOwoKICAgIGNvbnN0IFt0YXJlYXNQZW5kUmVzLCB0YXJlYXNDb21wUmVzLCBsZWFkc1RvdGFsUmVzLCBsZWFkc0F0ZW5kUmVzXSA9IGF3YWl0IFByb21pc2UuYWxsKFsKICAgICAgbGlic3FsLmV4ZWN1dGUoewogICAgICAgIHNxbDogYFNFTEVDVCBDT1VOVCgqKSBBUyBuIEZST00gVGFyZWEgV0hFUkUgYXNpZ25hZG9BID0gPyBBTkQgZXN0YWRvIElOICgnUEVORElFTlRFJywnRU5fUFJPR1JFU08nKSAke2VtcFRhcmVhfWAsCiAgICAgICAgYXJnczogW3VzZXJJZCwgLi4uZW1wQXJnc10sCiAgICAgIH0pLAogICAgICBsaWJzcWwuZXhlY3V0ZSh7CiAgICAgICAgc3FsOiBgU0VMRUNUIENPVU5UKCopIEFTIG4gRlJPTSBUYXJlYSBXSEVSRSBhc2lnbmFkb0EgPSA/IEFORCBlc3RhZG8gPSAnQ09NUExFVEFEQScgJHtlbXBUYXJlYX1gLAogICAgICAgIGFyZ3M6IFt1c2VySWQsIC4uLmVtcEFyZ3NdLAogICAgICB9KSwKICAgICAgbGlic3FsLmV4ZWN1dGUoewogICAgICAgIHNxbDogYFNFTEVDVCBDT1VOVCgqKSBBUyBuIEZST00gQ29udGFjdCBXSEVSRSBvd25lcklkID0gPyAke2VtcENvbnRhY3R9YCwKICAgICAgICBhcmdzOiBbdXNlcklkLCAuLi5lbXBBcmdzXSwKICAgICAgfSksCiAgICAgIGxpYnNxbC5leGVjdXRlKHsKICAgICAgICBzcWw6IGBTRUxFQ1QgQ09VTlQoKikgQVMgbiBGUk9NIENvbnRhY3QgV0hFUkUgb3duZXJJZCA9ID8gQU5EIHN0YXR1cyA9ICdBVEVORElETycgJHtlbXBDb250YWN0fWAsCiAgICAgICAgYXJnczogW3VzZXJJZCwgLi4uZW1wQXJnc10sCiAgICAgIH0pLAogICAgXSk7CgogICAgY29uc3QgbnVtID0gKHI6IHsgcm93czogQXJyYXk8UmVjb3JkPHN0cmluZywgdW5rbm93bj4+IH0pID0+IE51bWJlcihyLnJvd3NbMF0/Lm4gPz8gMCk7CgogICAgcmV0dXJuIE5leHRSZXNwb25zZS5qc29uKHsKICAgICAgdGFyZWFzUGVuZGllbnRlczogbnVtKHRhcmVhc1BlbmRSZXMpLAogICAgICB0YXJlYXNDb21wbGV0YWRhczogbnVtKHRhcmVhc0NvbXBSZXMpLAogICAgICBsZWFkc0FzaWduYWRvczogbnVtKGxlYWRzVG90YWxSZXMpLAogICAgICBsZWFkc0F0ZW5kaWRvczogbnVtKGxlYWRzQXRlbmRSZXMpLAogICAgfSk7CiAgfSBjYXRjaCAoZTogdW5rbm93bikgewogICAgY29uc29sZS5lcnJvcignW3ZlbmRlZG9yL3N0YXRzIEdFVF0gZXJyb3I6JywgZSk7CiAgICByZXR1cm4gbmV3IFJlc3BvbnNlKCdFcnJvciBpbnRlcm5vJywgeyBzdGF0dXM6IDUwMCB9KTsKICB9Cn0K
+// GET /api/vendedor/stats — estadísticas del vendedor autenticado
+import { NextResponse } from 'next/server';
+import { getTursoClient } from '@/lib/turso-config';
+import { getAuthSession } from '@/lib/auth';
+
+export const dynamic = 'force-dynamic';
+
+export async function GET() {
+  try {
+    const session = await getAuthSession();
+    if (!session?.user) {
+      return new Response('Unauthorized', { status: 401 });
+    }
+
+    const libsql = getTursoClient();
+    const userId = session.user.id;
+    const empresaId = session.user.empresaId || null;
+
+    // Filtro de empresa para Contact y Tarea
+    const empContact = empresaId ? 'AND empresaId = ?' : '';
+    const empTarea = empresaId ? 'AND empresaId = ?' : '';
+    const empArgs = empresaId ? [empresaId] : [];
+
+    const [tareasPendRes, tareasCompRes, leadsTotalRes, leadsAtendRes] = await Promise.all([
+      libsql.execute({
+        sql: `SELECT COUNT(*) AS n FROM Tarea WHERE asignadoA = ? AND estado IN ('PENDIENTE','EN_PROGRESO') ${empTarea}`,
+        args: [userId, ...empArgs],
+      }),
+      libsql.execute({
+        sql: `SELECT COUNT(*) AS n FROM Tarea WHERE asignadoA = ? AND estado = 'COMPLETADA' ${empTarea}`,
+        args: [userId, ...empArgs],
+      }),
+      libsql.execute({
+        sql: `SELECT COUNT(*) AS n FROM Contact WHERE ownerId = ? ${empContact}`,
+        args: [userId, ...empArgs],
+      }),
+      libsql.execute({
+        sql: `SELECT COUNT(*) AS n FROM Contact WHERE ownerId = ? AND status = 'ATENDIDO' ${empContact}`,
+        args: [userId, ...empArgs],
+      }),
+    ]);
+
+    const num = (r: { rows: Array<Record<string, unknown>> }) => Number(r.rows[0]?.n ?? 0);
+
+    return NextResponse.json({
+      tareasPendientes: num(tareasPendRes),
+      tareasCompletadas: num(tareasCompRes),
+      leadsAsignados: num(leadsTotalRes),
+      leadsAtendidos: num(leadsAtendRes),
+    });
+  } catch (e: unknown) {
+    console.error('[vendedor/stats GET] error:', e);
+    return new Response('Error interno', { status: 500 });
+  }
+}
