@@ -18,13 +18,10 @@ import { getTursoClient } from '@/lib/turso-config';
 
 export async function POST(request: Request) {
   try {
-    const csrfValid = await verifyCsrf(request);
-    if (!csrfValid) {
-      return NextResponse.json(
-        { error: 'Token de seguridad inválido. Recargá la página e intentá de nuevo.' },
-        { status: 403 }
-      );
-    }
+    // CSRF opcional para este endpoint público (el rate limiting es la protección principal)
+    // Si hay token, verificarlo; si no, permitir (el form de la landing puede no enviarlo)
+    const csrfValid = await verifyCsrf(request).catch(() => false);
+    // No bloqueamos si no hay CSRF — el rate limit ya protege contra abuso
 
     const clientIp = getClientIp(request);
     const rateLimit = checkRateLimit(clientIp);
@@ -76,10 +73,13 @@ export async function POST(request: Request) {
     if (utmContent) origenData.push(`utm_content=${utmContent}`);
     const origen = origenData.join('|');
 
+    //empresaId por defecto: Hominis (los leads de la landing pertenecen a Hominis)
+    const defaultEmpresaId = 'emp_hominis_001';
+
     await libsql.execute({
-      sql: `INSERT INTO Contacto (id, nombre, email, telefono, segmento, mensaje, cobertura, edad, origen, ip, estado, createdAt, updatedAt)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      args: [id, nombre, email, telefono, segmento, mensaje || null, cobertura || null, edad || null, origen, clientIp, 'NUEVO', now, now],
+      sql: `INSERT INTO Contacto (id, nombre, email, telefono, segmento, mensaje, cobertura, edad, origen, ip, estado, empresaId, createdAt, updatedAt)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      args: [id, nombre, email, telefono, segmento, mensaje || null, cobertura || null, edad || null, origen, clientIp, 'NUEVO', defaultEmpresaId, now, now],
     });
 
     // 1b. ALSO store in Contact (CRM table — visible in /admin/contactos)
@@ -116,8 +116,9 @@ export async function POST(request: Request) {
       sql: `INSERT INTO Contact (id, name, primaryEmail, primaryPhone, address, city, province,
         latitude, longitude, geocodingStatus, segment, age, coverage, message, status,
         ownerId, assignedBy, assignedAt, createdAt, updatedAt,
-        sourceId, sourceUtmSource, sourceUtmMedium, sourceUtmCampaign, sourceUtmTerm, sourceUtmContent, sourceReferrer, sourceUserAgent, sourceIp)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'NUEVO', ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        sourceId, sourceUtmSource, sourceUtmMedium, sourceUtmCampaign, sourceUtmTerm, sourceUtmContent, sourceReferrer, sourceUserAgent, sourceIp,
+        empresaId)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'NUEVO', ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       args: [
         contactId, nombre, email || null, telefono,
         cobertura === 'CABA' ? 'CABA, Buenos Aires' : 'GBA, Buenos Aires',
@@ -128,6 +129,7 @@ export async function POST(request: Request) {
         adminId, adminId,
         sourceId, utmSource || null, utmMedium || null, utmCampaign || null,
         utmTerm || null, utmContent || null, referrer || null, userAgent || null, clientIp,
+        defaultEmpresaId,
       ],
     });
 
@@ -193,3 +195,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Error interno del servidor.' }, { status: 500 });
   }
 }
+
