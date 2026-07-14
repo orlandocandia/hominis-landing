@@ -27,9 +27,19 @@ export const authOptions: NextAuthOptions = {
         const email = credentials.email.toLowerCase().trim();
 
         // === Seguridad: Rate limiting por IP (10/min) ===
-        const ip = req?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim()
-          || req?.headers?.get('x-real-ip')
-          || 'unknown';
+        // Nota: req en NextAuth v4 authorize() puede no tener .headers
+        // Usar acceso seguro para evitar "t?.headers?.get is not a function"
+        let ip = 'unknown';
+        try {
+          const headers = req?.headers;
+          if (headers && typeof headers.get === 'function') {
+            ip = headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+              || headers.get('x-real-ip')
+              || 'unknown';
+          }
+        } catch {
+          ip = 'unknown';
+        }
         const rateLimit = checkRateLimit(ip);
         if (!rateLimit.allowed) {
           const waitSec = Math.ceil((rateLimit.resetAt.getTime() - Date.now()) / 1000);
@@ -179,6 +189,7 @@ export const authOptions: NextAuthOptions = {
   // reads the same cookie name the route handler sets. In production (HTTPS),
   // NextAuth auto-uses the __Secure- prefix consistently everywhere.
 };
+
 
 
 
