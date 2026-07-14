@@ -1,1 +1,71 @@
-J3VzZSBjbGllbnQnOwoKaW1wb3J0IHsgdXNlU3RhdGUsIHVzZUVmZmVjdCB9IGZyb20gJ3JlYWN0JzsKaW1wb3J0IHsgdXNlU2Vzc2lvbiB9IGZyb20gJ25leHQtYXV0aC9yZWFjdCc7CmltcG9ydCB7IFN0YXRDYXJkIH0gZnJvbSAnQC9jb21wb25lbnRzL3VpL3N0YXQtY2FyZCc7CmltcG9ydCB7IFNrZWxldG9uIH0gZnJvbSAnQC9jb21wb25lbnRzL3VpL3NrZWxldG9uJzsKCmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIEFkbWluRGFzaGJvYXJkKCkgewogIGNvbnN0IHsgZGF0YTogc2Vzc2lvbiB9ID0gdXNlU2Vzc2lvbigpOwogIGNvbnN0IFtzdGF0cywgc2V0U3RhdHNdID0gdXNlU3RhdGUoewogICAgdG90YWxMZWFkczogMCwKICAgIG51ZXZvczogMCwKICAgIGF0ZW5kaWRvczogMCwKICAgIGNvbnZlcnNpb246IDAsCiAgICB2ZW5kZWRvcmVzOiAwLAogIH0pOwogIGNvbnN0IFtsb2FkaW5nLCBzZXRMb2FkaW5nXSA9IHVzZVN0YXRlKHRydWUpOwoKICB1c2VFZmZlY3QoKCkgPT4gewogICAgUHJvbWlzZS5hbGwoWwogICAgICBmZXRjaCgnL2FwaS9hZG1pbi9zdGF0cycpLnRoZW4oKHIpID0+IHIuanNvbigpKSwKICAgICAgZmV0Y2goJy9hcGkvYWRtaW4vc3RhdHMvZXF1aXBvJykudGhlbigocikgPT4gci5qc29uKCkpLAogICAgXSkKICAgICAgLnRoZW4oKFtzdGF0c0RhdGEsIGVxdWlwb0RhdGFdKSA9PiB7CiAgICAgICAgY29uc3QgdG90YWxMZWFkcyA9IHN0YXRzRGF0YS50b3RhbExlYWRzIHx8IDA7CiAgICAgICAgY29uc3QgYXRlbmRpZG9zID0gc3RhdHNEYXRhLmF0ZW5kaWRvcyB8fCAwOwogICAgICAgIHNldFN0YXRzKHsKICAgICAgICAgIHRvdGFsTGVhZHMsCiAgICAgICAgICBudWV2b3M6IHN0YXRzRGF0YS5udWV2b3MgfHwgMCwKICAgICAgICAgIGF0ZW5kaWRvcywKICAgICAgICAgIGNvbnZlcnNpb246IHRvdGFsTGVhZHMgPiAwID8gTWF0aC5yb3VuZCgoYXRlbmRpZG9zIC8gdG90YWxMZWFkcykgKiAxMDApIDogMCwKICAgICAgICAgIHZlbmRlZG9yZXM6IGVxdWlwb0RhdGEudG90YWxWZW5kZWRvcmVzIHx8IDAsCiAgICAgICAgfSk7CiAgICAgICAgc2V0TG9hZGluZyhmYWxzZSk7CiAgICAgIH0pCiAgICAgIC5jYXRjaCgoZSkgPT4gewogICAgICAgIGNvbnNvbGUuZXJyb3IoJ0Vycm9yIGZldGNoaW5nIHN0YXRzOicsIGUpOwogICAgICAgIHNldExvYWRpbmcoZmFsc2UpOwogICAgICB9KTsKICB9LCBbXSk7CgogIGlmIChsb2FkaW5nKSB7CiAgICByZXR1cm4gKAogICAgICA8ZGl2IGNsYXNzTmFtZT0ic3BhY2UteS02Ij4KICAgICAgICA8U2tlbGV0b24gY2xhc3NOYW1lPSJoLTE2IHctZnVsbCIgLz4KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZ3JpZCBncmlkLWNvbHMtMSBnYXAtNCBzbTpncmlkLWNvbHMtMiBsZzpncmlkLWNvbHMtNSI+CiAgICAgICAgICB7WzAsIDEsIDIsIDMsIDRdLm1hcCgoaSkgPT4gKAogICAgICAgICAgICA8U2tlbGV0b24ga2V5PXtpfSBjbGFzc05hbWU9ImgtMjQgdy1mdWxsIiAvPgogICAgICAgICAgKSl9CiAgICAgICAgPC9kaXY+CiAgICAgIDwvZGl2PgogICAgKTsKICB9CgogIHJldHVybiAoCiAgICA8ZGl2IGNsYXNzTmFtZT0ic3BhY2UteS02Ij4KICAgICAgPGRpdj4KICAgICAgICA8aDEgY2xhc3NOYW1lPSJ0ZXh0LTJ4bCBmb250LWJvbGQgdGV4dC1mb3JlZ3JvdW5kIj5QYW5lbCBkZSBBZG1pbmlzdHJhY2nDs248L2gxPgogICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC1tdXRlZC1mb3JlZ3JvdW5kIj5CaWVudmVuaWRhL28sIHtzZXNzaW9uPy51c2VyPy5uYW1lfTwvcD4KICAgICAgPC9kaXY+CgogICAgICA8ZGl2IGNsYXNzTmFtZT0iZ3JpZCBncmlkLWNvbHMtMSBnYXAtNCBzbTpncmlkLWNvbHMtMiBsZzpncmlkLWNvbHMtNSI+CiAgICAgICAgPFN0YXRDYXJkIHRpdGxlPSJUb3RhbCBMZWFkcyIgdmFsdWU9e3N0YXRzLnRvdGFsTGVhZHN9IGVtb2ppPSLwn5OLIiBjb2xvcj0iYmx1ZSIgLz4KICAgICAgICA8U3RhdENhcmQgdGl0bGU9Ik51ZXZvcyIgdmFsdWU9e3N0YXRzLm51ZXZvc30gZW1vamk9IvCfhpUiIGNvbG9yPSJyZWQiIC8+CiAgICAgICAgPFN0YXRDYXJkIHRpdGxlPSJBdGVuZGlkb3MiIHZhbHVlPXtzdGF0cy5hdGVuZGlkb3N9IGVtb2ppPSLinIUiIGNvbG9yPSJncmVlbiIgLz4KICAgICAgICA8U3RhdENhcmQgdGl0bGU9IkNvbnZlcnNpw7NuIiB2YWx1ZT17YCR7c3RhdHMuY29udmVyc2lvbn0lYH0gZW1vamk9IvCfk4giIGNvbG9yPSJwdXJwbGUiIC8+CiAgICAgICAgPFN0YXRDYXJkIHRpdGxlPSJWZW5kZWRvcmVzIiB2YWx1ZT17c3RhdHMudmVuZGVkb3Jlc30gZW1vamk9IvCfkaUiIGNvbG9yPSJ5ZWxsb3ciIC8+CiAgICAgIDwvZGl2PgogICAgPC9kaXY+CiAgKTsKfQo=
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { StatCard } from '@/components/ui/stat-card';
+import { Skeleton } from '@/components/ui/skeleton';
+
+export default function AdminDashboard() {
+  const { data: session } = useSession();
+  const [stats, setStats] = useState({
+    totalLeads: 0,
+    nuevos: 0,
+    atendidos: 0,
+    conversion: 0,
+    vendedores: 0,
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all([
+      fetch('/api/admin/stats').then((r) => r.json()),
+      fetch('/api/admin/stats/equipo').then((r) => r.json()),
+    ])
+      .then(([statsData, equipoData]) => {
+        const totalLeads = statsData.totalLeads || 0;
+        const atendidos = statsData.atendidos || 0;
+        setStats({
+          totalLeads,
+          nuevos: statsData.nuevos || 0,
+          atendidos,
+          conversion: totalLeads > 0 ? Math.round((atendidos / totalLeads) * 100) : 0,
+          vendedores: equipoData.totalVendedores || 0,
+        });
+        setLoading(false);
+      })
+      .catch((e) => {
+        console.error('Error fetching stats:', e);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <Skeleton className="h-16 w-full" />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          {[0, 1, 2, 3, 4].map((i) => (
+            <Skeleton key={i} className="h-24 w-full" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-foreground">Panel de Administración</h1>
+        <p className="text-muted-foreground">Bienvenida/o, {session?.user?.name}</p>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <StatCard title="Total Leads" value={stats.totalLeads} emoji="📋" color="blue" />
+        <StatCard title="Nuevos" value={stats.nuevos} emoji="🆕" color="red" />
+        <StatCard title="Atendidos" value={stats.atendidos} emoji="✅" color="green" />
+        <StatCard title="Conversión" value={`${stats.conversion}%`} emoji="📈" color="purple" />
+        <StatCard title="Vendedores" value={stats.vendedores} emoji="👥" color="yellow" />
+      </div>
+    </div>
+  );
+}
