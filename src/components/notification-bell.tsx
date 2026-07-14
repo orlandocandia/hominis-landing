@@ -115,7 +115,7 @@ export function NotificationBell() {
               notifications.map((n) => (
                 <button
                   key={n.id}
-                  onClick={() => markAsRead(n.id, n.link)}
+                  onClick={() => markAsRead(n.id, fixNotificationLink(n))}
                   className={`w-full text-left p-3 border-b hover:bg-accent/50 transition-colors flex gap-2 ${!n.read ? 'bg-primary/5' : ''}`}
                 >
                   {!n.read && <span className="w-2 h-2 rounded-full bg-primary mt-1.5 flex-shrink-0" />}
@@ -133,3 +133,4 @@ export function NotificationBell() {
     </div>
   );
 }
+
