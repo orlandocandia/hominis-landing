@@ -25,8 +25,12 @@ export async function GET(
     const libsql = getTursoClient();
 
     const result = await libsql.execute({
-      sql: `SELECT u.id, u.nombre, u.email, u.telefono, u."avatarUrl", u.activo,
-          u.empresaId, e.nombre AS empresaNombre, u.fechaAlta
+      sql: `SELECT u.id, u.nombre, u.email, u.telefono, u."avatarUrl", u.activo, u.rol,
+          u.empresaId, e.nombre AS empresaNombre, u.fechaAlta,
+          (SELECT COUNT(*) FROM "Contact" c WHERE c.ownerId = u.id) AS totalLeads,
+          (SELECT COUNT(*) FROM "Contact" c WHERE c.ownerId = u.id AND c.status = 'ATENDIDO') AS leadsAtendidos,
+          (SELECT COUNT(*) FROM Tarea t WHERE t.asignadoA = u.id AND t.estado IN ('PENDIENTE','EN_PROGRESO')) AS tareasPendientes,
+          (SELECT COUNT(*) FROM Tarea t WHERE t.asignadoA = u.id AND t.estado = 'COMPLETADA') AS tareasCompletadas
         FROM "User" u
         LEFT JOIN "Empresa" e ON u.empresaId = e.id
         WHERE u.id = ?`,
@@ -157,3 +161,4 @@ export async function DELETE(
     return new Response('Error interno', { status: 500 });
   }
 }
+
