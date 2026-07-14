@@ -3,7 +3,7 @@
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { LogOut, Shield, LayoutDashboard, Users, FileText, MapPin, UserCircle, Mail, Megaphone, KanbanSquare, BarChart3, Trophy, ClipboardList, Building2 } from 'lucide-react';
+import { LogOut, Shield, LayoutDashboard, Users, FileText, MapPin, UserCircle, Mail, Megaphone, KanbanSquare, BarChart3, Trophy, ClipboardList, Building2, Activity } from 'lucide-react';
 import { NotificationBell } from '@/components/notification-bell';
 import { EmpresaSelector } from '@/components/empresa-selector';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -61,6 +61,7 @@ export function DashboardNav({ role, userName, userEmail }: DashboardNavProps) {
                 <NavLink href={`${basePath}/marketing`} icon={<Megaphone className="h-4 w-4" />} label={t('dashboard.sidebar.marketing') || 'Marketing'} />
                 <NavLink href={`${basePath}/reportes`} icon={<BarChart3 className="h-4 w-4" />} label={t('dashboard.sidebar.reportes') || 'Reportes'} />
                 <NavLink href={`${basePath}/leaderboard`} icon={<Trophy className="h-4 w-4" />} label={t('dashboard.sidebar.ranking') || 'Ranking'} />
+                <NavLink href={`${basePath}/actividad`} icon={<Activity className="h-4 w-4" />} label="📊 Actividad" />
               </>
             )}
             {!isAdmin && (
@@ -106,6 +107,7 @@ function NavLink({ href, icon, label }: { href: string; icon: React.ReactNode; l
     </a>
   );
 }
+
 
 
 
