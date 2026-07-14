@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { LayoutDashboard, Users, MessageSquare, CheckSquare, Building2, Activity, UserCircle } from 'lucide-react';
+import { LayoutDashboard, Users, MessageSquare, CheckSquare, Building2, Activity, UserCircle, HelpCircle } from 'lucide-react';
 
 export function DashboardNav() {
   const pathname = usePathname();
@@ -18,6 +18,7 @@ export function DashboardNav() {
     { label: 'Equipo', href: '/admin/equipo', icon: Users },
     { label: '📋 Tareas', href: '/admin/tareas', icon: CheckSquare },
     { label: '📊 Actividad', href: '/admin/actividad', icon: Activity },
+    { label: '❓ Ayuda', href: '/faq', icon: HelpCircle },
   ];
 
   const vendedorNav = [
@@ -25,6 +26,7 @@ export function DashboardNav() {
     { label: '📋 Mis Tareas', href: '/vendedor/tareas', icon: CheckSquare },
     { label: '👥 Mis Leads', href: '/vendedor/leads', icon: Users },
     { label: 'Mi Perfil', href: '/vendedor/perfil', icon: UserCircle },
+    { label: '❓ Ayuda', href: '/faq', icon: HelpCircle },
   ];
 
   const navItems = isAdmin ? adminNav : vendedorNav;
@@ -52,3 +54,4 @@ export function DashboardNav() {
     </nav>
   );
 }
+
