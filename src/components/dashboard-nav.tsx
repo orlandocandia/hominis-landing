@@ -47,19 +47,20 @@ export function DashboardNav({ role, userName, userEmail }: DashboardNavProps) {
 
           {/* Nav links */}
           <nav className="hidden items-center gap-1 md:flex">
-            <NavLink href={basePath} icon={<LayoutDashboard className="h-4 w-4" />} label={t('dashboard.sidebar.dashboard') || 'Dashboard'} />
             {isAdmin && (
               <>
+                <NavLink href={`${basePath}/leads`} icon={<FileText className="h-4 w-4" />} label="📋 Mensajes" />
+                <NavLink href={basePath} icon={<LayoutDashboard className="h-4 w-4" />} label={t('dashboard.sidebar.dashboard') || 'Dashboard'} />
+                <NavLink href={`${basePath}/empresas`} icon={<Building2 className="h-4 w-4" />} label="🏢 Empresas" />
                 <NavLink href={`${basePath}/vendedores`} icon={<Users className="h-4 w-4" />} label={t('dashboard.sidebar.vendedores') || 'Vendedores'} />
                 <NavLink href={`${basePath}/equipo`} icon={<Users className="h-4 w-4" />} label="Equipo" />
-                <NavLink href={`${basePath}/empresas`} icon={<Building2 className="h-4 w-4" />} label="Empresas" />
+                <NavLink href={`${basePath}/tareas`} icon={<ClipboardList className="h-4 w-4" />} label="📋 Tareas" />
                 <NavLink href={`${basePath}/contactos`} icon={<FileText className="h-4 w-4" />} label={t('dashboard.sidebar.contactos') || 'Contactos'} />
                 <NavLink href={`${basePath}/mapa`} icon={<MapPin className="h-4 w-4" />} label={t('dashboard.sidebar.mapa') || 'Mapa'} />
                 <NavLink href={`${basePath}/invitaciones`} icon={<Mail className="h-4 w-4" />} label={t('dashboard.sidebar.invitaciones') || 'Invitaciones'} />
                 <NavLink href={`${basePath}/marketing`} icon={<Megaphone className="h-4 w-4" />} label={t('dashboard.sidebar.marketing') || 'Marketing'} />
                 <NavLink href={`${basePath}/reportes`} icon={<BarChart3 className="h-4 w-4" />} label={t('dashboard.sidebar.reportes') || 'Reportes'} />
                 <NavLink href={`${basePath}/leaderboard`} icon={<Trophy className="h-4 w-4" />} label={t('dashboard.sidebar.ranking') || 'Ranking'} />
-                <NavLink href={`${basePath}/tareas`} icon={<ClipboardList className="h-4 w-4" />} label="Tareas" />
               </>
             )}
             {!isAdmin && (
@@ -105,5 +106,6 @@ function NavLink({ href, icon, label }: { href: string; icon: React.ReactNode; l
     </a>
   );
 }
+
 
 
