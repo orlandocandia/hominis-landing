@@ -10,6 +10,7 @@ import { UpcomingReminders } from '@/components/upcoming-reminders';
 import { GamificationWidget } from '@/components/gamification-widget';
 import { TareasWidget } from '@/components/tareas-widget';
 import { DashboardTitle } from '@/components/dashboard-i18n';
+import { StatCard } from '@/components/ui/stat-card';
 import Link from 'next/link';
 
 export default async function VendedorDashboardPage() {
@@ -49,11 +50,11 @@ export default async function VendedorDashboardPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard title="Mis contactos" value={total.toString()} icon={<FileText className="h-5 w-5" />} />
-        <StatCard title="Nuevos" value={nuevos.toString()} icon={<Phone className="h-5 w-5" />} hint="sin atender" />
-        <StatCard title="Atendidos" value={attended.toString()} icon={<CheckCircle2 className="h-5 w-5" />} />
-        <StatCard title="Conversión" value={`${conversion}%`} icon={<TrendingUp className="h-5 w-5" />} />
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StatCard title="Mis contactos" value={total} icon={FileText} color="blue" />
+        <StatCard title="Nuevos" value={nuevos} icon={Phone} color="red" hint="sin atender" />
+        <StatCard title="Atendidos" value={attended} icon={CheckCircle2} color="green" />
+        <StatCard title="Conversión" value={`${conversion}%`} icon={TrendingUp} color="purple" />
       </div>
 
       {/* Quick actions + gamification */}
@@ -134,18 +135,6 @@ export default async function VendedorDashboardPage() {
   );
 }
 
-function StatCard({ title, value, icon, hint }: { title: string; value: string; icon: React.ReactNode; hint?: string }) {
-  return (
-    <Card>
-      <CardContent className="flex items-center justify-between p-5">
-        <div>
-          <p className="text-sm font-medium text-muted-foreground">{title}</p>
-          <p className="mt-1 text-2xl font-bold">{value}</p>
-          {hint && <p className="mt-1 text-xs text-muted-foreground/70">{hint}</p>}
-        </div>
-        <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">{icon}</div>
-      </CardContent>
-    </Card>
-  );
-}
+
+
 
