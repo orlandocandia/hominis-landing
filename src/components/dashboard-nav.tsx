@@ -1,1 +1,54 @@
-J3VzZSBjbGllbnQnOwoKaW1wb3J0IHsgdXNlUGF0aG5hbWUgfSBmcm9tICduZXh0L25hdmlnYXRpb24nOwppbXBvcnQgeyB1c2VTZXNzaW9uIH0gZnJvbSAnbmV4dC1hdXRoL3JlYWN0JzsKaW1wb3J0IExpbmsgZnJvbSAnbmV4dC9saW5rJzsKaW1wb3J0IHsgTGF5b3V0RGFzaGJvYXJkLCBVc2VycywgTWVzc2FnZVNxdWFyZSwgQ2hlY2tTcXVhcmUsIEJ1aWxkaW5nMiwgQWN0aXZpdHksIFVzZXJDaXJjbGUgfSBmcm9tICdsdWNpZGUtcmVhY3QnOwoKZXhwb3J0IGZ1bmN0aW9uIERhc2hib2FyZE5hdigpIHsKICBjb25zdCBwYXRobmFtZSA9IHVzZVBhdGhuYW1lKCk7CiAgY29uc3QgeyBkYXRhOiBzZXNzaW9uIH0gPSB1c2VTZXNzaW9uKCk7CiAgY29uc3QgaXNBZG1pbiA9IHNlc3Npb24/LnVzZXI/LnJvbGUgPT09ICdBRE1JTic7CgogIGNvbnN0IGFkbWluTmF2ID0gWwogICAgeyBsYWJlbDogJ/Cfk4sgTWVuc2FqZXMnLCBocmVmOiAnL2FkbWluL2xlYWRzJywgaWNvbjogTWVzc2FnZVNxdWFyZSB9LAogICAgeyBsYWJlbDogJ0Rhc2hib2FyZCcsIGhyZWY6ICcvYWRtaW4nLCBpY29uOiBMYXlvdXREYXNoYm9hcmQgfSwKICAgIHsgbGFiZWw6ICfwn4+iIEVtcHJlc2FzJywgaHJlZjogJy9hZG1pbi9lbXByZXNhcycsIGljb246IEJ1aWxkaW5nMiB9LAogICAgeyBsYWJlbDogJ/CfkaUgVmVuZGVkb3JlcycsIGhyZWY6ICcvYWRtaW4vdmVuZGVkb3JlcycsIGljb246IFVzZXJzIH0sCiAgICB7IGxhYmVsOiAnRXF1aXBvJywgaHJlZjogJy9hZG1pbi9lcXVpcG8nLCBpY29uOiBVc2VycyB9LAogICAgeyBsYWJlbDogJ/Cfk4sgVGFyZWFzJywgaHJlZjogJy9hZG1pbi90YXJlYXMnLCBpY29uOiBDaGVja1NxdWFyZSB9LAogICAgeyBsYWJlbDogJ/Cfk4ogQWN0aXZpZGFkJywgaHJlZjogJy9hZG1pbi9hY3RpdmlkYWQnLCBpY29uOiBBY3Rpdml0eSB9LAogIF07CgogIGNvbnN0IHZlbmRlZG9yTmF2ID0gWwogICAgeyBsYWJlbDogJ0Rhc2hib2FyZCcsIGhyZWY6ICcvdmVuZGVkb3InLCBpY29uOiBMYXlvdXREYXNoYm9hcmQgfSwKICAgIHsgbGFiZWw6ICfwn5OLIE1pcyBUYXJlYXMnLCBocmVmOiAnL3ZlbmRlZG9yL3RhcmVhcycsIGljb246IENoZWNrU3F1YXJlIH0sCiAgICB7IGxhYmVsOiAn8J+RpSBNaXMgTGVhZHMnLCBocmVmOiAnL3ZlbmRlZG9yL2xlYWRzJywgaWNvbjogVXNlcnMgfSwKICAgIHsgbGFiZWw6ICdNaSBQZXJmaWwnLCBocmVmOiAnL3ZlbmRlZG9yL3BlcmZpbCcsIGljb246IFVzZXJDaXJjbGUgfSwKICBdOwoKICBjb25zdCBuYXZJdGVtcyA9IGlzQWRtaW4gPyBhZG1pbk5hdiA6IHZlbmRlZG9yTmF2OwoKICByZXR1cm4gKAogICAgPG5hdiBjbGFzc05hbWU9ImZsZXggZmxleC1jb2wgZ2FwLTEgcC0yIj4KICAgICAge25hdkl0ZW1zLm1hcCgoaXRlbSkgPT4gewogICAgICAgIGNvbnN0IGlzQWN0aXZlID0gcGF0aG5hbWUgPT09IGl0ZW0uaHJlZiB8fCBwYXRobmFtZS5zdGFydHNXaXRoKGl0ZW0uaHJlZiArICcvJyk7CiAgICAgICAgY29uc3QgSWNvbiA9IGl0ZW0uaWNvbjsKICAgICAgICByZXR1cm4gKAogICAgICAgICAgPExpbmsKICAgICAgICAgICAga2V5PXtpdGVtLmhyZWZ9CiAgICAgICAgICAgIGhyZWY9e2l0ZW0uaHJlZn0KICAgICAgICAgICAgY2xhc3NOYW1lPXtgZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTMgcm91bmRlZC1sZyBweC0zIHB5LTIuNSB0cmFuc2l0aW9uLWNvbG9ycyAkewogICAgICAgICAgICAgIGlzQWN0aXZlCiAgICAgICAgICAgICAgICA/ICdiZy1wcmltYXJ5LzEwIGZvbnQtbWVkaXVtIHRleHQtcHJpbWFyeScKICAgICAgICAgICAgICAgIDogJ3RleHQtbXV0ZWQtZm9yZWdyb3VuZCBob3ZlcjpiZy1tdXRlZCcKICAgICAgICAgICAgfWB9CiAgICAgICAgICA+CiAgICAgICAgICAgIDxJY29uIGNsYXNzTmFtZT0iaC01IHctNSBzaHJpbmstMCIgLz4KICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJ0cnVuY2F0ZSB0ZXh0LXNtIj57aXRlbS5sYWJlbH08L3NwYW4+CiAgICAgICAgICA8L0xpbms+CiAgICAgICAgKTsKICAgICAgfSl9CiAgICA8L25hdj4KICApOwp9Cg==
+'use client';
+
+import { usePathname } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
+import { LayoutDashboard, Users, MessageSquare, CheckSquare, Building2, Activity, UserCircle } from 'lucide-react';
+
+export function DashboardNav() {
+  const pathname = usePathname();
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === 'ADMIN';
+
+  const adminNav = [
+    { label: '📋 Mensajes', href: '/admin/leads', icon: MessageSquare },
+    { label: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+    { label: '🏢 Empresas', href: '/admin/empresas', icon: Building2 },
+    { label: '👥 Vendedores', href: '/admin/vendedores', icon: Users },
+    { label: 'Equipo', href: '/admin/equipo', icon: Users },
+    { label: '📋 Tareas', href: '/admin/tareas', icon: CheckSquare },
+    { label: '📊 Actividad', href: '/admin/actividad', icon: Activity },
+  ];
+
+  const vendedorNav = [
+    { label: 'Dashboard', href: '/vendedor', icon: LayoutDashboard },
+    { label: '📋 Mis Tareas', href: '/vendedor/tareas', icon: CheckSquare },
+    { label: '👥 Mis Leads', href: '/vendedor/leads', icon: Users },
+    { label: 'Mi Perfil', href: '/vendedor/perfil', icon: UserCircle },
+  ];
+
+  const navItems = isAdmin ? adminNav : vendedorNav;
+
+  return (
+    <nav className="flex flex-col gap-1 p-2">
+      {navItems.map((item) => {
+        const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+        const Icon = item.icon;
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={`flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors ${
+              isActive
+                ? 'bg-primary/10 font-medium text-primary'
+                : 'text-muted-foreground hover:bg-muted'
+            }`}
+          >
+            <Icon className="h-5 w-5 shrink-0" />
+            <span className="truncate text-sm">{item.label}</span>
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
