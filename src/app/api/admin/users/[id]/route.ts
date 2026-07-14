@@ -108,6 +108,60 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
   }
 }
 
+
+// PATCH /api/admin/users/[id] — actualización parcial (toggle activo, etc.)
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await getAuthSession();
+    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+    if (session.user.role !== 'ADMIN') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
+    const { id } = await params;
+    const body = await request.json();
+    const libsql = getTursoClient();
+
+    // Verificar que el usuario existe
+    const existing = await libsql.execute({ sql: 'SELECT id, rol FROM "User" WHERE id = ?', args: [id] });
+    if (existing.rows.length === 0) return NextResponse.json({ error: 'No encontrado' }, { status: 404 });
+
+    // Construir updates dinámicamente
+    const updates: string[] = [];
+    const args: (string | number)[] = [];
+
+    if (body.isActive !== undefined) { updates.push('activo = ?'); args.push(body.isActive ? 1 : 0); }
+    if (body.nombre !== undefined) { updates.push('nombre = ?'); args.push(body.nombre); }
+    if (body.email !== undefined) { updates.push('email = ?'); args.push(String(body.email).toLowerCase()); }
+    if (body.telefono !== undefined) { updates.push('telefono = ?'); args.push(body.telefono); }
+    if (body.empresaId !== undefined) { updates.push('empresaId = ?'); args.push(body.empresaId || null); }
+    if (body.avatarUrl !== undefined) { updates.push('"avatarUrl" = ?'); args.push(body.avatarUrl || null); }
+    if (body.password) {
+      const hashedPassword = await bcrypt.hash(body.password, 12);
+      updates.push('password = ?');
+      args.push(hashedPassword);
+    }
+
+    if (updates.length === 0) {
+      return NextResponse.json({ error: 'No hay datos para actualizar' }, { status: 400 });
+    }
+
+    updates.push('updatedAt = CURRENT_TIMESTAMP');
+    args.push(id);
+
+    await libsql.execute({
+      sql: `UPDATE "User" SET ${updates.join(', ')} WHERE id = ?`,
+      args,
+    });
+
+    return NextResponse.json({ ok: true });
+  } catch (e: any) {
+    console.error('[user PATCH] error:', e);
+    return NextResponse.json({ error: 'Error del servidor' }, { status: 500 });
+  }
+}
+
 export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getAuthSession();
@@ -130,3 +184,4 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
     return NextResponse.json({ error: 'Error del servidor' }, { status: 500 });
   }
 }
+
