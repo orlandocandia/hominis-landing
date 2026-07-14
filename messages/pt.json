@@ -1,0 +1,106 @@
+{
+  "common": {
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "view": "Ver",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "all": "Todos",
+    "none": "Nenhum",
+    "yes": "Sim",
+    "no": "Não",
+    "close": "Fechar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "previous": "Anterior",
+    "actions": "Ações",
+    "status": "Status",
+    "date": "Data",
+    "name": "Nome",
+    "email": "Email",
+    "phone": "Telefone",
+    "address": "Endereço",
+    "company": "Empresa",
+    "role": "Função",
+    "active": "Ativo",
+    "inactive": "Inativo",
+    "confirm": "Confirmar",
+    "logout": "Sair",
+    "refresh": "Atualizar",
+    "create": "Criar",
+    "new": "Novo",
+    "noData": "Sem dados"
+  },
+  "admin": {
+    "title": "Painel Administrativo",
+    "welcome": "Bem-vindo, {name}",
+    "leads": {
+      "title": "Mensagens",
+      "total": "mensagens recebidas",
+      "new": "Novos",
+      "attended": "Atendidos",
+      "conversion": "Conversão",
+      "filters": { "status": "Status", "search": "Buscar mensagens...", "dateFrom": "Data de", "dateTo": "Data até", "apply": "Aplicar", "clear": "Limpar" },
+      "bulk": { "selected": "selecionados", "markAsRead": "Marcar como lidos", "markAsAttended": "Marcar como atendidos", "delete": "Excluir" },
+      "empty": "Não há mensagens com estes filtros",
+      "exportExcel": "Excel",
+      "exportPdf": "PDF"
+    },
+    "companies": {
+      "title": "Empresas",
+      "new": "Nova Empresa",
+      "edit": "Editar Empresa",
+      "active": "Ativa",
+      "inactive": "Inativa",
+      "empty": "Nenhuma empresa registrada",
+      "form": { "name": "Nome", "email": "Email", "phone": "Telefone", "address": "Endereço", "active": "Empresa ativa" }
+    },
+    "vendors": {
+      "title": "Vendedores",
+      "new": "Novo Vendedor",
+      "stats": { "leads": "Leads", "pending": "Pendentes", "completed": "Concluídas" },
+      "actions": { "view": "Ver", "activate": "Ativar", "deactivate": "Desativar", "delete": "Excluir" },
+      "empty": "Nenhum vendedor para mostrar",
+      "form": { "name": "Nome completo", "email": "Email", "password": "Senha", "phone": "Telefone", "company": "Empresa" }
+    },
+    "tasks": {
+      "title": "Tarefas",
+      "new": "Nova Tarefa",
+      "form": { "title": "Título", "description": "Descrição", "type": "Tipo", "priority": "Prioridade", "dueDate": "Data limite", "assignTo": "Atribuir a", "relatedLead": "Lead relacionado" },
+      "actions": { "complete": "Concluir", "delete": "Excluir" },
+      "empty": "Não há tarefas com estes filtros",
+      "expired": "Vencida"
+    },
+    "team": {
+      "title": "Equipe de Vendas",
+      "vendors": "Vendedores",
+      "totalLeads": "Total leads",
+      "pendingTasks": "Tarefas pendentes"
+    },
+    "activity": {
+      "title": "Atividade",
+      "total": "ações registradas",
+      "exportCsv": "Exportar CSV",
+      "empty": "Nenhuma atividade com estes filtros"
+    }
+  },
+  "vendor": {
+    "title": "Meu Painel",
+    "welcome": "Bem-vindo, {name}",
+    "tasks": { "title": "Minhas Tarefas", "empty": "Você não tem tarefas", "complete": "Concluir" },
+    "leads": { "title": "Meus Leads", "empty": "Você não tem leads atribuídos", "whatsapp": "WhatsApp" },
+    "profile": { "title": "Meu Perfil", "save": "Salvar alterações", "cancel": "Cancelar", "success": "Perfil atualizado" }
+  },
+  "auth": {
+    "login": { "title": "Painel de Gestão", "email": "Email", "password": "Senha", "submit": "Entrar", "forgot": "Esqueceu a senha?" },
+    "forgotPassword": { "title": "Recuperar senha", "submit": "Enviar link", "success": "Email enviado", "back": "Voltar ao login" },
+    "resetPassword": { "title": "Nova senha", "submit": "Redefinir", "success": "Senha atualizada", "back": "Ir ao login" }
+  },
+  "notifications": { "title": "Notificações", "markAllRead": "Marcar todas como lidas", "empty": "Sem notificações", "view": "Ver →" },
+  "help": { "title": "Ajuda", "guide": "Guia", "chat": "Chat IA", "chatPlaceholder": "Digite sua pergunta..." }
+}
