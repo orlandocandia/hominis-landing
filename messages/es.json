@@ -1,0 +1,106 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "view": "Ver",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "all": "Todos",
+    "none": "Ninguno",
+    "yes": "Sí",
+    "no": "No",
+    "close": "Cerrar",
+    "back": "Volver",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "actions": "Acciones",
+    "status": "Estado",
+    "date": "Fecha",
+    "name": "Nombre",
+    "email": "Email",
+    "phone": "Teléfono",
+    "address": "Dirección",
+    "company": "Empresa",
+    "role": "Rol",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "confirm": "Confirmar",
+    "logout": "Cerrar Sesión",
+    "refresh": "Actualizar",
+    "create": "Crear",
+    "new": "Nuevo",
+    "noData": "No hay datos"
+  },
+  "admin": {
+    "title": "Panel de Administración",
+    "welcome": "Bienvenida/o, {name}",
+    "leads": {
+      "title": "Mensajes",
+      "total": "mensajes recibidos",
+      "new": "Nuevos",
+      "attended": "Atendidos",
+      "conversion": "Conversión",
+      "filters": { "status": "Estado", "search": "Buscar mensajes...", "dateFrom": "Fecha desde", "dateTo": "Fecha hasta", "apply": "Aplicar", "clear": "Limpiar" },
+      "bulk": { "selected": "seleccionados", "markAsRead": "Marcar como leídos", "markAsAttended": "Marcar como atendidos", "delete": "Eliminar" },
+      "empty": "No hay mensajes con estos filtros",
+      "exportExcel": "Excel",
+      "exportPdf": "PDF"
+    },
+    "companies": {
+      "title": "Empresas",
+      "new": "Nueva Empresa",
+      "edit": "Editar Empresa",
+      "active": "Activa",
+      "inactive": "Inactiva",
+      "empty": "No hay empresas registradas",
+      "form": { "name": "Nombre", "email": "Email", "phone": "Teléfono", "address": "Dirección", "active": "Empresa activa" }
+    },
+    "vendors": {
+      "title": "Vendedores",
+      "new": "Nuevo Vendedor",
+      "stats": { "leads": "Leads", "pending": "Pendientes", "completed": "Completadas" },
+      "actions": { "view": "Ver", "activate": "Activar", "deactivate": "Desact.", "delete": "Eliminar" },
+      "empty": "No hay vendedores para mostrar",
+      "form": { "name": "Nombre completo", "email": "Email", "password": "Contraseña", "phone": "Teléfono", "company": "Empresa" }
+    },
+    "tasks": {
+      "title": "Tareas",
+      "new": "Nueva Tarea",
+      "form": { "title": "Título", "description": "Descripción", "type": "Tipo", "priority": "Prioridad", "dueDate": "Fecha límite", "assignTo": "Asignar a", "relatedLead": "Lead relacionado" },
+      "actions": { "complete": "Completar", "delete": "Eliminar" },
+      "empty": "No hay tareas con estos filtros",
+      "expired": "Vencida"
+    },
+    "team": {
+      "title": "Equipo de Ventas",
+      "vendors": "Vendedores",
+      "totalLeads": "Leads totales",
+      "pendingTasks": "Tareas pendientes"
+    },
+    "activity": {
+      "title": "Actividad",
+      "total": "acciones registradas",
+      "exportCsv": "Exportar CSV",
+      "empty": "No hay actividad con estos filtros"
+    }
+  },
+  "vendor": {
+    "title": "Mi Panel",
+    "welcome": "Bienvenida/o, {name}",
+    "tasks": { "title": "Mis Tareas", "empty": "No tienes tareas", "complete": "Completar" },
+    "leads": { "title": "Mis Leads", "empty": "No tienes leads asignados", "whatsapp": "WhatsApp" },
+    "profile": { "title": "Mi Perfil", "save": "Guardar cambios", "cancel": "Cancelar", "success": "Perfil actualizado" }
+  },
+  "auth": {
+    "login": { "title": "Panel de Gestión", "email": "Email", "password": "Contraseña", "submit": "Ingresar", "forgot": "¿Olvidaste tu contraseña?" },
+    "forgotPassword": { "title": "Recuperar contraseña", "submit": "Enviar link", "success": "Email enviado", "back": "Volver al login" },
+    "resetPassword": { "title": "Nueva contraseña", "submit": "Restablecer", "success": "Contraseña actualizada", "back": "Ir al login" }
+  },
+  "notifications": { "title": "Notificaciones", "markAllRead": "Marcar todas como leídas", "empty": "No hay notificaciones", "view": "Ver →" },
+  "help": { "title": "Ayuda", "guide": "Guía", "chat": "Chat IA", "chatPlaceholder": "Escribí tu pregunta..." }
+}
