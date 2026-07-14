@@ -1,1 +1,47 @@
-Ly8gR0VUIC9hcGkvYWRtaW4vc3RhdHMg4oCUIGVzdGFkw61zdGljYXMgZ2VuZXJhbGVzIGRlbCBhZG1pbiAoZmlsdHJhZGFzIHBvciBlbXByZXNhKQppbXBvcnQgeyBOZXh0UmVzcG9uc2UgfSBmcm9tICduZXh0L3NlcnZlcic7CmltcG9ydCB7IGdldFR1cnNvQ2xpZW50IH0gZnJvbSAnQC9saWIvdHVyc28tY29uZmlnJzsKaW1wb3J0IHsgZ2V0QXV0aFNlc3Npb24gfSBmcm9tICdAL2xpYi9hdXRoJzsKCmV4cG9ydCBjb25zdCBkeW5hbWljID0gJ2ZvcmNlLWR5bmFtaWMnOwoKZXhwb3J0IGFzeW5jIGZ1bmN0aW9uIEdFVCgpIHsKICB0cnkgewogICAgY29uc3Qgc2Vzc2lvbiA9IGF3YWl0IGdldEF1dGhTZXNzaW9uKCk7CiAgICBpZiAoIXNlc3Npb24gfHwgc2Vzc2lvbi51c2VyLnJvbGUgIT09ICdBRE1JTicpIHsKICAgICAgcmV0dXJuIG5ldyBSZXNwb25zZSgnVW5hdXRob3JpemVkJywgeyBzdGF0dXM6IDQwMSB9KTsKICAgIH0KCiAgICBjb25zdCBsaWJzcWwgPSBnZXRUdXJzb0NsaWVudCgpOwogICAgY29uc3QgZW1wcmVzYUlkID0gc2Vzc2lvbi51c2VyLmVtcHJlc2FJZCB8fCBudWxsOwoKICAgIC8vIENvbnN0cnVpciBmaWx0cm8gZGUgZW1wcmVzYSBwYXJhIENvbnRhY3RvICh0YWJsYSBsZWdhY3kgZGUgbGVhZHMpCiAgICBjb25zdCBlbXAgPSBlbXByZXNhSWQgPyAnQU5EIGVtcHJlc2FJZCA9ID8nIDogJyc7CiAgICBjb25zdCBlbXBBcmdzID0gZW1wcmVzYUlkID8gW2VtcHJlc2FJZF0gOiBbXTsKCiAgICBjb25zdCBbdG90YWxSZXMsIG51ZXZvc1JlcywgYXRlbmRpZG9zUmVzXSA9IGF3YWl0IFByb21pc2UuYWxsKFsKICAgICAgbGlic3FsLmV4ZWN1dGUoewogICAgICAgIHNxbDogYFNFTEVDVCBDT1VOVCgqKSBBUyBuIEZST00gQ29udGFjdG8gV0hFUkUgMT0xICR7ZW1wfWAsCiAgICAgICAgYXJnczogZW1wQXJncywKICAgICAgfSksCiAgICAgIGxpYnNxbC5leGVjdXRlKHsKICAgICAgICBzcWw6IGBTRUxFQ1QgQ09VTlQoKikgQVMgbiBGUk9NIENvbnRhY3RvIFdIRVJFIGVzdGFkbyA9ICdOVUVWTycgJHtlbXB9YCwKICAgICAgICBhcmdzOiBlbXBBcmdzLAogICAgICB9KSwKICAgICAgbGlic3FsLmV4ZWN1dGUoewogICAgICAgIHNxbDogYFNFTEVDVCBDT1VOVCgqKSBBUyBuIEZST00gQ29udGFjdG8gV0hFUkUgZXN0YWRvID0gJ0FURU5ESURPJyAke2VtcH1gLAogICAgICAgIGFyZ3M6IGVtcEFyZ3MsCiAgICAgIH0pLAogICAgXSk7CgogICAgY29uc3QgbnVtID0gKHI6IHsgcm93czogQXJyYXk8UmVjb3JkPHN0cmluZywgdW5rbm93bj4+IH0pID0+IE51bWJlcihyLnJvd3NbMF0/Lm4gPz8gMCk7CiAgICBjb25zdCB0b3RhbExlYWRzID0gbnVtKHRvdGFsUmVzKTsKICAgIGNvbnN0IG51ZXZvcyA9IG51bShudWV2b3NSZXMpOwogICAgY29uc3QgYXRlbmRpZG9zID0gbnVtKGF0ZW5kaWRvc1Jlcyk7CgogICAgcmV0dXJuIE5leHRSZXNwb25zZS5qc29uKHsgdG90YWxMZWFkcywgbnVldm9zLCBhdGVuZGlkb3MgfSk7CiAgfSBjYXRjaCAoZTogdW5rbm93bikgewogICAgY29uc29sZS5lcnJvcignW2FkbWluL3N0YXRzIEdFVF0gZXJyb3I6JywgZSk7CiAgICByZXR1cm4gbmV3IFJlc3BvbnNlKCdFcnJvciBpbnRlcm5vJywgeyBzdGF0dXM6IDUwMCB9KTsKICB9Cn0K
+// GET /api/admin/stats — estadísticas generales del admin (filtradas por empresa)
+import { NextResponse } from 'next/server';
+import { getTursoClient } from '@/lib/turso-config';
+import { getAuthSession } from '@/lib/auth';
+
+export const dynamic = 'force-dynamic';
+
+export async function GET() {
+  try {
+    const session = await getAuthSession();
+    if (!session || session.user.role !== 'ADMIN') {
+      return new Response('Unauthorized', { status: 401 });
+    }
+
+    const libsql = getTursoClient();
+    const empresaId = session.user.empresaId || null;
+
+    // Construir filtro de empresa para Contacto (tabla legacy de leads)
+    const emp = empresaId ? 'AND empresaId = ?' : '';
+    const empArgs = empresaId ? [empresaId] : [];
+
+    const [totalRes, nuevosRes, atendidosRes] = await Promise.all([
+      libsql.execute({
+        sql: `SELECT COUNT(*) AS n FROM Contacto WHERE 1=1 ${emp}`,
+        args: empArgs,
+      }),
+      libsql.execute({
+        sql: `SELECT COUNT(*) AS n FROM Contacto WHERE estado = 'NUEVO' ${emp}`,
+        args: empArgs,
+      }),
+      libsql.execute({
+        sql: `SELECT COUNT(*) AS n FROM Contacto WHERE estado = 'ATENDIDO' ${emp}`,
+        args: empArgs,
+      }),
+    ]);
+
+    const num = (r: { rows: Array<Record<string, unknown>> }) => Number(r.rows[0]?.n ?? 0);
+    const totalLeads = num(totalRes);
+    const nuevos = num(nuevosRes);
+    const atendidos = num(atendidosRes);
+
+    return NextResponse.json({ totalLeads, nuevos, atendidos });
+  } catch (e: unknown) {
+    console.error('[admin/stats GET] error:', e);
+    return new Response('Error interno', { status: 500 });
+  }
+}
