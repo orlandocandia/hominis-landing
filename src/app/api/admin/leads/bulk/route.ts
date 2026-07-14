@@ -1,1 +1,66 @@
-Ly8gUE9TVCAvYXBpL2FkbWluL2xlYWRzL2J1bGsg4oCUIGFjY2lvbmVzIG1hc2l2YXMgc29icmUgbcO6bHRpcGxlcyBsZWFkcwovLyBib2R5OiB7IGFjdGlvbjogJ0xFSURPJyB8ICdBVEVORElETycgfCAnUkVDSEFaQURPJyB8ICdERUxFVEUnLCBsZWFkSWRzOiBzdHJpbmdbXSB9CmltcG9ydCB7IE5leHRSZXNwb25zZSB9IGZyb20gJ25leHQvc2VydmVyJzsKaW1wb3J0IHsgZ2V0VHVyc29DbGllbnQgfSBmcm9tICdAL2xpYi90dXJzby1jb25maWcnOwppbXBvcnQgeyBnZXRBdXRoU2Vzc2lvbiB9IGZyb20gJ0AvbGliL2F1dGgnOwoKZXhwb3J0IGNvbnN0IGR5bmFtaWMgPSAnZm9yY2UtZHluYW1pYyc7Cgpjb25zdCBWQUxJRF9BQ1RJT05TID0gWydMRUlETycsICdBVEVORElETycsICdSRUNIQVpBRE8nLCAnREVMRVRFJ107CgpleHBvcnQgYXN5bmMgZnVuY3Rpb24gUE9TVChyZXF1ZXN0OiBSZXF1ZXN0KSB7CiAgdHJ5IHsKICAgIGNvbnN0IHNlc3Npb24gPSBhd2FpdCBnZXRBdXRoU2Vzc2lvbigpOwogICAgaWYgKCFzZXNzaW9uPy51c2VyKSB7CiAgICAgIHJldHVybiBuZXcgUmVzcG9uc2UoJ1VuYXV0aG9yaXplZCcsIHsgc3RhdHVzOiA0MDEgfSk7CiAgICB9CiAgICBpZiAoc2Vzc2lvbi51c2VyLnJvbGUgIT09ICdBRE1JTicpIHsKICAgICAgcmV0dXJuIG5ldyBSZXNwb25zZSgnRm9yYmlkZGVuJywgeyBzdGF0dXM6IDQwMyB9KTsKICAgIH0KCiAgICBjb25zdCBib2R5ID0gYXdhaXQgcmVxdWVzdC5qc29uKCk7CiAgICBjb25zdCB7IGFjdGlvbiwgbGVhZElkcyB9ID0gYm9keTsKCiAgICBpZiAoIWFjdGlvbiB8fCAhVkFMSURfQUNUSU9OUy5pbmNsdWRlcyhhY3Rpb24pKSB7CiAgICAgIHJldHVybiBuZXcgUmVzcG9uc2UoJ0FjY2nDs24gbm8gdsOhbGlkYScsIHsgc3RhdHVzOiA0MDAgfSk7CiAgICB9CiAgICBpZiAoIUFycmF5LmlzQXJyYXkobGVhZElkcykgfHwgbGVhZElkcy5sZW5ndGggPT09IDApIHsKICAgICAgcmV0dXJuIG5ldyBSZXNwb25zZSgnTm8gc2Ugc2VsZWNjaW9uYXJvbiBsZWFkcycsIHsgc3RhdHVzOiA0MDAgfSk7CiAgICB9CgogICAgY29uc3QgbGlic3FsID0gZ2V0VHVyc29DbGllbnQoKTsKICAgIGNvbnN0IGVtcHJlc2FJZCA9IHNlc3Npb24udXNlci5lbXByZXNhSWQgfHwgbnVsbDsKICAgIGNvbnN0IHBsYWNlaG9sZGVycyA9IGxlYWRJZHMubWFwKCgpID0+ICc/Jykuam9pbignLCcpOwoKICAgIGlmIChhY3Rpb24gPT09ICdERUxFVEUnKSB7CiAgICAgIGlmIChlbXByZXNhSWQpIHsKICAgICAgICBhd2FpdCBsaWJzcWwuZXhlY3V0ZSh7CiAgICAgICAgICBzcWw6IGBERUxFVEUgRlJPTSBDb250YWN0byBXSEVSRSBpZCBJTiAoJHtwbGFjZWhvbGRlcnN9KSBBTkQgZW1wcmVzYUlkID0gP2AsCiAgICAgICAgICBhcmdzOiBbLi4ubGVhZElkcywgZW1wcmVzYUlkXSwKICAgICAgICB9KTsKICAgICAgfSBlbHNlIHsKICAgICAgICBhd2FpdCBsaWJzcWwuZXhlY3V0ZSh7CiAgICAgICAgICBzcWw6IGBERUxFVEUgRlJPTSBDb250YWN0byBXSEVSRSBpZCBJTiAoJHtwbGFjZWhvbGRlcnN9KWAsCiAgICAgICAgICBhcmdzOiBsZWFkSWRzLAogICAgICAgIH0pOwogICAgICB9CiAgICB9IGVsc2UgewogICAgICBpZiAoZW1wcmVzYUlkKSB7CiAgICAgICAgYXdhaXQgbGlic3FsLmV4ZWN1dGUoewogICAgICAgICAgc3FsOiBgVVBEQVRFIENvbnRhY3RvIFNFVCBlc3RhZG8gPSA/IFdIRVJFIGlkIElOICgke3BsYWNlaG9sZGVyc30pIEFORCBlbXByZXNhSWQgPSA/YCwKICAgICAgICAgIGFyZ3M6IFthY3Rpb24sIC4uLmxlYWRJZHMsIGVtcHJlc2FJZF0sCiAgICAgICAgfSk7CiAgICAgIH0gZWxzZSB7CiAgICAgICAgYXdhaXQgbGlic3FsLmV4ZWN1dGUoewogICAgICAgICAgc3FsOiBgVVBEQVRFIENvbnRhY3RvIFNFVCBlc3RhZG8gPSA/IFdIRVJFIGlkIElOICgke3BsYWNlaG9sZGVyc30pYCwKICAgICAgICAgIGFyZ3M6IFthY3Rpb24sIC4uLmxlYWRJZHNdLAogICAgICAgIH0pOwogICAgICB9CiAgICB9CgogICAgcmV0dXJuIE5leHRSZXNwb25zZS5qc29uKHsgc3VjY2VzczogdHJ1ZSwgYWZmZWN0ZWQ6IGxlYWRJZHMubGVuZ3RoIH0pOwogIH0gY2F0Y2ggKGU6IHVua25vd24pIHsKICAgIGNvbnNvbGUuZXJyb3IoJ1thZG1pbi9sZWFkcy9idWxrIFBPU1RdIGVycm9yOicsIGUpOwogICAgcmV0dXJuIG5ldyBSZXNwb25zZSgnRXJyb3IgaW50ZXJubycsIHsgc3RhdHVzOiA1MDAgfSk7CiAgfQp9Cg==
+// POST /api/admin/leads/bulk — acciones masivas sobre múltiples leads
+// body: { action: 'LEIDO' | 'ATENDIDO' | 'RECHAZADO' | 'DELETE', leadIds: string[] }
+import { NextResponse } from 'next/server';
+import { getTursoClient } from '@/lib/turso-config';
+import { getAuthSession } from '@/lib/auth';
+
+export const dynamic = 'force-dynamic';
+
+const VALID_ACTIONS = ['LEIDO', 'ATENDIDO', 'RECHAZADO', 'DELETE'];
+
+export async function POST(request: Request) {
+  try {
+    const session = await getAuthSession();
+    if (!session?.user) {
+      return new Response('Unauthorized', { status: 401 });
+    }
+    if (session.user.role !== 'ADMIN') {
+      return new Response('Forbidden', { status: 403 });
+    }
+
+    const body = await request.json();
+    const { action, leadIds } = body;
+
+    if (!action || !VALID_ACTIONS.includes(action)) {
+      return new Response('Acción no válida', { status: 400 });
+    }
+    if (!Array.isArray(leadIds) || leadIds.length === 0) {
+      return new Response('No se seleccionaron leads', { status: 400 });
+    }
+
+    const libsql = getTursoClient();
+    const empresaId = session.user.empresaId || null;
+    const placeholders = leadIds.map(() => '?').join(',');
+
+    if (action === 'DELETE') {
+      if (empresaId) {
+        await libsql.execute({
+          sql: `DELETE FROM Contacto WHERE id IN (${placeholders}) AND empresaId = ?`,
+          args: [...leadIds, empresaId],
+        });
+      } else {
+        await libsql.execute({
+          sql: `DELETE FROM Contacto WHERE id IN (${placeholders})`,
+          args: leadIds,
+        });
+      }
+    } else {
+      if (empresaId) {
+        await libsql.execute({
+          sql: `UPDATE Contacto SET estado = ? WHERE id IN (${placeholders}) AND empresaId = ?`,
+          args: [action, ...leadIds, empresaId],
+        });
+      } else {
+        await libsql.execute({
+          sql: `UPDATE Contacto SET estado = ? WHERE id IN (${placeholders})`,
+          args: [action, ...leadIds],
+        });
+      }
+    }
+
+    return NextResponse.json({ success: true, affected: leadIds.length });
+  } catch (e: unknown) {
+    console.error('[admin/leads/bulk POST] error:', e);
+    return new Response('Error interno', { status: 500 });
+  }
+}
