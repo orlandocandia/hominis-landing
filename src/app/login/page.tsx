@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -8,46 +8,20 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from '@/components/ui/select';
-import { Shield, Eye, EyeOff, LogIn, ArrowLeft, AlertCircle, Building2 } from 'lucide-react';
+import { Shield, Eye, EyeOff, LogIn, ArrowLeft, AlertCircle } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSelector, useTranslation } from '@/components/language-selector';
-
-interface Empresa {
-  id: string;
-  nombre: string;
-  rubro: string;
-  logo: string | null;
-}
-
-// Sentinel for "all empresas" (admin can choose to skip empresa filter on login)
-const ALL = '__all__';
 
 export default function LoginPage() {
   const router = useRouter();
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [empresaId, setEmpresaId] = useState('');
-  const [empresas, setEmpresas] = useState<Empresa[]>([]);
-  const [empresasLoading, setEmpresasLoading] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetch('/api/empresas')
-      .then((res) => res.json())
-      .then((data: Empresa[]) => {
-        setEmpresas(Array.isArray(data) ? data : data.empresas ?? []);
-      })
-      .catch((e) => console.error('Error fetching empresas:', e))
-      .finally(() => setEmpresasLoading(false));
-  }, []);
-
-  const handleSubmit = async (e: React.FormEvent) => {
+const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
@@ -56,7 +30,6 @@ export default function LoginPage() {
       const result = await signIn('credentials', {
         email,
         password,
-        empresaId: empresaId || '',
         redirect: false,
       });
 
@@ -134,30 +107,6 @@ export default function LoginPage() {
 
             {/* Login form */}
             <form onSubmit={handleSubmit} className="space-y-5">
-              {/* Empresa selector */}
-              <div className="space-y-2">
-                <Label htmlFor="empresa" className="text-sm font-medium">
-                  🏢 Empresa
-                </Label>
-                <Select value={empresaId} onValueChange={setEmpresaId} disabled={empresasLoading}>
-                  <SelectTrigger id="empresa" className="h-12 rounded-xl">
-                    <SelectValue
-                      placeholder={
-                        empresasLoading ? 'Cargando empresas...' : 'Seleccionar empresa...'
-                      }
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value={ALL}>Todas (Admin)</SelectItem>
-                    {empresas.map((emp) => (
-                      <SelectItem key={emp.id} value={emp.id}>
-                        {emp.nombre}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-sm font-medium">
                   {t('auth.login.email') || 'Email'}
@@ -243,3 +192,4 @@ export default function LoginPage() {
     </div>
   );
 }
+
