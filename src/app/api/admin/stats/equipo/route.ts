@@ -1,1 +1,50 @@
-Ly8gR0VUIC9hcGkvYWRtaW4vc3RhdHMvZXF1aXBvIOKAlCBlc3RhZMOtc3RpY2FzIGRlbCBlcXVpcG8gZGUgdmVudGFzCmltcG9ydCB7IE5leHRSZXNwb25zZSB9IGZyb20gJ25leHQvc2VydmVyJzsKaW1wb3J0IHsgZ2V0VHVyc29DbGllbnQgfSBmcm9tICdAL2xpYi90dXJzby1jb25maWcnOwppbXBvcnQgeyBnZXRBdXRoU2Vzc2lvbiB9IGZyb20gJ0AvbGliL2F1dGgnOwoKZXhwb3J0IGNvbnN0IGR5bmFtaWMgPSAnZm9yY2UtZHluYW1pYyc7CgpleHBvcnQgYXN5bmMgZnVuY3Rpb24gR0VUKCkgewogIHRyeSB7CiAgICBjb25zdCBzZXNzaW9uID0gYXdhaXQgZ2V0QXV0aFNlc3Npb24oKTsKICAgIGlmICghc2Vzc2lvbiB8fCBzZXNzaW9uLnVzZXIucm9sZSAhPT0gJ0FETUlOJykgewogICAgICByZXR1cm4gbmV3IFJlc3BvbnNlKCdVbmF1dGhvcml6ZWQnLCB7IHN0YXR1czogNDAxIH0pOwogICAgfQoKICAgIGNvbnN0IGxpYnNxbCA9IGdldFR1cnNvQ2xpZW50KCk7CiAgICBjb25zdCBlbXByZXNhSWQgPSBzZXNzaW9uLnVzZXIuZW1wcmVzYUlkIHx8IG51bGw7CgogICAgY29uc3QgW3ZSZXMsIGxSZXMsIHRSZXNdID0gYXdhaXQgUHJvbWlzZS5hbGwoWwogICAgICBsaWJzcWwuZXhlY3V0ZSh7CiAgICAgICAgc3FsOiBlbXByZXNhSWQKICAgICAgICAgID8gYFNFTEVDVCBDT1VOVCgqKSBBUyBuIEZST00gIlVzZXIiIFdIRVJFIHJvbCA9ICdWRU5ERURPUicgQU5EIGFjdGl2byA9IDEgQU5EIGVtcHJlc2FJZCA9ID9gCiAgICAgICAgICA6IGBTRUxFQ1QgQ09VTlQoKikgQVMgbiBGUk9NICJVc2VyIiBXSEVSRSByb2wgPSAnVkVOREVET1InIEFORCBhY3Rpdm8gPSAxYCwKICAgICAgICBhcmdzOiBlbXByZXNhSWQgPyBbZW1wcmVzYUlkXSA6IFtdLAogICAgICB9KSwKICAgICAgbGlic3FsLmV4ZWN1dGUoewogICAgICAgIHNxbDogZW1wcmVzYUlkCiAgICAgICAgICA/IGBTRUxFQ1QgQ09VTlQoKikgQVMgbiBGUk9NIENvbnRhY3RvIFdIRVJFIGVtcHJlc2FJZCA9ID9gCiAgICAgICAgICA6IGBTRUxFQ1QgQ09VTlQoKikgQVMgbiBGUk9NIENvbnRhY3RvYCwKICAgICAgICBhcmdzOiBlbXByZXNhSWQgPyBbZW1wcmVzYUlkXSA6IFtdLAogICAgICB9KSwKICAgICAgbGlic3FsLmV4ZWN1dGUoewogICAgICAgIHNxbDogZW1wcmVzYUlkCiAgICAgICAgICA/IGBTRUxFQ1QgQ09VTlQoKikgQVMgbiBGUk9NIFRhcmVhIFdIRVJFIGVzdGFkbyBJTiAoJ1BFTkRJRU5URScsJ0VOX1BST0dSRVNPJykgQU5EIGVtcHJlc2FJZCA9ID9gCiAgICAgICAgICA6IGBTRUxFQ1QgQ09VTlQoKikgQVMgbiBGUk9NIFRhcmVhIFdIRVJFIGVzdGFkbyBJTiAoJ1BFTkRJRU5URScsJ0VOX1BST0dSRVNPJylgLAogICAgICAgIGFyZ3M6IGVtcHJlc2FJZCA/IFtlbXByZXNhSWRdIDogW10sCiAgICAgIH0pLAogICAgXSk7CgogICAgY29uc3QgbnVtID0gKHI6IHsgcm93czogQXJyYXk8UmVjb3JkPHN0cmluZywgdW5rbm93bj4+IH0pID0+IE51bWJlcihyLnJvd3NbMF0/Lm4gPz8gMCk7CgogICAgcmV0dXJuIE5leHRSZXNwb25zZS5qc29uKHsKICAgICAgdG90YWxWZW5kZWRvcmVzOiBudW0odlJlcyksCiAgICAgIHRvdGFsTGVhZHM6IG51bShsUmVzKSwKICAgICAgdG90YWxUYXJlYXM6IG51bSh0UmVzKSwKICAgIH0pOwogIH0gY2F0Y2ggKGU6IHVua25vd24pIHsKICAgIGNvbnNvbGUuZXJyb3IoJ1thZG1pbi9zdGF0cy9lcXVpcG8gR0VUXSBlcnJvcjonLCBlKTsKICAgIHJldHVybiBuZXcgUmVzcG9uc2UoJ0Vycm9yIGludGVybm8nLCB7IHN0YXR1czogNTAwIH0pOwogIH0KfQo=
+// GET /api/admin/stats/equipo — estadísticas del equipo de ventas
+import { NextResponse } from 'next/server';
+import { getTursoClient } from '@/lib/turso-config';
+import { getAuthSession } from '@/lib/auth';
+
+export const dynamic = 'force-dynamic';
+
+export async function GET() {
+  try {
+    const session = await getAuthSession();
+    if (!session || session.user.role !== 'ADMIN') {
+      return new Response('Unauthorized', { status: 401 });
+    }
+
+    const libsql = getTursoClient();
+    const empresaId = session.user.empresaId || null;
+
+    const [vRes, lRes, tRes] = await Promise.all([
+      libsql.execute({
+        sql: empresaId
+          ? `SELECT COUNT(*) AS n FROM "User" WHERE rol = 'VENDEDOR' AND activo = 1 AND empresaId = ?`
+          : `SELECT COUNT(*) AS n FROM "User" WHERE rol = 'VENDEDOR' AND activo = 1`,
+        args: empresaId ? [empresaId] : [],
+      }),
+      libsql.execute({
+        sql: empresaId
+          ? `SELECT COUNT(*) AS n FROM Contacto WHERE empresaId = ?`
+          : `SELECT COUNT(*) AS n FROM Contacto`,
+        args: empresaId ? [empresaId] : [],
+      }),
+      libsql.execute({
+        sql: empresaId
+          ? `SELECT COUNT(*) AS n FROM Tarea WHERE estado IN ('PENDIENTE','EN_PROGRESO') AND empresaId = ?`
+          : `SELECT COUNT(*) AS n FROM Tarea WHERE estado IN ('PENDIENTE','EN_PROGRESO')`,
+        args: empresaId ? [empresaId] : [],
+      }),
+    ]);
+
+    const num = (r: { rows: Array<Record<string, unknown>> }) => Number(r.rows[0]?.n ?? 0);
+
+    return NextResponse.json({
+      totalVendedores: num(vRes),
+      totalLeads: num(lRes),
+      totalTareas: num(tRes),
+    });
+  } catch (e: unknown) {
+    console.error('[admin/stats/equipo GET] error:', e);
+    return new Response('Error interno', { status: 500 });
+  }
+}
