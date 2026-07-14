@@ -1,4 +1,4 @@
-// GET /api/admin/users — list users (vendedores)
+// GET /api/admin/users — list vendedores (paginado + métricas + multiempresa)
 // POST /api/admin/users — create a new vendedor
 import { NextResponse } from 'next/server';
 import { getAuthSession } from '@/lib/auth';
@@ -13,26 +13,59 @@ export async function GET(request: Request) {
     if (session.user.role !== 'ADMIN') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
     const { searchParams } = new URL(request.url);
-    const role = searchParams.get('role'); // 'VENDEDOR' | null (all)
-    // Multiempresa: la empresa activa viene de la sesión (ADMIN puede cambiarla via selector)
+    const page = Math.max(1, parseInt(searchParams.get('page') || '1'));
+    const limit = Math.min(50, Math.max(1, parseInt(searchParams.get('limit') || '12')));
+    const offset = (page - 1) * limit;
+    const search = searchParams.get('search') || '';
+    // Multiempresa: la empresa activa viene de la sesión
     const empresaFiltro = session.user.empresaId || null;
 
     const libsql = getTursoClient();
-    let sql = `SELECT id, email, nombre, apellido, rol, activo, city, province, latitude, longitude,
-      serviceRadius, totalContacts, conversionRate, fechaAlta, ultimoAcceso, avatarUrl, empresaId
-      FROM "User" WHERE rol = 'VENDEDOR'`;
-    const args: string[] = [];
-    if (role && role === 'VENDEDOR') {
-      sql += ' AND rol = ?';
-      args.push(role);
-    }
+
+    // Construir filtros
+    const conditions: string[] = ['u.rol = 'VENDEDOR''];
+    const args: (string | number)[] = [];
+
     if (empresaFiltro) {
-      sql += ' AND empresaId = ?';
+      conditions.push('u.empresaId = ?');
       args.push(empresaFiltro);
     }
-    sql += ' ORDER BY fechaAlta DESC';
-    const result = await libsql.execute({ sql, args });
-    return NextResponse.json({ users: result.rows });
+    if (search) {
+      conditions.push('(u.nombre LIKE ? OR u.email LIKE ?)');
+      const pat = `%${search}%`;
+      args.push(pat, pat);
+    }
+
+    const whereSQL = 'WHERE ' + conditions.join(' AND ');
+
+    // Contar total
+    const countRes = await libsql.execute({
+      sql: `SELECT COUNT(*) AS total FROM "User" u ${whereSQL}`,
+      args,
+    });
+    const total = Number(countRes.rows[0]?.total ?? 0);
+
+    // Obtener vendedores con métricas (alias para compatibilidad con frontend)
+    const result = await libsql.execute({
+      sql: `SELECT u.id, u.nombre AS name, u.apellido, u.email, u.telefono, u.avatarUrl,
+          u.activo AS isActive, u.empresaId, u.city, u.province,
+          e.nombre AS empresaNombre,
+          (SELECT COUNT(*) FROM Contact c WHERE c.ownerId = u.id) AS totalLeads,
+          (SELECT COUNT(*) FROM Contact c WHERE c.ownerId = u.id AND c.status = 'ATENDIDO') AS leadsAtendidos,
+          (SELECT COUNT(*) FROM Tarea t WHERE t.asignadoA = u.id AND t.estado IN ('PENDIENTE','EN_PROGRESO')) AS tareasPendientes,
+          (SELECT COUNT(*) FROM Tarea t WHERE t.asignadoA = u.id AND t.estado = 'COMPLETADA') AS tareasCompletadas
+        FROM "User" u
+        LEFT JOIN "Empresa" e ON u.empresaId = e.id
+        ${whereSQL}
+        ORDER BY u.nombre ASC
+        LIMIT ? OFFSET ?`,
+      args: [...args, limit, offset],
+    });
+
+    return NextResponse.json({
+      users: result.rows,
+      pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
+    });
   } catch (e: any) {
     console.error('[users GET] error:', e);
     return NextResponse.json({ error: 'Error del servidor' }, { status: 500 });
@@ -127,6 +160,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Error del servidor' }, { status: 500 });
   }
 }
+
 
 
 
