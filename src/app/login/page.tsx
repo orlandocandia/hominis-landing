@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -181,6 +182,16 @@ const handleSubmit = async (e: React.FormEvent) => {
                 encriptadas y protegidas. Si no tenés cuenta, contactá al administrador.
               </p>
             </div>
+
+            {/* Forgot password link */}
+            <div className="text-center mt-4">
+              <Link
+                href="/forgot-password"
+                className="text-sm text-primary hover:underline"
+              >
+                ¿Olvidaste tu contraseña?
+              </Link>
+            </div>
           </CardContent>
         </Card>
 
@@ -192,4 +203,5 @@ const handleSubmit = async (e: React.FormEvent) => {
     </div>
   );
 }
+
 
