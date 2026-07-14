@@ -1,1 +1,88 @@
-Ly8gUEFUQ0ggL2FwaS9hZG1pbi9sZWFkcy9baWRdIOKAlCBjYW1iaWFyIGVzdGFkbyBkZSB1biBsZWFkCi8vIERFTEVURSAvYXBpL2FkbWluL2xlYWRzL1tpZF0g4oCUIGVsaW1pbmFyIHVuIGxlYWQKaW1wb3J0IHsgTmV4dFJlc3BvbnNlIH0gZnJvbSAnbmV4dC9zZXJ2ZXInOwppbXBvcnQgeyBnZXRUdXJzb0NsaWVudCB9IGZyb20gJ0AvbGliL3R1cnNvLWNvbmZpZyc7CmltcG9ydCB7IGdldEF1dGhTZXNzaW9uIH0gZnJvbSAnQC9saWIvYXV0aCc7CgpleHBvcnQgY29uc3QgZHluYW1pYyA9ICdmb3JjZS1keW5hbWljJzsKCmNvbnN0IFZBTElEX0FDVElPTlMgPSBbJ05VRVZPJywgJ0xFSURPJywgJ0FURU5ESURPJywgJ1JFQ0hBWkFETyddOwoKZXhwb3J0IGFzeW5jIGZ1bmN0aW9uIFBBVENIKAogIHJlcXVlc3Q6IFJlcXVlc3QsCiAgeyBwYXJhbXMgfTogeyBwYXJhbXM6IFByb21pc2U8eyBpZDogc3RyaW5nIH0+IH0KKSB7CiAgdHJ5IHsKICAgIGNvbnN0IHNlc3Npb24gPSBhd2FpdCBnZXRBdXRoU2Vzc2lvbigpOwogICAgaWYgKCFzZXNzaW9uPy51c2VyKSB7CiAgICAgIHJldHVybiBuZXcgUmVzcG9uc2UoJ1VuYXV0aG9yaXplZCcsIHsgc3RhdHVzOiA0MDEgfSk7CiAgICB9CiAgICBpZiAoc2Vzc2lvbi51c2VyLnJvbGUgIT09ICdBRE1JTicpIHsKICAgICAgcmV0dXJuIG5ldyBSZXNwb25zZSgnRm9yYmlkZGVuJywgeyBzdGF0dXM6IDQwMyB9KTsKICAgIH0KCiAgICBjb25zdCB7IGlkIH0gPSBhd2FpdCBwYXJhbXM7CiAgICBjb25zdCBib2R5ID0gYXdhaXQgcmVxdWVzdC5qc29uKCk7CiAgICBjb25zdCB7IGFjdGlvbiB9ID0gYm9keTsKCiAgICBpZiAoIWFjdGlvbiB8fCAhVkFMSURfQUNUSU9OUy5pbmNsdWRlcyhhY3Rpb24pKSB7CiAgICAgIHJldHVybiBuZXcgUmVzcG9uc2UoJ0FjY2nDs24gbm8gdsOhbGlkYScsIHsgc3RhdHVzOiA0MDAgfSk7CiAgICB9CgogICAgY29uc3QgbGlic3FsID0gZ2V0VHVyc29DbGllbnQoKTsKICAgIGNvbnN0IGVtcHJlc2FJZCA9IHNlc3Npb24udXNlci5lbXByZXNhSWQgfHwgbnVsbDsKCiAgICAvLyBWZXJpZmljYXIgcGVydGVuZW5jaWEgYSBsYSBlbXByZXNhIChzZWd1cmlkYWQgbXVsdGllbXByZXNhKQogICAgY29uc3QgZXhpc3RpbmcgPSBhd2FpdCBsaWJzcWwuZXhlY3V0ZSh7CiAgICAgIHNxbDogZW1wcmVzYUlkCiAgICAgICAgPyAnU0VMRUNUIGlkIEZST00gQ29udGFjdG8gV0hFUkUgaWQgPSA/IEFORCBlbXByZXNhSWQgPSA/JwogICAgICAgIDogJ1NFTEVDVCBpZCBGUk9NIENvbnRhY3RvIFdIRVJFIGlkID0gPycsCiAgICAgIGFyZ3M6IGVtcHJlc2FJZCA/IFtpZCwgZW1wcmVzYUlkXSA6IFtpZF0sCiAgICB9KTsKCiAgICBpZiAoZXhpc3Rpbmcucm93cy5sZW5ndGggPT09IDApIHsKICAgICAgcmV0dXJuIG5ldyBSZXNwb25zZSgnTGVhZCBubyBlbmNvbnRyYWRvJywgeyBzdGF0dXM6IDQwNCB9KTsKICAgIH0KCiAgICBhd2FpdCBsaWJzcWwuZXhlY3V0ZSh7CiAgICAgIHNxbDogJ1VQREFURSBDb250YWN0byBTRVQgZXN0YWRvID0gPyBXSEVSRSBpZCA9ID8nLAogICAgICBhcmdzOiBbYWN0aW9uLCBpZF0sCiAgICB9KTsKCiAgICByZXR1cm4gTmV4dFJlc3BvbnNlLmpzb24oeyBzdWNjZXNzOiB0cnVlIH0pOwogIH0gY2F0Y2ggKGU6IHVua25vd24pIHsKICAgIGNvbnNvbGUuZXJyb3IoJ1thZG1pbi9sZWFkcy9baWRdIFBBVENIXSBlcnJvcjonLCBlKTsKICAgIHJldHVybiBuZXcgUmVzcG9uc2UoJ0Vycm9yIGludGVybm8nLCB7IHN0YXR1czogNTAwIH0pOwogIH0KfQoKZXhwb3J0IGFzeW5jIGZ1bmN0aW9uIERFTEVURSgKICBfcmVxdWVzdDogUmVxdWVzdCwKICB7IHBhcmFtcyB9OiB7IHBhcmFtczogUHJvbWlzZTx7IGlkOiBzdHJpbmcgfT4gfQopIHsKICB0cnkgewogICAgY29uc3Qgc2Vzc2lvbiA9IGF3YWl0IGdldEF1dGhTZXNzaW9uKCk7CiAgICBpZiAoIXNlc3Npb24/LnVzZXIpIHsKICAgICAgcmV0dXJuIG5ldyBSZXNwb25zZSgnVW5hdXRob3JpemVkJywgeyBzdGF0dXM6IDQwMSB9KTsKICAgIH0KICAgIGlmIChzZXNzaW9uLnVzZXIucm9sZSAhPT0gJ0FETUlOJykgewogICAgICByZXR1cm4gbmV3IFJlc3BvbnNlKCdGb3JiaWRkZW4nLCB7IHN0YXR1czogNDAzIH0pOwogICAgfQoKICAgIGNvbnN0IHsgaWQgfSA9IGF3YWl0IHBhcmFtczsKICAgIGNvbnN0IGxpYnNxbCA9IGdldFR1cnNvQ2xpZW50KCk7CiAgICBjb25zdCBlbXByZXNhSWQgPSBzZXNzaW9uLnVzZXIuZW1wcmVzYUlkIHx8IG51bGw7CgogICAgYXdhaXQgbGlic3FsLmV4ZWN1dGUoewogICAgICBzcWw6IGVtcHJlc2FJZAogICAgICAgID8gJ0RFTEVURSBGUk9NIENvbnRhY3RvIFdIRVJFIGlkID0gPyBBTkQgZW1wcmVzYUlkID0gPycKICAgICAgICA6ICdERUxFVEUgRlJPTSBDb250YWN0byBXSEVSRSBpZCA9ID8nLAogICAgICBhcmdzOiBlbXByZXNhSWQgPyBbaWQsIGVtcHJlc2FJZF0gOiBbaWRdLAogICAgfSk7CgogICAgcmV0dXJuIE5leHRSZXNwb25zZS5qc29uKHsgc3VjY2VzczogdHJ1ZSB9KTsKICB9IGNhdGNoIChlOiB1bmtub3duKSB7CiAgICBjb25zb2xlLmVycm9yKCdbYWRtaW4vbGVhZHMvW2lkXSBERUxFVEVdIGVycm9yOicsIGUpOwogICAgcmV0dXJuIG5ldyBSZXNwb25zZSgnRXJyb3IgaW50ZXJubycsIHsgc3RhdHVzOiA1MDAgfSk7CiAgfQp9Cg==
+// PATCH /api/admin/leads/[id] — cambiar estado de un lead
+// DELETE /api/admin/leads/[id] — eliminar un lead
+import { NextResponse } from 'next/server';
+import { getTursoClient } from '@/lib/turso-config';
+import { getAuthSession } from '@/lib/auth';
+
+export const dynamic = 'force-dynamic';
+
+const VALID_ACTIONS = ['NUEVO', 'LEIDO', 'ATENDIDO', 'RECHAZADO'];
+
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await getAuthSession();
+    if (!session?.user) {
+      return new Response('Unauthorized', { status: 401 });
+    }
+    if (session.user.role !== 'ADMIN') {
+      return new Response('Forbidden', { status: 403 });
+    }
+
+    const { id } = await params;
+    const body = await request.json();
+    const { action } = body;
+
+    if (!action || !VALID_ACTIONS.includes(action)) {
+      return new Response('Acción no válida', { status: 400 });
+    }
+
+    const libsql = getTursoClient();
+    const empresaId = session.user.empresaId || null;
+
+    // Verificar pertenencia a la empresa (seguridad multiempresa)
+    const existing = await libsql.execute({
+      sql: empresaId
+        ? 'SELECT id FROM Contacto WHERE id = ? AND empresaId = ?'
+        : 'SELECT id FROM Contacto WHERE id = ?',
+      args: empresaId ? [id, empresaId] : [id],
+    });
+
+    if (existing.rows.length === 0) {
+      return new Response('Lead no encontrado', { status: 404 });
+    }
+
+    await libsql.execute({
+      sql: 'UPDATE Contacto SET estado = ? WHERE id = ?',
+      args: [action, id],
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (e: unknown) {
+    console.error('[admin/leads/[id] PATCH] error:', e);
+    return new Response('Error interno', { status: 500 });
+  }
+}
+
+export async function DELETE(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await getAuthSession();
+    if (!session?.user) {
+      return new Response('Unauthorized', { status: 401 });
+    }
+    if (session.user.role !== 'ADMIN') {
+      return new Response('Forbidden', { status: 403 });
+    }
+
+    const { id } = await params;
+    const libsql = getTursoClient();
+    const empresaId = session.user.empresaId || null;
+
+    await libsql.execute({
+      sql: empresaId
+        ? 'DELETE FROM Contacto WHERE id = ? AND empresaId = ?'
+        : 'DELETE FROM Contacto WHERE id = ?',
+      args: empresaId ? [id, empresaId] : [id],
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (e: unknown) {
+    console.error('[admin/leads/[id] DELETE] error:', e);
+    return new Response('Error interno', { status: 500 });
+  }
+}
