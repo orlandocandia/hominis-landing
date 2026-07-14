@@ -6,6 +6,7 @@ import {
   Search, RefreshCw, ChevronLeft, ChevronRight, Loader2,
   MessageCircle, Check, Trash2, Download, Printer, ChevronDown, ChevronUp, Filter, X,
 } from 'lucide-react';
+import { EmpresaSelector } from '@/components/empresa-selector';
 
 const STATUS_COLORS: Record<string, string> = {
   NUEVO: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
@@ -151,7 +152,9 @@ export default function LeadsPage() {
           <h1 className="text-2xl font-bold text-foreground">📋 Mensajes</h1>
           <p className="text-sm text-muted-foreground">{pagination.total} mensajes recibidos</p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Selector de empresa (solo visible para ADMIN con múltiples empresas) */}
+          <EmpresaSelector />
           <button
             onClick={() => setMostrarFiltros(!mostrarFiltros)}
             className="flex items-center gap-2 px-4 py-2 border border-input rounded-lg hover:bg-muted transition text-sm"
@@ -469,3 +472,4 @@ function LeadRow({ lead, isSelected, onSelect, onAction, onDelete }: any) {
     </>
   );
 }
+
