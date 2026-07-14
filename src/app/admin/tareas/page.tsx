@@ -1,258 +1,289 @@
 'use client';
 
+// /admin/tareas — Lista paginada de tareas con filtros + gestión.
 import { useState, useEffect, useCallback } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import Link from 'next/link';
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from '@/components/ui/select';
-import { Plus, Trash2, Loader2, CheckCircle2, Clock, XCircle, Play } from 'lucide-react';
+  Plus, Search, RefreshCw, ChevronLeft, ChevronRight, Loader2,
+  CheckCircle2, XCircle, Calendar, User, Tag, ListTodo,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 
 const TIPO_ICONS: Record<string, string> = {
   VISITA: '📍', LLAMADA: '📞', WHATSAPP: '💬', EMAIL: '✉️', REUNION: '🤝', TAREA: '📋',
 };
 
-const ESTADO_STYLES: Record<string, string> = {
-  PENDIENTE: 'bg-yellow-100 text-yellow-700',
-  EN_PROGRESO: 'bg-blue-100 text-blue-700',
-  COMPLETADA: 'bg-green-100 text-green-700',
-  CANCELADA: 'bg-gray-100 text-gray-600',
+const ESTADO_COLORS: Record<string, string> = {
+  PENDIENTE: 'bg-amber-500/15 text-amber-600 dark:text-amber-400',
+  EN_PROGRESO: 'bg-sky-500/15 text-sky-600 dark:text-sky-400',
+  COMPLETADA: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400',
+  CANCELADA: 'bg-zinc-500/15 text-zinc-500',
 };
 
-// Sentinel values for Radix Select (cannot use empty string "")
-const ALL = '__all__';
-const NONE = '__none__';
+const PRIORIDAD_COLORS: Record<string, string> = {
+  ALTA: 'bg-red-500/15 text-red-600 dark:text-red-400',
+  MEDIA: 'bg-amber-500/15 text-amber-600 dark:text-amber-400',
+  BAJA: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400',
+};
 
-interface Tarea {
-  id: string; titulo: string; descripcion: string | null; tipo: string; estado: string;
-  fechaLimite: string; fechaCompletada: string | null; asignadoA: string;
-  vendedorNombre: string | null; vendedorApellido: string | null;
-  contactoName: string | null; contactoPhone: string | null;
+function formatDate(iso: string | null): string {
+  if (!iso) return '—';
+  try {
+    return new Date(iso).toLocaleString('es-AR', {
+      day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit',
+    });
+  } catch { return '—'; }
 }
 
-export default function AdminTareasPage() {
-  const [tareas, setTareas] = useState<Tarea[]>([]);
-  const [vendors, setVendors] = useState<any[]>([]);
-  const [contacts, setContacts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [filtroEstado, setFiltroEstado] = useState(ALL);
-  const [filtroVendedor, setFiltroVendedor] = useState(ALL);
-  const [form, setForm] = useState({
-    titulo: '', descripcion: '', tipo: 'TAREA', asignadoA: '',
-    fechaLimite: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
-    contactoId: NONE,
-  });
+const NONE = '__none__'; // sentinel for "all" in selects (Radix can't use "")
 
-  const load = useCallback(async () => {
+export default function TareasPage() {
+  const [tareas, setTareas] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [vendedores, setVendedores] = useState<any[]>([]);
+  const [filtros, setFiltros] = useState({
+    estado: '', tipo: '', prioridad: '', vendedorId: '', search: '',
+  });
+  const [pagination, setPagination] = useState({ page: 1, total: 0, totalPages: 1, limit: 15 });
+
+  const fetchTareas = useCallback(async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams();
-      if (filtroEstado !== ALL) params.set('estado', filtroEstado);
-      if (filtroVendedor !== ALL) params.set('vendedorId', filtroVendedor);
-      const [tareasRes, vendorsRes, contactsRes] = await Promise.all([
-        fetch(`/api/tareas?${params}`),
-        fetch('/api/admin/users'),
-        fetch('/api/crm/contacts?limit=100'),
-      ]);
-      const tareasData = await tareasRes.json();
-      const vendorsData = await vendorsRes.json();
-      const contactsData = await contactsRes.json();
-      setTareas(tareasData.tareas || []);
-      setVendors(vendorsData.users || []);
-      setContacts(contactsData.contacts || []);
-    } catch { toast.error('Error al cargar tareas'); }
-    finally { setLoading(false); }
-  }, [filtroEstado, filtroVendedor]);
+      const params = new URLSearchParams({ page: String(pagination.page), limit: String(pagination.limit) });
+      if (filtros.estado) params.set('estado', filtros.estado);
+      if (filtros.tipo) params.set('tipo', filtros.tipo);
+      if (filtros.prioridad) params.set('prioridad', filtros.prioridad);
+      if (filtros.vendedorId) params.set('vendedorId', filtros.vendedorId);
+      if (filtros.search) params.set('search', filtros.search);
 
-  useEffect(() => { load(); }, [load]);
-
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.titulo || !form.asignadoA) { toast.error('Título y vendedor son obligatorios'); return; }
-    setSaving(true);
-    try {
-      const payload = {
-        titulo: form.titulo,
-        descripcion: form.descripcion,
-        tipo: form.tipo,
-        asignadoA: form.asignadoA,
-        fechaLimite: form.fechaLimite,
-        contactoId: form.contactoId === NONE ? '' : form.contactoId,
-      };
-      const res = await fetch('/api/tareas', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+      const res = await fetch(`/api/admin/tareas?${params}`, { cache: 'no-store' });
+      if (!res.ok) throw new Error();
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      toast.success('Tarea creada y asignada');
-      setShowForm(false);
-      setForm({ titulo: '', descripcion: '', tipo: 'TAREA', asignadoA: '', fechaLimite: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 16), contactoId: NONE });
-      load();
-    } catch (e: any) { toast.error(e.message); }
-    finally { setSaving(false); }
+      setTareas(data.tareas || []);
+      setPagination(data.pagination || { page: 1, total: 0, totalPages: 1, limit: 15 });
+    } catch {
+      toast.error('Error al cargar tareas');
+    } finally {
+      setLoading(false);
+    }
+  }, [pagination.page, filtros]);
+
+  useEffect(() => { fetchTareas(); }, [fetchTareas]);
+
+  useEffect(() => {
+    fetch('/api/admin/users?limit=50')
+      .then((r) => r.json())
+      .then((data) => setVendedores(data.users || []))
+      .catch(() => {});
+  }, []);
+
+  const handlePageChange = (newPage: number) => {
+    setPagination((prev) => ({ ...prev, page: newPage }));
   };
 
-  const cambiarEstado = async (id: string, estado: string) => {
+  const handleComplete = async (id: string) => {
     try {
-      const res = await fetch(`/api/tareas/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ estado }) });
-      if (!res.ok) throw new Error('Error');
-      toast.success(`Tarea marcada como ${estado}`);
-      load();
-    } catch { toast.error('Error al actualizar'); }
+      await fetch(`/api/admin/tareas/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ estado: 'COMPLETADA' }),
+      });
+      toast.success('Tarea completada');
+      fetchTareas();
+    } catch {
+      toast.error('Error al completar');
+    }
   };
 
-  const eliminar = async (id: string) => {
+  const handleDelete = async (id: string) => {
     if (!confirm('¿Eliminar esta tarea?')) return;
     try {
-      await fetch(`/api/tareas/${id}`, { method: 'DELETE' });
+      await fetch(`/api/admin/tareas/${id}`, { method: 'DELETE' });
       toast.success('Tarea eliminada');
-      load();
-    } catch { toast.error('Error al eliminar'); }
+      fetchTareas();
+    } catch {
+      toast.error('Error al eliminar');
+    }
   };
-
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin" /></div>;
-
-  const pendientes = tareas.filter(t => t.estado !== 'COMPLETADA' && t.estado !== 'CANCELADA').length;
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      {/* Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">📋 Tareas</h1>
-          <p className="text-sm text-muted-foreground">{pendientes} pendientes de {tareas.length} totales</p>
+          <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+              <ListTodo className="h-5 w-5 text-primary" />
+            </span>
+            Tareas
+          </h1>
+          <p className="text-sm text-muted-foreground">{pagination.total} tareas</p>
         </div>
-        <Button onClick={() => setShowForm(!showForm)} className="gap-2">
-          <Plus className="w-4 h-4" /> {showForm ? 'Cancelar' : 'Nueva Tarea'}
+        <Button asChild className="gap-2">
+          <Link href="/admin/tareas/nueva"><Plus className="h-4 w-4" /> Nueva Tarea</Link>
         </Button>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap gap-2">
-        <Select value={filtroEstado} onValueChange={setFiltroEstado}>
-          <SelectTrigger className="w-[180px]"><SelectValue placeholder="Todos los estados" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value={ALL}>Todos</SelectItem>
-            <SelectItem value="PENDIENTE">⏳ Pendiente</SelectItem>
-            <SelectItem value="EN_PROGRESO">🔄 En Progreso</SelectItem>
-            <SelectItem value="COMPLETADA">✅ Completada</SelectItem>
-            <SelectItem value="CANCELADA">❌ Cancelada</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select value={filtroVendedor} onValueChange={setFiltroVendedor}>
-          <SelectTrigger className="w-[200px]"><SelectValue placeholder="Todos los vendedores" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value={ALL}>Todos</SelectItem>
-            {vendors.map((v: any) => <SelectItem key={v.id} value={v.id}>{v.nombre} {v.apellido || ''}</SelectItem>)}
-          </SelectContent>
-        </Select>
-      </div>
+      {/* Filtros */}
+      <Card>
+        <CardContent className="space-y-4 p-4">
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Buscar por título..."
+                value={filtros.search}
+                onChange={(e) => setFiltros({ ...filtros, search: e.target.value })}
+                onKeyDown={(e) => e.key === 'Enter' && fetchTareas()}
+                className="pl-9"
+              />
+            </div>
+            <Button variant="outline" onClick={fetchTareas} className="gap-2">
+              <RefreshCw className="h-4 w-4" /> Actualizar
+            </Button>
+          </div>
 
-      {/* Form */}
-      {showForm && (
-        <Card>
-          <CardHeader><CardTitle className="text-base">Nueva Tarea</CardTitle></CardHeader>
-          <CardContent>
-            <form onSubmit={submit} className="space-y-4">
-              <div className="space-y-1.5">
-                <Label>Título *</Label>
-                <Input value={form.titulo} onChange={(e) => setForm({ ...form, titulo: e.target.value })} required placeholder="Ej: Visitar a María González" />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Descripción</Label>
-                <Textarea rows={2} value={form.descripcion} onChange={(e) => setForm({ ...form, descripcion: e.target.value })} placeholder="Detalles de la tarea..." />
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-1.5">
-                  <Label>Tipo</Label>
-                  <Select value={form.tipo} onValueChange={(v) => setForm({ ...form, tipo: v })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {Object.entries(TIPO_ICONS).map(([k, v]) => <SelectItem key={k} value={k}>{v} {k}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-1.5">
-                  <Label>Asignar a *</Label>
-                  <Select value={form.asignadoA} onValueChange={(v) => setForm({ ...form, asignadoA: v })}>
-                    <SelectTrigger><SelectValue placeholder="Seleccionar..." /></SelectTrigger>
-                    <SelectContent>
-                      {vendors.map((v: any) => <SelectItem key={v.id} value={v.id}>{v.nombre} {v.apellido || ''} ({v.rol})</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-1.5">
-                  <Label>Fecha límite *</Label>
-                  <Input type="datetime-local" value={form.fechaLimite} onChange={(e) => setForm({ ...form, fechaLimite: e.target.value })} required />
-                </div>
-                <div className="space-y-1.5">
-                  <Label>Contacto (opcional)</Label>
-                  <Select value={form.contactoId} onValueChange={(v) => setForm({ ...form, contactoId: v })}>
-                    <SelectTrigger><SelectValue placeholder="Ninguno" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value={NONE}>Ninguno</SelectItem>
-                      {contacts.map((c: any) => <SelectItem key={c.id} value={c.id}>{c.name} ({c.primaryPhone || 'sin teléfono'})</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <Button type="submit" disabled={saving} className="w-full">
-                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Crear Tarea'}
-              </Button>
-            </form>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <select
+              value={filtros.estado}
+              onChange={(e) => setFiltros({ ...filtros, estado: e.target.value })}
+              className="px-3 py-2 border border-input rounded-lg bg-background text-foreground text-sm"
+            >
+              <option value="">Todos los estados</option>
+              <option value="PENDIENTE">⏳ Pendiente</option>
+              <option value="EN_PROGRESO">🔄 En progreso</option>
+              <option value="COMPLETADA">✅ Completada</option>
+              <option value="CANCELADA">❌ Cancelada</option>
+            </select>
+
+            <select
+              value={filtros.tipo}
+              onChange={(e) => setFiltros({ ...filtros, tipo: e.target.value })}
+              className="px-3 py-2 border border-input rounded-lg bg-background text-foreground text-sm"
+            >
+              <option value="">Todos los tipos</option>
+              {Object.entries(TIPO_ICONS).map(([k, v]) => (
+                <option key={k} value={k}>{v} {k}</option>
+              ))}
+            </select>
+
+            <select
+              value={filtros.prioridad}
+              onChange={(e) => setFiltros({ ...filtros, prioridad: e.target.value })}
+              className="px-3 py-2 border border-input rounded-lg bg-background text-foreground text-sm"
+            >
+              <option value="">Todas las prioridades</option>
+              <option value="ALTA">🔴 Alta</option>
+              <option value="MEDIA">🟡 Media</option>
+              <option value="BAJA">🟢 Baja</option>
+            </select>
+
+            <select
+              value={filtros.vendedorId}
+              onChange={(e) => setFiltros({ ...filtros, vendedorId: e.target.value })}
+              className="px-3 py-2 border border-input rounded-lg bg-background text-foreground text-sm"
+            >
+              <option value="">Todos los vendedores</option>
+              {vendedores.map((v: any) => (
+                <option key={v.id} value={v.id}>{v.name} {v.apellido || ''}</option>
+              ))}
+            </select>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Lista */}
+      {loading ? (
+        <div className="space-y-2">
+          {[0, 1, 2, 3].map((i) => <Skeleton key={i} className="h-24 w-full" />)}
+        </div>
+      ) : tareas.length === 0 ? (
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center gap-2 py-12 text-center text-muted-foreground">
+            <CheckCircle2 className="h-10 w-10 opacity-50" />
+            <p>No hay tareas con estos filtros</p>
+            <Button variant="link" asChild><Link href="/admin/tareas/nueva">Crear la primera →</Link></Button>
           </CardContent>
         </Card>
-      )}
-
-      {/* List */}
-      {tareas.length === 0 ? (
-        <Card><CardContent className="py-12 text-center text-muted-foreground">
-          <p className="text-4xl mb-3">📭</p>
-          <p>No hay tareas. Creá una nueva para asignar a tus vendedores.</p>
-        </CardContent></Card>
       ) : (
         <div className="space-y-2">
-          {tareas.map((t) => (
-            <Card key={t.id} className="hover:shadow-md transition-shadow">
-              <CardContent className="flex items-start justify-between p-4 gap-4">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xl">{TIPO_ICONS[t.tipo] || '📋'}</span>
-                    <span className="font-medium text-sm">{t.titulo}</span>
-                    <Badge className={`text-[10px] py-0 ${ESTADO_STYLES[t.estado] || ''}`}>{t.estado}</Badge>
+          {tareas.map((tarea) => {
+            const isVencida = tarea.fechaLimite && new Date(tarea.fechaLimite) < new Date() && tarea.estado !== 'COMPLETADA' && tarea.estado !== 'CANCELADA';
+            const vendedorNombre = [tarea.vendedorNombre, tarea.vendedorApellido].filter(Boolean).join(' ') || 'Sin asignar';
+            return (
+              <Card key={tarea.id} className={isVencida ? 'border-red-300 dark:border-red-900' : ''}>
+                <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-lg">{TIPO_ICONS[tarea.tipo] || '📋'}</span>
+                      <h3 className="font-semibold">{tarea.titulo}</h3>
+                      <Badge variant="secondary" className={ESTADO_COLORS[tarea.estado] || ''}>
+                        {tarea.estado.replace('_', ' ')}
+                      </Badge>
+                      <Badge variant="secondary" className={PRIORIDAD_COLORS[tarea.prioridad] || ''}>
+                        {tarea.prioridad}
+                      </Badge>
+                      {isVencida && (
+                        <Badge variant="destructive" className="text-[10px]">⚠️ Vencida</Badge>
+                      )}
+                    </div>
+                    {tarea.descripcion && (
+                      <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{tarea.descripcion}</p>
+                    )}
+                    <div className="mt-2 flex flex-wrap gap-3 text-xs text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <User className="h-3.5 w-3.5" /> {vendedorNombre}
+                      </span>
+                      <span className={`flex items-center gap-1 ${isVencida ? 'text-red-500 font-medium' : ''}`}>
+                        <Calendar className="h-3.5 w-3.5" /> {formatDate(tarea.fechaLimite)}
+                      </span>
+                      {tarea.contactoNombre && (
+                        <span className="flex items-center gap-1">
+                          <Tag className="h-3.5 w-3.5" /> {tarea.contactoNombre}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  {t.descripcion && <p className="text-xs text-muted-foreground mt-1">{t.descripcion}</p>}
-                  <div className="flex flex-wrap gap-3 mt-1 text-xs text-muted-foreground">
-                    <span>👤 {t.vendedorNombre} {t.vendedorApellido || ''}</span>
-                    {t.contactoName && <span>📱 {t.contactoName}</span>}
-                    <span>📅 {new Date(t.fechaLimite).toLocaleString('es-AR')}</span>
-                    {t.fechaCompletada && <span>✅ {new Date(t.fechaCompletada).toLocaleDateString('es-AR')}</span>}
+                  <div className="flex flex-wrap gap-2 flex-shrink-0">
+                    {tarea.estado !== 'COMPLETADA' && tarea.estado !== 'CANCELADA' && (
+                      <Button size="sm" variant="outline" onClick={() => handleComplete(tarea.id)} className="gap-1 text-xs text-emerald-600">
+                        <CheckCircle2 className="h-3.5 w-3.5" /> Completar
+                      </Button>
+                    )}
+                    <Button size="sm" variant="ghost" onClick={() => handleDelete(tarea.id)} className="gap-1 text-xs text-destructive">
+                      <XCircle className="h-3.5 w-3.5" />
+                    </Button>
                   </div>
-                </div>
-                <div className="flex gap-1 flex-shrink-0">
-                  {t.estado === 'PENDIENTE' && (
-                    <Button size="sm" variant="ghost" onClick={() => cambiarEstado(t.id, 'EN_PROGRESO')} className="h-8 w-8 p-0" title="En Progreso"><Play className="w-3.5 h-3.5" /></Button>
-                  )}
-                  {t.estado !== 'COMPLETADA' && t.estado !== 'CANCELADA' && (
-                    <Button size="sm" variant="ghost" onClick={() => cambiarEstado(t.id, 'COMPLETADA')} className="h-8 w-8 p-0 text-green-600" title="Completar"><CheckCircle2 className="w-3.5 h-3.5" /></Button>
-                  )}
-                  {t.estado === 'PENDIENTE' && (
-                    <Button size="sm" variant="ghost" onClick={() => cambiarEstado(t.id, 'CANCELADA')} className="h-8 w-8 p-0 text-red-500" title="Cancelar"><XCircle className="w-3.5 h-3.5" /></Button>
-                  )}
-                  <Button size="sm" variant="ghost" onClick={() => eliminar(t.id)} className="h-8 w-8 p-0 text-muted-foreground" title="Eliminar"><Trash2 className="w-3.5 h-3.5" /></Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Paginación */}
+      {pagination.totalPages > 1 && (
+        <div className="flex items-center justify-between gap-4 border-t border-border pt-4">
+          <div className="text-sm text-muted-foreground">
+            Mostrando {(pagination.page - 1) * pagination.limit + 1} -{' '}
+            {Math.min(pagination.page * pagination.limit, pagination.total)} de {pagination.total}
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="icon" disabled={pagination.page === 1} onClick={() => handlePageChange(pagination.page - 1)}>
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <span className="rounded-lg bg-primary/10 px-3 py-1 text-sm">
+              {pagination.page} / {pagination.totalPages}
+            </span>
+            <Button variant="outline" size="icon" disabled={pagination.page === pagination.totalPages} onClick={() => handlePageChange(pagination.page + 1)}>
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       )}
     </div>
