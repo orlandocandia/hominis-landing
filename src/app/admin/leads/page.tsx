@@ -190,6 +190,18 @@ export default function LeadsPage() {
             )}
           </button>
           <button
+            onClick={() => window.open(`/api/admin/leads/export/excel?${new URLSearchParams({ ...(filtros.status && { status: filtros.status }), ...(filtros.search && { search: filtros.search }) })}`)}
+            className="flex items-center gap-2 px-4 py-2 bg-green-500/10 text-green-700 dark:text-green-400 rounded-lg hover:bg-green-500/20 transition text-sm"
+          >
+            📊 Excel
+          </button>
+          <button
+            onClick={() => window.open(`/api/admin/leads/export/pdf?${new URLSearchParams({ ...(filtros.status && { status: filtros.status }), ...(filtros.search && { search: filtros.search }) })}`)}
+            className="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-700 dark:text-red-400 rounded-lg hover:bg-red-500/20 transition text-sm"
+          >
+            📄 PDF
+          </button>
+          <button
             onClick={fetchLeads}
             className="flex items-center gap-2 px-4 py-2 border border-input rounded-lg hover:bg-muted transition text-sm"
           >
@@ -456,3 +468,4 @@ function LeadRow({ lead, isSelected, onSelect, onAction, onDelete, onExport, onP
     </>
   );
 }
+
