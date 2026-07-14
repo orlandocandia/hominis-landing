@@ -1,141 +1,296 @@
 'use client';
 
+// /admin/vendedores — Lista paginada de vendedores con métricas + gestión.
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Plus, Pencil, Trash2, Mail, MapPin, Loader2, Users, Star } from 'lucide-react';
+import {
+  Plus, Search, RefreshCw, ChevronLeft, ChevronRight, Loader2,
+  Users, Building2, Mail, Phone, Edit3, Eye, Trash2, CheckCircle2, XCircle,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { toast } from 'sonner';
-import { useTranslation } from '@/components/language-selector';
 
-interface Vendor {
+interface Vendedor {
   id: string;
-  email: string;
-  nombre: string;
+  name: string;
   apellido: string | null;
-  rol: string;
-  activo: number | boolean;
+  email: string;
+  telefono: string | null;
+  avatarUrl: string | null;
+  isActive: number | boolean;
+  empresaId: string | null;
+  empresaNombre: string | null;
   city: string | null;
   province: string | null;
-  latitude: number | null;
-  longitude: number | null;
-  serviceRadius: number;
-  totalContacts: number;
-  conversionRate: number;
-  fechaAlta: string;
-  avatarUrl: string | null;
+  totalLeads: number;
+  leadsAtendidos: number;
+  tareasPendientes: number;
+  tareasCompletadas: number;
 }
 
-export default function VendedoresListPage() {
-  const router = useRouter();
-  const { t } = useTranslation();
-  const [vendors, setVendors] = useState<Vendor[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<'ALL' | 'VENDEDOR' | 'PRODUCTOR'>('ALL');
+interface Pagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
 
-  const load = useCallback(async () => {
+export default function VendedoresPage() {
+  const [vendedores, setVendedores] = useState<Vendedor[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [searchInput, setSearchInput] = useState('');
+  const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 12, total: 0, totalPages: 1 });
+
+  const fetchVendedores = useCallback(async () => {
+    setLoading(true);
     try {
-      const res = await fetch(`/api/admin/users${filter !== 'ALL' ? `?role=${filter}` : ''}`);
+      const params = new URLSearchParams({
+        page: pagination.page.toString(),
+        limit: pagination.limit.toString(),
+      });
+      if (search) params.set('search', search);
+
+      const res = await fetch(`/api/admin/users?${params}`, { cache: 'no-store' });
+      if (!res.ok) throw new Error();
       const data = await res.json();
-      setVendors(data.users || []);
+      setVendedores(data.users || []);
+      setPagination(data.pagination || { page: 1, limit: 12, total: 0, totalPages: 1 });
     } catch {
       toast.error('Error al cargar vendedores');
     } finally {
       setLoading(false);
     }
-  }, [filter]);
+  }, [pagination.page, search]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { fetchVendedores(); }, [fetchVendedores]);
+
+  const handleSearch = () => {
+    setPage(1);
+    setSearch(searchInput);
+  };
+
+  const [page, setPage] = useState(1);
+  // keep page in sync with pagination
+  useEffect(() => { setPage(pagination.page); }, [pagination.page]);
+
+  const handlePageChange = (newPage: number) => {
+    setPagination((prev) => ({ ...prev, page: newPage }));
+  };
 
   const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`¿Eliminar a ${name}? Esta acción no se puede deshacer.`)) return;
+    if (!confirm(`¿Eliminar al vendedor "${name}"? Esta acción no se puede deshacer.`)) return;
     try {
       const res = await fetch(`/api/admin/users/${id}`, { method: 'DELETE' });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      if (!res.ok) throw new Error(data.error || 'Error');
       toast.success('Vendedor eliminado');
-      load();
-    } catch (e: any) {
-      toast.error(e.message);
+      fetchVendedores();
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : 'Error al eliminar');
     }
   };
 
-  const initials = (n: string, a: string | null) => ((n[0] || '') + (a?.[0] || '')).toUpperCase();
+  const handleToggleActive = async (id: string, isActive: boolean) => {
+    try {
+      const res = await fetch(`/api/admin/users/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isActive: !isActive }),
+      });
+      if (!res.ok) throw new Error();
+      toast.success(isActive ? 'Vendedor desactivado' : 'Vendedor activado');
+      fetchVendedores();
+    } catch {
+      toast.error('Error al cambiar estado');
+    }
+  };
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+      {/* Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">{t('admin.vendedores.title')}</h1>
-          <p className="text-sm text-muted-foreground">{vendors.length} {t('admin.vendedores.activeUsers', { count: String(vendors.length) })}</p>
+          <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+              <Users className="h-5 w-5 text-primary" />
+            </span>
+            Vendedores
+          </h1>
+          <p className="text-sm text-muted-foreground">{pagination.total} vendedores</p>
         </div>
-        <Button onClick={() => router.push('/admin/vendedores/nuevo')} className="gap-2">
-          <Plus className="w-4 h-4" /> Nuevo vendedor
+        <Button asChild className="gap-2">
+          <Link href="/admin/vendedores/nuevo">
+            <Plus className="h-4 w-4" /> Nuevo Vendedor
+          </Link>
         </Button>
       </div>
 
-      {/* Filter */}
-      <div className="flex gap-2">
-        {(['ALL', 'VENDEDOR', 'PRODUCTOR'] as const).map((f) => (
-          <Button key={f} size="sm" variant={filter === f ? 'default' : 'outline'} onClick={() => setFilter(f)}>
-            {f === 'ALL' ? t('admin.vendedores.all') : t(`admin.vendedores.filters.${f.toLowerCase()}`)}
-          </Button>
-        ))}
+      {/* Buscar */}
+      <div className="flex flex-col gap-3 sm:flex-row">
+        <div className="flex-1 relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Buscar por nombre o email..."
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+            className="pl-9"
+          />
+        </div>
+        <Button variant="outline" onClick={handleSearch} className="gap-2">
+          <Search className="h-4 w-4" /> Buscar
+        </Button>
+        <Button variant="outline" onClick={fetchVendedores} className="gap-2">
+          <RefreshCw className="h-4 w-4" /> Actualizar
+        </Button>
       </div>
 
+      {/* Grid */}
       {loading ? (
-        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground" /></div>
-      ) : vendors.length === 0 ? (
-        <Card>
-          <CardContent className="py-12 text-center">
-            <Users className="w-12 h-12 text-muted-foreground/50 mx-auto mb-3" />
-            <p className="text-muted-foreground">No hay vendedores cargados todavía.</p>
-            <Button onClick={() => router.push('/admin/vendedores/nuevo')} className="mt-4 gap-2">
-              <Plus className="w-4 h-4" /> Crear el primer vendedor
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {[0, 1, 2, 3].map((i) => <Skeleton key={i} className="h-64 w-full rounded-xl" />)}
+        </div>
+      ) : vendedores.length === 0 ? (
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center gap-2 py-12 text-center text-muted-foreground">
+            <Users className="h-10 w-10 opacity-50" />
+            <p>No hay vendedores para mostrar</p>
+            <Button variant="link" asChild>
+              <Link href="/admin/vendedores/nuevo">Crear tu primer vendedor →</Link>
             </Button>
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-3">
-          {vendors.map((v) => (
-            <Card key={v.id} className="hover:shadow-md transition-shadow">
-              <CardContent className="flex items-center justify-between p-4">
-                <div className="flex items-center gap-4 min-w-0">
-                  {/* Avatar */}
-                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-hominis-blue to-hominis-violet text-white font-bold flex-shrink-0 overflow-hidden">
-                    {v.avatarUrl ? <img src={v.avatarUrl} alt={v.nombre} className="w-full h-full object-cover" /> : initials(v.nombre, v.apellido)}
-                  </div>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-medium truncate">{v.nombre} {v.apellido || ''}</span>
-                      <Badge variant={v.rol === 'PRODUCTOR' ? 'default' : 'secondary'} className="text-[10px] py-0">{v.rol}</Badge>
-                      {!v.activo && <Badge variant="destructive" className="text-[10px] py-0">Inactivo</Badge>}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {vendedores.map((v) => {
+            const fullName = [v.name, v.apellido].filter(Boolean).join(' ') || v.email;
+            const initials = v.name?.charAt(0)?.toUpperCase() || v.email.charAt(0).toUpperCase();
+            const isActive = Boolean(v.isActive);
+
+            return (
+              <Card key={v.id} className="transition-shadow hover:shadow-md">
+                <CardContent className="p-4">
+                  {/* Avatar + nombre + estado */}
+                  <div className="mb-3 flex items-center gap-3">
+                    <Avatar className="h-14 w-14 border-2 border-primary/20">
+                      <AvatarFallback className="bg-primary/10 text-lg font-bold text-primary">
+                        {initials}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-semibold">{fullName}</p>
+                      <Badge
+                        variant="secondary"
+                        className={
+                          isActive
+                            ? 'border-transparent bg-emerald-500/15 text-emerald-600'
+                            : 'text-zinc-500'
+                        }
+                      >
+                        {isActive ? '🟢 Activo' : '🔴 Inactivo'}
+                      </Badge>
                     </div>
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
-                      <span className="flex items-center gap-1"><Mail className="w-3 h-3" />{v.email}</span>
-                      {v.city && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{v.city}</span>}
+                  </div>
+
+                  {/* Datos */}
+                  <div className="space-y-1 text-sm text-muted-foreground">
+                    <p className="flex items-center gap-2 truncate">
+                      <Mail className="h-3.5 w-3.5 shrink-0" /> {v.email}
+                    </p>
+                    {v.telefono && (
+                      <p className="flex items-center gap-2">
+                        <Phone className="h-3.5 w-3.5 shrink-0" /> {v.telefono}
+                      </p>
+                    )}
+                    {v.empresaNombre && (
+                      <p className="flex items-center gap-2 truncate">
+                        <Building2 className="h-3.5 w-3.5 shrink-0" /> {v.empresaNombre}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Stats */}
+                  <div className="mt-3 grid grid-cols-3 gap-2 border-t border-border pt-3 text-center">
+                    <div>
+                      <p className="text-lg font-bold text-blue-600 dark:text-blue-400">{v.totalLeads || 0}</p>
+                      <p className="text-[11px] text-muted-foreground">Leads</p>
+                    </div>
+                    <div>
+                      <p className="text-lg font-bold text-amber-600 dark:text-amber-400">{v.tareasPendientes || 0}</p>
+                      <p className="text-[11px] text-muted-foreground">Pendientes</p>
+                    </div>
+                    <div>
+                      <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400">{v.tareasCompletadas || 0}</p>
+                      <p className="text-[11px] text-muted-foreground">Completadas</p>
                     </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-4 flex-shrink-0">
-                  <div className="text-right hidden sm:block">
-                    <p className="text-sm font-bold">{v.totalContacts}</p>
-                    <p className="text-xs text-muted-foreground">contactos</p>
+
+                  {/* Acciones */}
+                  <div className="mt-3 flex flex-wrap gap-1.5 border-t border-border pt-3">
+                    <Button size="sm" variant="outline" asChild className="gap-1 text-xs">
+                      <Link href={`/admin/vendedores/${v.id}`}>
+                        <Eye className="h-3.5 w-3.5" /> Ver
+                      </Link>
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleToggleActive(v.id, isActive)}
+                      className="gap-1 text-xs"
+                    >
+                      {isActive ? <XCircle className="h-3.5 w-3.5" /> : <CheckCircle2 className="h-3.5 w-3.5" />}
+                      {isActive ? 'Desact.' : 'Activar'}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => handleDelete(v.id, fullName)}
+                      className="gap-1 text-xs text-destructive"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
                   </div>
-                  <div className="text-right hidden md:block">
-                    <p className="text-sm font-bold flex items-center gap-1 justify-end"><Star className="w-3 h-3 text-amber-500" />{v.conversionRate}%</p>
-                    <p className="text-xs text-muted-foreground">conversión</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <Button size="sm" variant="ghost" asChild className="h-8 w-8 p-0"><Link href={`/admin/vendedores/${v.id}`}><Pencil className="w-3.5 h-3.5" /></Link></Button>
-                    <Button size="sm" variant="ghost" onClick={() => handleDelete(v.id, `${v.nombre} ${v.apellido || ''}`)} className="h-8 w-8 p-0 text-destructive hover:text-destructive"><Trash2 className="w-3.5 h-3.5" /></Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Paginación */}
+      {pagination.totalPages > 1 && (
+        <div className="flex items-center justify-between gap-4 border-t border-border pt-4">
+          <div className="text-sm text-muted-foreground">
+            Mostrando {(pagination.page - 1) * pagination.limit + 1} -{' '}
+            {Math.min(pagination.page * pagination.limit, pagination.total)} de {pagination.total}
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              disabled={pagination.page === 1}
+              onClick={() => handlePageChange(pagination.page - 1)}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <span className="rounded-lg bg-primary/10 px-3 py-1 text-sm">
+              {pagination.page} / {pagination.totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="icon"
+              disabled={pagination.page === pagination.totalPages}
+              onClick={() => handlePageChange(pagination.page + 1)}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       )}
     </div>
