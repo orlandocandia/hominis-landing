@@ -1,7 +1,6 @@
-// GET /api/admin/leads/export/pdf — exportar leads a PDF
+// GET /api/admin/leads/export/pdf — exportar leads a PDF (via HTML print, sin pdfkit)
 import { getTursoClient } from '@/lib/turso-config';
 import { getAuthSession } from '@/lib/auth';
-import PDFDocument from 'pdfkit';
 
 export const dynamic = 'force-dynamic';
 
@@ -40,59 +39,53 @@ export async function GET(request: Request) {
       args,
     });
 
-    // Crear PDF con Promise (para esperar el buffer completo)
-    const buffer = await new Promise<Buffer>((resolve, reject) => {
-      const doc = new PDFDocument({ margin: 50 });
-      const chunks: Buffer[] = [];
+    // Generate printable HTML (browser will handle PDF via print dialog)
+    const rows = result.rows.map((row, i) => {
+      const r = row as Record<string, unknown>;
+      return `<tr>
+        <td>${i + 1}</td>
+        <td>${r.nombre || ''}</td>
+        <td>${r.email || ''}</td>
+        <td>${r.telefono || ''}</td>
+        <td>${r.estado || 'NUEVO'}</td>
+        <td>${r.createdAt ? new Date(r.createdAt as string).toLocaleDateString('es-AR') : ''}</td>
+      </tr>`;
+    }).join('');
 
-      doc.on('data', (chunk: Buffer) => chunks.push(chunk));
-      doc.on('end', () => resolve(Buffer.concat(chunks)));
-      doc.on('error', reject);
+    const html = `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Reporte de Leads - ${new Date().toLocaleDateString('es-AR')}</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 40px; }
+  h1 { text-align: center; color: #2E86AB; }
+  .info { margin-bottom: 20px; color: #666; }
+  table { width: 100%; border-collapse: collapse; }
+  th { background: #2E86AB; color: white; padding: 10px; text-align: left; font-size: 12px; }
+  td { padding: 8px 10px; border-bottom: 1px solid #ddd; font-size: 11px; }
+  tr:nth-child(even) { background: #f9f9f9; }
+  @media print { body { padding: 0; } }
+</style>
+</head>
+<body>
+  <h1>Reporte de Leads</h1>
+  <div class="info">
+    <p>Generado: ${new Date().toLocaleString('es-AR')}</p>
+    <p>Total: ${result.rows.length} leads</p>
+  </div>
+  <table>
+    <thead>
+      <tr><th>#</th><th>Nombre</th><th>Email</th><th>Teléfono</th><th>Estado</th><th>Fecha</th></tr>
+    </thead>
+    <tbody>${rows}</tbody>
+  </table>
+  <script>window.onload = () => { window.print(); }</script>
+</body>
+</html>`;
 
-      // Título
-      doc.fontSize(20).text('Reporte de Leads', { align: 'center' });
-      doc.moveDown();
-      doc.fontSize(10).text(`Generado: ${new Date().toLocaleString('es-AR')}`);
-      doc.fontSize(10).text(`Total: ${result.rows.length} leads`);
-      doc.moveDown();
-
-      // Tabla
-      const colX = [50, 120, 270, 370, 470];
-      const colW = [70, 150, 100, 100, 80];
-      const headers = ['#', 'Nombre', 'Email', 'Teléfono', 'Estado'];
-
-      // Header row
-      doc.font('Helvetica-Bold').fontSize(9);
-      headers.forEach((h, i) => {
-        doc.text(h, colX[i], doc.y, { width: colW[i] });
-      });
-      doc.moveDown(0.5);
-      doc.font('Helvetica').fontSize(8);
-
-      // Data rows
-      result.rows.forEach((row, index) => {
-        const r = row as Record<string, unknown>;
-        if (doc.y > 720) {
-          doc.addPage();
-        }
-
-        const y = doc.y;
-        doc.text(String(index + 1), colX[0], y, { width: colW[0] });
-        doc.text(String(r.nombre || ''), colX[1], y, { width: colW[1] });
-        doc.text(String(r.email || ''), colX[2], y, { width: colW[2] });
-        doc.text(String(r.telefono || ''), colX[3], y, { width: colW[3] });
-        doc.text(String(r.estado || 'NUEVO'), colX[4], y, { width: colW[4] });
-        doc.moveDown(0.3);
-      });
-
-      doc.end();
-    });
-
-    return new Response(buffer, {
-      headers: {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename=leads_${new Date().toISOString().split('T')[0]}.pdf`,
-      },
+    return new Response(html, {
+      headers: { 'Content-Type': 'text/html; charset=utf-8' },
     });
   } catch (e: unknown) {
     console.error('[leads/export/pdf] error:', e);
