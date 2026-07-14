@@ -1,1 +1,120 @@
-J3VzZSBjbGllbnQnOwoKaW1wb3J0IHsgdXNlU2Vzc2lvbiB9IGZyb20gJ25leHQtYXV0aC9yZWFjdCc7CmltcG9ydCB7IHVzZVJvdXRlciB9IGZyb20gJ25leHQvbmF2aWdhdGlvbic7CmltcG9ydCB7IHVzZUVmZmVjdCwgdXNlU3RhdGUgfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IERhc2hib2FyZE5hdiB9IGZyb20gJ0AvY29tcG9uZW50cy9kYXNoYm9hcmQtbmF2JzsKaW1wb3J0IHsgVGhlbWVUb2dnbGUgfSBmcm9tICdAL2NvbXBvbmVudHMvdGhlbWUtdG9nZ2xlJzsKaW1wb3J0IHsgTGFuZ3VhZ2VTZWxlY3RvciB9IGZyb20gJ0AvY29tcG9uZW50cy9sYW5ndWFnZS1zZWxlY3Rvcic7CmltcG9ydCB7IE5vdGlmaWNhdGlvbkJlbGwgfSBmcm9tICdAL2NvbXBvbmVudHMvbm90aWZpY2F0aW9uLWJlbGwnOwppbXBvcnQgeyBMb2dPdXQsIE1lbnUsIFggfSBmcm9tICdsdWNpZGUtcmVhY3QnOwppbXBvcnQgeyBzaWduT3V0IH0gZnJvbSAnbmV4dC1hdXRoL3JlYWN0JzsKCmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIFZlbmRlZG9yTGF5b3V0KHsgY2hpbGRyZW4gfTogeyBjaGlsZHJlbjogUmVhY3QuUmVhY3ROb2RlIH0pIHsKICBjb25zdCB7IGRhdGE6IHNlc3Npb24sIHN0YXR1cyB9ID0gdXNlU2Vzc2lvbigpOwogIGNvbnN0IHJvdXRlciA9IHVzZVJvdXRlcigpOwogIGNvbnN0IFtzaWRlYmFyT3Blbiwgc2V0U2lkZWJhck9wZW5dID0gdXNlU3RhdGUoZmFsc2UpOwogIGNvbnN0IFtpc01vYmlsZSwgc2V0SXNNb2JpbGVdID0gdXNlU3RhdGUoZmFsc2UpOwoKICB1c2VFZmZlY3QoKCkgPT4gewogICAgY29uc3QgY2hlY2tTY3JlZW4gPSAoKSA9PiB7CiAgICAgIHNldElzTW9iaWxlKHdpbmRvdy5pbm5lcldpZHRoIDwgMTAyNCk7CiAgICAgIGlmICh3aW5kb3cuaW5uZXJXaWR0aCA+PSAxMDI0KSBzZXRTaWRlYmFyT3Blbih0cnVlKTsKICAgIH07CiAgICBjaGVja1NjcmVlbigpOwogICAgd2luZG93LmFkZEV2ZW50TGlzdGVuZXIoJ3Jlc2l6ZScsIGNoZWNrU2NyZWVuKTsKICAgIHJldHVybiAoKSA9PiB3aW5kb3cucmVtb3ZlRXZlbnRMaXN0ZW5lcigncmVzaXplJywgY2hlY2tTY3JlZW4pOwogIH0sIFtdKTsKCiAgdXNlRWZmZWN0KCgpID0+IHsKICAgIGlmIChzdGF0dXMgPT09ICd1bmF1dGhlbnRpY2F0ZWQnKSByb3V0ZXIucHVzaCgnL2xvZ2luJyk7CiAgICBpZiAoc3RhdHVzID09PSAnYXV0aGVudGljYXRlZCcgJiYgc2Vzc2lvbj8udXNlcj8ucm9sZSA9PT0gJ0FETUlOJykgewogICAgICByb3V0ZXIucHVzaCgnL2FkbWluJyk7CiAgICB9CiAgfSwgW3N0YXR1cywgc2Vzc2lvbiwgcm91dGVyXSk7CgogIGlmIChzdGF0dXMgPT09ICdsb2FkaW5nJykgewogICAgcmV0dXJuICgKICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggbWluLWgtc2NyZWVuIGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciI+CiAgICAgICAgPGRpdiBjbGFzc05hbWU9ImgtMTIgdy0xMiBhbmltYXRlLXNwaW4gcm91bmRlZC1mdWxsIGJvcmRlci1iLTIgYm9yZGVyLXByaW1hcnkiPjwvZGl2PgogICAgICA8L2Rpdj4KICAgICk7CiAgfQoKICBpZiAoIXNlc3Npb24gfHwgc2Vzc2lvbi51c2VyLnJvbGUgPT09ICdBRE1JTicpIHJldHVybiBudWxsOwoKICByZXR1cm4gKAogICAgPGRpdiBjbGFzc05hbWU9ImZsZXggbWluLWgtc2NyZWVuIGJnLWJhY2tncm91bmQiPgogICAgICB7LyogTW9iaWxlIG92ZXJsYXkgKi99CiAgICAgIHtpc01vYmlsZSAmJiBzaWRlYmFyT3BlbiAmJiAoCiAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZpeGVkIGluc2V0LTAgei00MCBiZy1ibGFjay81MCIgb25DbGljaz17KCkgPT4gc2V0U2lkZWJhck9wZW4oZmFsc2UpfSAvPgogICAgICApfQoKICAgICAgey8qIFNpZGViYXIgKi99CiAgICAgIDxhc2lkZQogICAgICAgIGNsYXNzTmFtZT17YGZpeGVkIHRvcC0wIHotNTAgaC1zY3JlZW4gdy02NCBzaHJpbmstMCBib3JkZXItciBib3JkZXItYm9yZGVyIGJnLWNhcmQgdHJhbnNpdGlvbi1hbGwgZHVyYXRpb24tMzAwIGxnOnN0aWNreSAkewogICAgICAgICAgaXNNb2JpbGUgPyAoc2lkZWJhck9wZW4gPyAndHJhbnNsYXRlLXgtMCcgOiAnLXRyYW5zbGF0ZS14LWZ1bGwnKSA6ICd0cmFuc2xhdGUteC0wJwogICAgICAgIH1gfQogICAgICA+CiAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaC1mdWxsIGZsZXgtY29sIj4KICAgICAgICAgIHsvKiBCcmFuZCAqL30KICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGgtMTYgaXRlbXMtY2VudGVyIGp1c3RpZnktYmV0d2VlbiBib3JkZXItYiBib3JkZXItYm9yZGVyIHB4LTQiPgogICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9InRleHQtbGcgZm9udC1ib2xkIHRleHQtZm9yZWdyb3VuZCI+SG9taW5pcyBDUk08L3NwYW4+CiAgICAgICAgICAgIHtpc01vYmlsZSAmJiAoCiAgICAgICAgICAgICAgPGJ1dHRvbiBvbkNsaWNrPXsoKSA9PiBzZXRTaWRlYmFyT3BlbihmYWxzZSl9IGNsYXNzTmFtZT0icm91bmRlZC1sZyBwLTEgaG92ZXI6YmctbXV0ZWQiPgogICAgICAgICAgICAgICAgPFggY2xhc3NOYW1lPSJoLTUgdy01IiAvPgogICAgICAgICAgICAgIDwvYnV0dG9uPgogICAgICAgICAgICApfQogICAgICAgICAgPC9kaXY+CiAgICAgICAgICB7LyogTmF2ICovfQogICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXgtMSBvdmVyZmxvdy15LWF1dG8iPgogICAgICAgICAgICA8RGFzaGJvYXJkTmF2IC8+CiAgICAgICAgICA8L2Rpdj4KICAgICAgICAgIHsvKiBVc2VyIGluZm8gKyBsb2dvdXQgKi99CiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iYm9yZGVyLXQgYm9yZGVyLWJvcmRlciBwLTQiPgogICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ibWItMiB0cnVuY2F0ZSB0ZXh0LXNtIGZvbnQtbWVkaXVtIj57c2Vzc2lvbi51c2VyLm5hbWV9PC9kaXY+CiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJtYi0zIHRydW5jYXRlIHRleHQteHMgdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIj57c2Vzc2lvbi51c2VyLmVtYWlsfTwvZGl2PgogICAgICAgICAgICA8YnV0dG9uCiAgICAgICAgICAgICAgb25DbGljaz17KCkgPT4gc2lnbk91dCgpfQogICAgICAgICAgICAgIGNsYXNzTmFtZT0iZmxleCB3LWZ1bGwgaXRlbXMtY2VudGVyIGdhcC0yIHJvdW5kZWQtbGcgcHgtMyBweS0yIHRleHQtc20gdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIHRyYW5zaXRpb24gaG92ZXI6YmctbXV0ZWQiCiAgICAgICAgICAgID4KICAgICAgICAgICAgICA8TG9nT3V0IGNsYXNzTmFtZT0iaC00IHctNCIgLz4gQ2VycmFyIFNlc2nDs24KICAgICAgICAgICAgPC9idXR0b24+CiAgICAgICAgICA8L2Rpdj4KICAgICAgICA8L2Rpdj4KICAgICAgPC9hc2lkZT4KCiAgICAgIHsvKiBNYWluICovfQogICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBtaW4tdy0wIGZsZXgtMSBmbGV4LWNvbCI+CiAgICAgICAgPGhlYWRlciBjbGFzc05hbWU9InN0aWNreSB0b3AtMCB6LTMwIGJvcmRlci1iIGJvcmRlci1ib3JkZXIgYmctYmFja2dyb3VuZC84MCBiYWNrZHJvcC1ibHVyLXNtIj4KICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGgtMTYgaXRlbXMtY2VudGVyIGp1c3RpZnktYmV0d2VlbiBweC00IHNtOnB4LTYiPgogICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTMiPgogICAgICAgICAgICAgIHtpc01vYmlsZSAmJiAoCiAgICAgICAgICAgICAgICA8YnV0dG9uIG9uQ2xpY2s9eygpID0+IHNldFNpZGViYXJPcGVuKHRydWUpfSBjbGFzc05hbWU9InJvdW5kZWQtbGcgcC0xIGhvdmVyOmJnLW11dGVkIj4KICAgICAgICAgICAgICAgICAgPE1lbnUgY2xhc3NOYW1lPSJoLTUgdy01IiAvPgogICAgICAgICAgICAgICAgPC9idXR0b24+CiAgICAgICAgICAgICAgKX0KICAgICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9ImhpZGRlbiB0ZXh0LXNtIHRleHQtbXV0ZWQtZm9yZWdyb3VuZCBzbTppbmxpbmUiPntzZXNzaW9uLnVzZXIubmFtZX08L3NwYW4+CiAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJoaWRkZW4gcm91bmRlZC1mdWxsIGJnLXByaW1hcnkvMTAgcHgtMiBweS0wLjUgdGV4dC14cyB0ZXh0LXByaW1hcnkgbWQ6aW5saW5lIj4KICAgICAgICAgICAgICAgIHtzZXNzaW9uLnVzZXIuZW1wcmVzYU5vbWJyZSB8fCAnU2luIGVtcHJlc2EnfQogICAgICAgICAgICAgIDwvc3Bhbj4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMSBzbTpnYXAtMiI+CiAgICAgICAgICAgICAgPE5vdGlmaWNhdGlvbkJlbGwgLz4KICAgICAgICAgICAgICA8VGhlbWVUb2dnbGUgLz4KICAgICAgICAgICAgICA8TGFuZ3VhZ2VTZWxlY3RvciAvPgogICAgICAgICAgICAgIDxidXR0b24KICAgICAgICAgICAgICAgIG9uQ2xpY2s9eygpID0+IHNpZ25PdXQoKX0KICAgICAgICAgICAgICAgIGNsYXNzTmFtZT0icm91bmRlZC1sZyBwLTIgdHJhbnNpdGlvbiBob3ZlcjpiZy1tdXRlZCIKICAgICAgICAgICAgICAgIHRpdGxlPSJDZXJyYXIgc2VzacOzbiIKICAgICAgICAgICAgICA+CiAgICAgICAgICAgICAgICA8TG9nT3V0IGNsYXNzTmFtZT0iaC00IHctNCB0ZXh0LW11dGVkLWZvcmVncm91bmQiIC8+CiAgICAgICAgICAgICAgPC9idXR0b24+CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgPC9kaXY+CiAgICAgICAgPC9oZWFkZXI+CiAgICAgICAgPG1haW4gY2xhc3NOYW1lPSJmbGV4LTEgb3ZlcmZsb3cteS1hdXRvIHAtNCBzbTpwLTYiPntjaGlsZHJlbn08L21haW4+CiAgICAgIDwvZGl2PgogICAgPC9kaXY+CiAgKTsKfQo=
+'use client';
+
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { DashboardNav } from '@/components/dashboard-nav';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { LanguageSelector } from '@/components/language-selector';
+import { NotificationBell } from '@/components/notification-bell';
+import { LogOut, Menu, X } from 'lucide-react';
+import { signOut } from 'next-auth/react';
+
+export default function VendedorLayout({ children }: { children: React.ReactNode }) {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkScreen = () => {
+      setIsMobile(window.innerWidth < 1024);
+      if (window.innerWidth >= 1024) setSidebarOpen(true);
+    };
+    checkScreen();
+    window.addEventListener('resize', checkScreen);
+    return () => window.removeEventListener('resize', checkScreen);
+  }, []);
+
+  useEffect(() => {
+    if (status === 'unauthenticated') router.push('/login');
+    if (status === 'authenticated' && session?.user?.role === 'ADMIN') {
+      router.push('/admin');
+    }
+  }, [status, session, router]);
+
+  if (status === 'loading') {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (!session || session.user.role === 'ADMIN') return null;
+
+  return (
+    <div className="flex min-h-screen bg-background">
+      {/* Mobile overlay */}
+      {isMobile && sidebarOpen && (
+        <div className="fixed inset-0 z-40 bg-black/50" onClick={() => setSidebarOpen(false)} />
+      )}
+
+      {/* Sidebar */}
+      <aside
+        className={`fixed top-0 z-50 h-screen w-64 shrink-0 border-r border-border bg-card transition-all duration-300 lg:sticky ${
+          isMobile ? (sidebarOpen ? 'translate-x-0' : '-translate-x-full') : 'translate-x-0'
+        }`}
+      >
+        <div className="flex h-full flex-col">
+          {/* Brand */}
+          <div className="flex h-16 items-center justify-between border-b border-border px-4">
+            <span className="text-lg font-bold text-foreground">Hominis CRM</span>
+            {isMobile && (
+              <button onClick={() => setSidebarOpen(false)} className="rounded-lg p-1 hover:bg-muted">
+                <X className="h-5 w-5" />
+              </button>
+            )}
+          </div>
+          {/* Nav */}
+          <div className="flex-1 overflow-y-auto">
+            <DashboardNav />
+          </div>
+          {/* User info + logout */}
+          <div className="border-t border-border p-4">
+            <div className="mb-2 truncate text-sm font-medium">{session.user.name}</div>
+            <div className="mb-3 truncate text-xs text-muted-foreground">{session.user.email}</div>
+            <button
+              onClick={() => signOut()}
+              className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground transition hover:bg-muted"
+            >
+              <LogOut className="h-4 w-4" /> Cerrar Sesión
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      {/* Main */}
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header className="sticky top-0 z-30 border-b border-border bg-background/80 backdrop-blur-sm">
+          <div className="flex h-16 items-center justify-between px-4 sm:px-6">
+            <div className="flex items-center gap-3">
+              {isMobile && (
+                <button onClick={() => setSidebarOpen(true)} className="rounded-lg p-1 hover:bg-muted">
+                  <Menu className="h-5 w-5" />
+                </button>
+              )}
+              <span className="hidden text-sm text-muted-foreground sm:inline">{session.user.name}</span>
+              <span className="hidden rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary md:inline">
+                {session.user.empresaNombre || 'Sin empresa'}
+              </span>
+            </div>
+            <div className="flex items-center gap-1 sm:gap-2">
+              <NotificationBell />
+              <ThemeToggle />
+              <LanguageSelector />
+              <button
+                onClick={() => signOut()}
+                className="rounded-lg p-2 transition hover:bg-muted"
+                title="Cerrar sesión"
+              >
+                <LogOut className="h-4 w-4 text-muted-foreground" />
+              </button>
+            </div>
+          </div>
+        </header>
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6">{children}</main>
+      </div>
+    </div>
+  );
+}
