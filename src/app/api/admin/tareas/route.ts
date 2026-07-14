@@ -3,6 +3,7 @@
 import { NextResponse } from 'next/server';
 import { getTursoClient } from '@/lib/turso-config';
 import { getAuthSession } from '@/lib/auth';
+import { sendEmail } from '@/lib/email';
 
 export const dynamic = 'force-dynamic';
 
@@ -138,9 +139,26 @@ export async function POST(request: Request) {
       args: [notifId, asignadoA, '📋 Nueva tarea asignada', `Se te asignó: ${titulo}`, empresaId],
     });
 
+    // Enviar email al vendedor (si tiene email y RESEND_API_KEY está configurada)
+    const vendedorEmail = (vendedorRes.rows[0] as Record<string, unknown>)?.email as string | undefined;
+    if (vendedorEmail) {
+      await sendEmail({
+        to: vendedorEmail,
+        subject: `📋 Nueva tarea: ${titulo}`,
+        html: `
+          <h1>Nueva tarea asignada</h1>
+          <p><strong>Título:</strong> ${titulo}</p>
+          <p><strong>Descripción:</strong> ${descripcion || 'Sin descripción'}</p>
+          <p><strong>Fecha límite:</strong> ${fechaFinal ? new Date(fechaFinal).toLocaleString('es-AR') : 'Sin fecha'}</p>
+          <p><a href="https://asesoradesalud.com.ar/vendedor/tareas">Ver en el sistema →</a></p>
+        `,
+      }).catch(() => {});
+    }
+
     return NextResponse.json({ id: tareaId, titulo, estado: 'PENDIENTE' }, { status: 201 });
   } catch (e: unknown) {
     console.error('[admin/tareas POST] error:', e);
     return new Response('Error interno', { status: 500 });
   }
 }
+
