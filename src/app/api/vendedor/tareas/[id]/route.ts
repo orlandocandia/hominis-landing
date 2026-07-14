@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server';
 import { getTursoClient } from '@/lib/turso-config';
 import { getAuthSession } from '@/lib/auth';
+import { sendEmail } from '@/lib/email';
 
 export const dynamic = 'force-dynamic';
 
@@ -60,9 +61,32 @@ export async function PATCH(
       });
     }
 
+    // Si se completó, notificar al admin por email
+    if (body.estado === 'COMPLETADA' && tarea.estado !== 'COMPLETADA') {
+      try {
+        const adminRes = await libsql.execute({
+          sql: `SELECT email FROM "User" WHERE rol = 'ADMIN' LIMIT 1`,
+        });
+        const adminEmail = (adminRes.rows[0] as Record<string, unknown>)?.email as string | undefined;
+        if (adminEmail) {
+          await sendEmail({
+            to: adminEmail,
+            subject: `✅ Tarea completada: ${tarea.titulo ?? ''}`,
+            html: `
+              <h1>Tarea completada</h1>
+              <p><strong>Vendedor:</strong> ${session.user.name || 'Vendedor'}</p>
+              <p><strong>Tarea:</strong> ${tarea.titulo ?? ''}</p>
+              <p><a href="https://asesoradesalud.com.ar/admin/tareas">Ver en el sistema →</a></p>
+            `,
+          });
+        }
+      } catch {}
+    }
+
     return NextResponse.json({ success: true });
   } catch (e: unknown) {
     console.error('[vendedor/tareas/[id] PATCH] error:', e);
     return new Response('Error interno', { status: 500 });
   }
 }
+
