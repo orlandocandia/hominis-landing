@@ -9,6 +9,7 @@ import { LanguageSelector } from '@/components/language-selector';
 import { NotificationBell } from '@/components/notification-bell';
 import { LogOut, Menu, X } from 'lucide-react';
 import { signOut } from 'next-auth/react';
+import { HelpButton } from '@/components/help/HelpButton';
 
 export default function VendedorLayout({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
@@ -115,6 +116,8 @@ export default function VendedorLayout({ children }: { children: React.ReactNode
         </header>
         <main className="flex-1 overflow-y-auto p-4 sm:p-6">{children}</main>
       </div>
+      <HelpButton />
     </div>
   );
 }
+
