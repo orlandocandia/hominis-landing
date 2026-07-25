@@ -291,36 +291,7 @@ function HeroSection() {
             </div>
           </motion.div>
 
-          {/* Profile Photo */}
-          <motion.div
-            initial={{ opacity: 0, x: 60 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="flex justify-center lg:justify-end"
-          >
-            <div className="relative">
-              {/* Decorative ring */}
-              <div className="absolute -inset-4 bg-gradient-to-r from-hominis-accent to-hominis-gold rounded-full opacity-30 blur-xl animate-pulse-glow" />
-              
-              {/* Photo container */}
-              <div className="relative w-72 h-72 sm:w-80 sm:h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden ring-4 ring-white/20 shadow-2xl shadow-hominis-violet/30">
-                <img
-                  src="/agustina_c_candia.png"
-                  alt="Agustina C. Candia - Asesora Comercial Hominis"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-hominis-blue/30 via-transparent to-transparent" />
-              </div>
-
-              {/* Floating badge */}
-              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 glass px-5 py-2 rounded-full shadow-xl">
-                <span className="text-xs font-semibold text-hominis-blue flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-green-600" />
-                  Asesora Certificada
-                </span>
-              </div>
-            </div>
-          </motion.div>
+          {/* Profile Photo — removed per request */}
         </div>
       </div>
 
@@ -1460,3 +1431,4 @@ export default function Home() {
     </div>
   );
 }
+
