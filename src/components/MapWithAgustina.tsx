@@ -24,59 +24,16 @@ function useIsMounted() {
   );
 }
 
-// Custom marker with Agustina's photo
-function createCustomMarker() {
-  const photoUrl = '/agustina_c_candia.png';
-
-  return L.divIcon({
-    className: 'custom-map-marker',
-    html: `
-      <div style="position:relative; width:60px; height:72px;">
-        <div style="
-          position:absolute;
-          bottom:0;
-          left:50%;
-          transform:translateX(-50%);
-          width:20px;
-          height:6px;
-          background:rgba(0,0,0,0.2);
-          border-radius:50%;
-        "></div>
-        <div style="
-          width:60px;
-          height:60px;
-          border-radius:50% 50% 50% 0;
-          background: linear-gradient(135deg, #1a237e, #6a1b9a);
-          transform: rotate(-45deg);
-          position:absolute;
-          top:0;
-          left:0;
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-          border: 3px solid white;
-        ">
-          <div style="
-            width:44px;
-            height:44px;
-            border-radius:50%;
-            overflow:hidden;
-            transform: rotate(45deg);
-            border: 2px solid white;
-          ">
-            <img
-              src="${photoUrl}"
-              alt="Agustina C. Candia"
-              style="width:100%; height:100%; object-fit:cover;"
-            />
-          </div>
-        </div>
-      </div>
-    `,
-    iconSize: [60, 72],
-    iconAnchor: [30, 72],
-    popupAnchor: [0, -72],
+// Standard Leaflet marker icon (no photo)
+function createDefaultMarker() {
+  return L.icon({
+    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+    iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
   });
 }
 
@@ -118,17 +75,15 @@ export default function MapWithAgustina() {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <Marker position={SUCURSAL_POSITION} icon={createCustomMarker()}>
+      <Marker position={SUCURSAL_POSITION} icon={createDefaultMarker()}>
         <Popup>
           <div style={{ textAlign: 'center', fontFamily: 'sans-serif', padding: '4px' }}>
             <strong style={{ fontSize: '13px', color: '#1a237e' }}>Oficina Hominis</strong>
             <br />
-            <span style={{ fontSize: '12px' }}>Agustina C. Candia</span>
-            <br />
             <span style={{ fontSize: '11px', color: '#666' }}>Portela 266, Lomas de Zamora</span>
             <br />
             <a
-              href="https://wa.me/5491165555534?text=Hola%20Agustina%2C%20me%20gustar%C3%ADa%20visitarte%20en%20la%20oficina%20de%20Lomas%20de%20Zamora.%20%C2%BFPodr%C3%ADas%20indicarme%20los%20horarios%3F"
+              href="https://wa.me/5491165555534?text=Hola%2C%20me%20gustar%C3%ADa%20visitar%20la%20oficina%20de%20Lomas%20de%20Zamora.%20%C2%BFPodr%C3%ADan%20indicarme%20los%20horarios%3F"
               target="_blank"
               rel="noopener noreferrer"
               style={{ fontSize: '11px', color: '#25D366', textDecoration: 'none', fontWeight: 600 }}
