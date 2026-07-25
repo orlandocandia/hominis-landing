@@ -17,7 +17,7 @@ const ES = {
     nav: { home: 'Inicio', about: 'Sobre Mí', plans: 'Planes', promotions: 'Promos', services: 'Servicios', branch: 'Sucursal', contact: 'Contacto' },
     hero: {
       title: 'Tu bienestar,', titleHighlight: 'mi compromiso',
-      subtitle: 'Soy Agustina C. Candia, asesora comercial de Hominis. Te ayudo a elegir entre Vita Más y Aqua Más, dos planes con la misma calidad médica y diferente forma de pagar.',
+      subtitle: 'Asesoría personalizada en planes de salud Hominis con más de 10 años de experiencia. Te ayudo a elegir entre Vita Más y Aqua Más, dos planes con la misma calidad médica y diferente forma de pagar.',
       cta: 'Solicitar Asesoramiento',
       stats: { clients: 'Clientes Asesorados', experience: 'Años de Experiencia', satisfaction: 'Satisfacción' },
     },
@@ -73,7 +73,7 @@ const EN = {
     nav: { home: 'Home', about: 'About Me', plans: 'Plans', promotions: 'Promos', services: 'Services', branch: 'Branch', contact: 'Contact' },
     hero: {
       title: 'Your well-being,', titleHighlight: 'my commitment',
-      subtitle: 'I am Agustina C. Candia, a commercial advisor at Hominis. I help you choose between Vita Más and Aqua Más, two plans with the same medical quality and different ways to pay.',
+      subtitle: 'Personalized health insurance advisory with over 10 years of experience. I help you choose between Vita Más and Aqua Más, two plans with the same medical quality and different ways to pay.',
       cta: 'Request Consultation',
       stats: { clients: 'Clients Advised', experience: 'Years of Experience', satisfaction: 'Satisfaction' },
     },
@@ -129,7 +129,7 @@ const PT = {
     nav: { home: 'Início', about: 'Sobre Mim', plans: 'Planos', promotions: 'Promoções', services: 'Serviços', branch: 'Filial', contact: 'Contato' },
     hero: {
       title: 'Seu bem-estar,', titleHighlight: 'meu compromisso',
-      subtitle: 'Sou Agustina C. Candia, assessora comercial da Hominis. Ajudo você a escolher entre Vita Más e Aqua Más, dois planos com a mesma qualidade médica e diferentes formas de pagamento.',
+      subtitle: 'Assessoria personalizada em planos de saúde Hominis com mais de 10 anos de experiência. Ajudo você a escolher entre Vita Más e Aqua Más, dois planos com a mesma qualidade médica e diferentes formas de pagamento.',
       cta: 'Solicitar Assessoria',
       stats: { clients: 'Clientes Assessorados', experience: 'Anos de Experiência', satisfaction: 'Satisfação' },
     },
@@ -192,4 +192,5 @@ export async function GET(_request: Request, { params }: { params: Promise<{ loc
 
   return NextResponse.json(merged);
 }
+
 
