@@ -42,27 +42,5 @@
       "destination": "/login",
       "permanent": false
     }
-  ],
-  "rewrites": [
-    {
-      "source": "/",
-      "has": [
-        {
-          "type": "host",
-          "value": "cotiza.asesoradesalud.com.ar"
-        }
-      ],
-      "destination": "/seguros"
-    },
-    {
-      "source": "/(.*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "cotiza.asesoradesalud.com.ar"
-        }
-      ],
-      "destination": "/seguros"
-    }
   ]
 }
