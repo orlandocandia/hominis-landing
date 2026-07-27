@@ -11,7 +11,7 @@ function subdomainMiddleware(req: NextRequest): NextResponse | null {
   const pathname = req.nextUrl.pathname;
 
   // If visiting cotiza subdomain at root, rewrite to /seguros
-  if (host === 'cotiza.asesoradesalud.com.ar' && pathname === '/') {
+  if ((host === 'cotiza.asesoradesalud.com.ar' || host === 'www.cotiza.asesoradesalud.com.ar') && pathname === ') {
     return NextResponse.rewrite(new URL('/seguros', req.url));
   }
 
@@ -85,3 +85,4 @@ export const config = {
     '/api/vendedor/:path*',
   ],
 };
+
