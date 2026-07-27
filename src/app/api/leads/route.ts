@@ -69,8 +69,8 @@ export async function POST(request: Request) {
     if (utmContent) origenData.push(`utm_content=${utmContent}`);
     const origen = origenData.join('|');
 
-    //empresaId por defecto: Hominis (los leads de la landing pertenecen a Hominis)
-    const defaultEmpresaId = 'emp_hominis_001';
+    //empresaId: usar el del body si viene (landing de seguros), sino Hominis por defecto
+    const defaultEmpresaId = body.empresaId || 'emp_hominis_001';
 
     await libsql.execute({
       sql: `INSERT INTO Contacto (id, nombre, email, telefono, segmento, mensaje, cobertura, edad, origen, ip, estado, empresaId, createdAt, updatedAt)
@@ -191,5 +191,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Error interno del servidor.' }, { status: 500 });
   }
 }
+
 
 
