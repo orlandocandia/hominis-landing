@@ -1,31 +1,26 @@
-// Middleware — role-based route protection
+// Middleware — subdomain redirect + role-based route protection
 // ──────────────────────────────────────────────────────────────────────
-// /admin/*          → ADMIN only
-// /vendedor/*       → VENDEDOR only
-// /api/admin/*      → ADMIN only (403 JSON if wrong role)
-// /api/vendedor/*   → VENDEDOR only (403 JSON if wrong role)
-// Unauthenticated → redirect to /login (by withAuth)
 import { withAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-// Subdomain redirect: cotiza.asesoradesalud.com.ar → /seguros
-function handleSubdomain(req: Request): NextResponse | null {
-  const url = new URL(req.url);
-  const host = url.hostname;
+// ─── Subdomain redirect ───
+// cotiza.asesoradesalud.com.ar → /seguros (rewrite, not redirect)
+function subdomainMiddleware(req: NextRequest): NextResponse | null {
+  const host = req.headers.get('host') || '';
+  const pathname = req.nextUrl.pathname;
 
-  if (host === 'cotiza.asesoradesalud.com.ar' && url.pathname === '/') {
+  // If visiting cotiza subdomain at root, rewrite to /seguros
+  if (host === 'cotiza.asesoradesalud.com.ar' && pathname === '/') {
     return NextResponse.rewrite(new URL('/seguros', req.url));
   }
 
   return null;
 }
 
-export default withAuth(
+// ─── Auth-based protection ───
+const authMiddleware = withAuth(
   (req) => {
-    // Subdomain redirect (runs before auth check)
-    const subdomainRedirect = handleSubdomain(req);
-    if (subdomainRedirect) return subdomainRedirect;
-
     const role = req.nextauth.token?.role;
     const path = req.nextUrl.pathname;
     const isApi = path.startsWith('/api/');
@@ -60,6 +55,27 @@ export default withAuth(
   }
 );
 
+// ─── Combined middleware ───
+export default function middleware(req: NextRequest) {
+  // 1. Check subdomain first (no auth needed)
+  const subdomainResponse = subdomainMiddleware(req);
+  if (subdomainResponse) return subdomainResponse;
+
+  // 2. For protected routes, use auth middleware
+  const path = req.nextUrl.pathname;
+  if (
+    path.startsWith('/admin') ||
+    path.startsWith('/vendedor') ||
+    path.startsWith('/api/admin') ||
+    path.startsWith('/api/vendedor')
+  ) {
+    // @ts-expect-error - withAuth expects specific types
+    return authMiddleware(req);
+  }
+
+  return NextResponse.next();
+}
+
 export const config = {
   matcher: [
     '/',
@@ -69,4 +85,3 @@ export const config = {
     '/api/vendedor/:path*',
   ],
 };
-
