@@ -234,14 +234,14 @@ function HeroSection() {
       <div className="absolute bottom-20 left-10 w-96 h-96 bg-hominis-purple/10 rounded-full blur-3xl" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-hominis-accent/5 rounded-full blur-3xl" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-32">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-32">
+        <div className="flex flex-col items-center justify-center text-center">
           {/* Text Content */}
           <motion.div
-            initial={{ opacity: 0, x: -60 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-center lg:text-left"
+            className="text-center w-full"
           >
             <Badge
               variant="secondary"
@@ -260,7 +260,7 @@ function HeroSection() {
               {t('landing.hero.subtitle')}
             </p>
 
-            <div className="flex flex-col items-center lg:items-start gap-5">
+            <div className="flex flex-col items-center gap-5">
               <a href="#contacto">
                 <Button
                   size="lg"
@@ -279,7 +279,7 @@ function HeroSection() {
                 { value: '10+', label: 'Años de Experiencia' },
                 { value: '98%', label: 'Satisfacción' },
               ].map((stat) => (
-                <div key={stat.label} className="text-center lg:text-left">
+                <div key={stat.label} className="text-center">
                   <div className="text-2xl sm:text-3xl font-bold text-hominis-gold">
                     {stat.value}
                   </div>
@@ -291,7 +291,6 @@ function HeroSection() {
             </div>
           </motion.div>
 
-          {/* Profile Photo — removed per request */}
         </div>
       </div>
 
@@ -1431,5 +1430,6 @@ export default function Home() {
     </div>
   );
 }
+
 
 
