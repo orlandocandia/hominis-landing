@@ -12,6 +12,20 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: __dirname,
   },
+  async rewrites() {
+    return [
+      {
+        source: "/",
+        has: [
+          {
+            type: "host",
+            value: "cotiza.asesoradesalud.com.ar",
+          },
+        ],
+        destination: "/seguros",
+      },
+    ];
+  },
 };
 
 export default nextConfig;
