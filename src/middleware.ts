@@ -8,8 +8,24 @@
 import { withAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
 
+// Subdomain redirect: cotiza.asesoradesalud.com.ar → /seguros
+function handleSubdomain(req: Request): NextResponse | null {
+  const url = new URL(req.url);
+  const host = url.hostname;
+
+  if (host === 'cotiza.asesoradesalud.com.ar' && url.pathname === '/') {
+    return NextResponse.rewrite(new URL('/seguros', req.url));
+  }
+
+  return null;
+}
+
 export default withAuth(
   (req) => {
+    // Subdomain redirect (runs before auth check)
+    const subdomainRedirect = handleSubdomain(req);
+    if (subdomainRedirect) return subdomainRedirect;
+
     const role = req.nextauth.token?.role;
     const path = req.nextUrl.pathname;
     const isApi = path.startsWith('/api/');
@@ -46,9 +62,11 @@ export default withAuth(
 
 export const config = {
   matcher: [
+    '/',
     '/admin/:path*',
     '/vendedor/:path*',
     '/api/admin/:path*',
     '/api/vendedor/:path*',
   ],
 };
+
