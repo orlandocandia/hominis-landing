@@ -800,7 +800,7 @@ function SucursalSection() {
                   </div>
                   <div>
                     <h3 className="text-xl font-serif font-bold">Oficina Hominis</h3>
-                    <p className="text-white/70 text-sm">Agustina C. Candia — Asesora Comercial</p>
+                    <p className="text-white/70 text-sm">Asesoría Comercial</p>
                   </div>
                 </div>
               </div>
@@ -1391,7 +1391,7 @@ function Footer() {
         {/* Bottom bar */}
         <div className="pb-20 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/50">
           <p>
-            © {new Date().getFullYear()} Agustina C. Candia — Asesora Comercial Hominis. Todos los derechos reservados.
+            © {new Date().getFullYear()} Hominis — Asesoría Comercial. Todos los derechos reservados.
           </p>
           <div className="flex items-center gap-4">
             <p>
@@ -1431,4 +1431,5 @@ export default function Home() {
     </div>
   );
 }
+
 
