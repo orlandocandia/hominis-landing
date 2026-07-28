@@ -97,19 +97,13 @@ export default function SegurosPage() {
     return () => observer.disconnect();
   }, []);
 
-  // Sync cartilla empresa with active section
-  useEffect(() => {
-    if (activeSection === 'doctored') {
-      setCartEmpresa('doctored');
-    } else if (activeSection === 'premedic') {
-      setCartEmpresa('premedic');
-    }
-  }, [activeSection]);
+  // Cartilla empresa is now set directly by nav clicks (more reliable than observer)
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ nombre: '', email: '', telefono: '', empresaId: '', plan: '', mensaje: '' });
 
   // Cartilla state
   const [cartEmpresa, setCartEmpresa] = useState<'doctored' | 'premedic'>('doctored');
+  const [empresasDropdown, setEmpresasDropdown] = useState(false);
   const [cartProvincia, setCartProvincia] = useState('');
   const [cartLocalidad, setCartLocalidad] = useState('');
   const [cartPlan, setCartPlan] = useState('');
@@ -172,20 +166,31 @@ export default function SegurosPage() {
 
           <nav className="hidden items-center gap-1 md:flex">
             <button onClick={() => scrollToSection('inicio')} className={`rounded-lg px-3 py-2 text-sm font-medium transition ${activeSection === 'inicio' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>Inicio</button>
-            <div className="group relative">
-              <button className="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground">
-                Empresas <ChevronDown className="h-4 w-4" />
+            <div className="relative">
+              <button
+                onClick={() => setEmpresasDropdown(!empresasDropdown)}
+                className="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
+              >
+                Empresas <ChevronDown className={`h-4 w-4 transition-transform ${empresasDropdown ? 'rotate-180' : ''}`} />
               </button>
-              <div className="invisible absolute left-0 top-full mt-1 w-56 rounded-xl border bg-card shadow-lg transition group-hover:visible">
-                <button onClick={() => scrollToSection('doctored')} className="block w-full px-4 py-3 text-left text-sm hover:bg-muted rounded-t-xl">
-                  <span className="font-semibold" style={{ color: '#1a73e8' }}>DoctoRed</span>
-                  <p className="text-xs text-muted-foreground">Planes flexibles sin copagos</p>
-                </button>
-                <button onClick={() => scrollToSection('premedic')} className="block w-full px-4 py-3 text-left text-sm hover:bg-muted rounded-b-xl">
-                  <span className="font-semibold" style={{ color: '#2e7d32' }}>Grupo Premedic</span>
-                  <p className="text-xs text-muted-foreground">Respaldo y amplia red médica</p>
-                </button>
-              </div>
+              {empresasDropdown && (
+                <div className="absolute left-0 top-full mt-1 w-56 rounded-xl border bg-card shadow-lg z-50">
+                  <button
+                    onClick={() => { setCartEmpresa('doctored'); setEmpresasDropdown(false); scrollToSection('doctored'); }}
+                    className={`block w-full px-4 py-3 text-left text-sm hover:bg-muted rounded-t-xl ${cartEmpresa === 'doctored' ? 'bg-primary/10' : ''}`}
+                  >
+                    <span className="font-semibold" style={{ color: '#1a73e8' }}>DoctoRed</span>
+                    <p className="text-xs text-muted-foreground">Planes flexibles sin copagos</p>
+                  </button>
+                  <button
+                    onClick={() => { setCartEmpresa('premedic'); setEmpresasDropdown(false); scrollToSection('premedic'); }}
+                    className={`block w-full px-4 py-3 text-left text-sm hover:bg-muted rounded-b-xl ${cartEmpresa === 'premedic' ? 'bg-primary/10' : ''}`}
+                  >
+                    <span className="font-semibold" style={{ color: '#2e7d32' }}>Grupo Premedic</span>
+                    <p className="text-xs text-muted-foreground">Respaldo y amplia red médica</p>
+                  </button>
+                </div>
+              )}
             </div>
             <button onClick={() => scrollToSection('cartilla')} className={`rounded-lg px-3 py-2 text-sm font-medium transition ${activeSection === 'cartilla' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>Cartilla</button>
             <button onClick={() => scrollToSection('contacto')} className={`rounded-lg px-3 py-2 text-sm font-medium transition ${activeSection === 'contacto' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>Contacto</button>
@@ -203,8 +208,8 @@ export default function SegurosPage() {
         {mobileMenu && (
           <nav className="border-t px-4 py-3 md:hidden">
             <button onClick={() => scrollToSection('inicio')} className={`block w-full py-2 text-left text-sm ${activeSection === 'inicio' ? 'text-primary font-medium' : ''}`}>Inicio</button>
-            <button onClick={() => scrollToSection('doctored')} className={`block w-full py-2 text-left text-sm ${activeSection === 'doctored' ? 'text-primary font-medium' : ''}`}>DoctoRed</button>
-            <button onClick={() => scrollToSection('premedic')} className={`block w-full py-2 text-left text-sm ${activeSection === 'premedic' ? 'text-primary font-medium' : ''}`}>Grupo Premedic</button>
+            <button onClick={() => { setCartEmpresa('doctored'); scrollToSection('doctored'); }} className={`block w-full py-2 text-left text-sm ${cartEmpresa === 'doctored' ? 'text-primary font-medium' : ''}`}>DoctoRed</button>
+            <button onClick={() => { setCartEmpresa('premedic'); scrollToSection('premedic'); }} className={`block w-full py-2 text-left text-sm ${cartEmpresa === 'premedic' ? 'text-primary font-medium' : ''}`}>Grupo Premedic</button>
             <button onClick={() => scrollToSection('cartilla')} className={`block w-full py-2 text-left text-sm ${activeSection === 'cartilla' ? 'text-primary font-medium' : ''}`}>Cartilla</button>
             <button onClick={() => scrollToSection('contacto')} className={`block w-full py-2 text-left text-sm ${activeSection === 'contacto' ? 'text-primary font-medium' : ''}`}>Contacto</button>
           </nav>
@@ -563,6 +568,7 @@ export default function SegurosPage() {
     </div>
   );
 }
+
 
 
 
