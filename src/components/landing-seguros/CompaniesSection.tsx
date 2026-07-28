@@ -52,10 +52,10 @@ export function CompaniesSection() {
   return (
     <section
       id="empresas"
-      className="py-16 md:py-20 scroll-mt-16"
+      className="w-full py-16 scroll-mt-16"
       aria-labelledby="empresas-title"
     >
-      <div className="container mx-auto px-4">
+      <div className="w-full max-w-6xl mx-auto px-4">
         <div className="mb-10 text-center">
           <h2
             id="empresas-title"
