@@ -64,6 +64,38 @@ const PRESTADORES_MOCK = [
 
 export default function SegurosPage() {
   const [mobileMenu, setMobileMenu] = useState(false);
+  const [activeSection, setActiveSection] = useState('inicio');
+
+  // Smooth scroll helper
+  const scrollToSection = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+    setMobileMenu(false);
+  };
+
+  // Intersection Observer - update active section on scroll
+  useEffect(() => {
+    const sections = ['inicio', 'doctored', 'premedic', 'cartilla', 'contacto'];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { threshold: 0.3, rootMargin: '-80px 0px -50% 0px' }
+    );
+
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ nombre: '', email: '', telefono: '', empresaId: '', plan: '', mensaje: '' });
 
@@ -130,24 +162,24 @@ export default function SegurosPage() {
           </div>
 
           <nav className="hidden items-center gap-1 md:flex">
-            <a href="#inicio" className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground">Inicio</a>
+            <button onClick={() => scrollToSection('inicio')} className={`rounded-lg px-3 py-2 text-sm font-medium transition ${activeSection === 'inicio' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>Inicio</button>
             <div className="group relative">
               <button className="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground">
                 Empresas <ChevronDown className="h-4 w-4" />
               </button>
               <div className="invisible absolute left-0 top-full mt-1 w-56 rounded-xl border bg-card shadow-lg transition group-hover:visible">
-                <a href="#doctored" className="block px-4 py-3 text-sm hover:bg-muted rounded-t-xl">
+                <button onClick={() => scrollToSection('doctored')} className="block w-full px-4 py-3 text-left text-sm hover:bg-muted rounded-t-xl">
                   <span className="font-semibold" style={{ color: '#1a73e8' }}>DoctoRed</span>
                   <p className="text-xs text-muted-foreground">Planes flexibles sin copagos</p>
-                </a>
-                <a href="#premedic" className="block px-4 py-3 text-sm hover:bg-muted rounded-b-xl">
+                </button>
+                <button onClick={() => scrollToSection('premedic')} className="block w-full px-4 py-3 text-left text-sm hover:bg-muted rounded-b-xl">
                   <span className="font-semibold" style={{ color: '#2e7d32' }}>Grupo Premedic</span>
                   <p className="text-xs text-muted-foreground">Respaldo y amplia red médica</p>
-                </a>
+                </button>
               </div>
             </div>
-            <a href="#cartilla" className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground">Cartilla</a>
-            <a href="#contacto" className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground">Contacto</a>
+            <button onClick={() => scrollToSection('cartilla')} className={`rounded-lg px-3 py-2 text-sm font-medium transition ${activeSection === 'cartilla' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>Cartilla</button>
+            <button onClick={() => scrollToSection('contacto')} className={`rounded-lg px-3 py-2 text-sm font-medium transition ${activeSection === 'contacto' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>Contacto</button>
           </nav>
 
           <div className="flex items-center gap-2">
@@ -161,11 +193,11 @@ export default function SegurosPage() {
 
         {mobileMenu && (
           <nav className="border-t px-4 py-3 md:hidden">
-            <a href="#inicio" className="block py-2 text-sm" onClick={() => setMobileMenu(false)}>Inicio</a>
-            <a href="#doctored" className="block py-2 text-sm" onClick={() => setMobileMenu(false)}>DoctoRed</a>
-            <a href="#premedic" className="block py-2 text-sm" onClick={() => setMobileMenu(false)}>Grupo Premedic</a>
-            <a href="#cartilla" className="block py-2 text-sm" onClick={() => setMobileMenu(false)}>Cartilla</a>
-            <a href="#contacto" className="block py-2 text-sm" onClick={() => setMobileMenu(false)}>Contacto</a>
+            <button onClick={() => scrollToSection('inicio')} className={`block w-full py-2 text-left text-sm ${activeSection === 'inicio' ? 'text-primary font-medium' : ''}`}>Inicio</button>
+            <button onClick={() => scrollToSection('doctored')} className={`block w-full py-2 text-left text-sm ${activeSection === 'doctored' ? 'text-primary font-medium' : ''}`}>DoctoRed</button>
+            <button onClick={() => scrollToSection('premedic')} className={`block w-full py-2 text-left text-sm ${activeSection === 'premedic' ? 'text-primary font-medium' : ''}`}>Grupo Premedic</button>
+            <button onClick={() => scrollToSection('cartilla')} className={`block w-full py-2 text-left text-sm ${activeSection === 'cartilla' ? 'text-primary font-medium' : ''}`}>Cartilla</button>
+            <button onClick={() => scrollToSection('contacto')} className={`block w-full py-2 text-left text-sm ${activeSection === 'contacto' ? 'text-primary font-medium' : ''}`}>Contacto</button>
           </nav>
         )}
       </header>
@@ -184,7 +216,7 @@ export default function SegurosPage() {
           <p className="mx-auto mb-8 max-w-2xl text-lg text-white/80 sm:text-xl">
             Asesoría personalizada en planes de salud de distintas empresas con más de 10 años de experiencia. Te ayudo a elegir cuál te conviene más, qué planes se adaptan a vos, calidad médica y diferentes formas de pago.
           </p>
-          <a href="#contacto">
+          <button onClick={() => scrollToSection('contacto')} className="inline-block">
             <Button size="lg" className="bg-white px-8 text-base font-semibold text-blue-600 shadow-2xl hover:bg-white/90">
               📋 Solicitar Asesoramiento <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
@@ -522,5 +554,6 @@ export default function SegurosPage() {
     </div>
   );
 }
+
 
 
