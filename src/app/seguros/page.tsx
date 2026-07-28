@@ -68,8 +68,11 @@ export default function SegurosPage() {
   const [form, setForm] = useState({ nombre: '', email: '', telefono: '', empresaId: '', plan: '', mensaje: '' });
 
   // Cartilla state
+  const [cartEmpresa, setCartEmpresa] = useState<'doctored' | 'premedic'>('doctored');
   const [cartProvincia, setCartProvincia] = useState('');
   const [cartLocalidad, setCartLocalidad] = useState('');
+  const [cartPlan, setCartPlan] = useState('');
+  const [cartEspecialidad, setCartEspecialidad] = useState('');
   const [cartResults, setCartResults] = useState<typeof PRESTADORES_MOCK>([]);
   const [cartLoading, setCartLoading] = useState(false);
   const [cartMounted, setCartMounted] = useState(false);
@@ -105,9 +108,9 @@ export default function SegurosPage() {
   };
 
   const handleCartSearch = () => {
-    if (!cartProvincia || !cartLocalidad) return;
+    if (!cartProvincia && !cartLocalidad) return;
     setCartLoading(true);
-    // Mock search — in production this would be an API call
+    // Mock search — in production this would call /api/cartilla/doctored or /api/cartilla/premedic
     setTimeout(() => {
       setCartResults(PRESTADORES_MOCK);
       setCartLoading(false);
@@ -262,69 +265,142 @@ export default function SegurosPage() {
         </div>
       </section>
 
-      {/* ===== Cartilla Médica ===== */}
+      {/* ===== Cartilla Médica Unificada ===== */}
       <section id="cartilla" className="py-20">
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-8 text-center">
             <Badge variant="outline" className="mb-3">Cartilla</Badge>
             <h2 className="text-3xl font-bold sm:text-4xl">📍 Cartilla Médica</h2>
-            <p className="mt-3 text-muted-foreground">Encontrá el prestador más cercano a tu ubicación</p>
+            <p className="mt-3 text-muted-foreground">Buscá prestadores de DoctoRed o Grupo Premedic en tu zona</p>
           </div>
 
-          <div className="mx-auto mb-6 flex max-w-2xl flex-wrap gap-3">
-            <select
-              value={cartProvincia}
-              onChange={(e) => { setCartProvincia(e.target.value); setCartLocalidad(''); }}
-              className="min-w-[150px] flex-1 rounded-lg border bg-background px-4 py-2"
+          {/* Empresa selector tabs */}
+          <div className="mb-6 flex justify-center gap-2">
+            <button
+              onClick={() => { setCartEmpresa('doctored'); setCartResults([]); }}
+              className={`rounded-lg px-6 py-2 text-sm font-medium transition ${cartEmpresa === 'doctored' ? 'text-white' : 'border bg-background hover:bg-muted'}`}
+              style={cartEmpresa === 'doctored' ? { background: '#1a73e8' } : {}}
             >
-              <option value="">Provincia...</option>
-              {PROVINCIAS.map((p) => <option key={p} value={p}>{p}</option>)}
-            </select>
-            <select
-              value={cartLocalidad}
-              onChange={(e) => setCartLocalidad(e.target.value)}
-              className="min-w-[150px] flex-1 rounded-lg border bg-background px-4 py-2"
-              disabled={!cartProvincia}
+              DoctoRed
+            </button>
+            <button
+              onClick={() => { setCartEmpresa('premedic'); setCartResults([]); }}
+              className={`rounded-lg px-6 py-2 text-sm font-medium transition ${cartEmpresa === 'premedic' ? 'text-white' : 'border bg-background hover:bg-muted'}`}
+              style={cartEmpresa === 'premedic' ? { background: '#2e7d32' } : {}}
             >
-              <option value="">Localidad...</option>
-              {(LOCALIDADES[cartProvincia] || []).map((l) => <option key={l} value={l}>{l}</option>)}
-            </select>
-            <Button onClick={handleCartSearch} disabled={!cartProvincia || !cartLocalidad || cartLoading} className="gap-2">
-              {cartLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
-              Buscar
+              Grupo Premedic
+            </button>
+          </div>
+
+          {/* Formulario de búsqueda */}
+          <div className="mx-auto mb-6 max-w-3xl rounded-xl border bg-card p-6">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {cartEmpresa === 'doctored' ? (
+                <>
+                  <div>
+                    <label className="mb-1 block text-sm font-medium">Plan *</label>
+                    <select value={cartPlan} onChange={(e) => setCartPlan(e.target.value)} className="w-full rounded-lg border bg-background px-3 py-2 text-sm">
+                      <option value="">Seleccionar...</option>
+                      <option value="500">Plan 500</option>
+                      <option value="1000">Plan 1000</option>
+                      <option value="2000">Plan 2000</option>
+                      <option value="3000">Plan 3000</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-sm font-medium">Provincia *</label>
+                    <select value={cartProvincia} onChange={(e) => { setCartProvincia(e.target.value); setCartLocalidad(''); }} className="w-full rounded-lg border bg-background px-3 py-2 text-sm">
+                      <option value="">Seleccionar...</option>
+                      {PROVINCIAS.map((p) => <option key={p} value={p}>{p}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-sm font-medium">Especialidad</label>
+                    <select value={cartEspecialidad} onChange={(e) => setCartEspecialidad(e.target.value)} className="w-full rounded-lg border bg-background px-3 py-2 text-sm">
+                      <option value="TODAS">TODAS</option>
+                      <option value="Cardiología">Cardiología</option>
+                      <option value="Dermatología">Dermatología</option>
+                      <option value="Pediatría">Pediatría</option>
+                      <option value="Ginecología">Ginecología</option>
+                      <option value="Traumatología">Traumatología</option>
+                      <option value="Clínica Médica">Clínica Médica</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-sm font-medium">Localidad *</label>
+                    <input type="text" value={cartLocalidad} onChange={(e) => setCartLocalidad(e.target.value)} placeholder="Ej: Palermo..." className="w-full rounded-lg border bg-background px-3 py-2 text-sm" />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <label className="mb-1 block text-sm font-medium">Localidad</label>
+                    <input type="text" value={cartLocalidad} onChange={(e) => setCartLocalidad(e.target.value)} placeholder="Ej: CABA..." className="w-full rounded-lg border bg-background px-3 py-2 text-sm" />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-sm font-medium">Plan Médico</label>
+                    <select value={cartPlan} onChange={(e) => setCartPlan(e.target.value)} className="w-full rounded-lg border bg-background px-3 py-2 text-sm">
+                      <option value="">Seleccionar...</option>
+                      <option value="SMG40">SMG40</option>
+                      <option value="SMG20">SMG20</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-sm font-medium">Prestaciones</label>
+                    <select value={cartEspecialidad} onChange={(e) => setCartEspecialidad(e.target.value)} className="w-full rounded-lg border bg-background px-3 py-2 text-sm">
+                      <option value="">Seleccionar...</option>
+                      <option value="consultas">Consultas</option>
+                      <option value="urgencias">Urgencias</option>
+                      <option value="laboratorio">Laboratorio</option>
+                      <option value="imagenes">Imágenes</option>
+                    </select>
+                  </div>
+                </>
+              )}
+            </div>
+            <Button onClick={handleCartSearch} disabled={cartLoading || (!cartProvincia && !cartLocalidad)} className="mt-4 w-full gap-2" size="lg"
+              style={{ background: cartEmpresa === 'doctored' ? '#1a73e8' : '#2e7d32' }}>
+              {cartLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Search className="h-5 w-5" />}
+              Buscar prestadores
             </Button>
           </div>
 
+          {/* Resultados + Mapa */}
           <div className="grid gap-6 md:grid-cols-2">
-            {/* Results */}
+            {/* Lista de resultados */}
             <div className="max-h-[500px] space-y-3 overflow-y-auto">
               {cartResults.length === 0 ? (
-                <p className="py-12 text-center text-muted-foreground">Seleccioná provincia y localidad para buscar prestadores</p>
+                <div className="py-12 text-center text-muted-foreground">
+                  <MapPin className="mx-auto mb-2 h-12 w-12 opacity-30" />
+                  <p>Completá los campos y hacé clic en "Buscar prestadores"</p>
+                </div>
               ) : (
-                cartResults.map((item) => (
-                  <Card key={item.id} className="transition hover:shadow-md">
-                    <CardContent className="p-4">
-                      <div className="mb-1 flex items-center gap-2">
-                        <MapPin className="h-4 w-4 shrink-0" style={{ color: item.empresa === 'doctored' ? '#1a73e8' : '#2e7d32' }} />
-                        <h4 className="font-semibold">{item.nombre}</h4>
-                      </div>
-                      <p className="ml-6 text-sm text-muted-foreground">{item.direccion}</p>
-                      <div className="ml-6 flex items-center gap-4 text-sm text-muted-foreground">
-                        <span>📞 {item.telefono}</span>
-                        <span>📍 {item.distancia} km</span>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))
+                cartResults
+                  .filter((item) => item.empresa === cartEmpresa)
+                  .map((item) => (
+                    <Card key={item.id} className="transition hover:shadow-md">
+                      <CardContent className="p-4">
+                        <div className="mb-1 flex items-center gap-2">
+                          <MapPin className="h-4 w-4 shrink-0" style={{ color: cartEmpresa === 'doctored' ? '#1a73e8' : '#2e7d32' }} />
+                          <h4 className="font-semibold">{item.nombre}</h4>
+                        </div>
+                        <p className="ml-6 text-sm text-muted-foreground">{item.direccion}</p>
+                        <div className="ml-6 flex items-center gap-4 text-sm text-muted-foreground">
+                          <span>📞 {item.telefono}</span>
+                          <span>📍 {item.distancia} km</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
               )}
             </div>
 
-            {/* Map */}
+            {/* Mapa */}
             <div className="h-[500px] overflow-hidden rounded-xl border">
-              {cartMounted && cartResults.length > 0 ? (
+              {cartMounted && cartResults.filter((r) => r.empresa === cartEmpresa).length > 0 ? (
                 <iframe
                   title="Mapa de prestadores"
-                  src={`https://www.openstreetmap.org/export/embed.html?bbox=${cartResults[0].lng - 0.05}%2C${cartResults[0].lat - 0.05}%2C${cartResults[0].lng + 0.05}%2C${cartResults[0].lat + 0.05}&layer=mapnik&marker=${cartResults[0].lat}%2C${cartResults[0].lng}`}
+                  src={`https://www.openstreetmap.org/export/embed.html?bbox=${cartResults.filter((r) => r.empresa === cartEmpresa)[0].lng - 0.05}%2C${cartResults.filter((r) => r.empresa === cartEmpresa)[0].lat - 0.05}%2C${cartResults.filter((r) => r.empresa === cartEmpresa)[0].lng + 0.05}%2C${cartResults.filter((r) => r.empresa === cartEmpresa)[0].lat + 0.05}&layer=mapnik&marker=${cartResults.filter((r) => r.empresa === cartEmpresa)[0].lat}%2C${cartResults.filter((r) => r.empresa === cartEmpresa)[0].lng}`}
                   className="h-full w-full"
                   style={{ border: 0 }}
                 />
@@ -332,7 +408,7 @@ export default function SegurosPage() {
                 <div className="flex h-full items-center justify-center text-muted-foreground">
                   <div className="text-center">
                     <MapPin className="mx-auto mb-2 h-12 w-12 opacity-30" />
-                    <p className="text-sm">El mapa aparecerá aquí</p>
+                    <p className="text-sm">El mapa aparecerá después de buscar</p>
                   </div>
                 </div>
               )}
@@ -446,4 +522,5 @@ export default function SegurosPage() {
     </div>
   );
 }
+
 
