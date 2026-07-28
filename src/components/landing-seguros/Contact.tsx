@@ -41,10 +41,10 @@ export function Contact() {
   return (
     <section
       id="contacto"
-      className="w-full py-16 bg-muted/30 scroll-mt-16"
+      className="w-full min-h-[calc(100vh-4rem)] flex items-center justify-center bg-muted/30 scroll-mt-16"
       aria-labelledby="contacto-title"
     >
-      <div className="w-full max-w-4xl mx-auto px-4">
+      <div className="w-full max-w-4xl mx-auto px-4 py-12">
         <div className="mb-10 text-center">
           <h2
             id="contacto-title"
