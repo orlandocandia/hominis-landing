@@ -13,10 +13,10 @@ export function Footer() {
 
   return (
     <footer
-      className="mt-auto border-t border-border bg-muted/30"
+      className="mt-auto w-full border-t border-border bg-muted/30"
       aria-label="Pie de página"
     >
-      <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6">
+      <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Marca + tagline */}
           <div className="flex flex-col gap-3">
