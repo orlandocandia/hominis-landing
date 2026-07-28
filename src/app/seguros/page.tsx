@@ -220,7 +220,7 @@ export default function SegurosPage() {
             <Button size="lg" className="bg-white px-8 text-base font-semibold text-blue-600 shadow-2xl hover:bg-white/90">
               📋 Solicitar Asesoramiento <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-          </a>
+          </button>
         </div>
       </section>
 
