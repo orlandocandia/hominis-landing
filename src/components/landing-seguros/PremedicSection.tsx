@@ -21,10 +21,10 @@ export function PremedicSection() {
   return (
     <section
       id={company.id}
-      className="py-16 md:py-20 bg-cyan-50/30 dark:bg-cyan-950/10 scroll-mt-16"
+      className="w-full py-16 bg-cyan-50/30 dark:bg-cyan-950/10 scroll-mt-16"
       aria-labelledby="premedic-title"
     >
-      <div className="container mx-auto px-4">
+      <div className="w-full max-w-7xl mx-auto px-4">
         {/* Encabezado: logo + nombre */}
         <div className="flex items-center gap-4 mb-8">
           <div className="flex items-center justify-center h-16 w-16 shrink-0 rounded-lg bg-white dark:bg-slate-900 shadow-sm border border-cyan-100 dark:border-cyan-900/30">
