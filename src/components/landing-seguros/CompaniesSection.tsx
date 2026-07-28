@@ -7,7 +7,15 @@ import { COMPANIES, scrollToSection, type Company } from './companies'
 function CompanyCard({ company }: { company: Company }) {
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
-    scrollToSection(`#${company.id}`)
+    // Si la sección de la empresa existe en la página, scrollear a ella.
+    // Si no existe (ej. secciones ocultas temporalmente), ir al formulario
+    // de contacto para que el usuario pueda pedir asesoramiento.
+    const target = document.querySelector(`#${company.id}`)
+    if (target) {
+      scrollToSection(`#${company.id}`)
+    } else {
+      scrollToSection('#contacto')
+    }
   }
 
   return (
