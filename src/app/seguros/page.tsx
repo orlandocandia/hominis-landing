@@ -96,6 +96,15 @@ export default function SegurosPage() {
 
     return () => observer.disconnect();
   }, []);
+
+  // Sync cartilla empresa with active section
+  useEffect(() => {
+    if (activeSection === 'doctored') {
+      setCartEmpresa('doctored');
+    } else if (activeSection === 'premedic') {
+      setCartEmpresa('premedic');
+    }
+  }, [activeSection]);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ nombre: '', email: '', telefono: '', empresaId: '', plan: '', mensaje: '' });
 
@@ -458,7 +467,7 @@ export default function SegurosPage() {
             <p className="mt-3 text-muted-foreground">Completá el formulario o contactame directamente</p>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-2">
+          <div className="grid gap-8 md:grid-cols-2 items-stretch">
             {/* IZQUIERDA - Medios de contacto */}
             <div className="space-y-4">
               <h3 className="text-xl font-semibold">📞 Contactame directamente</h3>
@@ -500,8 +509,8 @@ export default function SegurosPage() {
             {/* DERECHA - Formulario */}
             <div>
               <h3 className="mb-4 text-xl font-semibold">📝 Solicitar Asesoramiento</h3>
-              <Card className="shadow-xl">
-                <CardContent className="p-6 sm:p-8">
+              <Card className="h-full shadow-xl">
+                <CardContent className="flex h-full flex-col p-6 sm:p-8">
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div className="space-y-1.5"><Label>Nombre completo *</Label><Input value={form.nombre} onChange={(e) => setForm({ ...form, nombre: e.target.value })} required placeholder="Juan Pérez" /></div>
@@ -554,6 +563,7 @@ export default function SegurosPage() {
     </div>
   );
 }
+
 
 
 
