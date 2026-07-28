@@ -41,10 +41,10 @@ export function Contact() {
   return (
     <section
       id="contacto"
-      className="py-16 md:py-20 bg-muted/30 scroll-mt-16"
+      className="w-full py-16 bg-muted/30 scroll-mt-16"
       aria-labelledby="contacto-title"
     >
-      <div className="container mx-auto px-4">
+      <div className="w-full max-w-4xl mx-auto px-4">
         <div className="mb-10 text-center">
           <h2
             id="contacto-title"
@@ -58,9 +58,9 @@ export function Contact() {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
           {/* Info de contacto */}
-          <div className="flex flex-col gap-4 rounded-xl border border-border bg-card p-6">
+          <div className="flex flex-col gap-4 rounded-xl border border-border bg-card p-6 min-w-0">
             <h3 className="text-lg font-bold text-foreground">
               Datos de contacto
             </h3>
@@ -108,7 +108,7 @@ export function Contact() {
           {/* Formulario */}
           <form
             onSubmit={handleSubmit}
-            className="flex flex-col gap-4 rounded-xl border border-border bg-card p-6"
+            className="flex flex-col gap-4 rounded-xl border border-border bg-card p-6 min-w-0"
             aria-label="Formulario de contacto"
           >
             <h3 className="text-lg font-bold text-foreground">
