@@ -343,72 +343,94 @@ export default function SegurosPage() {
 
       {/* ===== Contacto ===== */}
       <section id="contacto" className="py-20 bg-muted/30">
-        <div className="mx-auto max-w-3xl px-4">
+        <div className="mx-auto max-w-6xl px-4">
           <div className="mb-8 text-center">
             <Badge variant="outline" className="mb-3">Contacto</Badge>
             <h2 className="text-3xl font-bold sm:text-4xl">Solicitar Asesoramiento</h2>
-            <p className="mt-3 text-muted-foreground">Completá el formulario y te contactaremos a la brevedad</p>
+            <p className="mt-3 text-muted-foreground">Completá el formulario o contactame directamente</p>
           </div>
 
-          {/* Carteles de contacto */}
-          <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <Card className="text-center"><CardContent className="p-4">
-              <span className="text-2xl">📞</span><p className="font-semibold">Teléfono</p><p className="text-sm text-muted-foreground">11-6555-5534</p>
-            </CardContent></Card>
-            <Card className="text-center"><CardContent className="p-4">
-              <span className="text-2xl">✉️</span><p className="font-semibold">Email</p><p className="text-sm text-muted-foreground">info@asesoradesalud.com</p>
-            </CardContent></Card>
-            <Card className="text-center"><CardContent className="p-4">
-              <span className="text-2xl">🌐</span><p className="font-semibold">Redes Sociales</p>
-              <div className="mt-1 flex justify-center gap-3">
-                <a href="#" className="text-blue-500 hover:underline"><Instagram className="h-5 w-5" /></a>
-                <a href="#" className="text-blue-700 hover:underline"><Facebook className="h-5 w-5" /></a>
+          <div className="grid gap-8 md:grid-cols-2">
+            {/* IZQUIERDA - Medios de contacto */}
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold">📞 Contactame directamente</h3>
+
+              <a href="https://wa.me/5491165555534" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-lg border p-4 transition hover:shadow-md">
+                <span className="text-2xl">💬</span>
+                <div><p className="font-medium">WhatsApp Directo</p><p className="text-sm text-primary">11-6555-5534</p></div>
+              </a>
+
+              <a href="mailto:acandia@mphominis.com.ar" className="flex items-center gap-3 rounded-lg border p-4 transition hover:shadow-md">
+                <span className="text-2xl">✉️</span>
+                <div><p className="font-medium">Email</p><p className="text-sm text-primary">acandia@mphominis.com.ar</p></div>
+              </a>
+
+              <a href="https://instagram.com/hominisok" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-lg border p-4 transition hover:shadow-md">
+                <span className="text-2xl">📸</span>
+                <div><p className="font-medium">Instagram</p><p className="text-sm text-primary">@hominisok</p></div>
+              </a>
+
+              <a href="https://facebook.com/hominisok" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-lg border p-4 transition hover:shadow-md">
+                <span className="text-2xl">📘</span>
+                <div><p className="font-medium">Facebook</p><p className="text-sm text-primary">Hominis</p></div>
+              </a>
+
+              <div className="flex items-center gap-3 rounded-lg border p-4">
+                <span className="text-2xl">📱</span>
+                <div>
+                  <p className="font-medium">Código QR</p>
+                  <p className="text-sm text-muted-foreground">Escaneá y escribile a Agustina</p>
+                  <img
+                    src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://wa.me/5491165555534"
+                    alt="QR WhatsApp"
+                    className="mt-1 h-20 w-20 rounded-lg"
+                  />
+                </div>
               </div>
-            </CardContent></Card>
-            <Card className="text-center"><CardContent className="p-4">
-              <span className="text-2xl">📱</span><p className="font-semibold">Código QR</p>
-              <div className="mx-auto mt-1 flex h-16 w-16 items-center justify-center rounded-lg bg-muted text-xs text-muted-foreground">QR</div>
-            </CardContent></Card>
-          </div>
+            </div>
 
-          {/* Formulario */}
-          <Card className="shadow-xl">
-            <CardContent className="p-6 sm:p-8">
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-1.5"><Label>Nombre completo *</Label><Input value={form.nombre} onChange={(e) => setForm({ ...form, nombre: e.target.value })} required placeholder="Juan Pérez" /></div>
-                  <div className="space-y-1.5"><Label>Email *</Label><Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required placeholder="juan@email.com" /></div>
-                </div>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-1.5"><Label>Teléfono *</Label><Input type="tel" value={form.telefono} onChange={(e) => setForm({ ...form, telefono: e.target.value })} required placeholder="11-5555-1234" /></div>
-                  <div className="space-y-1.5">
-                    <Label>Empresa de interés *</Label>
-                    <Select value={form.empresaId} onValueChange={(v) => setForm({ ...form, empresaId: v })}>
-                      <SelectTrigger><SelectValue placeholder="Seleccionar..." /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="emp_doctored_001">DoctoRed</SelectItem>
-                        <SelectItem value="emp_premedic_001">Grupo Premedic</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                {form.empresaId === 'emp_doctored_001' && (
-                  <div className="space-y-1.5">
-                    <Label>Plan de interés</Label>
-                    <Select value={form.plan} onValueChange={(v) => setForm({ ...form, plan: v })}>
-                      <SelectTrigger><SelectValue placeholder="Seleccionar plan..." /></SelectTrigger>
-                      <SelectContent>{DOCTORED_PLANS.map((p) => <SelectItem key={p.name} value={p.name}>{p.name}</SelectItem>)}</SelectContent>
-                    </Select>
-                  </div>
-                )}
-                <div className="space-y-1.5"><Label>Mensaje (opcional)</Label><Textarea rows={3} value={form.mensaje} onChange={(e) => setForm({ ...form, mensaje: e.target.value })} placeholder="Contanos qué necesitás..." /></div>
-                <Button type="submit" disabled={loading} className="w-full gap-2" size="lg" style={{ background: 'linear-gradient(to right, #1a73e8, #2e7d32)' }}>
-                  {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <>Enviar solicitud <ArrowRight className="ml-2 h-4 w-4" /></>}
-                </Button>
-                <p className="text-center text-xs text-muted-foreground">🔒 Tus datos están protegidos. No compartimos tu información.</p>
-              </form>
-            </CardContent>
-          </Card>
+            {/* DERECHA - Formulario */}
+            <div>
+              <h3 className="mb-4 text-xl font-semibold">📝 Solicitar Asesoramiento</h3>
+              <Card className="shadow-xl">
+                <CardContent className="p-6 sm:p-8">
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="space-y-1.5"><Label>Nombre completo *</Label><Input value={form.nombre} onChange={(e) => setForm({ ...form, nombre: e.target.value })} required placeholder="Juan Pérez" /></div>
+                      <div className="space-y-1.5"><Label>Email *</Label><Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required placeholder="juan@email.com" /></div>
+                    </div>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="space-y-1.5"><Label>Teléfono *</Label><Input type="tel" value={form.telefono} onChange={(e) => setForm({ ...form, telefono: e.target.value })} required placeholder="11-5555-1234" /></div>
+                      <div className="space-y-1.5">
+                        <Label>Empresa de interés *</Label>
+                        <Select value={form.empresaId} onValueChange={(v) => setForm({ ...form, empresaId: v })}>
+                          <SelectTrigger><SelectValue placeholder="Seleccionar..." /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="emp_doctored_001">DoctoRed</SelectItem>
+                            <SelectItem value="emp_premedic_001">Grupo Premedic</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    {form.empresaId === 'emp_doctored_001' && (
+                      <div className="space-y-1.5">
+                        <Label>Plan de interés</Label>
+                        <Select value={form.plan} onValueChange={(v) => setForm({ ...form, plan: v })}>
+                          <SelectTrigger><SelectValue placeholder="Seleccionar plan..." /></SelectTrigger>
+                          <SelectContent>{DOCTORED_PLANS.map((p) => <SelectItem key={p.name} value={p.name}>{p.name}</SelectItem>)}</SelectContent>
+                        </Select>
+                      </div>
+                    )}
+                    <div className="space-y-1.5"><Label>Mensaje (opcional)</Label><Textarea rows={3} value={form.mensaje} onChange={(e) => setForm({ ...form, mensaje: e.target.value })} placeholder="Contanos qué necesitás..." /></div>
+                    <Button type="submit" disabled={loading} className="w-full gap-2" size="lg" style={{ background: 'linear-gradient(to right, #1a73e8, #2e7d32)' }}>
+                      {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <>Enviar solicitud <ArrowRight className="ml-2 h-4 w-4" /></>}
+                    </Button>
+                    <p className="text-center text-xs text-muted-foreground">🔒 Tus datos están protegidos. No compartimos tu información.</p>
+                  </form>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -424,3 +446,4 @@ export default function SegurosPage() {
     </div>
   );
 }
+
