@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Shield, CheckCircle2, Phone, Mail, MapPin, Stethoscope, Heart, Pill,
   Syringe, PawPrint, Plane, Smartphone, Building2, ArrowRight, Menu, X,
-  ChevronDown, Loader2,
+  ChevronDown, Loader2, Search, Globe, Instagram, Facebook,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -39,16 +39,42 @@ const PREMEDIC_BENEFITS = [
   { icon: Smartphone, text: 'Médico IA 24/7' },
   { icon: Syringe, text: 'Vacunación en casa' },
   { icon: PawPrint, text: 'Veterinaria a domicilio (Amar Mascotas)' },
-  { icon: Plane, text: 'Asistencia al viajero' },
+  { icon: Plane, text: 'Asistencia al viajero (Cardinal Assistance)' },
   { icon: Building2, text: 'Centros médicos PMC' },
   { icon: Pill, text: 'Descuentos en Farmacity' },
   { icon: Smartphone, text: 'App Premedic Móvil' },
+];
+
+const PROVINCIAS = ['Buenos Aires', 'CABA', 'Córdoba', 'Santa Fe', 'Mendoza'];
+const LOCALIDADES: Record<string, string[]> = {
+  'Buenos Aires': ['Lomas de Zamora', 'La Plata', 'Morón', 'Quilmes'],
+  'CABA': ['Palermo', 'Caballito', 'Belgrano', 'Recoleta'],
+  'Córdoba': ['Córdoba Capital', 'Villa María', 'Río Cuarto'],
+  'Santa Fe': ['Rosario', 'Santa Fe Capital', 'Rafaela'],
+  'Mendoza': ['Mendoza Capital', 'Godoy Cruz', 'San Rafael'],
+};
+
+// Mock prestadores (in production would come from API)
+const PRESTADORES_MOCK = [
+  { id: '1', nombre: 'Centro Médico PMC', direccion: 'Av. Corrientes 1234, CABA', telefono: '11-5555-1234', distancia: 2.5, lat: -34.6037, lng: -58.3816, empresa: 'premedic' },
+  { id: '2', nombre: 'Hospital DoctoRed', direccion: 'Av. Santa Fe 5678, CABA', telefono: '11-5555-5678', distancia: 3.8, lat: -34.5901, lng: -58.4105, empresa: 'doctored' },
+  { id: '3', nombre: 'Clínica Premedic Lomas', direccion: 'Portela 200, Lomas de Zamora', telefono: '11-5555-9012', distancia: 1.2, lat: -34.7634, lng: -58.4045, empresa: 'premedic' },
+  { id: '4', nombre: 'Sanatorio DoctoRed Norte', direccion: 'Av. Cabildo 1234, CABA', telefono: '11-5555-3456', distancia: 5.1, lat: -34.5615, lng: -58.4561, empresa: 'doctored' },
 ];
 
 export default function SegurosPage() {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ nombre: '', email: '', telefono: '', empresaId: '', plan: '', mensaje: '' });
+
+  // Cartilla state
+  const [cartProvincia, setCartProvincia] = useState('');
+  const [cartLocalidad, setCartLocalidad] = useState('');
+  const [cartResults, setCartResults] = useState<typeof PRESTADORES_MOCK>([]);
+  const [cartLoading, setCartLoading] = useState(false);
+  const [cartMounted, setCartMounted] = useState(false);
+
+  useEffect(() => { setCartMounted(true); }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,6 +102,16 @@ export default function SegurosPage() {
     } catch (e: unknown) {
       toast.error(e instanceof Error ? e.message : 'Error al enviar');
     } finally { setLoading(false); }
+  };
+
+  const handleCartSearch = () => {
+    if (!cartProvincia || !cartLocalidad) return;
+    setCartLoading(true);
+    // Mock search — in production this would be an API call
+    setTimeout(() => {
+      setCartResults(PRESTADORES_MOCK);
+      setCartLoading(false);
+    }, 500);
   };
 
   return (
@@ -107,18 +143,7 @@ export default function SegurosPage() {
                 </a>
               </div>
             </div>
-            <div className="group relative">
-              <button className="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground">
-                Planes <ChevronDown className="h-4 w-4" />
-              </button>
-              <div className="invisible absolute left-0 top-full mt-1 w-56 rounded-xl border bg-card shadow-lg transition group-hover:visible">
-                {DOCTORED_PLANS.map(p => (
-                  <a key={p.name} href="#planes" className="block px-4 py-2 text-sm hover:bg-muted first:rounded-t-xl last:rounded-b-xl">
-                    <span className="font-semibold" style={{ color: '#1a73e8' }}>{p.name}</span>
-                  </a>
-                ))}
-              </div>
-            </div>
+            <a href="#cartilla" className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground">Cartilla</a>
             <a href="#contacto" className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground">Contacto</a>
           </nav>
 
@@ -136,7 +161,7 @@ export default function SegurosPage() {
             <a href="#inicio" className="block py-2 text-sm" onClick={() => setMobileMenu(false)}>Inicio</a>
             <a href="#doctored" className="block py-2 text-sm" onClick={() => setMobileMenu(false)}>DoctoRed</a>
             <a href="#premedic" className="block py-2 text-sm" onClick={() => setMobileMenu(false)}>Grupo Premedic</a>
-            <a href="#planes" className="block py-2 text-sm" onClick={() => setMobileMenu(false)}>Planes</a>
+            <a href="#cartilla" className="block py-2 text-sm" onClick={() => setMobileMenu(false)}>Cartilla</a>
             <a href="#contacto" className="block py-2 text-sm" onClick={() => setMobileMenu(false)}>Contacto</a>
           </nav>
         )}
@@ -154,7 +179,7 @@ export default function SegurosPage() {
             Encontrá el plan de salud<br />que mejor se adapta a vos
           </h1>
           <p className="mx-auto mb-8 max-w-2xl text-lg text-white/80 sm:text-xl">
-            Compará DoctoRed y Grupo Premedic con asesoría personalizada y sin costo.
+            Asesoría personalizada en planes de salud de distintas empresas con más de 10 años de experiencia. Te ayudo a elegir cuál te conviene más, qué planes se adaptan a vos, calidad médica y diferentes formas de pago.
           </p>
           <a href="#contacto">
             <Button size="lg" className="bg-white px-8 text-base font-semibold text-blue-600 shadow-2xl hover:bg-white/90">
@@ -164,57 +189,22 @@ export default function SegurosPage() {
         </div>
       </section>
 
-      {/* ===== Empresas ===== */}
-      <section className="py-20">
+      {/* ===== DoctoRed Section ===== */}
+      <section id="doctored" className="py-20">
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-12 text-center">
-            <Badge variant="outline" className="mb-3">Nuestras empresas</Badge>
-            <h2 className="text-3xl font-bold sm:text-4xl">Empresas que representamos</h2>
-            <p className="mt-3 text-muted-foreground">Trabajamos con las mejores aseguradoras para darte la cobertura que necesitás</p>
+            <div className="mb-4 flex items-center justify-center gap-3">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl text-2xl font-bold text-white shadow-lg" style={{ background: '#1a73e8' }}>DR</div>
+              <div className="text-left">
+                <h2 className="text-3xl font-bold">DoctoRed</h2>
+                <p className="text-sm italic text-muted-foreground">"Juro vivira lo grande"</p>
+              </div>
+            </div>
+            <p className="mx-auto max-w-2xl text-muted-foreground">Cobertura médica de calidad con planes flexibles para cada necesidad. Sin copagos en consultas, urgencias, laboratorio e imágenes.</p>
           </div>
-          <div className="grid gap-8 md:grid-cols-2">
-            <Card id="doctored" className="overflow-hidden border-2 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ borderColor: '#1a73e8' }}>
-              <div className="h-2" style={{ background: '#1a73e8' }} />
-              <CardContent className="p-8">
-                <div className="mb-4 flex items-center gap-4">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl text-2xl font-bold text-white shadow-lg" style={{ background: '#1a73e8' }}>DR</div>
-                  <div>
-                    <h3 className="text-2xl font-bold">DoctoRed</h3>
-                    <p className="text-sm italic text-muted-foreground">"Juro vivira lo grande"</p>
-                  </div>
-                </div>
-                <p className="mb-4 text-muted-foreground">Cobertura médica de calidad con planes flexibles para cada necesidad. Sin copagos en consultas, urgencias, laboratorio e imágenes.</p>
-                <a href="#planes"><Button variant="outline" className="w-full gap-2" style={{ borderColor: '#1a73e8', color: '#1a73e8' }}>Ver planes <ArrowRight className="h-4 w-4" /></Button></a>
-              </CardContent>
-            </Card>
 
-            <Card id="premedic" className="overflow-hidden border-2 transition-all hover:-translate-y-1 hover:shadow-xl" style={{ borderColor: '#2e7d32' }}>
-              <div className="h-2" style={{ background: '#2e7d32' }} />
-              <CardContent className="p-8">
-                <div className="mb-4 flex items-center gap-4">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl text-2xl font-bold text-white shadow-lg" style={{ background: '#2e7d32' }}>GP</div>
-                  <div>
-                    <h3 className="text-2xl font-bold">Grupo Premedic</h3>
-                    <p className="text-sm italic text-muted-foreground">"Somos el respaldo que te merecés"</p>
-                  </div>
-                </div>
-                <p className="mb-4 text-muted-foreground">El respaldo que te merecés con la mejor cobertura y amplia red médica. Telemedicina, médico IA 24/7 y beneficios únicos.</p>
-                <a href="#beneficios"><Button variant="outline" className="w-full gap-2" style={{ borderColor: '#2e7d32', color: '#2e7d32' }}>Ver beneficios <ArrowRight className="h-4 w-4" /></Button></a>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== Planes DoctoRed ===== */}
-      <section id="planes" className="py-20" style={{ background: '#e8f0fe' }}>
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="mb-12 text-center">
-            <Badge className="mb-3 text-white" style={{ background: '#1a73e8' }}>DoctoRed</Badge>
-            <h2 className="text-3xl font-bold sm:text-4xl">Planes DoctoRed</h2>
-            <p className="mt-3 text-muted-foreground">Elegí el plan que se adapte a tu presupuesto y necesidades</p>
-          </div>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {/* Planes */}
+          <div className="mb-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {DOCTORED_PLANS.map((plan) => (
               <Card key={plan.name} className="border-2 transition-all hover:-translate-y-1 hover:shadow-lg" style={{ borderColor: '#1a73e840' }}>
                 <CardContent className="p-6">
@@ -224,9 +214,11 @@ export default function SegurosPage() {
               </Card>
             ))}
           </div>
-          <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+
+          {/* Beneficios */}
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {DOCTORED_BENEFITS.map((b) => (
-              <div key={b} className="flex items-center gap-3 rounded-lg bg-background p-3 shadow-sm">
+              <div key={b} className="flex items-center gap-3 rounded-lg border p-3" style={{ background: '#e8f0fe' }}>
                 <CheckCircle2 className="h-5 w-5 shrink-0" style={{ color: '#1a73e8' }} />
                 <span className="text-sm">{b}</span>
               </div>
@@ -235,14 +227,20 @@ export default function SegurosPage() {
         </div>
       </section>
 
-      {/* ===== Beneficios Premedic ===== */}
-      <section id="beneficios" className="py-20" style={{ background: '#e8f5e9' }}>
+      {/* ===== Premedic Section ===== */}
+      <section id="premedic" className="py-20" style={{ background: '#e8f5e9' }}>
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-12 text-center">
-            <Badge className="mb-3 text-white" style={{ background: '#2e7d32' }}>Grupo Premedic</Badge>
-            <h2 className="text-3xl font-bold sm:text-4xl">Beneficios Grupo Premedic</h2>
-            <p className="mt-3 text-muted-foreground">Todo lo que necesitás para cuidar tu salud y la de tu familia</p>
+            <div className="mb-4 flex items-center justify-center gap-3">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl text-2xl font-bold text-white shadow-lg" style={{ background: '#2e7d32' }}>GP</div>
+              <div className="text-left">
+                <h2 className="text-3xl font-bold">Grupo Premedic</h2>
+                <p className="text-sm italic text-muted-foreground">"Somos el respaldo que te merecés"</p>
+              </div>
+            </div>
+            <p className="mx-auto max-w-2xl text-muted-foreground">El respaldo que te merecés con la mejor cobertura y amplia red médica. Telemedicina, médico IA 24/7 y beneficios únicos.</p>
           </div>
+
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {PREMEDIC_BENEFITS.map((b) => (
               <Card key={b.text} className="transition-all hover:-translate-y-1 hover:shadow-lg">
@@ -255,6 +253,7 @@ export default function SegurosPage() {
               </Card>
             ))}
           </div>
+
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             <Card><CardContent className="flex items-center gap-3 p-4"><Phone className="h-5 w-5 text-red-500" /><div><p className="text-xs text-muted-foreground">Urgencias</p><p className="font-semibold">0810-888-3226</p></div></CardContent></Card>
             <Card><CardContent className="flex items-center gap-3 p-4"><Phone className="h-5 w-5 text-blue-500" /><div><p className="text-xs text-muted-foreground">Atención al cliente</p><p className="font-semibold">0810-222-5522</p></div></CardContent></Card>
@@ -263,14 +262,116 @@ export default function SegurosPage() {
         </div>
       </section>
 
-      {/* ===== Formulario ===== */}
-      <section id="contacto" className="py-20">
-        <div className="mx-auto max-w-2xl px-4">
+      {/* ===== Cartilla Médica ===== */}
+      <section id="cartilla" className="py-20">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="mb-8 text-center">
+            <Badge variant="outline" className="mb-3">Cartilla</Badge>
+            <h2 className="text-3xl font-bold sm:text-4xl">📍 Cartilla Médica</h2>
+            <p className="mt-3 text-muted-foreground">Encontrá el prestador más cercano a tu ubicación</p>
+          </div>
+
+          <div className="mx-auto mb-6 flex max-w-2xl flex-wrap gap-3">
+            <select
+              value={cartProvincia}
+              onChange={(e) => { setCartProvincia(e.target.value); setCartLocalidad(''); }}
+              className="min-w-[150px] flex-1 rounded-lg border bg-background px-4 py-2"
+            >
+              <option value="">Provincia...</option>
+              {PROVINCIAS.map((p) => <option key={p} value={p}>{p}</option>)}
+            </select>
+            <select
+              value={cartLocalidad}
+              onChange={(e) => setCartLocalidad(e.target.value)}
+              className="min-w-[150px] flex-1 rounded-lg border bg-background px-4 py-2"
+              disabled={!cartProvincia}
+            >
+              <option value="">Localidad...</option>
+              {(LOCALIDADES[cartProvincia] || []).map((l) => <option key={l} value={l}>{l}</option>)}
+            </select>
+            <Button onClick={handleCartSearch} disabled={!cartProvincia || !cartLocalidad || cartLoading} className="gap-2">
+              {cartLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
+              Buscar
+            </Button>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Results */}
+            <div className="max-h-[500px] space-y-3 overflow-y-auto">
+              {cartResults.length === 0 ? (
+                <p className="py-12 text-center text-muted-foreground">Seleccioná provincia y localidad para buscar prestadores</p>
+              ) : (
+                cartResults.map((item) => (
+                  <Card key={item.id} className="transition hover:shadow-md">
+                    <CardContent className="p-4">
+                      <div className="mb-1 flex items-center gap-2">
+                        <MapPin className="h-4 w-4 shrink-0" style={{ color: item.empresa === 'doctored' ? '#1a73e8' : '#2e7d32' }} />
+                        <h4 className="font-semibold">{item.nombre}</h4>
+                      </div>
+                      <p className="ml-6 text-sm text-muted-foreground">{item.direccion}</p>
+                      <div className="ml-6 flex items-center gap-4 text-sm text-muted-foreground">
+                        <span>📞 {item.telefono}</span>
+                        <span>📍 {item.distancia} km</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+            </div>
+
+            {/* Map */}
+            <div className="h-[500px] overflow-hidden rounded-xl border">
+              {cartMounted && cartResults.length > 0 ? (
+                <iframe
+                  title="Mapa de prestadores"
+                  src={`https://www.openstreetmap.org/export/embed.html?bbox=${cartResults[0].lng - 0.05}%2C${cartResults[0].lat - 0.05}%2C${cartResults[0].lng + 0.05}%2C${cartResults[0].lat + 0.05}&layer=mapnik&marker=${cartResults[0].lat}%2C${cartResults[0].lng}`}
+                  className="h-full w-full"
+                  style={{ border: 0 }}
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center text-muted-foreground">
+                  <div className="text-center">
+                    <MapPin className="mx-auto mb-2 h-12 w-12 opacity-30" />
+                    <p className="text-sm">El mapa aparecerá aquí</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== Contacto ===== */}
+      <section id="contacto" className="py-20 bg-muted/30">
+        <div className="mx-auto max-w-3xl px-4">
           <div className="mb-8 text-center">
             <Badge variant="outline" className="mb-3">Contacto</Badge>
             <h2 className="text-3xl font-bold sm:text-4xl">Solicitar Asesoramiento</h2>
             <p className="mt-3 text-muted-foreground">Completá el formulario y te contactaremos a la brevedad</p>
           </div>
+
+          {/* Carteles de contacto */}
+          <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <Card className="text-center"><CardContent className="p-4">
+              <span className="text-2xl">📞</span><p className="font-semibold">Teléfono</p><p className="text-sm text-muted-foreground">11-6555-5534</p>
+            </CardContent></Card>
+            <Card className="text-center"><CardContent className="p-4">
+              <span className="text-2xl">✉️</span><p className="font-semibold">Email</p><p className="text-sm text-muted-foreground">info@asesoradesalud.com</p>
+            </CardContent></Card>
+            <Card className="text-center"><CardContent className="p-4">
+              <span className="text-2xl">🌐</span><p className="font-semibold">Redes Sociales</p>
+              <div className="mt-1 flex justify-center gap-3">
+                <a href="#" className="text-blue-500 hover:underline"><Instagram className="h-5 w-5" /></a>
+                <a href="#" className="text-blue-700 hover:underline"><Facebook className="h-5 w-5" /></a>
+              </div>
+            </CardContent></Card>
+            <Card className="text-center"><CardContent className="p-4">
+              <span className="text-2xl">📱</span><p className="font-semibold">Código QR</p>
+              <div className="mx-auto mt-1 flex h-16 w-16 items-center justify-center rounded-lg bg-muted text-xs text-muted-foreground">QR</div>
+            </CardContent></Card>
+          </div>
+
+          {/* Formulario */}
           <Card className="shadow-xl">
             <CardContent className="p-6 sm:p-8">
               <form onSubmit={handleSubmit} className="space-y-4">
