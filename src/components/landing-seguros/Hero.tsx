@@ -8,7 +8,7 @@ export function Hero() {
   return (
     <section
       id="top"
-      className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-600 to-cyan-500 text-white"
+      className="relative w-full overflow-hidden bg-gradient-to-br from-blue-600 via-blue-600 to-cyan-500 text-white"
     >
       <div
         aria-hidden
@@ -19,14 +19,14 @@ export function Hero() {
           backgroundSize: '48px 48px',
         }}
       />
-      <div className="relative container mx-auto px-4 py-20 md:py-28 text-center">
+      <div className="relative w-full max-w-4xl mx-auto px-4 py-20 md:py-28 text-center">
         <span className="inline-block rounded-full bg-white/15 px-4 py-1 text-xs font-semibold backdrop-blur mb-4">
           Asesoramiento en salud • Sin costo
         </span>
-        <h1 className="text-3xl md:text-5xl font-bold tracking-tight max-w-3xl mx-auto">
+        <h1 className="text-3xl md:text-5xl font-bold tracking-tight">
           Encontrá el plan de salud que mejor se adapta a vos
         </h1>
-        <p className="mt-4 text-base md:text-lg text-blue-50 max-w-2xl mx-auto">
+        <p className="mt-4 text-base md:text-lg text-blue-50">
           Compará las mejores opciones con asesoría personalizada y sin costo
         </p>
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
