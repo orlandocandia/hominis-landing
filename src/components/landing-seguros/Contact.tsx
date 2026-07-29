@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { Phone, Mail, Facebook, Instagram, Send, CheckCircle2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useI18n } from '@/lib/i18n/provider'
 import { COMPANIES } from './companies'
 
 // Datos de contacto y redes sociales
@@ -26,56 +27,56 @@ interface ContactLink {
   external?: boolean
 }
 
-const CONTACT_LINKS: ContactLink[] = [
-  {
-    href: `tel:+${WHATSAPP_NUMBER}`,
-    icon: Phone,
-    iconColor: 'text-green-600',
-    bgClass: 'bg-green-50',
-    hoverClass: 'hover:bg-green-100',
-    borderClass: 'border-green-200',
-    display: WHATSAPP_DISPLAY,
-  },
-  {
-    href: `mailto:${EMAIL}`,
-    icon: Mail,
-    iconColor: 'text-blue-600',
-    bgClass: 'bg-blue-50',
-    hoverClass: 'hover:bg-blue-100',
-    borderClass: 'border-blue-200',
-    display: EMAIL,
-  },
-  {
-    href: FACEBOOK_URL,
-    icon: Facebook,
-    iconColor: 'text-[#1877F2]',
-    bgClass: 'bg-blue-50',
-    hoverClass: 'hover:bg-blue-100',
-    borderClass: 'border-blue-200',
-    display: FACEBOOK_DISPLAY,
-    external: true,
-  },
-  {
-    href: INSTAGRAM_URL,
-    icon: Instagram,
-    iconColor: 'text-[#E4405F]',
-    bgClass: 'bg-pink-50',
-    hoverClass: 'hover:bg-pink-100',
-    borderClass: 'border-pink-200',
-    display: INSTAGRAM_DISPLAY,
-    external: true,
-  },
-]
-
 export function Contact() {
+  const { t } = useI18n()
   const [submitted, setSubmitted] = useState(false)
+
+  // Links de contacto con dark: variants para modo oscuro
+  const CONTACT_LINKS: ContactLink[] = [
+    {
+      href: `tel:+${WHATSAPP_NUMBER}`,
+      icon: Phone,
+      iconColor: 'text-green-600 dark:text-green-400',
+      bgClass: 'bg-green-50 dark:bg-green-950/30',
+      hoverClass: 'hover:bg-green-100 dark:hover:bg-green-950/50',
+      borderClass: 'border-green-200 dark:border-green-900/50',
+      display: WHATSAPP_DISPLAY,
+    },
+    {
+      href: `mailto:${EMAIL}`,
+      icon: Mail,
+      iconColor: 'text-blue-600 dark:text-blue-400',
+      bgClass: 'bg-blue-50 dark:bg-blue-950/30',
+      hoverClass: 'hover:bg-blue-100 dark:hover:bg-blue-950/50',
+      borderClass: 'border-blue-200 dark:border-blue-900/50',
+      display: EMAIL,
+    },
+    {
+      href: FACEBOOK_URL,
+      icon: Facebook,
+      iconColor: 'text-[#1877F2] dark:text-blue-400',
+      bgClass: 'bg-blue-50 dark:bg-blue-950/30',
+      hoverClass: 'hover:bg-blue-100 dark:hover:bg-blue-950/50',
+      borderClass: 'border-blue-200 dark:border-blue-900/50',
+      display: FACEBOOK_DISPLAY,
+      external: true,
+    },
+    {
+      href: INSTAGRAM_URL,
+      icon: Instagram,
+      iconColor: 'text-[#E4405F] dark:text-pink-400',
+      bgClass: 'bg-pink-50 dark:bg-pink-950/30',
+      hoverClass: 'hover:bg-pink-100 dark:hover:bg-pink-950/50',
+      borderClass: 'border-pink-200 dark:border-pink-900/50',
+      display: INSTAGRAM_DISPLAY,
+      external: true,
+    },
+  ]
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    // Placeholder: en producción esto haría POST a /api/leads con el empresaId
     setSubmitted(true)
     e.currentTarget.reset()
-    // Reset el estado de "enviado" después de 5s para permitir nuevos envíos
     setTimeout(() => setSubmitted(false), 5000)
   }
 
@@ -91,10 +92,10 @@ export function Contact() {
             id="contacto-title"
             className="text-2xl md:text-3xl font-bold text-foreground"
           >
-            Contactanos
+            {t('seguros.contacto.title')}
           </h2>
           <p className="mt-2 text-sm text-muted-foreground max-w-xl mx-auto">
-            Completá el formulario y un asesor te contactará a la brevedad.
+            {t('seguros.contacto.subtitle')}
           </p>
         </div>
 
@@ -103,12 +104,12 @@ export function Contact() {
           <form
             onSubmit={handleSubmit}
             className="flex flex-col rounded-xl border border-border bg-card overflow-hidden min-w-0"
-            aria-label="Formulario de contacto"
+            aria-label={t('seguros.contacto.formTitle')}
           >
             {/* Título con fondo de color */}
             <div className="bg-primary/10 p-4 border-b border-primary/20">
               <h3 className="text-lg font-bold text-foreground text-center">
-                Solicitar asesoramiento
+                {t('seguros.contacto.formTitle')}
               </h3>
             </div>
 
@@ -120,28 +121,27 @@ export function Contact() {
                   className="flex items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 dark:border-emerald-900/40 dark:bg-emerald-950/20 p-3 text-sm text-emerald-700 dark:text-emerald-300"
                 >
                   <CheckCircle2 className="h-4 w-4 shrink-0" />
-                  ¡Gracias! Tu solicitud fue enviada. Te contactaremos a la
-                  brevedad.
+                  {t('seguros.contacto.success')}
                 </div>
               )}
 
               <div className="grid sm:grid-cols-2 gap-3">
                 <div className="flex flex-col gap-1.5">
                   <label htmlFor="nombre" className="text-sm font-medium text-foreground">
-                    Nombre <span className="text-red-500">*</span>
+                    {t('seguros.contacto.nombre')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     id="nombre"
                     name="nombre"
                     required
                     type="text"
-                    placeholder="Tu nombre"
+                    placeholder={t('seguros.contacto.nombre')}
                     className="h-10 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <label htmlFor="telefono" className="text-sm font-medium text-foreground">
-                    Teléfono <span className="text-red-500">*</span>
+                    {t('seguros.contacto.telefono')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     id="telefono"
@@ -156,7 +156,7 @@ export function Contact() {
 
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="email" className="text-sm font-medium text-foreground">
-                  Email <span className="text-red-500">*</span>
+                  {t('seguros.contacto.email')} <span className="text-red-500">*</span>
                 </label>
                 <input
                   id="email"
@@ -170,7 +170,7 @@ export function Contact() {
 
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="empresa" className="text-sm font-medium text-foreground">
-                  Empresa de interés <span className="text-red-500">*</span>
+                  {t('seguros.contacto.empresa')} <span className="text-red-500">*</span>
                 </label>
                 <select
                   id="empresa"
@@ -180,26 +180,26 @@ export function Contact() {
                   className="h-10 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="" disabled>
-                    Seleccioná una empresa
+                    {t('seguros.contacto.empresaPlaceholder')}
                   </option>
                   {COMPANIES.map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.name}
                     </option>
                   ))}
-                  <option value="ambas">Ambas / No estoy seguro</option>
+                  <option value="ambas">{t('seguros.contacto.empresaAmbas')}</option>
                 </select>
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="mensaje" className="text-sm font-medium text-foreground">
-                  Mensaje
+                  {t('seguros.contacto.mensaje')}
                 </label>
                 <textarea
                   id="mensaje"
                   name="mensaje"
                   rows={4}
-                  placeholder="Contanos qué necesitás (opcional)"
+                  placeholder={t('seguros.contacto.mensajePlaceholder')}
                   className="rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -209,13 +209,12 @@ export function Contact() {
                 className="bg-gradient-to-r from-blue-600 to-cyan-500"
               >
                 <Send className="mr-2 h-4 w-4" />
-                Enviar solicitud
+                {t('seguros.contacto.enviar')}
               </Button>
 
               {/* Texto legal debajo del botón */}
               <p className="text-xs text-muted-foreground text-center mt-2">
-                Al enviar este formulario, aceptás que me comunique con vos para
-                brindarte asesoramiento. Tus datos están protegidos.
+                {t('seguros.contacto.legal')}
               </p>
             </div>
           </form>
@@ -223,7 +222,7 @@ export function Contact() {
           {/* Datos de contacto + Redes + QR */}
           <div className="flex flex-col gap-4">
             <h3 className="text-lg font-bold text-foreground">
-              Datos de contacto
+              {t('seguros.contacto.datosTitle')}
             </h3>
 
             <div className="flex flex-col gap-3">
@@ -249,12 +248,12 @@ export function Contact() {
             {/* Código QR */}
             <div className="mt-4 pt-4 border-t border-border text-center">
               <p className="text-sm font-medium text-foreground mb-3">
-                Escaneá el código QR
+                {t('seguros.contacto.qrTitle')}
               </p>
               <div className="inline-block bg-white p-3 rounded-xl border border-border shadow-sm">
                 <Image
                   src="/images/qr-contacto.png"
-                  alt="QR de contacto — WhatsApp"
+                  alt={t('seguros.contacto.qrTitle')}
                   width={128}
                   height={128}
                   className="w-32 h-32 object-contain"
@@ -262,7 +261,7 @@ export function Contact() {
                 />
               </div>
               <p className="text-xs text-muted-foreground mt-3">
-                Accedé directamente a nuestros canales de contacto
+                {t('seguros.contacto.qrSubtitle')}
               </p>
             </div>
           </div>
