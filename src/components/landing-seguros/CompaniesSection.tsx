@@ -22,7 +22,7 @@ function CompanyCard({ company }: { company: Company }) {
     <a
       href={`#${company.id}`}
       onClick={handleClick}
-      className="group flex flex-col items-center justify-start gap-4 rounded-xl border-2 bg-card p-6 text-center transition hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+      className="group flex flex-col items-center justify-start gap-4 rounded-xl border-2 bg-card p-6 text-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
       style={{ borderColor: company.color }}
       aria-label={`Ver sección de ${company.name}`}
     >
@@ -60,7 +60,7 @@ export function CompaniesSection() {
   return (
     <section
       id="empresas"
-      className="w-full min-h-[calc(100vh-4rem)] flex items-center justify-center scroll-mt-16"
+      className="w-full min-h-[calc(100vh-4rem)] flex items-center justify-center scroll-mt-16 bg-white dark:bg-background"
       aria-labelledby="empresas-title"
     >
       <div className="w-full max-w-6xl mx-auto px-4 py-12">
