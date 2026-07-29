@@ -39,23 +39,26 @@ export function MenuNav() {
         scrolled ? 'shadow-sm' : ''
       }`}
     >
-      <div className="mx-auto flex h-24 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
-        {/* Logo */}
+      <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
+        {/* Logo: icono + texto */}
         <a
           href="#top"
           onClick={(e) => handleNavClick(e, '#top')}
-          className="flex items-center"
+          className="flex items-center gap-2"
           aria-label="Inicio — Tu Asesora en Salud"
         >
           <Image
             src="/images/seguros/tuasesoraensalud-logo.png"
             alt="Tu Asesora en Salud"
-            width={320}
-            height={80}
+            width={40}
+            height={40}
             priority
             className="object-contain"
-            style={{ height: '5rem', width: 'auto' }}
+            style={{ height: '2.5rem', width: 'auto' }}
           />
+          <span className="font-bold text-base md:text-lg text-foreground whitespace-nowrap">
+            Tu Asesora en Salud
+          </span>
         </a>
 
         {/* Desktop nav */}
