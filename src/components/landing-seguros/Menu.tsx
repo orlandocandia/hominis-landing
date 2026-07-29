@@ -4,18 +4,22 @@ import { Menu, X, ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 import { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
+import { ThemeToggle } from '@/components/theme-toggle'
+import { LanguageSelector } from '@/components/language-selector'
+import { useI18n } from '@/lib/i18n/provider'
 import { scrollToSection } from './companies'
 
-const NAV_LINKS = [
-  { href: '#top', label: 'Inicio' },
-  { href: '#empresas', label: 'Empresas' },
-  { href: '#como-funciona', label: '¿Cómo funciona?' },
-  { href: '#contacto', label: 'Contacto' },
-]
-
 export function MenuNav() {
+  const { t } = useI18n()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+
+  const NAV_LINKS = [
+    { href: '#top', label: t('seguros.nav.inicio') },
+    { href: '#empresas', label: t('seguros.nav.empresas') },
+    { href: '#como-funciona', label: t('seguros.nav.comoFunciona') },
+    { href: '#contacto', label: t('seguros.nav.contacto') },
+  ]
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
@@ -45,11 +49,11 @@ export function MenuNav() {
           href="#top"
           onClick={(e) => handleNavClick(e, '#top')}
           className="flex items-center gap-2"
-          aria-label="Inicio — Tu Asesora en Salud"
+          aria-label={`${t('seguros.nav.inicio')} — ${t('seguros.brand')}`}
         >
           <Image
             src="/images/seguros/tuasesoraensalud-logo.png"
-            alt="Tu Asesora en Salud"
+            alt={t('seguros.brand')}
             width={40}
             height={40}
             priority
@@ -57,12 +61,12 @@ export function MenuNav() {
             style={{ height: '2.5rem', width: 'auto' }}
           />
           <span className="font-bold text-base md:text-lg text-foreground whitespace-nowrap">
-            Tu Asesora en Salud
+            {t('seguros.brand')}
           </span>
         </a>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-1" aria-label="Navegación principal">
+        <nav className="hidden md:flex items-center gap-1" aria-label={t('seguros.nav.inicio')}>
           {NAV_LINKS.map((link) => (
             <a
               key={link.href}
@@ -75,8 +79,10 @@ export function MenuNav() {
           ))}
         </nav>
 
-        {/* CTA + mobile toggle */}
-        <div className="flex items-center gap-2">
+        {/* Acciones: tema + idioma + CTA + mobile toggle */}
+        <div className="flex items-center gap-1 sm:gap-2">
+          <ThemeToggle />
+          <LanguageSelector />
           <Button
             asChild
             size="sm"
@@ -86,13 +92,13 @@ export function MenuNav() {
               href="#contacto"
               onClick={(e) => handleNavClick(e, '#contacto')}
             >
-              Asesorate
+              {t('seguros.nav.asesorate')}
               <ArrowRight className="w-4 h-4" />
             </a>
           </Button>
           <button
             type="button"
-            aria-label={mobileOpen ? 'Cerrar menú' : 'Abrir menú'}
+            aria-label={mobileOpen ? t('seguros.nav.closeMenu') : t('seguros.nav.openMenu')}
             aria-expanded={mobileOpen}
             className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-md text-foreground hover:bg-accent"
             onClick={() => setMobileOpen((v) => !v)}
@@ -106,7 +112,7 @@ export function MenuNav() {
       {mobileOpen && (
         <nav
           className="md:hidden border-t border-border px-4 py-3 space-y-1 bg-background"
-          aria-label="Navegación móvil"
+          aria-label={t('seguros.nav.openMenu')}
         >
           {NAV_LINKS.map((link) => (
             <a
@@ -123,7 +129,7 @@ export function MenuNav() {
             onClick={(e) => handleNavClick(e, '#contacto')}
             className="flex items-center justify-center gap-2 rounded-md bg-gradient-to-r from-blue-600 to-cyan-500 px-3 py-2 text-sm font-bold text-white text-center"
           >
-            Asesorate
+            {t('seguros.nav.asesorate')}
             <ArrowRight className="w-4 h-4" />
           </a>
         </nav>
