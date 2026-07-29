@@ -1,30 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  /* config options here */
   typescript: {
     ignoreBuildErrors: true,
   },
   reactStrictMode: false,
-  allowedDevOrigins: [
-    ".space-z.ai",
-  ],
-  turbopack: {
-    root: __dirname,
-  },
-  async rewrites() {
-    return [
-      {
-        source: "/",
-        has: [
-          {
-            type: "host",
-            value: "cotiza.asesoradesalud.com.ar",
-          },
-        ],
-        destination: "/seguros",
-      },
-    ];
+  eslint: {
+    ignoreDuringBuilds: true,
   },
 };
 
