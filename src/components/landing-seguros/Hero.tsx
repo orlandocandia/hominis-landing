@@ -23,17 +23,19 @@ export function Hero() {
         <span className="inline-block rounded-full bg-white/15 px-4 py-1 text-xs font-semibold backdrop-blur mb-4">
           Asesoramiento en salud • Sin costo
         </span>
-        <h1 className="text-3xl md:text-5xl font-bold tracking-tight">
+        <h1 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
           Encontrá el plan de salud que mejor se adapta a vos
         </h1>
-        <p className="mt-4 text-base md:text-lg text-blue-50">
-          Compará las mejores opciones con asesoría personalizada y sin costo
+        <p className="text-base md:text-xl text-blue-50 mb-6 max-w-2xl mx-auto">
+          Con más de 10 años de experiencia en el sector salud, te ayudo a
+          elegir la cobertura médica que realmente necesitás. Asesoría
+          personalizada, sin costo y con la mejor atención.
         </p>
-        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+        <div className="mt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
           <Button
             asChild
             size="lg"
-            className="bg-white text-blue-700 hover:bg-blue-50"
+            className="gap-2 bg-white text-blue-700 hover:bg-blue-50"
           >
             <a
               href="#contacto"
@@ -42,8 +44,8 @@ export function Hero() {
                 scrollToSection('#contacto')
               }}
             >
-              Solicitar Asesoramiento
-              <ArrowRight className="ml-2 h-4 w-4" />
+              Asesorate
+              <ArrowRight className="h-4 w-4" />
             </a>
           </Button>
           <Button
