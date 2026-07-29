@@ -1,6 +1,7 @@
 'use client'
 
-import { Menu, X, HeartPulse } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
+import Image from 'next/image'
 import { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { scrollToSection } from './companies'
@@ -43,15 +44,18 @@ export function MenuNav() {
         <a
           href="#top"
           onClick={(e) => handleNavClick(e, '#top')}
-          className="flex items-center gap-2"
-          aria-label="Inicio — Hominis"
+          className="flex items-center"
+          aria-label="Inicio — Tu Asesora en Salud"
         >
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-cyan-500 text-white">
-            <HeartPulse className="h-5 w-5" aria-hidden />
-          </div>
-          <span className="text-base font-bold text-foreground">
-            Hominis<span className="text-blue-600">.</span>
-          </span>
+          <Image
+            src="/images/seguros/tuasesoraensalud-logo.png"
+            alt="Tu Asesora en Salud"
+            width={200}
+            height={50}
+            priority
+            className="h-10 w-auto object-contain"
+            style={{ height: '2.5rem', width: 'auto', maxHeight: '3rem' }}
+          />
         </a>
 
         {/* Desktop nav */}
