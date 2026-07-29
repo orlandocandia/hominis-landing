@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import '../globals.css'
 
 export const metadata: Metadata = {
-  title: 'Hominis — Cotizá tu plan de salud | DoctoRed + Grupo Premedic',
+  title: 'Cotizá tu plan de salud',
   description:
     'Compará las mejores opciones de cobertura médica con asesoría personalizada y sin costo. DoctoRed y Grupo Premedic en un solo lugar.',
   keywords: [
@@ -13,10 +13,9 @@ export const metadata: Metadata = {
     'obra social',
     'prepaga',
     'asesoramiento en salud',
-    'Hominis',
   ],
   openGraph: {
-    title: 'Hominis — Cotizá tu plan de salud',
+    title: 'Cotizá tu plan de salud',
     description:
       'Compará las mejores opciones de cobertura médica con asesoría personalizada y sin costo.',
     type: 'website',
