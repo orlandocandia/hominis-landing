@@ -8,7 +8,7 @@ export function Hero() {
   return (
     <section
       id="top"
-      className="relative w-full min-h-[calc(100vh-6rem)] flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-600 via-blue-600 to-cyan-500 text-white"
+      className="relative w-full min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-600 via-blue-600 to-cyan-500 text-white"
     >
       <div
         aria-hidden
@@ -46,22 +46,6 @@ export function Hero() {
             >
               Asesorate
               <ArrowRight className="h-4 w-4" />
-            </a>
-          </Button>
-          <Button
-            asChild
-            size="lg"
-            variant="outline"
-            className="border-white/40 text-white hover:bg-white/10 hover:text-white"
-          >
-            <a
-              href="#empresas"
-              onClick={(e) => {
-                e.preventDefault()
-                scrollToSection('#empresas')
-              }}
-            >
-              Ver empresas
             </a>
           </Button>
         </div>
