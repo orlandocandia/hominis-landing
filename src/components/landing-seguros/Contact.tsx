@@ -102,116 +102,122 @@ export function Contact() {
           {/* Formulario */}
           <form
             onSubmit={handleSubmit}
-            className="flex flex-col gap-4 rounded-xl border border-border bg-card p-6 min-w-0"
+            className="flex flex-col rounded-xl border border-border bg-card overflow-hidden min-w-0"
             aria-label="Formulario de contacto"
           >
-            <h3 className="text-lg font-bold text-foreground">
-              Solicitar asesoramiento
-            </h3>
+            {/* Título con fondo de color */}
+            <div className="bg-primary/10 p-4 border-b border-primary/20">
+              <h3 className="text-lg font-bold text-foreground text-center">
+                Solicitar asesoramiento
+              </h3>
+            </div>
 
-            {submitted && (
-              <div
-                role="status"
-                className="flex items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 dark:border-emerald-900/40 dark:bg-emerald-950/20 p-3 text-sm text-emerald-700 dark:text-emerald-300"
-              >
-                <CheckCircle2 className="h-4 w-4 shrink-0" />
-                ¡Gracias! Tu solicitud fue enviada. Te contactaremos a la
-                brevedad.
+            {/* Contenido del formulario */}
+            <div className="p-6 flex flex-col gap-4">
+              {submitted && (
+                <div
+                  role="status"
+                  className="flex items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 dark:border-emerald-900/40 dark:bg-emerald-950/20 p-3 text-sm text-emerald-700 dark:text-emerald-300"
+                >
+                  <CheckCircle2 className="h-4 w-4 shrink-0" />
+                  ¡Gracias! Tu solicitud fue enviada. Te contactaremos a la
+                  brevedad.
+                </div>
+              )}
+
+              <div className="grid sm:grid-cols-2 gap-3">
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="nombre" className="text-sm font-medium text-foreground">
+                    Nombre <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id="nombre"
+                    name="nombre"
+                    required
+                    type="text"
+                    placeholder="Tu nombre"
+                    className="h-10 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="telefono" className="text-sm font-medium text-foreground">
+                    Teléfono <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id="telefono"
+                    name="telefono"
+                    required
+                    type="tel"
+                    placeholder="+54 9 ..."
+                    className="h-10 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
               </div>
-            )}
 
-            <div className="grid sm:grid-cols-2 gap-3">
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="nombre" className="text-sm font-medium text-foreground">
-                  Nombre <span className="text-red-500">*</span>
+                <label htmlFor="email" className="text-sm font-medium text-foreground">
+                  Email <span className="text-red-500">*</span>
                 </label>
                 <input
-                  id="nombre"
-                  name="nombre"
+                  id="email"
+                  name="email"
                   required
-                  type="text"
-                  placeholder="Tu nombre"
+                  type="email"
+                  placeholder="tu@email.com"
                   className="h-10 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
+
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="telefono" className="text-sm font-medium text-foreground">
-                  Teléfono <span className="text-red-500">*</span>
+                <label htmlFor="empresa" className="text-sm font-medium text-foreground">
+                  Empresa de interés <span className="text-red-500">*</span>
                 </label>
-                <input
-                  id="telefono"
-                  name="telefono"
+                <select
+                  id="empresa"
+                  name="empresa"
                   required
-                  type="tel"
-                  placeholder="+54 9 ..."
+                  defaultValue=""
                   className="h-10 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="email" className="text-sm font-medium text-foreground">
-                Email <span className="text-red-500">*</span>
-              </label>
-              <input
-                id="email"
-                name="email"
-                required
-                type="email"
-                placeholder="tu@email.com"
-                className="h-10 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="empresa" className="text-sm font-medium text-foreground">
-                Empresa de interés <span className="text-red-500">*</span>
-              </label>
-              <select
-                id="empresa"
-                name="empresa"
-                required
-                defaultValue=""
-                className="h-10 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="" disabled>
-                  Seleccioná una empresa
-                </option>
-                {COMPANIES.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
+                >
+                  <option value="" disabled>
+                    Seleccioná una empresa
                   </option>
-                ))}
-                <option value="ambas">Ambas / No estoy seguro</option>
-              </select>
+                  {COMPANIES.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                  <option value="ambas">Ambas / No estoy seguro</option>
+                </select>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="mensaje" className="text-sm font-medium text-foreground">
+                  Mensaje
+                </label>
+                <textarea
+                  id="mensaje"
+                  name="mensaje"
+                  rows={4}
+                  placeholder="Contanos qué necesitás (opcional)"
+                  className="rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <Button
+                type="submit"
+                className="bg-gradient-to-r from-blue-600 to-cyan-500"
+              >
+                <Send className="mr-2 h-4 w-4" />
+                Enviar solicitud
+              </Button>
+
+              {/* Texto legal debajo del botón */}
+              <p className="text-xs text-muted-foreground text-center mt-2">
+                Al enviar este formulario, aceptás que me comunique con vos para
+                brindarte asesoramiento. Tus datos están protegidos.
+              </p>
             </div>
-
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="mensaje" className="text-sm font-medium text-foreground">
-                Mensaje
-              </label>
-              <textarea
-                id="mensaje"
-                name="mensaje"
-                rows={4}
-                placeholder="Contanos qué necesitás (opcional)"
-                className="rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <Button
-              type="submit"
-              className="bg-gradient-to-r from-blue-600 to-cyan-500"
-            >
-              <Send className="mr-2 h-4 w-4" />
-              Enviar solicitud
-            </Button>
-
-            {/* Texto legal debajo del botón */}
-            <p className="text-xs text-muted-foreground text-center mt-2">
-              Al enviar este formulario, aceptás que me comunique con vos para
-              brindarte asesoramiento. Tus datos están protegidos.
-            </p>
           </form>
 
           {/* Datos de contacto + Redes + QR */}
