@@ -39,7 +39,7 @@ export function MenuNav() {
         scrolled ? 'shadow-sm' : ''
       }`}
     >
-      <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
+      <div className="mx-auto flex h-24 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
         {/* Logo */}
         <a
           href="#top"
@@ -50,11 +50,11 @@ export function MenuNav() {
           <Image
             src="/images/seguros/tuasesoraensalud-logo.png"
             alt="Tu Asesora en Salud"
-            width={224}
-            height={56}
+            width={320}
+            height={80}
             priority
             className="object-contain"
-            style={{ height: '3.5rem', width: 'auto' }}
+            style={{ height: '5rem', width: 'auto' }}
           />
         </a>
 
