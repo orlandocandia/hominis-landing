@@ -1,10 +1,10 @@
 'use client'
 
-import { MousePointerClick, FileText, PhoneCall } from 'lucide-react'
+import { Building2, FileText, PhoneCall } from 'lucide-react'
 
 const STEPS = [
   {
-    icon: MousePointerClick,
+    icon: Building2,
     step: 1,
     title: 'Elegí la empresa de tu interés',
     description:
@@ -22,7 +22,7 @@ const STEPS = [
     step: 3,
     title: 'Te contactamos para asesorarte',
     description:
-      'Un asesor de Hominis te llamará para ayudarte a elegir el plan ideal, sin costo.',
+      'Un asesor te llamará para ayudarte a elegir el plan ideal, sin costo.',
   },
 ]
 
@@ -30,7 +30,7 @@ export function HowItWorks() {
   return (
     <section
       id="como-funciona"
-      className="w-full min-h-[calc(100vh-4rem)] flex items-center justify-center scroll-mt-16"
+      className="w-full min-h-[calc(100vh-4rem)] flex items-center justify-center scroll-mt-16 bg-muted/30"
       aria-labelledby="como-funciona-title"
     >
       <div className="w-full max-w-6xl mx-auto px-4 py-12">
@@ -50,7 +50,7 @@ export function HowItWorks() {
           {STEPS.map((step, index) => (
             <div
               key={step.step}
-              className="relative rounded-xl border border-border bg-card p-6 text-center"
+              className="group relative rounded-xl border border-border bg-card p-6 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg"
             >
               {/* Conector entre pasos (solo desktop) */}
               {index < STEPS.length - 1 && (
@@ -62,9 +62,9 @@ export function HowItWorks() {
                 </div>
               )}
 
-              {/* Número de paso */}
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-cyan-500 text-white">
-                <step.icon className="h-6 w-6" aria-hidden />
+              {/* Icono del paso */}
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 transition group-hover:bg-blue-500/20 group-hover:scale-110">
+                <step.icon className="h-8 w-8" aria-hidden />
               </div>
 
               <span className="inline-block rounded-full bg-blue-500/10 px-3 py-0.5 text-xs font-bold text-blue-600 dark:text-blue-400 mb-3">
