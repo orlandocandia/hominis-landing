@@ -1,28 +1,69 @@
 'use client'
 
 import { useState } from 'react'
-import { Mail, Phone, MapPin, Send, CheckCircle2 } from 'lucide-react'
+import Image from 'next/image'
+import { Phone, Mail, Facebook, Instagram, Send, CheckCircle2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { COMPANIES } from './companies'
 
-const CONTACT_INFO = [
+// Datos de contacto y redes sociales
+const WHATSAPP_NUMBER = '5493810000000'
+const WHATSAPP_DISPLAY = '+54 9 381 000-0000'
+const EMAIL = 'info@asesoradesalud.com.ar'
+const FACEBOOK_URL = 'https://facebook.com/tu-pagina'
+const FACEBOOK_DISPLAY = '/tu-pagina'
+const INSTAGRAM_URL = 'https://instagram.com/tu-perfil'
+const INSTAGRAM_DISPLAY = '@tu-perfil'
+
+interface ContactLink {
+  href: string
+  icon: typeof Phone
+  iconColor: string
+  bgClass: string
+  hoverClass: string
+  borderClass: string
+  display: string
+  external?: boolean
+}
+
+const CONTACT_LINKS: ContactLink[] = [
   {
+    href: `tel:+${WHATSAPP_NUMBER}`,
     icon: Phone,
-    label: 'Teléfono / WhatsApp',
-    value: '+54 9 381 000-0000',
-    href: 'https://wa.me/5493810000000',
+    iconColor: 'text-green-600',
+    bgClass: 'bg-green-50',
+    hoverClass: 'hover:bg-green-100',
+    borderClass: 'border-green-200',
+    display: WHATSAPP_DISPLAY,
   },
   {
+    href: `mailto:${EMAIL}`,
     icon: Mail,
-    label: 'Email',
-    value: 'info@asesoradesalud.com.ar',
-    href: 'mailto:info@asesoradesalud.com.ar',
+    iconColor: 'text-blue-600',
+    bgClass: 'bg-blue-50',
+    hoverClass: 'hover:bg-blue-100',
+    borderClass: 'border-blue-200',
+    display: EMAIL,
   },
   {
-    icon: MapPin,
-    label: 'Ubicación',
-    value: 'San Miguel de Tucumán, Tucumán, Argentina',
-    href: null,
+    href: FACEBOOK_URL,
+    icon: Facebook,
+    iconColor: 'text-[#1877F2]',
+    bgClass: 'bg-blue-50',
+    hoverClass: 'hover:bg-blue-100',
+    borderClass: 'border-blue-200',
+    display: FACEBOOK_DISPLAY,
+    external: true,
+  },
+  {
+    href: INSTAGRAM_URL,
+    icon: Instagram,
+    iconColor: 'text-[#E4405F]',
+    bgClass: 'bg-pink-50',
+    hoverClass: 'hover:bg-pink-100',
+    borderClass: 'border-pink-200',
+    display: INSTAGRAM_DISPLAY,
+    external: true,
   },
 ]
 
@@ -44,7 +85,7 @@ export function Contact() {
       className="w-full min-h-[calc(100vh-4rem)] flex items-center justify-center scroll-mt-16 bg-white dark:bg-background"
       aria-labelledby="contacto-title"
     >
-      <div className="w-full max-w-4xl mx-auto px-4 py-12">
+      <div className="w-full max-w-5xl mx-auto px-4 py-12">
         <div className="mb-10 text-center">
           <h2
             id="contacto-title"
@@ -53,58 +94,11 @@ export function Contact() {
             Contactanos
           </h2>
           <p className="mt-2 text-sm text-muted-foreground max-w-xl mx-auto">
-            Completá el formulario y un asesor de Hominis te contactará a la
-            brevedad, sin costo.
+            Completá el formulario y un asesor te contactará a la brevedad.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
-          {/* Info de contacto */}
-          <div className="flex flex-col gap-4 rounded-xl border border-border bg-card p-6 min-w-0">
-            <h3 className="text-lg font-bold text-foreground">
-              Datos de contacto
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              También podés contactarnos directamente por estos medios:
-            </p>
-            <ul className="mt-2 space-y-4">
-              {CONTACT_INFO.map((info) => {
-                const Icon = info.icon
-                const content = (
-                  <>
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400">
-                      <Icon className="h-5 w-5" aria-hidden />
-                    </span>
-                    <span className="flex flex-col">
-                      <span className="text-xs text-muted-foreground">
-                        {info.label}
-                      </span>
-                      <span className="text-sm font-medium text-foreground">
-                        {info.value}
-                      </span>
-                    </span>
-                  </>
-                )
-                return (
-                  <li key={info.label}>
-                    {info.href ? (
-                      <a
-                        href={info.href}
-                        target={info.href.startsWith('http') ? '_blank' : undefined}
-                        rel={info.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                        className="flex items-center gap-3 rounded-md p-1 hover:bg-accent transition"
-                      >
-                        {content}
-                      </a>
-                    ) : (
-                      <div className="flex items-center gap-3 p-1">{content}</div>
-                    )}
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
-
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
           {/* Formulario */}
           <form
             onSubmit={handleSubmit}
@@ -212,7 +206,60 @@ export function Contact() {
               <Send className="mr-2 h-4 w-4" />
               Enviar solicitud
             </Button>
+
+            {/* Texto legal debajo del botón */}
+            <p className="text-xs text-muted-foreground text-center mt-2">
+              Al enviar este formulario, aceptás que me comunique con vos para
+              brindarte asesoramiento. Tus datos están protegidos.
+            </p>
           </form>
+
+          {/* Datos de contacto + Redes + QR */}
+          <div className="flex flex-col gap-4">
+            <h3 className="text-lg font-bold text-foreground">
+              Datos de contacto
+            </h3>
+
+            <div className="flex flex-col gap-3">
+              {CONTACT_LINKS.map((link) => {
+                const Icon = link.icon
+                return (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target={link.external ? '_blank' : undefined}
+                    rel={link.external ? 'noopener noreferrer' : undefined}
+                    className={`flex items-center gap-3 p-3 rounded-lg border transition ${link.bgClass} ${link.hoverClass} ${link.borderClass}`}
+                  >
+                    <Icon className={`h-5 w-5 shrink-0 ${link.iconColor}`} aria-hidden />
+                    <span className="text-sm font-medium text-foreground">
+                      {link.display}
+                    </span>
+                  </a>
+                )
+              })}
+            </div>
+
+            {/* Código QR */}
+            <div className="mt-4 pt-4 border-t border-border text-center">
+              <p className="text-sm font-medium text-foreground mb-3">
+                Escaneá el código QR
+              </p>
+              <div className="inline-block bg-white p-3 rounded-xl border border-border shadow-sm">
+                <Image
+                  src="/images/qr-contacto.png"
+                  alt="QR de contacto — WhatsApp"
+                  width={128}
+                  height={128}
+                  className="w-32 h-32 object-contain"
+                  style={{ width: '8rem', height: '8rem' }}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground mt-3">
+                Accedé directamente a nuestros canales de contacto
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
