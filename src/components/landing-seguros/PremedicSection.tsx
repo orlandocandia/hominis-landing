@@ -21,7 +21,7 @@ export function PremedicSection() {
   return (
     <section
       id={company.id}
-      className="w-full py-16 bg-cyan-50/30 dark:bg-cyan-950/10 scroll-mt-16"
+      className="w-full py-16 bg-cyan-50/30 dark:bg-cyan-950/10 scroll-mt-24"
       aria-labelledby="premedic-title"
     >
       <div className="w-full max-w-7xl mx-auto px-4">
