@@ -2,35 +2,35 @@
 
 import Image from 'next/image'
 import { Building2, FileText, PhoneCall } from 'lucide-react'
-
-const STEPS = [
-  {
-    icon: Building2,
-    step: 1,
-    image: '/images/seguros/paso1-empresas.png',
-    title: 'Elegí la empresa de tu interés',
-    description:
-      'Navegá las empresas que representamos y seleccioná la que más se adapte a tus necesidades.',
-  },
-  {
-    icon: FileText,
-    step: 2,
-    image: '/images/seguros/paso2-formulario.png',
-    title: 'Completá el formulario',
-    description:
-      'Dejanos tus datos y contanos qué estás buscando. Tomá un minuto, sin compromiso.',
-  },
-  {
-    icon: PhoneCall,
-    step: 3,
-    image: '/images/seguros/paso3-contacto.png',
-    title: 'Te contactamos para asesorarte',
-    description:
-      'Un asesor te llamará para ayudarte a elegir el plan ideal, sin costo.',
-  },
-]
+import { useI18n } from '@/lib/i18n/provider'
 
 export function HowItWorks() {
+  const { t } = useI18n()
+
+  const STEPS = [
+    {
+      icon: Building2,
+      step: 1,
+      image: '/images/seguros/paso1-empresas.png',
+      title: t('seguros.comoFunciona.step1.title'),
+      description: t('seguros.comoFunciona.step1.desc'),
+    },
+    {
+      icon: FileText,
+      step: 2,
+      image: '/images/seguros/paso2-formulario.png',
+      title: t('seguros.comoFunciona.step2.title'),
+      description: t('seguros.comoFunciona.step2.desc'),
+    },
+    {
+      icon: PhoneCall,
+      step: 3,
+      image: '/images/seguros/paso3-contacto.png',
+      title: t('seguros.comoFunciona.step3.title'),
+      description: t('seguros.comoFunciona.step3.desc'),
+    },
+  ]
+
   return (
     <section
       id="como-funciona"
@@ -43,10 +43,10 @@ export function HowItWorks() {
             id="como-funciona-title"
             className="text-2xl md:text-3xl font-bold text-foreground"
           >
-            ¿Cómo funciona?
+            {t('seguros.comoFunciona.title')}
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Tres pasos simples para encontrar tu plan de salud ideal.
+            {t('seguros.comoFunciona.subtitle')}
           </p>
         </div>
 
@@ -77,7 +77,7 @@ export function HowItWorks() {
                 {/* Badge "Paso N" bottom-left */}
                 <div className="absolute bottom-3 left-3 right-3">
                   <span className="inline-block text-white font-semibold text-sm bg-black/40 px-3 py-1 rounded-full backdrop-blur-sm">
-                    Paso {step.step}
+                    {t('seguros.comoFunciona.paso')} {step.step}
                   </span>
                 </div>
               </div>
