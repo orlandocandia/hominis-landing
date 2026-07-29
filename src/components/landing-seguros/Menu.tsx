@@ -1,6 +1,6 @@
 'use client'
 
-import { Menu, X } from 'lucide-react'
+import { Menu, X, ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 import { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
@@ -50,11 +50,11 @@ export function MenuNav() {
           <Image
             src="/images/seguros/tuasesoraensalud-logo.png"
             alt="Tu Asesora en Salud"
-            width={200}
-            height={50}
+            width={224}
+            height={56}
             priority
-            className="h-10 w-auto object-contain"
-            style={{ height: '2.5rem', width: 'auto', maxHeight: '3rem' }}
+            className="object-contain"
+            style={{ height: '3.5rem', width: 'auto' }}
           />
         </a>
 
@@ -77,13 +77,14 @@ export function MenuNav() {
           <Button
             asChild
             size="sm"
-            className="hidden sm:inline-flex bg-gradient-to-r from-blue-600 to-cyan-500"
+            className="hidden sm:inline-flex gap-2 bg-gradient-to-r from-blue-600 to-cyan-500"
           >
             <a
               href="#contacto"
               onClick={(e) => handleNavClick(e, '#contacto')}
             >
-              Solicitar Asesoramiento
+              Asesorate
+              <ArrowRight className="w-4 h-4" />
             </a>
           </Button>
           <button
@@ -117,9 +118,10 @@ export function MenuNav() {
           <a
             href="#contacto"
             onClick={(e) => handleNavClick(e, '#contacto')}
-            className="block rounded-md bg-gradient-to-r from-blue-600 to-cyan-500 px-3 py-2 text-sm font-bold text-white text-center"
+            className="flex items-center justify-center gap-2 rounded-md bg-gradient-to-r from-blue-600 to-cyan-500 px-3 py-2 text-sm font-bold text-white text-center"
           >
-            Solicitar Asesoramiento
+            Asesorate
+            <ArrowRight className="w-4 h-4" />
           </a>
         </nav>
       )}
