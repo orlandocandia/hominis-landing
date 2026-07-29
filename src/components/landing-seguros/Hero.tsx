@@ -8,7 +8,7 @@ export function Hero() {
   return (
     <section
       id="top"
-      className="relative w-full min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-600 via-blue-600 to-cyan-500 text-white"
+      className="relative w-full min-h-[calc(100vh-6rem)] flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-600 via-blue-600 to-cyan-500 text-white"
     >
       <div
         aria-hidden
