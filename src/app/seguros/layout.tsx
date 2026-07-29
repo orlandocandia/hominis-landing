@@ -30,3 +30,4 @@ export default function SegurosLayout({
 }) {
   return <>{children}</>
 }
+// trigger redeploy
