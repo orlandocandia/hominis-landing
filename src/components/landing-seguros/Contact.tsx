@@ -41,7 +41,7 @@ export function Contact() {
   return (
     <section
       id="contacto"
-      className="w-full min-h-[calc(100vh-4rem)] flex items-center justify-center bg-muted/30 scroll-mt-16"
+      className="w-full min-h-[calc(100vh-4rem)] flex items-center justify-center scroll-mt-16 bg-white dark:bg-background"
       aria-labelledby="contacto-title"
     >
       <div className="w-full max-w-4xl mx-auto px-4 py-12">
