@@ -2,9 +2,12 @@
 
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useI18n } from '@/lib/i18n/provider'
 import { scrollToSection } from './companies'
 
 export function Hero() {
+  const { t } = useI18n()
+
   return (
     <section
       id="top"
@@ -21,14 +24,13 @@ export function Hero() {
       />
       <div className="relative w-full max-w-4xl mx-auto px-4 py-12 md:py-16 text-center">
         <span className="inline-block rounded-full bg-white/15 px-4 py-1 text-xs font-semibold backdrop-blur mb-4">
-          Asesoramiento en salud • Sin costo
+          {t('seguros.hero.badge')}
         </span>
         <h1 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-white">
-          Encontrá el plan de salud que mejor se adapta a vos
+          {t('seguros.hero.title')}
         </h1>
         <p className="text-base md:text-xl text-white/90 mb-6 max-w-2xl mx-auto">
-          Con mi experiencia, encontrás la cobertura médica ideal para vos y tu
-          familia sin vueltas ni costo.
+          {t('seguros.hero.subtitle')}
         </p>
         <div className="mt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
           <Button
@@ -43,7 +45,7 @@ export function Hero() {
                 scrollToSection('#contacto')
               }}
             >
-              Asesorate
+              {t('seguros.hero.cta')}
               <ArrowRight className="h-4 w-4" />
             </a>
           </Button>
