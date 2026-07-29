@@ -1,11 +1,13 @@
 'use client'
 
+import Image from 'next/image'
 import { Building2, FileText, PhoneCall } from 'lucide-react'
 
 const STEPS = [
   {
     icon: Building2,
     step: 1,
+    image: '/images/seguros/paso1-empresas.png',
     title: 'Elegí la empresa de tu interés',
     description:
       'Navegá las empresas que representamos y seleccioná la que más se adapte a tus necesidades.',
@@ -13,6 +15,7 @@ const STEPS = [
   {
     icon: FileText,
     step: 2,
+    image: '/images/seguros/paso2-formulario.png',
     title: 'Completá el formulario',
     description:
       'Dejanos tus datos y contanos qué estás buscando. Tomá un minuto, sin compromiso.',
@@ -20,6 +23,7 @@ const STEPS = [
   {
     icon: PhoneCall,
     step: 3,
+    image: '/images/seguros/paso3-contacto.png',
     title: 'Te contactamos para asesorarte',
     description:
       'Un asesor te llamará para ayudarte a elegir el plan ideal, sin costo.',
@@ -50,8 +54,44 @@ export function HowItWorks() {
           {STEPS.map((step, index) => (
             <div
               key={step.step}
-              className="group relative rounded-xl border border-border bg-card p-6 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg"
+              className="group relative overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:scale-105 hover:shadow-lg"
             >
+              {/* Imagen del paso con gradiente + badge */}
+              <div className="relative w-full h-48 overflow-hidden">
+                <Image
+                  src={step.image}
+                  alt={step.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                {/* Gradiente oscuro en la parte inferior */}
+                <div
+                  aria-hidden
+                  className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"
+                />
+                {/* Icono decorativo top-right */}
+                <div className="absolute top-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm">
+                  <step.icon className="h-5 w-5" aria-hidden />
+                </div>
+                {/* Badge "Paso N" bottom-left */}
+                <div className="absolute bottom-3 left-3 right-3">
+                  <span className="inline-block text-white font-semibold text-sm bg-black/40 px-3 py-1 rounded-full backdrop-blur-sm">
+                    Paso {step.step}
+                  </span>
+                </div>
+              </div>
+
+              {/* Contenido textual debajo de la imagen */}
+              <div className="p-6">
+                <h3 className="text-base font-bold text-foreground">
+                  {step.title}
+                </h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {step.description}
+                </p>
+              </div>
+
               {/* Conector entre pasos (solo desktop) */}
               {index < STEPS.length - 1 && (
                 <div
@@ -61,22 +101,6 @@ export function HowItWorks() {
                   →
                 </div>
               )}
-
-              {/* Icono del paso */}
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 transition group-hover:bg-blue-500/20 group-hover:scale-110">
-                <step.icon className="h-8 w-8" aria-hidden />
-              </div>
-
-              <span className="inline-block rounded-full bg-blue-500/10 px-3 py-0.5 text-xs font-bold text-blue-600 dark:text-blue-400 mb-3">
-                Paso {step.step}
-              </span>
-
-              <h3 className="text-base font-bold text-foreground">
-                {step.title}
-              </h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                {step.description}
-              </p>
             </div>
           ))}
         </div>
