@@ -1,6 +1,6 @@
 'use client'
 
-import { Globe } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -18,21 +18,29 @@ const LANGUAGES: { code: LangCode; label: string; flag: string }[] = [
   { code: 'pt', label: 'Português', flag: '🇧🇷' },
 ]
 
-const SHORT: Record<LangCode, string> = {
-  es: 'ES',
-  en: 'EN',
-  pt: 'PT',
+const FLAGS: Record<LangCode, string> = {
+  es: '🇪🇸',
+  en: '🇬🇧',
+  pt: '🇧🇷',
 }
 
 export function LanguageSelector() {
-  const { locale, changeLocale, t } = useTranslation()
+  const { locale, changeLocale } = useTranslation()
+  const currentFlag = FLAGS[locale] || '🇪🇸'
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" aria-label={t('lang.select')}>
-          <Globe className="h-4 w-4" />
-          <span className="ml-1 text-xs font-semibold">{SHORT[locale]}</span>
+        <Button
+          variant="ghost"
+          size="sm"
+          aria-label="Seleccionar idioma"
+          className="gap-1 px-2"
+        >
+          <span className="text-xl leading-none" aria-hidden>
+            {currentFlag}
+          </span>
+          <ChevronDown className="h-3 w-3 text-muted-foreground" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
