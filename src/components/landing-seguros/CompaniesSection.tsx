@@ -52,18 +52,22 @@ function CompanyCard({ company }: { company: Company }) {
   const doctoredPlanes = [
     {
       nombre: 'Plan 500',
+      imagen: 'plan-500.png',
       descripcion: 'Con tus aportes. Accedé a cobertura médica de calidad sin cuota mensual.'
     },
     {
       nombre: 'Plan 1000',
+      imagen: 'plan-1000.png',
       descripcion: 'Tu primer plan privado. Cobertura completa y con excelente cartilla médica.'
     },
     {
       nombre: 'Plan 2000',
+      imagen: 'plan-2000.png',
       descripcion: 'Más cobertura y comodidad. Mayor nivel de prestaciones para atenderte con más tranquilidad.'
     },
     {
       nombre: 'Plan 3000',
+      imagen: 'plan-3000.png',
       descripcion: 'Cobertura total sin límites. El plan más completo para cuidar tu salud con la máxima tranquilidad.'
     }
   ]
@@ -139,6 +143,16 @@ function CompanyCard({ company }: { company: Company }) {
                 key={plan.nombre}
                 className="flex flex-col p-3 bg-white dark:bg-gray-800 rounded-lg border border-blue-200 dark:border-blue-800 shadow-sm hover:shadow-md transition"
               >
+                {/* 📸 IMAGEN ARRIBA */}
+                <div className="w-full h-12 mb-2 flex items-center justify-center">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`/images/seguros/${plan.imagen}`}
+                    alt={plan.nombre}
+                    className="h-full w-auto object-contain"
+                  />
+                </div>
+
                 <h4 className="text-sm font-bold text-foreground">{plan.nombre}</h4>
                 <p className="text-[10px] text-muted-foreground mt-1 flex-1">{plan.descripcion}</p>
                 <button
