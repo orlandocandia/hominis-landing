@@ -22,7 +22,7 @@ export function Hero() {
           backgroundSize: '48px 48px',
         }}
       />
-      <div className="relative w-full max-w-4xl mx-auto px-4 py-12 md:py-16 text-center">
+      <div className="relative w-full max-w-4xl mx-auto px-4 py-12 text-center">
         <span className="inline-block rounded-full bg-white/15 px-4 py-1 text-xs font-semibold backdrop-blur mb-4">
           {t('hero.badge')}
         </span>
