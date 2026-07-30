@@ -141,25 +141,23 @@ function CompanyCard({ company }: { company: Company }) {
             {doctoredPlanes.map((plan) => (
               <div
                 key={plan.nombre}
-                className="flex flex-col p-3 bg-white dark:bg-gray-800 rounded-lg border border-blue-200 dark:border-blue-800 shadow-sm hover:shadow-md transition"
+                className="flex flex-col overflow-hidden rounded-lg border border-blue-200 dark:border-blue-800 shadow-sm bg-white dark:bg-gray-800 group hover:shadow-md transition"
               >
-                {/* 📸 IMAGEN ARRIBA */}
-                <div className="w-full h-12 mb-2 flex items-center justify-center">
+                {/* 📸 IMAGEN - OCUPA TODO EL ANCHO */}
+                <div className="w-full h-20 md:h-24 flex items-center justify-center bg-blue-50 dark:bg-blue-950/20">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={`/images/seguros/${plan.imagen}`}
                     alt={plan.nombre}
-                    className="h-full w-auto object-contain"
+                    className="w-full h-full object-contain"
                   />
                 </div>
 
-                <h4 className="text-sm font-bold text-foreground">{plan.nombre}</h4>
-                <p className="text-[10px] text-muted-foreground mt-1 flex-1">{plan.descripcion}</p>
-                <button
-                  className="mt-2 text-xs text-blue-600 dark:text-blue-400 font-medium hover:underline text-left"
-                >
-                  Ver cobertura →
-                </button>
+                {/* Título y descripción */}
+                <div className="p-2">
+                  <h4 className="text-xs font-bold text-foreground">{plan.nombre}</h4>
+                  <p className="text-[9px] text-muted-foreground mt-0.5 leading-tight">{plan.descripcion}</p>
+                </div>
               </div>
             ))}
           </div>
