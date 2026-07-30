@@ -10,13 +10,15 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useTranslation } from './useTranslation'
 
-const LABELS: Record<string, string> = {
-  es: 'Español',
-  en: 'English',
-  pt: 'Português',
-}
+type LangCode = 'es' | 'en' | 'pt'
 
-const SHORT: Record<string, string> = {
+const LANGUAGES: { code: LangCode; label: string; flag: string }[] = [
+  { code: 'es', label: 'Español', flag: '🇪🇸' },
+  { code: 'en', label: 'English', flag: '🇬🇧' },
+  { code: 'pt', label: 'Português', flag: '🇧🇷' },
+]
+
+const SHORT: Record<LangCode, string> = {
   es: 'ES',
   en: 'EN',
   pt: 'PT',
@@ -34,13 +36,14 @@ export function LanguageSelector() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {(['es', 'en', 'pt'] as const).map((l) => (
+        {LANGUAGES.map((lang) => (
           <DropdownMenuItem
-            key={l}
-            onClick={() => changeLocale(l)}
-            className={locale === l ? 'font-bold' : ''}
+            key={lang.code}
+            onClick={() => changeLocale(lang.code)}
+            className={locale === lang.code ? 'font-bold' : ''}
           >
-            {LABELS[l]}
+            <span className="text-xl mr-2" aria-hidden>{lang.flag}</span>
+            <span>{lang.label}</span>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
