@@ -143,13 +143,13 @@ function CompanyCard({ company }: { company: Company }) {
                 key={plan.nombre}
                 className="flex flex-col overflow-hidden rounded-lg border border-blue-200 dark:border-blue-800 shadow-sm bg-white dark:bg-gray-800 group hover:shadow-md transition"
               >
-                {/* 📸 IMAGEN - OCUPA TODO EL ANCHO */}
-                <div className="w-full h-20 md:h-24 flex items-center justify-center bg-blue-50 dark:bg-blue-950/20">
+                {/* 📸 IMAGEN - SIN ESPACIOS */}
+                <div className="w-full h-24 md:h-28 overflow-hidden bg-blue-50 dark:bg-blue-950/20">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={`/images/seguros/${plan.imagen}`}
                     alt={plan.nombre}
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-cover"
                   />
                 </div>
 
