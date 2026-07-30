@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { Phone, Mail, Facebook, Instagram, Send, CheckCircle2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useI18n } from '@/lib/i18n/provider'
+import { useTranslation } from './useTranslation'
 import { COMPANIES } from './companies'
 
 // Datos de contacto y redes sociales
@@ -28,7 +28,7 @@ interface ContactLink {
 }
 
 export function Contact() {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const [submitted, setSubmitted] = useState(false)
 
   // Links de contacto con dark: variants para modo oscuro
@@ -92,10 +92,10 @@ export function Contact() {
             id="contacto-title"
             className="text-2xl md:text-3xl font-bold text-foreground"
           >
-            {t('seguros.contacto.title')}
+            {t('contacto.title')}
           </h2>
           <p className="mt-2 text-sm text-muted-foreground max-w-xl mx-auto">
-            {t('seguros.contacto.subtitle')}
+            {t('contacto.subtitle')}
           </p>
         </div>
 
@@ -104,12 +104,12 @@ export function Contact() {
           <form
             onSubmit={handleSubmit}
             className="flex flex-col rounded-xl border border-border bg-card overflow-hidden min-w-0"
-            aria-label={t('seguros.contacto.formTitle')}
+            aria-label={t('contacto.formTitle')}
           >
             {/* Título con fondo de color */}
             <div className="bg-primary/10 p-4 border-b border-primary/20">
               <h3 className="text-lg font-bold text-foreground text-center">
-                {t('seguros.contacto.formTitle')}
+                {t('contacto.formTitle')}
               </h3>
             </div>
 
@@ -121,27 +121,27 @@ export function Contact() {
                   className="flex items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 dark:border-emerald-900/40 dark:bg-emerald-950/20 p-3 text-sm text-emerald-700 dark:text-emerald-300"
                 >
                   <CheckCircle2 className="h-4 w-4 shrink-0" />
-                  {t('seguros.contacto.success')}
+                  {t('contacto.success')}
                 </div>
               )}
 
               <div className="grid sm:grid-cols-2 gap-3">
                 <div className="flex flex-col gap-1.5">
                   <label htmlFor="nombre" className="text-sm font-medium text-foreground">
-                    {t('seguros.contacto.nombre')} <span className="text-red-500">*</span>
+                    {t('contacto.nombre')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     id="nombre"
                     name="nombre"
                     required
                     type="text"
-                    placeholder={t('seguros.contacto.nombre')}
+                    placeholder={t('contacto.nombre')}
                     className="h-10 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <label htmlFor="telefono" className="text-sm font-medium text-foreground">
-                    {t('seguros.contacto.telefono')} <span className="text-red-500">*</span>
+                    {t('contacto.telefono')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     id="telefono"
@@ -156,7 +156,7 @@ export function Contact() {
 
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="email" className="text-sm font-medium text-foreground">
-                  {t('seguros.contacto.email')} <span className="text-red-500">*</span>
+                  {t('contacto.email')} <span className="text-red-500">*</span>
                 </label>
                 <input
                   id="email"
@@ -170,7 +170,7 @@ export function Contact() {
 
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="empresa" className="text-sm font-medium text-foreground">
-                  {t('seguros.contacto.empresa')} <span className="text-red-500">*</span>
+                  {t('contacto.empresa')} <span className="text-red-500">*</span>
                 </label>
                 <select
                   id="empresa"
@@ -180,26 +180,26 @@ export function Contact() {
                   className="h-10 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="" disabled>
-                    {t('seguros.contacto.empresaPlaceholder')}
+                    {t('contacto.empresaPlaceholder')}
                   </option>
                   {COMPANIES.map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.name}
                     </option>
                   ))}
-                  <option value="ambas">{t('seguros.contacto.empresaAmbas')}</option>
+                  <option value="ambas">{t('contacto.empresaAmbas')}</option>
                 </select>
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="mensaje" className="text-sm font-medium text-foreground">
-                  {t('seguros.contacto.mensaje')}
+                  {t('contacto.mensaje')}
                 </label>
                 <textarea
                   id="mensaje"
                   name="mensaje"
                   rows={4}
-                  placeholder={t('seguros.contacto.mensajePlaceholder')}
+                  placeholder={t('contacto.mensajePlaceholder')}
                   className="rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -209,12 +209,12 @@ export function Contact() {
                 className="bg-gradient-to-r from-blue-600 to-cyan-500"
               >
                 <Send className="mr-2 h-4 w-4" />
-                {t('seguros.contacto.enviar')}
+                {t('contacto.enviar')}
               </Button>
 
               {/* Texto legal debajo del botón */}
               <p className="text-xs text-muted-foreground text-center mt-2">
-                {t('seguros.contacto.legal')}
+                {t('contacto.legal')}
               </p>
             </div>
           </form>
@@ -222,7 +222,7 @@ export function Contact() {
           {/* Datos de contacto + Redes + QR */}
           <div className="flex flex-col gap-4">
             <h3 className="text-lg font-bold text-foreground">
-              {t('seguros.contacto.datosTitle')}
+              {t('contacto.datosTitle')}
             </h3>
 
             <div className="flex flex-col gap-3">
@@ -248,12 +248,12 @@ export function Contact() {
             {/* Código QR */}
             <div className="mt-4 pt-4 border-t border-border text-center">
               <p className="text-sm font-medium text-foreground mb-3">
-                {t('seguros.contacto.qrTitle')}
+                {t('contacto.qrTitle')}
               </p>
               <div className="inline-block bg-white p-3 rounded-xl border border-border shadow-sm">
                 <Image
                   src="/images/qr-contacto.png"
-                  alt={t('seguros.contacto.qrTitle')}
+                  alt={t('contacto.qrTitle')}
                   width={128}
                   height={128}
                   className="w-32 h-32 object-contain"
@@ -261,7 +261,7 @@ export function Contact() {
                 />
               </div>
               <p className="text-xs text-muted-foreground mt-3">
-                {t('seguros.contacto.qrSubtitle')}
+                {t('contacto.qrSubtitle')}
               </p>
             </div>
           </div>
