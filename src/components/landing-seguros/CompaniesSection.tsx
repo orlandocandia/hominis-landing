@@ -62,7 +62,7 @@ function CompanyCard({ company }: { company: Company }) {
     <a
       href={`#${company.id}`}
       onClick={handleClick}
-      className={`group relative flex min-h-[400px] md:min-h-[500px] lg:min-h-[60vh] xl:min-h-[50vh] w-full flex-col items-center justify-center gap-3 md:gap-4 rounded-2xl border-2 p-6 md:p-8 text-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${styles.bg} ${styles.border} ${styles.hoverBg} ${styles.hoverBorder}`}
+      className={`group relative flex min-h-[350px] md:min-h-[420px] lg:min-h-[50vh] xl:min-h-[45vh] w-full flex-col items-center justify-center gap-3 md:gap-4 rounded-2xl border-2 p-6 md:p-8 text-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${styles.bg} ${styles.border} ${styles.hoverBg} ${styles.hoverBorder}`}
       aria-label={`${t('empresas.verPlanes')} ${company.name}`}
     >
       {/* ✅ LOGO (permanece en ambas) */}
@@ -94,15 +94,15 @@ function CompanyCard({ company }: { company: Company }) {
           {/* 🆕 BENEFICIOS (grid 2x2) */}
           <div className="grid grid-cols-2 gap-3 w-full max-w-sm mt-2">
             <AmarMascotasBenefit />
-            <div className="flex flex-col items-center justify-center p-3 bg-white/50 dark:bg-black/20 rounded-lg min-h-[128px]">
+            <div className="flex flex-col items-center justify-center p-3 bg-white dark:bg-gray-800 rounded-lg border border-green-200 dark:border-green-800 shadow-sm min-h-[128px]">
               <span className="text-2xl" aria-hidden>🏥</span>
               <span className="text-xs font-medium text-foreground mt-1">Centros médicos propios</span>
             </div>
-            <div className="flex flex-col items-center justify-center p-3 bg-white/50 dark:bg-black/20 rounded-lg min-h-[128px]">
+            <div className="flex flex-col items-center justify-center p-3 bg-white dark:bg-gray-800 rounded-lg border border-green-200 dark:border-green-800 shadow-sm min-h-[128px]">
               <span className="text-2xl" aria-hidden>❤️</span>
               <span className="text-xs font-medium text-foreground mt-1">El mejor de sus cuidados</span>
             </div>
-            <div className="flex flex-col items-center justify-center p-3 bg-white/50 dark:bg-black/20 rounded-lg min-h-[128px]">
+            <div className="flex flex-col items-center justify-center p-3 bg-white dark:bg-gray-800 rounded-lg border border-green-200 dark:border-green-800 shadow-sm min-h-[128px]">
               <span className="text-2xl" aria-hidden>📍</span>
               <span className="text-xs font-medium text-foreground mt-1">Presencia en 5 provincias</span>
             </div>
@@ -124,7 +124,7 @@ function CompanyCard({ company }: { company: Company }) {
             {t(keys.desc)}
           </p>
 
-          <div className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-white/60 dark:bg-background/60 w-full ${styles.text}`}>
+          <div className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-white dark:bg-gray-800 border border-blue-200 dark:border-blue-800 shadow-sm w-full ${styles.text}`}>
             <CheckCircle2 className="h-5 w-5 shrink-0" aria-hidden />
             <span className="text-xs font-semibold">
               {t(keys.benefit)}
@@ -153,7 +153,7 @@ export function CompaniesSection() {
       className="w-full min-h-[calc(100vh-4rem)] flex items-start justify-center scroll-mt-16 bg-white dark:bg-background"
       aria-labelledby="empresas-title"
     >
-      <div className="w-full max-w-7xl mx-auto px-4 py-12 md:py-16">
+      <div className="w-full max-w-7xl mx-auto px-4 py-6 md:py-10">
         <div className="mb-6 md:mb-8 text-center">
           <h2
             id="empresas-title"
