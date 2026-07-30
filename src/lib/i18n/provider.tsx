@@ -90,13 +90,25 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 export function useI18n() {
   const ctx = useContext(I18nContext)
   if (!ctx) {
-    // Fallback durante prerenderizado/SSG si el provider no está disponible
-    // Esto evita que el build de Vercel falle con "useI18n must be used within I18nProvider"
+    // Fallback durante prerenderizado/SSG si el provider no está disponible.
+    // El setLocale del fallback guarda en localStorage y fuerza un reload
+    // para que el provider se monte correctamente con el nuevo locale.
     const fallbackT = (key: string) =>
       translations[DEFAULT_LOCALE][key] ?? key
+    const fallbackSetLocale = (l: Locale) => {
+      try {
+        localStorage.setItem(STORAGE_KEY, l)
+      } catch {
+        // ignore
+      }
+      // Forzar reload para que el provider se monte con el nuevo locale
+      if (typeof window !== 'undefined') {
+        window.location.reload()
+      }
+    }
     return {
       locale: DEFAULT_LOCALE,
-      setLocale: () => {},
+      setLocale: fallbackSetLocale,
       t: fallbackT,
       dict: translations[DEFAULT_LOCALE],
     }
