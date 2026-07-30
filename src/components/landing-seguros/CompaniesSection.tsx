@@ -36,18 +36,18 @@ function CompanyCard({ company }: { company: Company }) {
     <a
       href={`#${company.id}`}
       onClick={handleClick}
-      className="group flex flex-col items-center justify-start gap-5 rounded-2xl border-2 bg-card p-8 text-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+      className="group relative flex min-h-[340px] flex-col items-center justify-between gap-5 rounded-2xl border-2 bg-card p-10 text-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/50 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
       style={{ borderColor: `${company.color}40` }}
       aria-label={`${t('empresas.verPlanes')} ${company.name}`}
     >
       {/* Logo más grande */}
-      <div className="flex items-center justify-center h-24 w-full">
+      <div className="flex items-center justify-center h-28 w-full">
         <Image
           src={company.logo}
           alt={`${company.name}`}
-          width={240}
-          height={96}
-          style={{ height: '5rem', width: 'auto' }}
+          width={280}
+          height={112}
+          style={{ height: '6rem', width: 'auto' }}
           className="object-contain transition-transform duration-300 group-hover:scale-110"
           priority
         />
@@ -56,7 +56,7 @@ function CompanyCard({ company }: { company: Company }) {
       {/* Nombre + eslogan */}
       <div className="space-y-1">
         <h3
-          className="text-xl font-bold"
+          className="text-2xl font-bold"
           style={{ color: company.color }}
         >
           {company.name}
@@ -72,9 +72,9 @@ function CompanyCard({ company }: { company: Company }) {
       </p>
 
       {/* Beneficio destacado */}
-      <div className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-muted/50 w-full">
+      <div className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-muted/50 w-full">
         <CheckCircle2
-          className="h-4 w-4 shrink-0"
+          className="h-5 w-5 shrink-0"
           style={{ color: company.color }}
           aria-hidden
         />
@@ -85,7 +85,7 @@ function CompanyCard({ company }: { company: Company }) {
 
       {/* Botón "Ver Planes" */}
       <span
-        className="mt-auto inline-flex items-center justify-center gap-2 w-full px-6 py-3 rounded-lg font-semibold text-white transition-all duration-300 group-hover:shadow-lg"
+        className="mt-auto inline-flex items-center justify-center gap-2 w-full px-6 py-3.5 rounded-lg font-semibold text-white transition-all duration-300 group-hover:shadow-lg group-hover:gap-3"
         style={{ backgroundColor: company.color }}
       >
         {t('empresas.verPlanes')}
@@ -104,7 +104,7 @@ export function CompaniesSection() {
       className="w-full min-h-[calc(100vh-4rem)] flex items-start justify-center scroll-mt-16 bg-white dark:bg-background"
       aria-labelledby="empresas-title"
     >
-      <div className="w-full max-w-5xl mx-auto px-4 py-12">
+      <div className="w-full max-w-6xl mx-auto px-4 py-12">
         <div className="mb-12 text-center">
           <h2
             id="empresas-title"
@@ -116,7 +116,7 @@ export function CompaniesSection() {
             {t('empresas.subtitle')}
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
           {COMPANIES.map((company) => (
             <CompanyCard key={company.id} company={company} />
           ))}
