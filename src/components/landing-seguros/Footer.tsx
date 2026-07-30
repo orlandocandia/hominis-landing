@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { Phone, Mail, Facebook, Instagram, MessageCircle } from 'lucide-react'
+import { Phone, Mail, Facebook, Instagram } from 'lucide-react'
 import { useI18n } from '@/lib/i18n/provider'
 
 // Número de WhatsApp real de la clienta (formato internacional sin + ni espacios)
@@ -14,12 +14,6 @@ const INSTAGRAM_URL = 'https://instagram.com/tu-perfil'
 export function Footer() {
   const { t } = useI18n()
   const year = new Date().getFullYear()
-
-  const LEGAL_LINKS = [
-    { label: t('seguros.footer.legal.terminos'), href: '#' },
-    { label: t('seguros.footer.legal.privacidad'), href: '#' },
-    { label: t('seguros.footer.legal.defensa'), href: '#' },
-  ]
 
   return (
     <footer
@@ -47,19 +41,6 @@ export function Footer() {
           <p className="text-sm text-muted-foreground max-w-md mx-auto">
             {t('seguros.footer.tagline')}
           </p>
-
-          {/* Botón de WhatsApp prominente */}
-          <div>
-            <a
-              href={`https://wa.me/${WHATSAPP_NUMBER}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 transition"
-            >
-              <MessageCircle className="w-5 h-5" aria-hidden />
-              {t('seguros.footer.whatsapp')}
-            </a>
-          </div>
 
           {/* Datos de contacto con iconos (fila horizontal en desktop, wrap en mobile) */}
           <div className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm text-muted-foreground">
@@ -95,25 +76,6 @@ export function Footer() {
               <Instagram className="h-4 w-4 text-[#E4405F] dark:text-pink-400" aria-hidden />
               Instagram
             </a>
-          </div>
-
-          {/* Links legales */}
-          <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
-            {LEGAL_LINKS.map((link, index) => (
-              <span key={link.label} className="flex items-center gap-2">
-                {index > 0 && (
-                  <span className="text-border" aria-hidden>
-                    •
-                  </span>
-                )}
-                <a
-                  href={link.href}
-                  className="hover:text-foreground transition"
-                >
-                  {link.label}
-                </a>
-              </span>
-            ))}
           </div>
 
           {/* Copyright + dominio */}
