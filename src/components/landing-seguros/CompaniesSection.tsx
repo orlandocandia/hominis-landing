@@ -60,7 +60,7 @@ function CompanyCard({ company }: { company: Company }) {
     <a
       href={`#${company.id}`}
       onClick={handleClick}
-      className={`group relative flex min-h-[calc(100vh-14rem)] flex-col items-center justify-center gap-4 rounded-2xl border-2 p-8 text-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${styles.bg} ${styles.border} ${styles.hoverBg} ${styles.hoverBorder}`}
+      className={`group relative flex min-h-[calc(100vh-12rem)] w-full flex-col items-center justify-center gap-4 rounded-2xl border-2 p-8 text-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${styles.bg} ${styles.border} ${styles.hoverBg} ${styles.hoverBorder}`}
       aria-label={`${t('empresas.verPlanes')} ${company.name}`}
     >
       {/* Logo */}
@@ -119,8 +119,8 @@ export function CompaniesSection() {
       className="w-full min-h-[calc(100vh-4rem)] flex items-start justify-center scroll-mt-16 bg-white dark:bg-background"
       aria-labelledby="empresas-title"
     >
-      <div className="w-full max-w-6xl mx-auto px-4 py-12">
-        <div className="mb-12 text-center">
+      <div className="w-full max-w-7xl mx-auto px-4 py-12">
+        <div className="mb-8 text-center">
           <h2
             id="empresas-title"
             className="text-2xl md:text-4xl font-bold text-foreground"
@@ -131,7 +131,7 @@ export function CompaniesSection() {
             {t('empresas.subtitle')}
           </p>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {COMPANIES.map((company) => (
             <CompanyCard key={company.id} company={company} />
           ))}
