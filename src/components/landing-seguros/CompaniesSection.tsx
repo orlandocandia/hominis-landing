@@ -124,13 +124,13 @@ function CompanyCard({ company }: { company: Company }) {
               </p>
             </div>
 
-            {/* Derecha: Icono */}
-            <div className="flex items-center justify-center shrink-0">
+            {/* Derecha: Imagen de DoctoRed con estilo unificado */}
+            <div className="w-full h-[90px] rounded-lg overflow-hidden border border-blue-200 dark:border-blue-800 shadow-sm bg-white dark:bg-gray-800 flex items-center justify-center p-2 shrink-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/images/seguros/imagen1-doctored.png"
                 alt="DoctoRed"
-                className="h-16 md:h-20 w-auto object-contain"
+                className="w-full h-full object-contain"
               />
             </div>
           </div>
