@@ -1,6 +1,6 @@
 'use client'
 
-import { ChevronDown } from 'lucide-react'
+import { Globe, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -37,6 +37,9 @@ export function LanguageSelector() {
           aria-label="Seleccionar idioma"
           className="gap-1 px-2"
         >
+          {/* 🌐 Ícono FIJO - siempre visible */}
+          <Globe className="h-4 w-4 text-muted-foreground" aria-hidden />
+          {/* Bandera del idioma actual */}
           <span className="text-xl leading-none" aria-hidden>
             {currentFlag}
           </span>
