@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Providers } from '@/components/providers'
 import '../globals.css'
 
 export const metadata: Metadata = {
@@ -28,7 +29,5 @@ export default function SegurosLayout({
 }: {
   children: React.ReactNode
 }) {
-  return <>{children}</>
+  return <Providers>{children}</Providers>
 }
-
-// retrigger deployment 829a9605
