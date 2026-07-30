@@ -124,17 +124,14 @@ function CompanyCard({ company }: { company: Company }) {
               </p>
             </div>
 
-            {/* Derecha: Imagen (exactamente igual a Amar Mascotas) */}
-            <div className="relative overflow-hidden rounded-lg h-[90px] w-full sm:w-auto min-w-[90px]">
-              <div className="absolute inset-0 bg-white dark:bg-gray-800 rounded-lg border border-blue-200 dark:border-blue-800 shadow-sm" />
-              <div className="relative w-full h-full flex items-center justify-center p-2">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/images/seguros/imagen1-doctored.png"
-                  alt="DoctoRed"
-                  className="w-full h-full object-contain"
-                />
-              </div>
+            {/* 🔒 IMAGEN - EXACTAMENTE IGUAL QUE AMAR MASCOTAS */}
+            <div className="h-[90px] w-[90px] min-w-[90px] rounded-lg overflow-hidden border border-blue-200 dark:border-blue-800 shadow-sm bg-white dark:bg-gray-800 flex items-center justify-center p-2 flex-shrink-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/seguros/imagen1-doctored.png"
+                alt="DoctoRed"
+                className="w-full h-full object-contain"
+              />
             </div>
           </div>
         </>
