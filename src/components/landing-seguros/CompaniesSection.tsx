@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { ArrowRight, CheckCircle2 } from 'lucide-react'
+import { ArrowRight, CheckCircle2, Building2, Heart, MapPin } from 'lucide-react'
 import { useTranslation } from './useTranslation'
 import { AmarMascotasBenefit } from './AmarMascotasBenefit'
 import { COMPANIES, scrollToSection, type Company } from './companies'
@@ -91,20 +91,26 @@ function CompanyCard({ company }: { company: Company }) {
             cuidarte a vos y a tu familia.
           </p>
 
-          {/* 🆕 BENEFICIOS (grid 2x2) */}
+          {/* 🆕 BENEFICIOS (grid 2x2) con iconos lucide */}
           <div className="grid grid-cols-2 gap-3 w-full max-w-sm mt-2">
             <AmarMascotasBenefit />
-            <div className="flex flex-col items-center justify-center p-3 bg-white dark:bg-gray-800 rounded-lg border border-green-200 dark:border-green-800 shadow-sm min-h-[128px]">
-              <span className="text-2xl" aria-hidden>🏥</span>
-              <span className="text-xs font-medium text-foreground mt-1">Centros médicos propios</span>
+            <div className="flex flex-col p-3 bg-white dark:bg-gray-800 rounded-lg border border-green-200 dark:border-green-800 shadow-sm">
+              <div className="flex items-start gap-2">
+                <Building2 className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                <span className="text-xs font-medium text-foreground">Centros médicos propios</span>
+              </div>
             </div>
-            <div className="flex flex-col items-center justify-center p-3 bg-white dark:bg-gray-800 rounded-lg border border-green-200 dark:border-green-800 shadow-sm min-h-[128px]">
-              <span className="text-2xl" aria-hidden>❤️</span>
-              <span className="text-xs font-medium text-foreground mt-1">El mejor de sus cuidados</span>
+            <div className="flex flex-col p-3 bg-white dark:bg-gray-800 rounded-lg border border-green-200 dark:border-green-800 shadow-sm">
+              <div className="flex items-start gap-2">
+                <Heart className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                <span className="text-xs font-medium text-foreground">El mejor de sus cuidados</span>
+              </div>
             </div>
-            <div className="flex flex-col items-center justify-center p-3 bg-white dark:bg-gray-800 rounded-lg border border-green-200 dark:border-green-800 shadow-sm min-h-[128px]">
-              <span className="text-2xl" aria-hidden>📍</span>
-              <span className="text-xs font-medium text-foreground mt-1">Presencia en 5 provincias</span>
+            <div className="flex flex-col p-3 bg-white dark:bg-gray-800 rounded-lg border border-green-200 dark:border-green-800 shadow-sm">
+              <div className="flex items-start gap-2">
+                <MapPin className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                <span className="text-xs font-medium text-foreground">Presencia en 5 provincias</span>
+              </div>
             </div>
           </div>
         </>
