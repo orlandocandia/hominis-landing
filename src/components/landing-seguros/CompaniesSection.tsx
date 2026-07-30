@@ -60,7 +60,7 @@ function CompanyCard({ company }: { company: Company }) {
     <a
       href={`#${company.id}`}
       onClick={handleClick}
-      className={`group relative flex min-h-[380px] flex-col items-center justify-between gap-5 rounded-2xl border-2 p-10 text-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${styles.bg} ${styles.border} ${styles.hoverBg} ${styles.hoverBorder}`}
+      className={`group relative flex min-h-[calc(100vh-14rem)] flex-col items-center justify-center gap-4 rounded-2xl border-2 p-8 text-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${styles.bg} ${styles.border} ${styles.hoverBg} ${styles.hoverBorder}`}
       aria-label={`${t('empresas.verPlanes')} ${company.name}`}
     >
       {/* Logo */}
