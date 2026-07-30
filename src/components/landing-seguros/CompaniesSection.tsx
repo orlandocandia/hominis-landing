@@ -112,11 +112,11 @@ function CompanyCard({ company }: { company: Company }) {
         </>
       ) : (
         <>
-          {/* DoctoRed - Nuevo formato: Título + Slogan + Icono */}
-          <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 w-full max-w-md mt-2">
-            {/* Izquierda: Título + Slogan */}
-            <div className="text-center md:text-left">
-              <h3 className="text-xl md:text-2xl font-bold text-foreground">
+          {/* DoctoRed - Fila: Texto (izquierda) + Imagen (derecha) */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-md mt-2">
+            {/* Izquierda: Texto */}
+            <div className="text-center sm:text-left flex-1">
+              <h3 className="text-lg md:text-xl font-bold text-foreground">
                 Juro vivir a lo grande
               </h3>
               <p className="text-sm md:text-base text-muted-foreground mt-1">
@@ -124,8 +124,8 @@ function CompanyCard({ company }: { company: Company }) {
               </p>
             </div>
 
-            {/* Derecha: Imagen de DoctoRed con estilo unificado */}
-            <div className="w-full h-[90px] rounded-lg overflow-hidden border border-blue-200 dark:border-blue-800 shadow-sm bg-white dark:bg-gray-800 flex items-center justify-center p-2 shrink-0">
+            {/* Derecha: Imagen (estilo cartelito) */}
+            <div className="w-full sm:w-auto h-[90px] rounded-lg overflow-hidden border border-blue-200 dark:border-blue-800 shadow-sm bg-white dark:bg-gray-800 flex items-center justify-center p-2 flex-shrink-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/images/seguros/imagen1-doctored.png"
