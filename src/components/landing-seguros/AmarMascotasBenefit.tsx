@@ -17,7 +17,9 @@ export function AmarMascotasBenefit() {
 
   useEffect(() => {
     if (showVideo && videoRef.current) {
-      videoRef.current.play()
+      videoRef.current.play().catch(err => {
+        console.warn('⚠️ Error al reproducir video:', err)
+      })
     }
   }, [showVideo])
 
@@ -34,10 +36,9 @@ export function AmarMascotasBenefit() {
         >
           <video
             ref={videoRef}
-            src="/videos/amarmascota.mp4"
+            src="/images/seguros/amarmascota.mp4"
             className="w-full h-full object-cover"
             muted
-            loop
             playsInline
           />
         </div>
@@ -49,7 +50,7 @@ export function AmarMascotasBenefit() {
           }`}
         >
           <div className="flex items-start gap-2">
-            <PawPrint className="w-5 h-5 text-green-600 dark:text-green-400" />
+            <PawPrint className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
             <span className="text-xs font-medium text-foreground">Amar Mascotas</span>
           </div>
           <span className="text-[10px] text-muted-foreground mt-1 ml-7">
