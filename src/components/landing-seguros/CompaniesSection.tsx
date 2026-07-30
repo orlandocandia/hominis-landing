@@ -49,6 +49,25 @@ function CompanyCard({ company }: { company: Company }) {
   const styles = COMPANY_STYLES[company.id] || COMPANY_STYLES.doctored
   const isPremedic = company.id === 'premedic'
 
+  const doctoredPlanes = [
+    {
+      nombre: 'Plan 500',
+      descripcion: 'Con tus aportes. Accedé a cobertura médica de calidad sin cuota mensual.'
+    },
+    {
+      nombre: 'Plan 1000',
+      descripcion: 'Tu primer plan privado. Cobertura completa y con excelente cartilla médica.'
+    },
+    {
+      nombre: 'Plan 2000',
+      descripcion: 'Más cobertura y comodidad. Mayor nivel de prestaciones para atenderte con más tranquilidad.'
+    },
+    {
+      nombre: 'Plan 3000',
+      descripcion: 'Cobertura total sin límites. El plan más completo para cuidar tu salud con la máxima tranquilidad.'
+    }
+  ]
+
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
     const target = document.querySelector(`#${company.id}`)
@@ -112,7 +131,24 @@ function CompanyCard({ company }: { company: Company }) {
         </>
       ) : (
         <>
-          {/* DoctoRed - VERSIÓN SIMPLIFICADA (solo logo + botón) */}
+          {/* DoctoRed - CON 4 PLANES */}
+          {/* Grid de 4 planes (2x2) */}
+          <div className="grid grid-cols-2 gap-3 w-full max-w-sm">
+            {doctoredPlanes.map((plan) => (
+              <div
+                key={plan.nombre}
+                className="flex flex-col p-3 bg-white dark:bg-gray-800 rounded-lg border border-blue-200 dark:border-blue-800 shadow-sm hover:shadow-md transition"
+              >
+                <h4 className="text-sm font-bold text-foreground">{plan.nombre}</h4>
+                <p className="text-[10px] text-muted-foreground mt-1 flex-1">{plan.descripcion}</p>
+                <button
+                  className="mt-2 text-xs text-blue-600 dark:text-blue-400 font-medium hover:underline text-left"
+                >
+                  Ver cobertura →
+                </button>
+              </div>
+            ))}
+          </div>
         </>
       )}
 
