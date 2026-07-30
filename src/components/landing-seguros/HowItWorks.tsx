@@ -2,32 +2,32 @@
 
 import Image from 'next/image'
 import { Building2, FileText, PhoneCall } from 'lucide-react'
-import { useI18n } from '@/lib/i18n/provider'
+import { useTranslation } from './useTranslation'
 
 export function HowItWorks() {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   const STEPS = [
     {
       icon: Building2,
       step: 1,
       image: '/images/seguros/paso1-empresas.png',
-      title: t('seguros.comoFunciona.step1.title'),
-      description: t('seguros.comoFunciona.step1.desc'),
+      title: t('comoFunciona.step1.title'),
+      description: t('comoFunciona.step1.desc'),
     },
     {
       icon: FileText,
       step: 2,
       image: '/images/seguros/paso2-formulario.png',
-      title: t('seguros.comoFunciona.step2.title'),
-      description: t('seguros.comoFunciona.step2.desc'),
+      title: t('comoFunciona.step2.title'),
+      description: t('comoFunciona.step2.desc'),
     },
     {
       icon: PhoneCall,
       step: 3,
       image: '/images/seguros/paso3-contacto.png',
-      title: t('seguros.comoFunciona.step3.title'),
-      description: t('seguros.comoFunciona.step3.desc'),
+      title: t('comoFunciona.step3.title'),
+      description: t('comoFunciona.step3.desc'),
     },
   ]
 
@@ -43,10 +43,10 @@ export function HowItWorks() {
             id="como-funciona-title"
             className="text-2xl md:text-3xl font-bold text-foreground"
           >
-            {t('seguros.comoFunciona.title')}
+            {t('comoFunciona.title')}
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            {t('seguros.comoFunciona.subtitle')}
+            {t('comoFunciona.subtitle')}
           </p>
         </div>
 
@@ -77,7 +77,7 @@ export function HowItWorks() {
                 {/* Badge "Paso N" bottom-left */}
                 <div className="absolute bottom-3 left-3 right-3">
                   <span className="inline-block text-white font-semibold text-sm bg-black/40 px-3 py-1 rounded-full backdrop-blur-sm">
-                    {t('seguros.comoFunciona.paso')} {step.step}
+                    {t('comoFunciona.paso')} {step.step}
                   </span>
                 </div>
               </div>
