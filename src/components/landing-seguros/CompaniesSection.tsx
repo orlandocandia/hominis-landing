@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { ArrowRight, CheckCircle2, Building2, MapPin } from 'lucide-react'
+import { ArrowRight, Building2, MapPin, ShieldCheck } from 'lucide-react'
 import { useTranslation } from './useTranslation'
 import { AmarMascotasBenefit } from './AmarMascotasBenefit'
 import { MejorCuidadosBenefit } from './MejorCuidadosBenefit'
@@ -112,25 +112,22 @@ function CompanyCard({ company }: { company: Company }) {
         </>
       ) : (
         <>
-          {/* Formato DoctoRed (se mantiene igual) */}
-          <div className="space-y-1">
-            <h3 className="text-2xl font-bold text-foreground">
-              {company.name}
-            </h3>
-            <p className="text-sm font-medium text-foreground/80 italic">
-              {t(keys.slogan)}
-            </p>
-          </div>
+          {/* DoctoRed - Nuevo formato: Título + Slogan + Icono */}
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 w-full max-w-md mt-2">
+            {/* Izquierda: Título + Slogan */}
+            <div className="text-center md:text-left">
+              <h3 className="text-xl md:text-2xl font-bold text-foreground">
+                Juro vivir a lo grande
+              </h3>
+              <p className="text-sm md:text-base text-muted-foreground mt-1">
+                Porque tengo un plan de salud con precios justos.
+              </p>
+            </div>
 
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            {t(keys.desc)}
-          </p>
-
-          <div className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-white dark:bg-gray-800 border border-blue-200 dark:border-blue-800 shadow-sm w-full ${styles.text}`}>
-            <CheckCircle2 className="h-5 w-5 shrink-0" aria-hidden />
-            <span className="text-xs font-semibold">
-              {t(keys.benefit)}
-            </span>
+            {/* Derecha: Icono */}
+            <div className="flex items-center justify-center shrink-0">
+              <ShieldCheck className="h-16 md:h-20 w-16 md:w-20 text-blue-500 dark:text-blue-400 opacity-80" aria-hidden />
+            </div>
           </div>
         </>
       )}
