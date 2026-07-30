@@ -32,7 +32,7 @@ export function AmarMascotasBenefit() {
   // Si el video falló, mostrar solo el cartelito permanentemente
   if (videoError || !showVideo) {
     return (
-      <div className="flex flex-col items-center justify-center p-3 bg-white/50 dark:bg-black/20 rounded-lg min-h-[128px]">
+      <div className="flex flex-col items-center justify-center p-3 bg-white dark:bg-gray-800 rounded-lg border border-green-200 dark:border-green-800 shadow-sm min-h-[128px]">
         <span className="text-2xl" aria-hidden>🐾</span>
         <span className="text-xs font-medium text-foreground">Amar Mascotas</span>
         <span className="text-[10px] text-muted-foreground">Veterinaria a domicilio</span>
