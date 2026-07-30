@@ -1,37 +1,27 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { PawPrint } from 'lucide-react'
 
 /**
  * Beneficio "Amar Mascotas" con loop automático:
- * alterna entre un cartelito (icono + texto) y el video (si existe).
- * Si el video no existe o falla al cargar, se queda en el cartelito.
+ * alterna entre un cartelito (icono + texto) y una imagen real.
+ * Si la imagen no existe o falla al cargar, se queda en el cartelito.
  */
 export function AmarMascotasBenefit() {
-  const [showVideo, setShowVideo] = useState(false)
-  const [videoError, setVideoError] = useState(false)
-  const videoRef = useRef<HTMLVideoElement>(null)
+  const [showImage, setShowImage] = useState(false)
+  const [imageError, setImageError] = useState(false)
 
   useEffect(() => {
-    if (videoError) return
+    if (imageError) return
     const interval = setInterval(() => {
-      setShowVideo((prev) => !prev)
+      setShowImage((prev) => !prev)
     }, 4000)
     return () => clearInterval(interval)
-  }, [videoError])
+  }, [imageError])
 
-  useEffect(() => {
-    if (showVideo && videoRef.current && !videoError) {
-      videoRef.current.play().catch(() => {
-        setVideoError(true)
-        setShowVideo(false)
-      })
-    }
-  }, [showVideo, videoError])
-
-  // Si el video falló, mostrar solo el cartelito permanentemente
-  if (videoError || !showVideo) {
+  // Si la imagen falló, mostrar solo el cartelito permanentemente
+  if (imageError || !showImage) {
     return (
       <div className="flex flex-col p-3 bg-white dark:bg-gray-800 rounded-lg border border-green-200 dark:border-green-800 shadow-sm min-h-[90px] justify-center">
         <div className="flex items-start gap-2">
@@ -47,16 +37,14 @@ export function AmarMascotasBenefit() {
 
   return (
     <div className="relative w-full h-32 rounded-lg overflow-hidden">
-      <video
-        ref={videoRef}
-        src="/videos/amarmascota.mp4"
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/images/seguros/amar-mascotas.jpg"
+        alt="Amar Mascotas - Veterinaria a domicilio"
         className="w-full h-full object-cover"
-        muted
-        loop
-        playsInline
         onError={() => {
-          setVideoError(true)
-          setShowVideo(false)
+          setImageError(true)
+          setShowImage(false)
         }}
       />
       <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/60 to-transparent">
