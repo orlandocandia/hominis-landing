@@ -1,18 +1,26 @@
 'use client'
 
 import Image from 'next/image'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, CheckCircle2 } from 'lucide-react'
 import { useTranslation } from './useTranslation'
 import { COMPANIES, scrollToSection, type Company } from './companies'
 
-const COMPANY_DESC_KEY: Record<string, string> = {
-  doctored: 'empresas.doctored.desc',
-  premedic: 'empresas.premedic.desc',
+const COMPANY_KEYS: Record<string, { desc: string; slogan: string; benefit: string }> = {
+  doctored: {
+    desc: 'empresas.doctored.desc',
+    slogan: 'empresas.doctored.slogan',
+    benefit: 'empresas.doctored.benefit',
+  },
+  premedic: {
+    desc: 'empresas.premedic.desc',
+    slogan: 'empresas.premedic.slogan',
+    benefit: 'empresas.premedic.benefit',
+  },
 }
 
 function CompanyCard({ company }: { company: Company }) {
   const { t } = useTranslation()
-  const descKey = COMPANY_DESC_KEY[company.id] || 'empresas.doctored.desc'
+  const keys = COMPANY_KEYS[company.id] || COMPANY_KEYS.doctored
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
@@ -28,35 +36,60 @@ function CompanyCard({ company }: { company: Company }) {
     <a
       href={`#${company.id}`}
       onClick={handleClick}
-      className="group flex flex-col items-center justify-start gap-4 rounded-xl border-2 bg-card p-6 text-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-      style={{ borderColor: company.color }}
-      aria-label={`${t('empresas.verMas')} ${company.name}`}
+      className="group flex flex-col items-center justify-start gap-5 rounded-2xl border-2 bg-card p-8 text-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+      style={{ borderColor: `${company.color}40` }}
+      aria-label={`${t('empresas.verPlanes')} ${company.name}`}
     >
-      <div className="flex items-center justify-center h-16 w-full">
+      {/* Logo más grande */}
+      <div className="flex items-center justify-center h-24 w-full">
         <Image
           src={company.logo}
           alt={`${company.name}`}
-          width={200}
-          height={80}
-          style={{ height: '3.5rem', width: 'auto' }}
-          className="object-contain"
+          width={240}
+          height={96}
+          style={{ height: '5rem', width: 'auto' }}
+          className="object-contain transition-transform duration-300 group-hover:scale-110"
           priority
         />
       </div>
-      <div>
+
+      {/* Nombre + eslogan */}
+      <div className="space-y-1">
         <h3
-          className="text-lg font-bold"
+          className="text-xl font-bold"
           style={{ color: company.color }}
         >
           {company.name}
         </h3>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {t(descKey)}
+        <p className="text-sm font-medium text-foreground/80 italic">
+          {t(keys.slogan)}
         </p>
       </div>
-      <span className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-foreground/70 group-hover:text-foreground transition">
-        {t('empresas.verMas')}
-        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+
+      {/* Descripción */}
+      <p className="text-sm text-muted-foreground leading-relaxed">
+        {t(keys.desc)}
+      </p>
+
+      {/* Beneficio destacado */}
+      <div className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-muted/50 w-full">
+        <CheckCircle2
+          className="h-4 w-4 shrink-0"
+          style={{ color: company.color }}
+          aria-hidden
+        />
+        <span className="text-xs font-medium text-foreground">
+          {t(keys.benefit)}
+        </span>
+      </div>
+
+      {/* Botón "Ver Planes" */}
+      <span
+        className="mt-auto inline-flex items-center justify-center gap-2 w-full px-6 py-3 rounded-lg font-semibold text-white transition-all duration-300 group-hover:shadow-lg"
+        style={{ backgroundColor: company.color }}
+      >
+        {t('empresas.verPlanes')}
+        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
       </span>
     </a>
   )
@@ -71,19 +104,19 @@ export function CompaniesSection() {
       className="w-full min-h-[calc(100vh-4rem)] flex items-center justify-center scroll-mt-16 bg-white dark:bg-background"
       aria-labelledby="empresas-title"
     >
-      <div className="w-full max-w-6xl mx-auto px-4 py-12">
-        <div className="mb-10 text-center">
+      <div className="w-full max-w-5xl mx-auto px-4 py-12">
+        <div className="mb-12 text-center">
           <h2
             id="empresas-title"
-            className="text-2xl md:text-3xl font-bold text-foreground"
+            className="text-2xl md:text-4xl font-bold text-foreground"
           >
             {t('empresas.title')}
           </h2>
-          <p className="mt-2 text-sm text-muted-foreground">
+          <p className="mt-3 text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
             {t('empresas.subtitle')}
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {COMPANIES.map((company) => (
             <CompanyCard key={company.id} company={company} />
           ))}
