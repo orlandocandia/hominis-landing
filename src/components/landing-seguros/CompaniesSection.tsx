@@ -60,18 +60,18 @@ function CompanyCard({ company }: { company: Company }) {
     <a
       href={`#${company.id}`}
       onClick={handleClick}
-      className={`group relative flex min-h-[calc(100vh-12rem)] w-full flex-col items-center justify-center gap-4 rounded-2xl border-2 p-8 text-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${styles.bg} ${styles.border} ${styles.hoverBg} ${styles.hoverBorder}`}
+      className={`group relative flex min-h-[400px] md:min-h-[500px] lg:min-h-[60vh] xl:min-h-[50vh] w-full flex-col items-center justify-center gap-3 md:gap-4 rounded-2xl border-2 p-6 md:p-8 text-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${styles.bg} ${styles.border} ${styles.hoverBg} ${styles.hoverBorder}`}
       aria-label={`${t('empresas.verPlanes')} ${company.name}`}
     >
       {/* Logo */}
-      <div className="flex items-center justify-center h-32 w-full">
+      <div className="flex items-center justify-center h-20 md:h-28 w-full">
         <Image
           src={company.logo}
           alt={`${company.name}`}
           width={280}
           height={112}
-          style={{ height: '6rem', width: 'auto' }}
-          className="object-contain transition-transform duration-300 group-hover:scale-105"
+          style={{ height: '4rem', width: 'auto' }}
+          className="object-contain transition-transform duration-300 group-hover:scale-105 md:!h-24"
           priority
         />
       </div>
@@ -119,8 +119,8 @@ export function CompaniesSection() {
       className="w-full min-h-[calc(100vh-4rem)] flex items-start justify-center scroll-mt-16 bg-white dark:bg-background"
       aria-labelledby="empresas-title"
     >
-      <div className="w-full max-w-7xl mx-auto px-4 py-12">
-        <div className="mb-8 text-center">
+      <div className="w-full max-w-7xl mx-auto px-4 py-8 md:py-12">
+        <div className="mb-6 md:mb-8 text-center">
           <h2
             id="empresas-title"
             className="text-2xl md:text-4xl font-bold text-foreground"
@@ -131,7 +131,7 @@ export function CompaniesSection() {
             {t('empresas.subtitle')}
           </p>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 max-w-6xl mx-auto">
           {COMPANIES.map((company) => (
             <CompanyCard key={company.id} company={company} />
           ))}
