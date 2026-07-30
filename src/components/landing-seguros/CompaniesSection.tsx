@@ -112,28 +112,7 @@ function CompanyCard({ company }: { company: Company }) {
         </>
       ) : (
         <>
-          {/* DoctoRed - Fila: Texto (izquierda) + Imagen (derecha) */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-md mt-2">
-            {/* Izquierda: Texto */}
-            <div className="text-center sm:text-left flex-1">
-              <h3 className="text-lg md:text-xl font-bold text-foreground">
-                Juro vivir a lo grande
-              </h3>
-              <p className="text-sm md:text-base text-muted-foreground mt-1">
-                Porque tengo un plan de salud con precios justos.
-              </p>
-            </div>
-
-            {/* 🔒 IMAGEN - EXACTAMENTE IGUAL QUE AMAR MASCOTAS */}
-            <div className="h-[90px] w-[90px] min-w-[90px] rounded-lg overflow-hidden border border-blue-200 dark:border-blue-800 shadow-sm bg-white dark:bg-gray-800 flex items-center justify-center p-2 flex-shrink-0">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/images/seguros/imagen1-doctored.png"
-                alt="DoctoRed"
-                className="w-full h-full object-contain"
-              />
-            </div>
-          </div>
+          {/* DoctoRed - VERSIÓN SIMPLIFICADA (solo logo + botón) */}
         </>
       )}
 
