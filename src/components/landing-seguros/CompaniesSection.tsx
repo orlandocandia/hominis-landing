@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { ArrowRight, CheckCircle2 } from 'lucide-react'
 import { useTranslation } from './useTranslation'
+import { AmarMascotasBenefit } from './AmarMascotasBenefit'
 import { COMPANIES, scrollToSection, type Company } from './companies'
 
 const COMPANY_KEYS: Record<string, { desc: string; slogan: string; benefit: string }> = {
@@ -45,6 +46,7 @@ function CompanyCard({ company }: { company: Company }) {
   const { t } = useTranslation()
   const keys = COMPANY_KEYS[company.id] || COMPANY_KEYS.doctored
   const styles = COMPANY_STYLES[company.id] || COMPANY_STYLES.doctored
+  const isPremedic = company.id === 'premedic'
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
@@ -63,7 +65,7 @@ function CompanyCard({ company }: { company: Company }) {
       className={`group relative flex min-h-[400px] md:min-h-[500px] lg:min-h-[60vh] xl:min-h-[50vh] w-full flex-col items-center justify-center gap-3 md:gap-4 rounded-2xl border-2 p-6 md:p-8 text-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${styles.bg} ${styles.border} ${styles.hoverBg} ${styles.hoverBorder}`}
       aria-label={`${t('empresas.verPlanes')} ${company.name}`}
     >
-      {/* Logo */}
+      {/* ✅ LOGO (permanece en ambas) */}
       <div className="flex items-center justify-center h-20 md:h-28 w-full">
         <Image
           src={company.logo}
@@ -76,30 +78,62 @@ function CompanyCard({ company }: { company: Company }) {
         />
       </div>
 
-      {/* Nombre + eslogan */}
-      <div className="space-y-1">
-        <h3 className="text-2xl font-bold text-foreground">
-          {company.name}
-        </h3>
-        <p className="text-sm font-medium text-foreground/80 italic">
-          {t(keys.slogan)}
-        </p>
-      </div>
+      {isPremedic ? (
+        <>
+          {/* 🆕 NUEVO TÍTULO para Premedic */}
+          <h3 className="text-xl md:text-2xl font-bold text-foreground text-center">
+            Somos el respaldo que te merecés
+          </h3>
 
-      {/* Descripción */}
-      <p className="text-sm text-muted-foreground leading-relaxed">
-        {t(keys.desc)}
-      </p>
+          {/* 🆕 NUEVO SLOGAN para Premedic */}
+          <p className="text-sm md:text-base text-muted-foreground text-center max-w-sm px-2 leading-relaxed">
+            La mejor cobertura. Amplia red médica y centros propios para
+            cuidarte a vos y a tu familia.
+          </p>
 
-      {/* Beneficio destacado con color de la empresa */}
-      <div className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-white/60 dark:bg-background/60 w-full ${styles.text}`}>
-        <CheckCircle2 className="h-5 w-5 shrink-0" aria-hidden />
-        <span className="text-xs font-semibold">
-          {t(keys.benefit)}
-        </span>
-      </div>
+          {/* 🆕 BENEFICIOS (grid 2x2) */}
+          <div className="grid grid-cols-2 gap-3 w-full max-w-sm mt-2">
+            <AmarMascotasBenefit />
+            <div className="flex flex-col items-center justify-center p-3 bg-white/50 dark:bg-black/20 rounded-lg min-h-[128px]">
+              <span className="text-2xl" aria-hidden>🏥</span>
+              <span className="text-xs font-medium text-foreground mt-1">Centros médicos propios</span>
+            </div>
+            <div className="flex flex-col items-center justify-center p-3 bg-white/50 dark:bg-black/20 rounded-lg min-h-[128px]">
+              <span className="text-2xl" aria-hidden>❤️</span>
+              <span className="text-xs font-medium text-foreground mt-1">El mejor de sus cuidados</span>
+            </div>
+            <div className="flex flex-col items-center justify-center p-3 bg-white/50 dark:bg-black/20 rounded-lg min-h-[128px]">
+              <span className="text-2xl" aria-hidden>📍</span>
+              <span className="text-xs font-medium text-foreground mt-1">Presencia en 5 provincias</span>
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          {/* Formato DoctoRed (se mantiene igual) */}
+          <div className="space-y-1">
+            <h3 className="text-2xl font-bold text-foreground">
+              {company.name}
+            </h3>
+            <p className="text-sm font-medium text-foreground/80 italic">
+              {t(keys.slogan)}
+            </p>
+          </div>
 
-      {/* Botón "Ver Planes" */}
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            {t(keys.desc)}
+          </p>
+
+          <div className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-white/60 dark:bg-background/60 w-full ${styles.text}`}>
+            <CheckCircle2 className="h-5 w-5 shrink-0" aria-hidden />
+            <span className="text-xs font-semibold">
+              {t(keys.benefit)}
+            </span>
+          </div>
+        </>
+      )}
+
+      {/* ✅ BOTÓN "Ver Planes" (permanece en ambas) */}
       <span
         className={`mt-auto inline-flex items-center justify-center gap-2 w-full px-6 py-3.5 rounded-lg font-semibold text-white transition-all duration-300 group-hover:shadow-lg group-hover:gap-3 ${styles.text === 'text-blue-600 dark:text-blue-400' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-green-600 hover:bg-green-700'}`}
       >
