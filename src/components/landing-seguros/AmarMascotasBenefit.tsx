@@ -1,10 +1,11 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { PawPrint } from 'lucide-react'
 
 /**
  * Beneficio "Amar Mascotas" con loop automático:
- * alterna entre un cartelito (emoji + texto) y el video (si existe).
+ * alterna entre un cartelito (icono + texto) y el video (si existe).
  * Si el video no existe o falla al cargar, se queda en el cartelito.
  */
 export function AmarMascotasBenefit() {
@@ -32,10 +33,14 @@ export function AmarMascotasBenefit() {
   // Si el video falló, mostrar solo el cartelito permanentemente
   if (videoError || !showVideo) {
     return (
-      <div className="flex flex-col items-center justify-center p-3 bg-white dark:bg-gray-800 rounded-lg border border-green-200 dark:border-green-800 shadow-sm min-h-[128px]">
-        <span className="text-2xl" aria-hidden>🐾</span>
-        <span className="text-xs font-medium text-foreground">Amar Mascotas</span>
-        <span className="text-[10px] text-muted-foreground">Veterinaria a domicilio</span>
+      <div className="flex flex-col p-3 bg-white dark:bg-gray-800 rounded-lg border border-green-200 dark:border-green-800 shadow-sm min-h-[90px] justify-center">
+        <div className="flex items-start gap-2">
+          <PawPrint className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+          <span className="text-xs font-medium text-foreground">Amar Mascotas</span>
+        </div>
+        <span className="text-[10px] text-muted-foreground mt-1 ml-7">
+          Veterinaria a domicilio
+        </span>
       </div>
     )
   }
@@ -55,7 +60,10 @@ export function AmarMascotasBenefit() {
         }}
       />
       <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/60 to-transparent">
-        <p className="text-white text-xs font-medium">🐾 Amar Mascotas</p>
+        <div className="flex items-center gap-2">
+          <PawPrint className="w-4 h-4 text-white" />
+          <span className="text-white text-xs font-medium">Amar Mascotas</span>
+        </div>
       </div>
     </div>
   )
