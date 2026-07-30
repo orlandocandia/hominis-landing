@@ -5,20 +5,20 @@ import Image from 'next/image'
 import { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
-import { LanguageSelector } from '@/components/language-selector'
-import { useI18n } from '@/lib/i18n/provider'
+import { LanguageSelector } from './LanguageSelector'
+import { useTranslation } from './useTranslation'
 import { scrollToSection } from './companies'
 
 export function MenuNav() {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
   const NAV_LINKS = [
-    { href: '#top', label: t('seguros.nav.inicio') },
-    { href: '#empresas', label: t('seguros.nav.empresas') },
-    { href: '#como-funciona', label: t('seguros.nav.comoFunciona') },
-    { href: '#contacto', label: t('seguros.nav.contacto') },
+    { href: '#top', label: t('nav.inicio') },
+    { href: '#empresas', label: t('nav.empresas') },
+    { href: '#como-funciona', label: t('nav.comoFunciona') },
+    { href: '#contacto', label: t('nav.contacto') },
   ]
 
   useEffect(() => {
@@ -49,11 +49,11 @@ export function MenuNav() {
           href="#top"
           onClick={(e) => handleNavClick(e, '#top')}
           className="flex items-center gap-2"
-          aria-label={`${t('seguros.nav.inicio')} — ${t('seguros.brand')}`}
+          aria-label={`${t('nav.inicio')} — ${t('brand')}`}
         >
           <Image
             src="/images/seguros/tuasesoraensalud-logo.png"
-            alt={t('seguros.brand')}
+            alt={t('brand')}
             width={40}
             height={40}
             priority
@@ -61,12 +61,12 @@ export function MenuNav() {
             style={{ height: '2.5rem', width: 'auto' }}
           />
           <span className="font-bold text-base md:text-lg text-foreground whitespace-nowrap">
-            {t('seguros.brand')}
+            {t('brand')}
           </span>
         </a>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-1" aria-label={t('seguros.nav.inicio')}>
+        <nav className="hidden md:flex items-center gap-1" aria-label={t('nav.inicio')}>
           {NAV_LINKS.map((link) => (
             <a
               key={link.href}
@@ -92,13 +92,13 @@ export function MenuNav() {
               href="#contacto"
               onClick={(e) => handleNavClick(e, '#contacto')}
             >
-              {t('seguros.nav.asesorate')}
+              {t('nav.asesorate')}
               <ArrowRight className="w-4 h-4" />
             </a>
           </Button>
           <button
             type="button"
-            aria-label={mobileOpen ? t('seguros.nav.closeMenu') : t('seguros.nav.openMenu')}
+            aria-label={mobileOpen ? t('nav.closeMenu') : t('nav.openMenu')}
             aria-expanded={mobileOpen}
             className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-md text-foreground hover:bg-accent"
             onClick={() => setMobileOpen((v) => !v)}
@@ -112,7 +112,7 @@ export function MenuNav() {
       {mobileOpen && (
         <nav
           className="md:hidden border-t border-border px-4 py-3 space-y-1 bg-background"
-          aria-label={t('seguros.nav.openMenu')}
+          aria-label={t('nav.openMenu')}
         >
           {NAV_LINKS.map((link) => (
             <a
@@ -129,7 +129,7 @@ export function MenuNav() {
             onClick={(e) => handleNavClick(e, '#contacto')}
             className="flex items-center justify-center gap-2 rounded-md bg-gradient-to-r from-blue-600 to-cyan-500 px-3 py-2 text-sm font-bold text-white text-center"
           >
-            {t('seguros.nav.asesorate')}
+            {t('nav.asesorate')}
             <ArrowRight className="w-4 h-4" />
           </a>
         </nav>
