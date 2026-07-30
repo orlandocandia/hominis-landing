@@ -81,12 +81,12 @@ function CompanyCard({ company }: { company: Company }) {
       {isPremedic ? (
         <>
           {/* 🆕 NUEVO TÍTULO para Premedic */}
-          <h3 className="text-xl md:text-2xl font-bold text-foreground text-center">
+          <h3 className="text-2xl md:text-3xl font-semibold text-[#1a2a3a] dark:text-white text-center">
             Somos el respaldo que te merecés
           </h3>
 
           {/* 🆕 NUEVO SLOGAN para Premedic */}
-          <p className="text-sm md:text-base text-muted-foreground text-center max-w-sm px-2 leading-relaxed">
+          <p className="text-sm md:text-base text-[#4a6a8a] dark:text-gray-300 text-center max-w-sm px-2 leading-relaxed">
             La mejor cobertura. Amplia red médica y centros propios para
             cuidarte a vos y a tu familia.
           </p>
