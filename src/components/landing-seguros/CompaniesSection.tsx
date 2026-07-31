@@ -53,22 +53,26 @@ function CompanyCard({ company }: { company: Company }) {
     {
       nombre: 'Plan 500',
       imagen: 'plan-500.png',
-      descripcion: 'Con tus aportes. Accedé a cobertura médica de calidad sin cuota mensual.'
+      titulo: 'Con tus aportes',
+      descripcion: 'Accedé a cobertura médica de calidad sin cuota mensual.'
     },
     {
       nombre: 'Plan 1000',
       imagen: 'plan-1000.png',
-      descripcion: 'Tu primer plan privado. Cobertura completa y con excelente cartilla médica.'
+      titulo: 'Tu primer plan privado',
+      descripcion: 'Cobertura completa y con excelente cartilla médica.'
     },
     {
       nombre: 'Plan 2000',
       imagen: 'plan-2000.png',
-      descripcion: 'Más cobertura y comodidad. Mayor nivel de prestaciones para atenderte con más tranquilidad.'
+      titulo: 'Más cobertura y comodidad',
+      descripcion: 'Mayor nivel de prestaciones para atenderte con más tranquilidad.'
     },
     {
       nombre: 'Plan 3000',
       imagen: 'plan-3000.png',
-      descripcion: 'Cobertura total sin límites. El plan más completo para cuidar tu salud con la máxima tranquilidad.'
+      titulo: 'Cobertura total sin límites',
+      descripcion: 'El plan más completo para cuidar tu salud con la máxima tranquilidad.'
     }
   ]
 
@@ -154,9 +158,9 @@ function CompanyCard({ company }: { company: Company }) {
                 </div>
 
                 {/* Título y descripción */}
-                <div className="p-2">
-                  <h4 className="text-xs font-bold text-foreground">{plan.nombre}</h4>
-                  <p className="text-[9px] text-muted-foreground mt-0.5 leading-tight">{plan.descripcion}</p>
+                <div className="p-1.5 text-center">
+                  <h4 className="text-[10px] font-bold text-foreground leading-tight">{plan.titulo}</h4>
+                  <p className="text-[8px] text-muted-foreground leading-tight mt-0.5">{plan.descripcion}</p>
                 </div>
               </div>
             ))}
