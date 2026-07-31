@@ -38,7 +38,7 @@ export function HowItWorks() {
       aria-labelledby="como-funciona-title"
     >
       <div className="w-full max-w-6xl mx-auto px-4 py-12">
-        <div className="mb-10 text-center">
+        <div className="mb-10 md:mb-16 text-center">
           <h2
             id="como-funciona-title"
             className="text-2xl md:text-3xl font-bold text-foreground"
