@@ -68,7 +68,7 @@ function CompanyCard({ company, empresaActiva, onToggle }: CompanyCardProps) {
 
   return (
     <div
-      className={`empresa-card group relative flex min-h-[600px] md:min-h-[700px] w-full flex-col items-center justify-center gap-4 md:gap-6 rounded-2xl border-2 p-10 md:p-12 text-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${styles.bg} ${styles.border} ${styles.hoverBg} ${styles.hoverBorder}`}
+      className={`empresa-card group relative flex min-h-[600px] md:min-h-[700px] w-full flex-col items-center justify-start gap-4 md:gap-6 rounded-2xl border-2 px-10 md:px-12 pt-12 md:pt-16 pb-8 md:pb-10 text-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${styles.bg} ${styles.border} ${styles.hoverBg} ${styles.hoverBorder}`}
     >
       {/* LOGO */}
       <div className="flex items-center justify-center h-20 md:h-28 w-full">
