@@ -1,55 +1,41 @@
 'use client'
 
 import { ArrowRight } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { useTranslation } from './useTranslation'
-import { scrollToSection } from './companies'
 
 export function Hero() {
   const { t } = useTranslation()
 
+  const scrollToContact = () => {
+    const element = document.getElementById('contacto')
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
   return (
     <section
       id="top"
-      className="relative w-full min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white"
+      className="relative w-full min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-50/30 dark:from-blue-950/20 dark:via-background dark:to-blue-950/10"
     >
-      <div
-        aria-hidden
-        className="absolute inset-0 opacity-20"
-        style={{
-          backgroundImage:
-            'radial-gradient(circle at 20% 20%, white 1px, transparent 1px), radial-gradient(circle at 80% 60%, white 1px, transparent 1px)',
-          backgroundSize: '48px 48px',
-        }}
-      />
-      <div className="relative w-full max-w-4xl mx-auto px-4 py-12 text-center">
-        <span className="inline-block rounded-full bg-white/15 px-4 py-1 text-xs font-semibold backdrop-blur mb-4">
-          {t('hero.badge')}
-        </span>
-        <h1 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-white">
+      <div className="container mx-auto px-4 max-w-[650px] text-center pt-28 md:pt-32 pb-28 md:pb-32">
+        {/* Título */}
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#0F172A] dark:text-white leading-[110%] tracking-[-1.5px] mb-6">
           {t('hero.title')}
         </h1>
-        <p className="text-base md:text-xl text-white/90 mb-6 max-w-2xl mx-auto">
+
+        {/* Descripción */}
+        <p className="text-lg md:text-xl text-[#475569] dark:text-gray-300 leading-[165%] max-w-[650px] mx-auto">
           {t('hero.subtitle')}
         </p>
-        <div className="mt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Button
-            asChild
-            size="lg"
-            className="gap-2 bg-white text-blue-700 hover:bg-blue-50"
-          >
-            <a
-              href="#contacto"
-              onClick={(e) => {
-                e.preventDefault()
-                scrollToSection('#contacto')
-              }}
-            >
-              {t('hero.cta')}
-              <ArrowRight className="h-4 w-4" />
-            </a>
-          </Button>
-        </div>
+
+        {/* Botón */}
+        <button
+          onClick={scrollToContact}
+          className="mt-10 inline-flex items-center gap-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold text-lg px-8 py-4 rounded-[14px] transition-all duration-300 hover:shadow-lg hover:scale-105"
+        >
+          {t('hero.cta')} <ArrowRight className="w-5 h-5" />
+        </button>
       </div>
     </section>
   )
