@@ -169,9 +169,21 @@ export function CompaniesSection() {
   const { t } = useTranslation()
   const [empresaActiva, setEmpresaActiva] = useState<string | null>(null)
   const seccionesRef = useRef<HTMLDivElement>(null)
+  const empresasRef = useRef<HTMLElement>(null)
 
   const toggleEmpresa = (empresa: string) => {
-    setEmpresaActiva((prev) => (prev === empresa ? null : empresa))
+    const nuevaEmpresa = empresaActiva === empresa ? null : empresa
+    setEmpresaActiva(nuevaEmpresa)
+
+    // SCROLL AUTOMÁTICO al activar una empresa
+    if (nuevaEmpresa !== null && empresasRef.current) {
+      setTimeout(() => {
+        empresasRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        })
+      }, 100)
+    }
   }
 
   // 1. SCROLL - Ocultar al salir del viewport
@@ -218,6 +230,7 @@ export function CompaniesSection() {
 
   return (
     <section
+      ref={empresasRef}
       id="empresas"
       className="w-full min-h-[calc(100vh-4rem)] flex items-start justify-center scroll-mt-16 bg-white"
       aria-labelledby="empresas-title"
