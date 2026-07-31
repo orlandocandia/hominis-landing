@@ -52,21 +52,25 @@ function CompanyCard({ company }: { company: Company }) {
   const doctoredPlanes = [
     {
       numero: '500',
+      imagen: 'plan-500.png',
       subtitulo: 'Con tus aportes',
       descripcion: 'Accedé a cobertura médica de calidad sin cuota mensual.'
     },
     {
       numero: '1000',
+      imagen: 'plan-1000.png',
       subtitulo: 'Tu primer plan privado',
       descripcion: 'Cobertura completa y con excelente cartilla médica.'
     },
     {
       numero: '2000',
+      imagen: 'plan-2000.png',
       subtitulo: 'Más cobertura y comodidad',
       descripcion: 'Mayor nivel de prestaciones para atenderte con más tranquilidad.'
     },
     {
       numero: '3000',
+      imagen: 'plan-3000.png',
       subtitulo: 'Cobertura total sin límites',
       descripcion: 'El plan más completo para cuidar tu salud con la máxima tranquilidad.'
     }
@@ -141,27 +145,40 @@ function CompanyCard({ company }: { company: Company }) {
             {doctoredPlanes.map((plan) => (
               <div
                 key={plan.numero}
-                className="flex flex-col overflow-hidden rounded-lg border border-blue-200 dark:border-blue-800 shadow-sm bg-white dark:bg-gray-800 p-2 text-center"
+                className="flex flex-col overflow-hidden rounded-lg border border-blue-200 dark:border-blue-800 shadow-sm bg-white dark:bg-gray-800"
               >
-                {/* "Plan" (pequeño, gris) */}
-                <span className="text-[8px] md:text-[9px] text-muted-foreground uppercase tracking-wider">
-                  Plan
-                </span>
+                {/* 📸 IMAGEN (RESTAURADA) */}
+                <div className="w-full h-16 overflow-hidden bg-blue-50 dark:bg-blue-950/20">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`/images/seguros/${plan.imagen}`}
+                    alt={plan.numero}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
 
-                {/* Número (grande, lila) */}
-                <span className="text-xl md:text-2xl font-bold text-purple-600 dark:text-purple-400 leading-tight">
-                  {plan.numero}
-                </span>
+                {/* Texto */}
+                <div className="p-2 text-center">
+                  {/* "Plan" (pequeño, gris) */}
+                  <span className="text-[8px] md:text-[9px] text-muted-foreground uppercase tracking-wider">
+                    Plan
+                  </span>
 
-                {/* Subtítulo (azul) */}
-                <span className="text-[10px] md:text-xs font-medium text-blue-600 dark:text-blue-400 mt-1">
-                  {plan.subtitulo}
-                </span>
+                  {/* Número (grande, lila) */}
+                  <span className="text-xl md:text-2xl font-bold text-purple-600 dark:text-purple-400 leading-tight block">
+                    {plan.numero}
+                  </span>
 
-                {/* Descripción (pequeño, gris) */}
-                <p className="text-[7px] md:text-[8px] text-muted-foreground leading-tight mt-1">
-                  {plan.descripcion}
-                </p>
+                  {/* Subtítulo (azul) */}
+                  <span className="text-[10px] md:text-xs font-medium text-blue-600 dark:text-blue-400 block mt-0.5">
+                    {plan.subtitulo}
+                  </span>
+
+                  {/* Descripción (pequeño, gris) */}
+                  <p className="text-[7px] md:text-[8px] text-muted-foreground leading-tight mt-1">
+                    {plan.descripcion}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
