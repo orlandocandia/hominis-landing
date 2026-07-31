@@ -51,27 +51,23 @@ function CompanyCard({ company }: { company: Company }) {
 
   const doctoredPlanes = [
     {
-      nombre: 'Plan 500',
-      imagen: 'plan-500.png',
-      titulo: 'Con tus aportes',
+      numero: '500',
+      subtitulo: 'Con tus aportes',
       descripcion: 'Accedé a cobertura médica de calidad sin cuota mensual.'
     },
     {
-      nombre: 'Plan 1000',
-      imagen: 'plan-1000.png',
-      titulo: 'Tu primer plan privado',
+      numero: '1000',
+      subtitulo: 'Tu primer plan privado',
       descripcion: 'Cobertura completa y con excelente cartilla médica.'
     },
     {
-      nombre: 'Plan 2000',
-      imagen: 'plan-2000.png',
-      titulo: 'Más cobertura y comodidad',
+      numero: '2000',
+      subtitulo: 'Más cobertura y comodidad',
       descripcion: 'Mayor nivel de prestaciones para atenderte con más tranquilidad.'
     },
     {
-      nombre: 'Plan 3000',
-      imagen: 'plan-3000.png',
-      titulo: 'Cobertura total sin límites',
+      numero: '3000',
+      subtitulo: 'Cobertura total sin límites',
       descripcion: 'El plan más completo para cuidar tu salud con la máxima tranquilidad.'
     }
   ]
@@ -144,24 +140,28 @@ function CompanyCard({ company }: { company: Company }) {
           <div className="grid grid-cols-4 gap-2 w-full">
             {doctoredPlanes.map((plan) => (
               <div
-                key={plan.nombre}
-                className="flex flex-col overflow-hidden rounded-lg border border-blue-200 dark:border-blue-800 shadow-sm bg-white dark:bg-gray-800 group hover:shadow-md transition"
+                key={plan.numero}
+                className="flex flex-col overflow-hidden rounded-lg border border-blue-200 dark:border-blue-800 shadow-sm bg-white dark:bg-gray-800 p-2 text-center"
               >
-                {/* 📸 IMAGEN - SIN ESPACIOS */}
-                <div className="w-full h-24 md:h-28 overflow-hidden bg-blue-50 dark:bg-blue-950/20">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`/images/seguros/${plan.imagen}`}
-                    alt={plan.nombre}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+                {/* "Plan" (pequeño, gris) */}
+                <span className="text-[8px] md:text-[9px] text-muted-foreground uppercase tracking-wider">
+                  Plan
+                </span>
 
-                {/* Título y descripción */}
-                <div className="p-1.5 text-center">
-                  <h4 className="text-[10px] font-bold text-foreground leading-tight">{plan.titulo}</h4>
-                  <p className="text-[8px] text-muted-foreground leading-tight mt-0.5">{plan.descripcion}</p>
-                </div>
+                {/* Número (grande, lila) */}
+                <span className="text-xl md:text-2xl font-bold text-purple-600 dark:text-purple-400 leading-tight">
+                  {plan.numero}
+                </span>
+
+                {/* Subtítulo (azul) */}
+                <span className="text-[10px] md:text-xs font-medium text-blue-600 dark:text-blue-400 mt-1">
+                  {plan.subtitulo}
+                </span>
+
+                {/* Descripción (pequeño, gris) */}
+                <p className="text-[7px] md:text-[8px] text-muted-foreground leading-tight mt-1">
+                  {plan.descripcion}
+                </p>
               </div>
             ))}
           </div>
