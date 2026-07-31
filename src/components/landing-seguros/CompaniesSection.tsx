@@ -135,24 +135,16 @@ function CompanyCard({ company }: { company: Company }) {
         </>
       ) : (
         <>
-          {/* DoctoRed - Título + Slogan */}
-          <div className="text-center">
-            <h3 className="text-lg md:text-xl font-bold text-foreground">
-              Juro vivir a lo grande
-            </h3>
-            <p className="text-sm md:text-base text-muted-foreground mt-1">
-              Porque tengo un plan de salud con precios justos.
-            </p>
-          </div>
-
-          {/* 🔑 PLANES EN UNA SOLA FILA (1x4) */}
+          {/* DoctoRed - CON 4 PLANES */}
+          {/* Grid de 4 planes (1x4) */}
           <div className="grid grid-cols-4 gap-2 w-full max-w-md">
             {doctoredPlanes.map((plan) => (
               <div
                 key={plan.nombre}
-                className="flex flex-col overflow-hidden rounded-lg border border-blue-200 dark:border-blue-800 shadow-sm bg-white dark:bg-gray-800"
+                className="flex flex-col overflow-hidden rounded-lg border border-blue-200 dark:border-blue-800 shadow-sm bg-white dark:bg-gray-800 group hover:shadow-md transition"
               >
-                <div className="w-full h-16 overflow-hidden bg-blue-50 dark:bg-blue-950/20">
+                {/* 📸 IMAGEN - SIN ESPACIOS */}
+                <div className="w-full h-24 md:h-28 overflow-hidden bg-blue-50 dark:bg-blue-950/20">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={`/images/seguros/${plan.imagen}`}
@@ -160,8 +152,11 @@ function CompanyCard({ company }: { company: Company }) {
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <div className="p-1.5 text-center">
-                  <h4 className="text-[10px] font-bold text-foreground leading-tight">{plan.nombre}</h4>
+
+                {/* Título y descripción */}
+                <div className="p-2">
+                  <h4 className="text-xs font-bold text-foreground">{plan.nombre}</h4>
+                  <p className="text-[9px] text-muted-foreground mt-0.5 leading-tight">{plan.descripcion}</p>
                 </div>
               </div>
             ))}
