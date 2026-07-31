@@ -159,14 +159,9 @@ function CompanyCard({ company }: { company: Company }) {
 
                 {/* Texto */}
                 <div className="p-2 text-center">
-                  {/* "Plan" (pequeño, gris) */}
-                  <span className="text-[8px] md:text-[9px] text-muted-foreground uppercase tracking-wider">
-                    Plan
-                  </span>
-
-                  {/* Número (grande, lila) */}
-                  <span className="text-xl md:text-2xl font-bold text-purple-600 dark:text-purple-400 leading-tight block">
-                    {plan.numero}
+                  {/* 🔑 Plan + número en UNA SOLA LÍNEA */}
+                  <span className="text-[10px] md:text-xs font-bold text-purple-600 dark:text-purple-400">
+                    Plan {plan.numero}
                   </span>
 
                   {/* Subtítulo (azul) */}
