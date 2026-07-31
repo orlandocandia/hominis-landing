@@ -68,10 +68,10 @@ function CompanyCard({ company, empresaActiva, onToggle }: CompanyCardProps) {
 
   return (
     <div
-      className={`empresa-card group relative flex min-h-[600px] md:min-h-[700px] w-full flex-col items-center justify-start gap-4 md:gap-6 rounded-2xl border-2 px-8 md:px-10 pt-6 md:pt-8 pb-8 md:pb-10 text-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${styles.bg} ${styles.border} ${styles.hoverBg} ${styles.hoverBorder}`}
+      className={`empresa-card group relative flex min-h-[600px] md:min-h-[700px] w-full flex-col items-center justify-start gap-3 md:gap-4 rounded-2xl border-2 px-8 md:px-10 pt-3 md:pt-5 pb-8 md:pb-10 text-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${styles.bg} ${styles.border} ${styles.hoverBg} ${styles.hoverBorder}`}
     >
       {/* LOGO */}
-      <div className="flex items-center justify-center h-20 md:h-28 w-full">
+      <div className="flex items-center justify-center h-16 md:h-24 w-full">
         <Image
           src={company.logo}
           alt={`${company.name}`}
@@ -91,7 +91,7 @@ function CompanyCard({ company, empresaActiva, onToggle }: CompanyCardProps) {
           <p className="text-sm md:text-base text-[#4a9a6a] dark:text-green-300 text-center max-w-sm px-2 leading-relaxed">
             La mejor cobertura. Amplia red médica y centros propios para cuidarte a vos y a tu familia.
           </p>
-          <div className="grid grid-cols-2 gap-3 w-full max-w-sm mt-2">
+          <div className="grid grid-cols-2 gap-3 w-full max-w-sm mt-1">
             <AmarMascotasBenefit />
             <div className="flex flex-col items-center justify-center p-3 bg-white dark:bg-gray-800 rounded-lg border border-green-200 dark:border-green-800 shadow-sm h-[90px]">
               <div className="flex items-start gap-2">
@@ -138,7 +138,7 @@ function CompanyCard({ company, empresaActiva, onToggle }: CompanyCardProps) {
       {/* BOTÓN "Ver Planes" / "Ocultar planes" con toggle */}
       <button
         onClick={() => onToggle(company.id)}
-        className={`mt-2 inline-flex items-center justify-center gap-2 w-full px-6 py-3.5 rounded-lg font-semibold text-white transition-all duration-300 group-hover:shadow-lg group-hover:gap-3 ${styles.btnColor}`}
+        className={`mt-1 inline-flex items-center justify-center gap-2 w-full px-6 py-3.5 rounded-lg font-semibold text-white transition-all duration-300 group-hover:shadow-lg group-hover:gap-3 ${styles.btnColor}`}
       >
         {isActive ? 'Ocultar planes' : t('empresas.verPlanes')}
         <ArrowRight className={`h-4 w-4 transition-transform ${isActive ? 'rotate-90' : 'group-hover:translate-x-1'}`} />
