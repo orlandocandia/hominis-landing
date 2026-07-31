@@ -75,10 +75,10 @@ function CompanyCard({ company, empresaActiva, onToggle }: CompanyCardProps) {
         <Image
           src={company.logo}
           alt={`${company.name}`}
-          width={280}
-          height={112}
-          style={{ height: '4rem', width: 'auto' }}
-          className="object-contain transition-transform duration-300 group-hover:scale-105 md:!h-24"
+          width={160}
+          height={56}
+          style={{ height: '3rem', width: 'auto' }}
+          className="object-contain transition-transform duration-300 group-hover:scale-105 md:!h-14"
           priority
         />
       </div>
