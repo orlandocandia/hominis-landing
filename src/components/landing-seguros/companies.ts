@@ -28,7 +28,7 @@ export const COMPANIES: Company[] = [
   {
     id: 'doctored',
     name: 'DoctoRed',
-    logo: '/images/seguros/doctored-logo.png',
+    logo: '/images/seguros/doctored-logo.svg',
     color: '#1a73e8',
     description: 'Cobertura médica de calidad con planes flexibles.',
   },
