@@ -26,10 +26,10 @@ const translations: Record<Locale, Record<string, string>> = {
     'lang.select': 'Idioma',
 
     'hero.badge': 'Asesoramiento en salud • Sin costo',
-    'hero.title': 'Encontrá el plan de salud que mejor se adapta a vos',
+    'hero.title': 'Encontrá el plan de salud ideal para vos y tu familia.',
     'hero.subtitle':
-      'Con mi experiencia, encontrás la cobertura médica ideal para vos y tu familia sin vueltas ni costo.',
-    'hero.cta': 'Asesorate',
+      'Te ayudamos a comparar las mejores opciones y elegir la cobertura que realmente necesitás, con asesoramiento personalizado, acompañamiento durante todo el proceso y sin costo para vos.',
+    'hero.cta': 'Quiero asesoramiento',
 
     'empresas.title': 'Empresas que representamos',
     'empresas.subtitle': 'Elegí la empresa de tu interés para conocer más detalles.',
@@ -92,10 +92,10 @@ const translations: Record<Locale, Record<string, string>> = {
     'lang.select': 'Language',
 
     'hero.badge': 'Health advice • Free of charge',
-    'hero.title': 'Find the health plan that best fits you',
+    'hero.title': 'Find the ideal health plan for you and your family.',
     'hero.subtitle':
-      'With my experience, you find the ideal medical coverage for you and your family, no strings attached and free.',
-    'hero.cta': 'Get advice',
+      'We help you compare the best options and choose the coverage you really need, with personalized advice, support throughout the process and at no cost to you.',
+    'hero.cta': 'I want advice',
 
     'empresas.title': 'Companies we represent',
     'empresas.subtitle': 'Choose the company of your interest to learn more.',
@@ -158,10 +158,10 @@ const translations: Record<Locale, Record<string, string>> = {
     'lang.select': 'Idioma',
 
     'hero.badge': 'Consultoria em saúde • Grátis',
-    'hero.title': 'Encontre o plano de saúde que melhor se adapta a você',
+    'hero.title': 'Encontre o plano de saúde ideal para você e sua família.',
     'hero.subtitle':
-      'Com minha experiência, você encontra a cobertura médica ideal para você e sua família sem complicação e grátis.',
-    'hero.cta': 'Acesse agora',
+      'Ajudamos você a comparar as melhores opções e escolher a cobertura que você realmente precisa, com assessoria personalizada, acompanhamento durante todo o processo e sem custo para você.',
+    'hero.cta': 'Quero assessoria',
 
     'empresas.title': 'Empresas que representamos',
     'empresas.subtitle': 'Escolha a empresa do seu interesse para saber mais.',
