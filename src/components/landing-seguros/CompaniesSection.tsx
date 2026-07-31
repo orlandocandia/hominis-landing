@@ -170,7 +170,7 @@ function CompanyCard({ company }: { company: Company }) {
                   </span>
 
                   {/* Descripción (pequeño, gris) */}
-                  <p className="text-[7px] md:text-[8px] text-muted-foreground leading-tight mt-1">
+                  <p className="text-[9px] md:text-[10px] text-gray-600 dark:text-gray-400 leading-tight mt-1">
                     {plan.descripcion}
                   </p>
                 </div>
