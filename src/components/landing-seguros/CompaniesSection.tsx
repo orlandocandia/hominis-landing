@@ -137,7 +137,7 @@ function CompanyCard({ company }: { company: Company }) {
         <>
           {/* DoctoRed - CON 4 PLANES */}
           {/* Grid de 4 planes (1x4) */}
-          <div className="grid grid-cols-4 gap-2 w-full max-w-md">
+          <div className="grid grid-cols-4 gap-2 w-full">
             {doctoredPlanes.map((plan) => (
               <div
                 key={plan.nombre}
