@@ -5,6 +5,7 @@ import { ArrowRight, Building2, MapPin } from 'lucide-react'
 import { useTranslation } from './useTranslation'
 import { AmarMascotasBenefit } from './AmarMascotasBenefit'
 import { MejorCuidadosBenefit } from './MejorCuidadosBenefit'
+import { ImageCarousel } from './ImageCarousel'
 import { COMPANIES, scrollToSection, type Company } from './companies'
 
 const COMPANY_KEYS: Record<string, { desc: string; slogan: string; benefit: string }> = {
@@ -184,6 +185,9 @@ function CompanyCard({ company }: { company: Company }) {
           </div>
         </>
       )}
+
+      {/* Carrusel de imágenes (solo DoctoRed) */}
+      {!isPremedic && <ImageCarousel />}
 
       {/* ✅ BOTÓN "Ver Planes" (permanece en ambas) */}
       <span
