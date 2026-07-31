@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { ArrowRight, Building2, MapPin } from 'lucide-react'
 import { useTranslation } from './useTranslation'
@@ -68,7 +68,7 @@ function CompanyCard({ company, empresaActiva, onToggle }: CompanyCardProps) {
 
   return (
     <div
-      className={`group relative flex min-h-[350px] md:min-h-[420px] lg:min-h-[50vh] xl:min-h-[45vh] w-full flex-col items-center justify-center gap-3 md:gap-4 rounded-2xl border-2 p-6 md:p-8 text-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${styles.bg} ${styles.border} ${styles.hoverBg} ${styles.hoverBorder}`}
+      className={`empresa-card group relative flex min-h-[350px] md:min-h-[420px] lg:min-h-[50vh] xl:min-h-[45vh] w-full flex-col items-center justify-center gap-3 md:gap-4 rounded-2xl border-2 p-6 md:p-8 text-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${styles.bg} ${styles.border} ${styles.hoverBg} ${styles.hoverBorder}`}
     >
       {/* LOGO */}
       <div className="flex items-center justify-center h-20 md:h-28 w-full">
@@ -168,10 +168,53 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
 export function CompaniesSection() {
   const { t } = useTranslation()
   const [empresaActiva, setEmpresaActiva] = useState<string | null>(null)
+  const seccionesRef = useRef<HTMLDivElement>(null)
 
   const toggleEmpresa = (empresa: string) => {
     setEmpresaActiva((prev) => (prev === empresa ? null : empresa))
   }
+
+  // 1. SCROLL - Ocultar al salir del viewport
+  useEffect(() => {
+    if (!empresaActiva) return
+    const handleScroll = () => {
+      if (seccionesRef.current) {
+        const rect = seccionesRef.current.getBoundingClientRect()
+        if (rect.bottom < 0) {
+          setEmpresaActiva(null)
+        }
+      }
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [empresaActiva])
+
+  // 2. CLICK OUTSIDE - Ocultar al hacer clic fuera
+  useEffect(() => {
+    if (!empresaActiva) return
+    const handleClickOutside = (e: MouseEvent) => {
+      if (seccionesRef.current && !seccionesRef.current.contains(e.target as Node)) {
+        const target = e.target as HTMLElement
+        if (!target.closest('.empresa-card')) {
+          setEmpresaActiva(null)
+        }
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [empresaActiva])
+
+  // 3. TECLA ESC - Ocultar al presionar Escape
+  useEffect(() => {
+    if (!empresaActiva) return
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setEmpresaActiva(null)
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [empresaActiva])
 
   return (
     <section
@@ -200,8 +243,12 @@ export function CompaniesSection() {
           ))}
         </div>
 
-        {/* SECCIONES DINÁMICAS */}
-        {empresaActiva && <SeccionesDinamicas empresa={empresaActiva} />}
+        {/* SECCIONES DINÁMICAS CON REF */}
+        {empresaActiva && (
+          <div ref={seccionesRef}>
+            <SeccionesDinamicas empresa={empresaActiva} />
+          </div>
+        )}
       </div>
     </section>
   )
