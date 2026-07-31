@@ -68,7 +68,7 @@ function CompanyCard({ company, empresaActiva, onToggle }: CompanyCardProps) {
 
   return (
     <div
-      className={`empresa-card group relative flex min-h-[350px] md:min-h-[420px] lg:min-h-[50vh] xl:min-h-[45vh] w-full flex-col items-center justify-center gap-3 md:gap-4 rounded-2xl border-2 p-6 md:p-8 text-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${styles.bg} ${styles.border} ${styles.hoverBg} ${styles.hoverBorder}`}
+      className={`empresa-card group relative flex min-h-[450px] md:min-h-[550px] w-full flex-col items-center justify-center gap-3 md:gap-4 rounded-2xl border-2 p-8 md:p-10 text-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${styles.bg} ${styles.border} ${styles.hoverBg} ${styles.hoverBorder}`}
     >
       {/* LOGO */}
       <div className="flex items-center justify-center h-20 md:h-28 w-full">
@@ -237,7 +237,7 @@ export function CompaniesSection() {
       className="w-full min-h-[calc(100vh-4rem)] flex items-start justify-center scroll-mt-20 bg-white"
       aria-labelledby="empresas-title"
     >
-      <div className="w-full px-4 py-6 md:py-10">
+      <div className="w-full px-4 pt-4 md:pt-6 pb-8 md:pb-12">
         <div className="mb-6 md:mb-8 text-center">
           <h2 id="empresas-title" className="text-2xl md:text-4xl font-bold text-foreground">
             {t('empresas.title')}
