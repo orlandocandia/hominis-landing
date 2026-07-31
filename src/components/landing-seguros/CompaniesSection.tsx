@@ -196,7 +196,7 @@ export function CompaniesSection() {
             {t('empresas.subtitle')}
           </p>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 w-full max-w-2xl mx-auto pt-4 md:pt-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 w-full max-w-4xl mx-auto pt-4 md:pt-8">
           {COMPANIES.map((company) => (
             <CompanyCard key={company.id} company={company} />
           ))}
