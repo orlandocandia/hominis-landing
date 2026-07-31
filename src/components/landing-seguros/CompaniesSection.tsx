@@ -237,8 +237,8 @@ export function CompaniesSection() {
       className="w-full min-h-[calc(100vh-4rem)] flex items-start justify-center scroll-mt-20 bg-white"
       aria-labelledby="empresas-title"
     >
-      <div className="w-full px-4 pt-4 md:pt-6 pb-8 md:pb-12">
-        <div className="mb-6 md:mb-8 text-center">
+      <div className="w-full px-4 pt-2 md:pt-4 pb-8 md:pb-12">
+        <div className="mb-2 md:mb-4 text-center">
           <h2 id="empresas-title" className="text-2xl md:text-4xl font-bold text-foreground">
             {t('empresas.title')}
           </h2>
@@ -247,7 +247,7 @@ export function CompaniesSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 w-full max-w-7xl mx-auto pt-4 md:pt-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 w-full max-w-7xl mx-auto mt-2 md:mt-4">
           {COMPANIES.map((company) => (
             <CompanyCard
               key={company.id}
