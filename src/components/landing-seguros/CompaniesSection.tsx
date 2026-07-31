@@ -197,7 +197,7 @@ export function CompaniesSection() {
   return (
     <section
       id="empresas"
-      className="w-full min-h-[calc(100vh-4rem)] flex items-start justify-center scroll-mt-16 bg-white dark:bg-background"
+      className="w-full min-h-[calc(100vh-4rem)] flex items-start justify-center scroll-mt-16 bg-white"
       aria-labelledby="empresas-title"
     >
       <div className="w-full px-4 py-6 md:py-10">
