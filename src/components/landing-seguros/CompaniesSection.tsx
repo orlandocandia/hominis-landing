@@ -5,7 +5,6 @@ import { ArrowRight, Building2, MapPin } from 'lucide-react'
 import { useTranslation } from './useTranslation'
 import { AmarMascotasBenefit } from './AmarMascotasBenefit'
 import { MejorCuidadosBenefit } from './MejorCuidadosBenefit'
-import { ImageCarousel } from './ImageCarousel'
 import { COMPANIES, scrollToSection, type Company } from './companies'
 
 const COMPANY_KEYS: Record<string, { desc: string; slogan: string; benefit: string }> = {
@@ -186,8 +185,17 @@ function CompanyCard({ company }: { company: Company }) {
         </>
       )}
 
-      {/* Carrusel de imágenes (solo DoctoRed) */}
-      {!isPremedic && <ImageCarousel />}
+      {/* Título y texto de red médica (solo DoctoRed) */}
+      {!isPremedic && (
+        <div className="text-center">
+          <h3 className="text-base md:text-lg font-bold text-foreground">
+            Una red médica que te acompaña en todo el país.
+          </h3>
+          <p className="text-xs md:text-sm text-muted-foreground mt-1 max-w-2xl mx-auto">
+            Contamos con una amplia red para que siempre tengas atención médica cerca de tu casa.
+          </p>
+        </div>
+      )}
 
       {/* ✅ BOTÓN "Ver Planes" (permanece en ambas) */}
       <span
