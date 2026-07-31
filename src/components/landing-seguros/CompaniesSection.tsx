@@ -140,6 +140,11 @@ function CompanyCard({ company }: { company: Company }) {
       ) : (
         <>
           {/* DoctoRed - CON 4 PLANES */}
+          {/* 🔑 Título de planes */}
+          <h4 className="text-sm md:text-base font-semibold text-blue-600 dark:text-blue-400 text-center">
+            Precios sanos, planes flexibles. Elegí el tuyo.
+          </h4>
+
           {/* Grid de 4 planes (1x4) */}
           <div className="grid grid-cols-4 gap-2 w-full">
             {doctoredPlanes.map((plan) => (
