@@ -176,13 +176,15 @@ export function CompaniesSection() {
     setEmpresaActiva(nuevaEmpresa)
 
     // SCROLL AUTOMÁTICO al activar una empresa
-    if (nuevaEmpresa !== null && empresasRef.current) {
+    if (nuevaEmpresa !== null) {
       setTimeout(() => {
-        empresasRef.current?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-        })
-      }, 100)
+        const element = document.getElementById('empresas')
+        if (element) {
+          const rect = element.getBoundingClientRect()
+          const offset = rect.top + window.scrollY - 80
+          window.scrollTo({ top: offset, behavior: 'smooth' })
+        }
+      }, 300)
     }
   }
 
@@ -232,7 +234,7 @@ export function CompaniesSection() {
     <section
       ref={empresasRef}
       id="empresas"
-      className="w-full min-h-[calc(100vh-4rem)] flex items-start justify-center scroll-mt-16 bg-white"
+      className="w-full min-h-[calc(100vh-4rem)] flex items-start justify-center scroll-mt-20 bg-white"
       aria-labelledby="empresas-title"
     >
       <div className="w-full px-4 py-6 md:py-10">
