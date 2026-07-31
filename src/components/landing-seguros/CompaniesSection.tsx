@@ -86,7 +86,7 @@ function CompanyCard({ company }: { company: Company }) {
     <a
       href={`#${company.id}`}
       onClick={handleClick}
-      className={`group relative flex min-h-[350px] md:min-h-[420px] lg:min-h-[50vh] xl:min-h-[45vh] w-full flex-col items-center justify-center gap-3 md:gap-4 rounded-2xl border-2 p-6 md:p-8 text-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${styles.bg} ${styles.border} ${styles.hoverBg} ${styles.hoverBorder}`}
+      className={`group relative flex min-h-[350px] md:min-h-[420px] lg:min-h-[50vh] xl:min-h-[45vh] w-full flex-col items-center justify-between gap-3 md:gap-4 rounded-2xl border-2 p-6 md:p-8 text-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${styles.bg} ${styles.border} ${styles.hoverBg} ${styles.hoverBorder}`}
       aria-label={`${t('empresas.verPlanes')} ${company.name}`}
     >
       {/* ✅ LOGO (permanece en ambas) */}
@@ -104,19 +104,19 @@ function CompanyCard({ company }: { company: Company }) {
 
       {isPremedic ? (
         <>
-          {/* 🆕 NUEVO TÍTULO para Premedic */}
-          <h3 className="text-2xl md:text-3xl font-semibold text-[#1a6b3c] dark:text-green-400 text-center">
-            Somos el respaldo que te merecés
-          </h3>
+          {/* Contenido central (título + slogan) */}
+          <div className="text-center flex-1 flex flex-col justify-center">
+            <h3 className="text-2xl md:text-3xl font-semibold text-[#1a6b3c] dark:text-green-400 text-center">
+              Somos el respaldo que te merecés
+            </h3>
+            <p className="text-sm md:text-base text-[#4a9a6a] dark:text-green-300 text-center max-w-sm px-2 leading-relaxed mt-2">
+              La mejor cobertura. Amplia red médica y centros propios para
+              cuidarte a vos y a tu familia.
+            </p>
+          </div>
 
-          {/* 🆕 NUEVO SLOGAN para Premedic */}
-          <p className="text-sm md:text-base text-[#4a9a6a] dark:text-green-300 text-center max-w-sm px-2 leading-relaxed">
-            La mejor cobertura. Amplia red médica y centros propios para
-            cuidarte a vos y a tu familia.
-          </p>
-
-          {/* 🆕 BENEFICIOS (grid 2x2) con iconos lucide */}
-          <div className="grid grid-cols-2 gap-3 w-full max-w-sm mt-2">
+          {/* 🔑 CARTELITOS (beneficios) - SIEMPRE ABAJO */}
+          <div className="grid grid-cols-2 gap-3 w-full max-w-sm">
             <AmarMascotasBenefit />
             <div className="flex flex-col items-center justify-center p-3 bg-white dark:bg-gray-800 rounded-lg border border-green-200 dark:border-green-800 shadow-sm h-[90px]">
               <div className="flex items-start gap-2">
@@ -135,8 +135,17 @@ function CompanyCard({ company }: { company: Company }) {
         </>
       ) : (
         <>
-          {/* DoctoRed - CON 4 PLANES */}
-          {/* Grid de 4 planes (2x2) */}
+          {/* Contenido central (título + descripción) */}
+          <div className="text-center flex-1 flex flex-col justify-center">
+            <h3 className="text-lg md:text-xl font-bold text-foreground">
+              Juro vivir a lo grande
+            </h3>
+            <p className="text-sm md:text-base text-muted-foreground mt-1">
+              Porque tengo un plan de salud con precios justos.
+            </p>
+          </div>
+
+          {/* 🔑 CARTELITOS (planes) - SIEMPRE ABAJO */}
           <div className="grid grid-cols-2 gap-3 w-full max-w-sm">
             {doctoredPlanes.map((plan) => (
               <div
