@@ -135,10 +135,10 @@ function CompanyCard({ company, empresaActiva, onToggle }: CompanyCardProps) {
         </>
       )}
 
-      {/* BOTÓN "Ver Planes" / "Ocultar planes" con toggle */}
+      {/* BOTÓN "Ver Planes" / "Ocultar planes" con toggle - fino y al fondo del cartel */}
       <button
         onClick={() => onToggle(company.id)}
-        className={`mt-1 inline-flex items-center justify-center gap-2 w-full px-6 py-3.5 rounded-lg font-semibold text-white transition-all duration-300 group-hover:shadow-lg group-hover:gap-3 ${styles.btnColor}`}
+        className={`mt-auto inline-flex items-center justify-center gap-2 w-full px-4 py-2 md:py-2.5 rounded-lg text-sm md:text-base font-medium text-white transition-all duration-300 group-hover:shadow-lg group-hover:gap-3 ${styles.btnColor}`}
       >
         {isActive ? 'Ocultar planes' : t('empresas.verPlanes')}
         <ArrowRight className={`h-4 w-4 transition-transform ${isActive ? 'rotate-90' : 'group-hover:translate-x-1'}`} />
