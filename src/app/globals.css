@@ -132,7 +132,7 @@
 }
 
 .doctored-carrusel-track {
-  animation: doctored-carrusel-scroll 48s linear infinite;
+  animation: doctored-carrusel-scroll 32s linear infinite;
 }
 
 .doctored-carrusel-track:hover {
