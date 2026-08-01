@@ -12,7 +12,7 @@ const CARRUSEL_IMAGES = Array.from({ length: 18 }, (_, i) => `/images/seguros/ca
  * Carrusel de imágenes para el cartel de DoctoRed.
  *
  * Features:
- * - Muestra 3 logos visibles al mismo tiempo
+ * - Muestra 4 logos visibles al mismo tiempo
  * - Loop continuo e infinito (movimiento suave tipo "marquee" vía CSS animation)
  * - Pausa al hacer hover (mouse encima)
  * - SIN flechas de navegación
@@ -23,9 +23,9 @@ const CARRUSEL_IMAGES = Array.from({ length: 18 }, (_, i) => `/images/seguros/ca
  * Ubicación: entre el texto gris "Una red médica..." y el botón "Ver Planes".
  *
  * Implementación: se duplica la lista de imágenes (original + copia) y se
- * anima con translateX de 0% a -50% en un loop infinito de 48s (lento).
- * Como el track contiene 2 copias idénticas, cuando llega al -50% (fin de la
- * primera copia) el reinicio es invisible porque la segunda copia es idéntica.
+ * anima con translateX de 0% a -50% en un loop infinito. Como el track
+ * contiene 2 copias idénticas, cuando llega al -50% (fin de la primera
+ * copia) el reinicio es invisible porque la segunda copia es idéntica.
  * Los keyframes están definidos en globals.css (.doctored-carrusel-track).
  */
 export function DoctoRedCarrusel() {
@@ -41,7 +41,7 @@ export function DoctoRedCarrusel() {
             <div
               key={index}
               className="flex-shrink-0 flex justify-center items-center p-2"
-              style={{ width: '33.3333%' }}
+              style={{ width: '25%' }}
             >
               <div className="relative w-full h-12 md:h-16 lg:h-20">
                 <Image
@@ -49,7 +49,7 @@ export function DoctoRedCarrusel() {
                   alt={`Logo de clínica ${(index % CARRUSEL_IMAGES.length) + 1}`}
                   fill
                   className="object-contain"
-                  sizes="(max-width: 768px) 33vw, 200px"
+                  sizes="(max-width: 768px) 25vw, 200px"
                   quality={85}
                 />
               </div>
