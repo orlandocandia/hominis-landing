@@ -72,15 +72,27 @@ function CompanyCard({ company, empresaActiva, onToggle }: CompanyCardProps) {
     >
       {/* LOGO */}
       <div className="flex items-center justify-center h-16 md:h-24 w-full">
-        <Image
-          src={company.logo}
-          alt={`${company.name}`}
-          width={160}
-          height={56}
-          style={{ height: '3rem', width: 'auto' }}
-          className="object-contain transition-transform duration-300 group-hover:scale-105 md:!h-14"
-          priority
-        />
+        {isPremedic ? (
+          <Image
+            src={company.logo}
+            alt={`${company.name}`}
+            width={160}
+            height={56}
+            style={{ height: '3rem', width: 'auto' }}
+            className="object-contain transition-transform duration-300 group-hover:scale-105 md:!h-14"
+            priority
+          />
+        ) : (
+          <Image
+            src={company.logo}
+            alt={`${company.name}`}
+            width={300}
+            height={58}
+            style={{ width: '14rem', height: 'auto' }}
+            className="object-contain transition-transform duration-300 group-hover:scale-105 md:!w-64"
+            priority
+          />
+        )}
       </div>
 
       {isPremedic ? (
