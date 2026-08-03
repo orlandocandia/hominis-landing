@@ -103,7 +103,6 @@ function Navbar() {
     { href: '#planes', label: t('landing.nav.plans') },
     { href: '#promociones', label: t('landing.nav.promotions') },
     { href: '#servicios', label: t('landing.nav.services') },
-    { href: '#sucursal', label: t('landing.nav.branch') },
     { href: '#contacto', label: t('landing.nav.contact') },
   ];
 
@@ -763,124 +762,6 @@ function ServicesSection() {
   );
 }
 
-/* ─── SUCURSAL / OFICINA SECTION ─── */
-function SucursalSection() {
-  const { t } = useTranslation();
-  return (
-    <AnimatedSection id="sucursal" className="py-20 lg:py-28 bg-hominis-gradient-light">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <Badge variant="secondary" className="mb-4 text-hominis-violet bg-hominis-violet/10 border-hominis-violet/20">
-            Sucursal
-          </Badge>
-          <h2 className="text-3xl sm:text-4xl font-serif font-bold gradient-text mb-4">
-            Visitános en nuestra oficina
-          </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-            Te esperamos para asesorarte personalmente. Encontramos la cobertura ideal para vos, cara a cara.
-          </p>
-        </div>
-
-        <div className="grid lg:grid-cols-2 gap-8 items-stretch">
-          {/* Info Card */}
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="flex flex-col gap-6"
-          >
-            {/* Address Card */}
-            <Card className="border-0 shadow-xl rounded-2xl overflow-hidden flex-1">
-              <div className="bg-gradient-to-r from-hominis-blue to-hominis-violet p-6 text-white">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
-                    <img
-                      src="/logo_hominis.png"
-                      alt="Hominis"
-                      className="w-6 h-6 object-contain rounded"
-                    />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-serif font-bold">Oficina Hominis</h3>
-                  </div>
-                </div>
-              </div>
-              <CardContent className="p-6 space-y-5">
-
-
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Clock className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-foreground">Horario de atención</p>
-                    <p className="text-sm text-muted-foreground">Lunes a Viernes: 9:00 — 18:00</p>
-                    <p className="text-sm text-muted-foreground">Sábados y Domingos: Cerrado</p>
-                  </div>
-                </div>
-
-                <Separator />
-
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Phone className="w-5 h-5 text-purple-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-foreground">Teléfono / WhatsApp</p>
-                    <p className="text-sm text-muted-foreground">11-6555-5534</p>
-                  </div>
-                </div>
-
-                <a
-                  href="https://wa.me/5491165555534?text=Hola%20Agustina%2C%20me%20gustar%C3%ADa%20visitarte%20en%20la%20oficina%20de%20Lomas%20de%20Zamora.%20%C2%BFPodr%C3%ADas%20indicarme%20los%20horarios%3F"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block mt-2"
-                >
-                  <Button className="w-full bg-gradient-to-r from-hominis-blue to-hominis-violet text-white shadow-lg hover:shadow-xl transition-all rounded-xl h-11">
-                    <svg viewBox="0 0 32 32" className="w-5 h-5 mr-2" fill="white"><path d="M16.004 0h-.008C7.174 0 0 7.176 0 16.004c0 3.5 1.132 6.742 3.054 9.378L1.054 31.29l6.118-1.962A15.9 15.9 0 0016.004 32C24.826 32 32 24.826 32 16.004S24.826 0 16.004 0zm9.31 22.61c-.39 1.1-1.932 2.014-3.164 2.28-.844.18-1.946.324-5.66-1.216-4.748-1.97-7.804-6.78-8.038-7.094-.226-.314-1.886-2.512-1.886-4.79s1.194-3.398 1.618-3.864c.39-.428.852-.536 1.136-.536.282 0 .566.002.812.016.262.012.614-.1.96.732.356.854 1.21 2.95 1.316 3.164.108.214.18.466.036.748-.136.282-.204.458-.408.706-.214.248-.448.554-.638.744-.214.214-.436.446-.188.876.248.428 1.104 1.82 2.37 2.948 1.63 1.452 3.004 1.902 3.432 2.116.428.214.676.18.924-.108.248-.288 1.064-1.24 1.348-1.666.282-.428.566-.356.952-.214.39.142 2.478 1.168 2.902 1.382.428.214.712.322.818.498.108.178.108 1.022-.282 2.12z"/></svg>
-                    Coordinar visita por WhatsApp
-                  </Button>
-                </a>
-              </CardContent>
-            </Card>
-
-            {/* How to get there */}
-            <Card className="border-0 shadow-lg rounded-2xl overflow-hidden bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-100">
-              <CardContent className="p-5">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0">
-                    <svg viewBox="0 0 24 24" className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0" /><path d="M12 2v4" /><path d="M12 18v4" /><path d="m4.93 4.93 2.83 2.83" /><path d="m16.24 16.24 2.83 2.83" /><path d="m2 12 4 0" /><path d="m18 12 4 0" /><path d="m4.93 19.07 2.83-2.83" /><path d="m16.24 7.76 2.83-2.83" /></svg>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-amber-900">¿Cómo llegar?</p>
-                    <p className="text-xs text-amber-700">A 2 cuadras de la estación Lomas de Zamora — Línea Roca</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Map */}
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="flex flex-col"
-          >
-            <Card className="border-0 shadow-xl rounded-2xl overflow-hidden flex-1 min-h-[400px] lg:min-h-0">
-              <MapWithAgustina />
-            </Card>
-          </motion.div>
-        </div>
-      </div>
-    </AnimatedSection>
-  );
-}
-
 /* ─── CONTACT FORM SECTION ─── */
 function ContactSection() {
   const { t } = useTranslation();
@@ -1302,7 +1183,6 @@ function Footer() {
                 { href: '#planes', label: 'Planes' },
                 { href: '#promociones', label: 'Promos' },
                 { href: '#servicios', label: 'Servicios' },
-                { href: '#sucursal', label: 'Sucursal' },
                 { href: '#contacto', label: 'Contacto' },
               ].map((link) => (
                 <li key={link.href}>
@@ -1415,7 +1295,6 @@ export default function Home() {
         <PlansSection />
         <PromotionsSection />
         <ServicesSection />
-        <SucursalSection />
         <ContactSection />
       </main>
       <Footer />
