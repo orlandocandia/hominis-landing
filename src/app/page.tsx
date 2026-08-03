@@ -234,14 +234,14 @@ function HeroSection() {
       <div className="absolute bottom-20 left-10 w-96 h-96 bg-hominis-purple/10 rounded-full blur-3xl" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-hominis-accent/5 rounded-full blur-3xl" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-32">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Text Content */}
+      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-32 text-center">
+        <div className="flex flex-col items-center">
+          {/* Text Content - centered, no photo */}
           <motion.div
-            initial={{ opacity: 0, x: -60 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-center lg:text-left"
+            className="text-center w-full"
           >
             <Badge
               variant="secondary"
@@ -260,7 +260,7 @@ function HeroSection() {
               {t('landing.hero.subtitle')}
             </p>
 
-            <div className="flex flex-col items-center lg:items-start gap-5">
+            <div className="flex flex-col items-center gap-5">
               <a href="#contacto">
                 <Button
                   size="lg"
@@ -279,7 +279,7 @@ function HeroSection() {
                 { value: '10+', label: 'Años de Experiencia' },
                 { value: '98%', label: 'Satisfacción' },
               ].map((stat) => (
-                <div key={stat.label} className="text-center lg:text-left">
+                <div key={stat.label} className="text-center">
                   <div className="text-2xl sm:text-3xl font-bold text-hominis-gold">
                     {stat.value}
                   </div>
@@ -291,36 +291,7 @@ function HeroSection() {
             </div>
           </motion.div>
 
-          {/* Profile Photo */}
-          <motion.div
-            initial={{ opacity: 0, x: 60 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="flex justify-center lg:justify-end"
-          >
-            <div className="relative">
-              {/* Decorative ring */}
-              <div className="absolute -inset-4 bg-gradient-to-r from-hominis-accent to-hominis-gold rounded-full opacity-30 blur-xl animate-pulse-glow" />
-              
-              {/* Photo container */}
-              <div className="relative w-72 h-72 sm:w-80 sm:h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden ring-4 ring-white/20 shadow-2xl shadow-hominis-violet/30">
-                <img
-                  src="/agustina_c_candia.png"
-                  alt="Agustina C. Candia - Asesora Comercial Hominis"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-hominis-blue/30 via-transparent to-transparent" />
-              </div>
 
-              {/* Floating badge */}
-              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 glass px-5 py-2 rounded-full shadow-xl">
-                <span className="text-xs font-semibold text-hominis-blue flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-green-600" />
-                  Asesora Certificada
-                </span>
-              </div>
-            </div>
-          </motion.div>
         </div>
       </div>
 
