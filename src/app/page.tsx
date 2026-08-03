@@ -800,23 +800,11 @@ function SucursalSection() {
                   </div>
                   <div>
                     <h3 className="text-xl font-serif font-bold">Oficina Hominis</h3>
-                    <p className="text-white/70 text-sm">Agustina C. Candia — Asesora Comercial</p>
                   </div>
                 </div>
               </div>
               <CardContent className="p-6 space-y-5">
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <MapPin className="w-5 h-5 text-green-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-foreground">Dirección</p>
-                    <p className="text-sm text-muted-foreground">Portela 266, Lomas de Zamora</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">Provincia de Buenos Aires, Argentina</p>
-                  </div>
-                </div>
 
-                <Separator />
 
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0 mt-0.5">
