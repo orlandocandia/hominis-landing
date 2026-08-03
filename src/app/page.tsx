@@ -256,7 +256,7 @@ function HeroSection() {
               <span className="text-hominis-gold">{t('landing.hero.titleHighlight')}</span>
             </h1>
 
-            <p className="text-lg sm:text-xl text-white/80 max-w-xl mb-8 leading-relaxed">
+            <p className="text-lg sm:text-xl text-white/80 max-w-xl mx-auto mb-8 leading-relaxed">
               {t('landing.hero.subtitle')}
             </p>
 
