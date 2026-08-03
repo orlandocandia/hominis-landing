@@ -796,7 +796,11 @@ function SucursalSection() {
               <div className="bg-gradient-to-r from-hominis-blue to-hominis-violet p-6 text-white">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
-                    <MapPin className="w-6 h-6" />
+                    <img
+                      src="/logo_hominis.png"
+                      alt="Hominis"
+                      className="w-6 h-6 object-contain rounded"
+                    />
                   </div>
                   <div>
                     <h3 className="text-xl font-serif font-bold">Oficina Hominis</h3>
