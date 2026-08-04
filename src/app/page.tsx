@@ -1233,8 +1233,6 @@ function Footer() {
                 className="flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors cursor-pointer"
               >
                 <Instagram className="w-4 h-4" />
-                <span>@hominisok</span>
-                <span className="text-[10px] text-white/50">(Próximamente)</span>
               </a>
               <a
                 href="https://facebook.com/hominis_agustinacandiaasesor"
@@ -1243,16 +1241,6 @@ function Footer() {
                 className="flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors"
               >
                 <Facebook className="w-4 h-4" />
-                hominis_agustinacandiaasesor
-              </a>
-              <a
-                href="https://maps.google.com/?q=Portela+266+Lomas+de+Zamora"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors"
-              >
-                <MapPin className="w-4 h-4" />
-                Portela 266, Lomas de Zamora
               </a>
             </div>
           </div>
