@@ -43,7 +43,7 @@ export function DoctoRedCarrusel() {
               className="flex-shrink-0 flex justify-center items-center p-2"
               style={{ width: '25%' }}
             >
-              <div className="relative w-full h-12 md:h-16 lg:h-20">
+              <div className="relative w-full h-20 md:h-28 lg:h-32">
                 <Image
                   src={src}
                   alt={`Logo de clínica ${(index % CARRUSEL_IMAGES.length) + 1}`}
