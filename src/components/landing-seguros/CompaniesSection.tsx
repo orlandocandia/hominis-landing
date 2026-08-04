@@ -193,16 +193,16 @@ export function CompaniesSection() {
     const nuevaEmpresa = empresaActiva === empresa ? null : empresa
     setEmpresaActiva(nuevaEmpresa)
 
-    // SCROLL AUTOMÁTICO al activar una empresa
+    // SCROLL AUTOMÁTICO a la Sección 1 al activar una empresa
     if (nuevaEmpresa !== null) {
       setTimeout(() => {
-        const element = document.getElementById('empresas')
-        if (element) {
-          const rect = element.getBoundingClientRect()
-          const offset = rect.top + window.scrollY - 80
-          window.scrollTo({ top: offset, behavior: 'smooth' })
+        if (seccionesRef.current) {
+          seccionesRef.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          })
         }
-      }, 300)
+      }, 350) // 350ms para asegurar que las secciones se rendericen
     }
   }
 
@@ -278,7 +278,7 @@ export function CompaniesSection() {
 
         {/* SECCIONES DINÁMICAS CON REF */}
         {empresaActiva && (
-          <div ref={seccionesRef}>
+          <div ref={seccionesRef} className="scroll-mt-20">
             <SeccionesDinamicas empresa={empresaActiva} />
           </div>
         )}
