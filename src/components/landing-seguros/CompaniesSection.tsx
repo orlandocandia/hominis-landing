@@ -165,18 +165,92 @@ function CompanyCard({ company, empresaActiva, onToggle }: CompanyCardProps) {
 
 function SeccionesDinamicas({ empresa }: { empresa: string }) {
   const nombre = empresa === 'doctored' ? 'DoctoRed' : 'Grupo Premedic'
+  const isDoctored = empresa === 'doctored'
+
   return (
     <div className="mt-8">
       {[1, 2, 3].map((n) => (
         <div key={n} className="min-h-screen flex flex-col justify-center items-center py-12 px-4">
-          <div className="max-w-4xl mx-auto w-full text-center">
-            <h3 className="text-xl md:text-2xl font-bold text-center text-foreground">
-              Sección {n} {nombre}
-            </h3>
-            <p className="text-center text-muted-foreground mt-2">
-              Contenido de la sección {n} de {nombre}
-            </p>
-          </div>
+          {/* Sección 1 de DoctoRed: planes con título y carteles */}
+          {isDoctored && n === 1 ? (
+            <div
+              className="rounded-lg p-6 md:p-8 mx-auto w-full max-w-4xl flex flex-col justify-center"
+              style={{ backgroundColor: '#B4A9EE', minHeight: '50vh' }}
+            >
+              {/* Título */}
+              <div className="text-center mb-6 md:mb-8">
+                <h3
+                  className="text-2xl md:text-3xl lg:text-4xl font-light"
+                  style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', lineHeight: '1.1' }}
+                >
+                  Precios sanos, planes flexibles.
+                </h3>
+                <p
+                  className="text-base md:text-lg lg:text-xl mt-1"
+                  style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 400, lineHeight: '1.4' }}
+                >
+                  Elegí el tuyo.
+                </p>
+              </div>
+
+              {/* Grid de 4 planes */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 w-full">
+                {doctoredPlanes.map((plan) => (
+                  <div
+                    key={plan.numero}
+                    className="rounded-lg p-4 text-center shadow-md flex flex-col items-center"
+                    style={{ backgroundColor: 'rgba(255, 255, 255, 0.4)', backdropFilter: 'blur(4px)' }}
+                  >
+                    {/* Imagen del plan */}
+                    <div className="w-full h-20 md:h-28 lg:h-32 relative mb-2">
+                      <Image
+                        src={`/images/seguros/${plan.imagen}`}
+                        alt={`Plan ${plan.numero}`}
+                        fill
+                        className="object-cover rounded-t-lg"
+                        sizes="(max-width: 768px) 100vw, 25vw"
+                        quality={85}
+                      />
+                    </div>
+                    <p
+                      className="font-medium text-sm md:text-base lg:text-lg"
+                      style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 500 }}
+                    >
+                      Plan {plan.numero}
+                    </p>
+                    <p
+                      className="text-[10px] md:text-xs font-medium"
+                      style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 600 }}
+                    >
+                      {plan.subtitulo}
+                    </p>
+                    <p
+                      className="text-[10px] md:text-xs mt-1 flex-1 hidden md:block"
+                      style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 400 }}
+                    >
+                      {plan.descripcion}
+                    </p>
+                    <button
+                      className="mt-2 md:mt-3 px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-white font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg w-full text-[11px] md:text-sm"
+                      style={{ backgroundColor: '#3A1E72', fontFamily: "'Poppins', sans-serif'" }}
+                    >
+                      Ver cobertura →
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            /* Secciones 2, 3 de DoctoRed y todas las de Premedic: placeholder */
+            <div className="max-w-4xl mx-auto w-full text-center">
+              <h3 className="text-xl md:text-2xl font-bold text-center text-foreground">
+                Sección {n} {nombre}
+              </h3>
+              <p className="text-center text-muted-foreground mt-2">
+                Contenido de la sección {n} de {nombre}
+              </p>
+            </div>
+          )}
         </div>
       ))}
     </div>
