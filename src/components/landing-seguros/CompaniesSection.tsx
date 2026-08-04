@@ -123,24 +123,6 @@ function CompanyCard({ company, empresaActiva, onToggle }: CompanyCardProps) {
         </>
       ) : (
         <>
-          <h4 className="text-sm md:text-base font-semibold text-blue-600 dark:text-blue-400 text-center">
-            Precios sanos, planes flexibles. Elegí el tuyo.
-          </h4>
-          <div className="grid grid-cols-4 gap-2 w-full">
-            {doctoredPlanes.map((plan) => (
-              <div key={plan.numero} className="flex flex-col overflow-hidden rounded-lg border border-blue-200 dark:border-blue-800 shadow-sm bg-white dark:bg-gray-800">
-                <div className="w-full h-16 overflow-hidden bg-blue-50 dark:bg-blue-950/20">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={`/images/seguros/${plan.imagen}`} alt={plan.numero} className="w-full h-full object-cover" />
-                </div>
-                <div className="p-2 text-center">
-                  <span className="text-[10px] md:text-xs font-bold text-purple-600 dark:text-purple-400">Plan {plan.numero}</span>
-                  <span className="text-[10px] md:text-xs font-medium text-blue-600 dark:text-blue-400 block mt-0.5">{plan.subtitulo}</span>
-                  <p className="text-[9px] md:text-[10px] text-gray-600 dark:text-gray-400 leading-tight mt-1">{plan.descripcion}</p>
-                </div>
-              </div>
-            ))}
-          </div>
           <div className="text-center">
             <h3 className="text-base md:text-lg font-bold text-foreground">Una red médica que te acompaña en todo el país.</h3>
             <p className="text-xs md:text-sm text-muted-foreground mt-1 max-w-2xl mx-auto">Contamos con una amplia red para que siempre tengas atención médica cerca de tu casa.</p>
