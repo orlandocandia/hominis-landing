@@ -33,7 +33,7 @@ export function DoctoRedCarrusel() {
   const displayImages = [...CARRUSEL_IMAGES, ...CARRUSEL_IMAGES]
 
   return (
-    <div className="my-2 md:my-3 w-full">
+    <div className="my-1 md:my-2 w-full">
       <div className="relative w-full overflow-hidden">
         {/* Track de imágenes - animación CSS marquee infinita (pausa en hover vía CSS) */}
         <div className="flex doctored-carrusel-track">
