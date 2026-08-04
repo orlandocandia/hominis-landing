@@ -306,3 +306,22 @@
     0 12px 24px rgba(74, 20, 140, 0.20),
     0 24px 48px rgba(26, 35, 126, 0.12);
 }
+
+
+/* === Carrusel DoctoRed - loop infinito suave === */
+@keyframes doctored-carrusel-scroll {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.doctored-carrusel-track {
+  animation: doctored-carrusel-scroll 32s linear infinite;
+}
+
+.doctored-carrusel-track:hover {
+  animation-play-state: paused;
+}
