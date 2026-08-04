@@ -123,6 +123,17 @@ function CompanyCard({ company, empresaActiva, onToggle }: CompanyCardProps) {
         </>
       ) : (
         <>
+          {/* Imagen de fondo DoctoRed */}
+          <div className="w-full my-3 rounded-lg overflow-hidden">
+            <Image
+              src="/images/seguros/fondocartel-doctored.png"
+              alt="Fondo DoctoRed"
+              width={800}
+              height={200}
+              className="object-cover w-full"
+              quality={85}
+            />
+          </div>
           <div className="text-center">
             <h3 className="text-base md:text-lg font-bold text-foreground">Una red médica que te acompaña en todo el país.</h3>
             <p className="text-xs md:text-sm text-muted-foreground mt-1 max-w-2xl mx-auto">Contamos con una amplia red para que siempre tengas atención médica cerca de tu casa.</p>
