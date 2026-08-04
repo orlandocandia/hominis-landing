@@ -156,8 +156,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
           {/* Sección 1 de DoctoRed: planes con título y carteles */}
           {isDoctored && n === 1 ? (
             <div
-              className="rounded-lg p-8 md:p-10 mx-auto w-full flex flex-col justify-center bg-blue-50 dark:bg-blue-950/20 border-2 border-blue-200 dark:border-blue-900/40"
-              style={{ maxWidth: '64rem' }}
+              className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center bg-blue-50 dark:bg-blue-950/20 border-2 border-blue-200 dark:border-blue-900/40 min-h-[600px] md:min-h-[700px] max-w-7xl"
             >
               {/* Título */}
               <div className="text-center mb-6 md:mb-8">
