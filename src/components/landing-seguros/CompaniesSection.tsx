@@ -166,15 +166,17 @@ function CompanyCard({ company, empresaActiva, onToggle }: CompanyCardProps) {
 function SeccionesDinamicas({ empresa }: { empresa: string }) {
   const nombre = empresa === 'doctored' ? 'DoctoRed' : 'Grupo Premedic'
   return (
-    <div className="mt-8 space-y-8">
+    <div className="mt-8">
       {[1, 2, 3].map((n) => (
-        <div key={n} className="py-8 border-t border-gray-200 dark:border-gray-700">
-          <h3 className="text-xl md:text-2xl font-bold text-center text-foreground">
-            Sección {n} {nombre}
-          </h3>
-          <p className="text-center text-muted-foreground mt-2">
-            Contenido de la sección {n} de {nombre}
-          </p>
+        <div key={n} className="min-h-screen flex flex-col justify-center items-center py-12 px-4">
+          <div className="max-w-4xl mx-auto w-full text-center">
+            <h3 className="text-xl md:text-2xl font-bold text-center text-foreground">
+              Sección {n} {nombre}
+            </h3>
+            <p className="text-center text-muted-foreground mt-2">
+              Contenido de la sección {n} de {nombre}
+            </p>
+          </div>
         </div>
       ))}
     </div>
