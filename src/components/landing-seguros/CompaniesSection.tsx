@@ -156,19 +156,19 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
           {/* Sección 1 de DoctoRed: planes con título y carteles */}
           {isDoctored && n === 1 ? (
             <div
-              className="rounded-lg p-6 md:p-8 mx-auto w-full max-w-4xl flex flex-col justify-center"
-              style={{ backgroundColor: '#B4A9EE', minHeight: '50vh' }}
+              className="rounded-lg p-8 md:p-10 mx-auto w-full flex flex-col justify-center"
+              style={{ backgroundColor: '#B4A9EE', maxWidth: '64rem', minHeight: '55vh' }}
             >
               {/* Título */}
               <div className="text-center mb-6 md:mb-8">
                 <h3
-                  className="text-2xl md:text-3xl lg:text-4xl font-light"
+                  className="text-3xl md:text-5xl lg:text-6xl font-light text-center"
                   style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', lineHeight: '1.1' }}
                 >
                   Precios sanos, planes flexibles.
                 </h3>
                 <p
-                  className="text-base md:text-lg lg:text-xl mt-1"
+                  className="text-xl md:text-2xl lg:text-3xl mt-2 text-center"
                   style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 400, lineHeight: '1.4' }}
                 >
                   Elegí el tuyo.
@@ -176,15 +176,15 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
               </div>
 
               {/* Grid de 4 planes */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 w-full">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mt-8 w-full">
                 {doctoredPlanes.map((plan) => (
                   <div
                     key={plan.numero}
-                    className="rounded-lg p-4 text-center shadow-md flex flex-col items-center"
-                    style={{ backgroundColor: 'rgba(255, 255, 255, 0.4)', backdropFilter: 'blur(4px)' }}
+                    className="rounded-lg p-6 md:p-8 text-center shadow-md flex flex-col items-center"
+                    style={{ backgroundColor: 'rgba(255, 255, 255, 0.4)', backdropFilter: 'blur(4px)', minHeight: '200px' }}
                   >
                     {/* Imagen del plan */}
-                    <div className="w-full h-20 md:h-28 lg:h-32 relative mb-2">
+                    <div className="w-full h-28 md:h-36 lg:h-40 relative mb-2">
                       <Image
                         src={`/images/seguros/${plan.imagen}`}
                         alt={`Plan ${plan.numero}`}
@@ -195,25 +195,25 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                       />
                     </div>
                     <p
-                      className="font-medium text-sm md:text-base lg:text-lg"
+                      className="font-medium text-xl md:text-2xl"
                       style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 500 }}
                     >
                       Plan {plan.numero}
                     </p>
                     <p
-                      className="text-[10px] md:text-xs font-medium"
+                      className="text-sm md:text-base font-medium"
                       style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 600 }}
                     >
                       {plan.subtitulo}
                     </p>
                     <p
-                      className="text-[10px] md:text-xs mt-1 flex-1 hidden md:block"
+                      className="text-xs md:text-sm mt-2 flex-1 hidden md:block"
                       style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 400 }}
                     >
                       {plan.descripcion}
                     </p>
                     <button
-                      className="mt-2 md:mt-3 px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-white font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg w-full text-[11px] md:text-sm"
+                      className="mt-4 px-6 py-3 rounded-lg text-white font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg w-full text-sm md:text-base"
                       style={{ backgroundColor: '#3A1E72', fontFamily: "'Poppins', sans-serif'" }}
                     >
                       Ver cobertura →
