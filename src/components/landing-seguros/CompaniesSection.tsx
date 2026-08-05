@@ -169,24 +169,43 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
             <div
               className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center bg-blue-50 dark:bg-blue-950/20 border-2 border-blue-200 dark:border-blue-900/40 min-h-[600px] md:min-h-[700px] max-w-7xl"
             >
-              {/* Título */}
-              <div className="text-center mb-6 md:mb-8">
-                <h3
-                  className="text-3xl md:text-5xl lg:text-6xl font-light text-center"
-                  style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', lineHeight: '1.1' }}
-                >
-                  Precios sanos, planes flexibles.
-                </h3>
-                <p
-                  className="text-xl md:text-2xl lg:text-3xl mt-2 text-center"
-                  style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 400, lineHeight: '1.4' }}
-                >
-                  Elegí el tuyo.
-                </p>
-              </div>
+              {/* Layout: texto a la izquierda, planes a la derecha */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                {/* Columna izquierda - Texto "Juro vivir a lo grande" */}
+                <div className="text-left">
+                  <h2
+                    className="text-4xl md:text-5xl lg:text-6xl font-light leading-[0.95]"
+                    style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 300, lineHeight: '1' }}
+                  >
+                    Juro vivir
+                    <br />
+                    <span className="font-light">a lo grande</span>
+                  </h2>
+                  <p
+                    className="text-base md:text-lg mt-4 max-w-sm"
+                    style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 400, lineHeight: '1.4' }}
+                  >
+                    Porque tengo un plan de salud con precios justos.
+                  </p>
+                </div>
 
-              {/* Grid de 4 planes */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mt-8 w-full">
+                {/* Columna derecha - Título y Grid de 4 planes */}
+                <div>
+                  <h3
+                    className="text-xl md:text-2xl font-light text-center lg:text-left"
+                    style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', lineHeight: '1.1' }}
+                  >
+                    Precios sanos, planes flexibles.
+                  </h3>
+                  <p
+                    className="text-center lg:text-left text-base md:text-lg"
+                    style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 400, lineHeight: '1.4' }}
+                  >
+                    Elegí el tuyo.
+                  </p>
+
+                  {/* Grid de 4 planes */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 w-full">
                 {doctoredPlanes.map((plan) => (
                   <div
                     key={plan.numero}
@@ -230,6 +249,8 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                     </button>
                   </div>
                 ))}
+                  </div>
+                </div>
               </div>
             </div>
           ) : (
