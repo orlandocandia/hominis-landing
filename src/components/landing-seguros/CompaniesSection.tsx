@@ -123,8 +123,8 @@ function CompanyCard({ company, empresaActiva, onToggle }: CompanyCardProps) {
         </>
       ) : (
         <>
-          {/* Imagen de fondo DoctoRed con textos superpuestos */}
-          <div className="w-full my-3 rounded-lg overflow-hidden relative">
+          {/* Imagen de fondo DoctoRed */}
+          <div className="w-full my-3 rounded-lg overflow-hidden">
             <Image
               src="/images/seguros/fondocartel-doctored.png"
               alt="Fondo DoctoRed"
@@ -133,40 +133,6 @@ function CompanyCard({ company, empresaActiva, onToggle }: CompanyCardProps) {
               className="object-cover w-full"
               quality={85}
             />
-            {/* Textos superpuestos sobre la imagen */}
-            <div className="absolute inset-0 flex flex-col justify-center px-6 md:px-10">
-              {/* Texto principal */}
-              <h2
-                className="text-3xl md:text-4xl lg:text-5xl font-light leading-[1]"
-                style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 300, lineHeight: '1' }}
-              >
-                Juro vivir
-                <br />
-                <span className="font-light">a lo grande</span>
-              </h2>
-              {/* Texto secundario */}
-              <p
-                className="text-sm md:text-base lg:text-lg mt-2"
-                style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 400, lineHeight: '1.4' }}
-              >
-                Porque tengo un plan de salud con precios justos.
-              </p>
-              {/* Texto adicional */}
-              <div className="mt-4">
-                <p
-                  className="text-xs md:text-sm font-medium"
-                  style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 500, lineHeight: '1.4' }}
-                >
-                  Si tenés aportes, tu salud ya está cubierta.
-                </p>
-                <p
-                  className="text-xs md:text-sm"
-                  style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 400, lineHeight: '1.4' }}
-                >
-                  Podés asociarte usando tus aportes de obra social y acceder a cobertura médica sin pagar cuota mensual.
-                </p>
-              </div>
-            </div>
           </div>
           <div className="text-center">
             <h3 className="text-base md:text-lg font-bold text-foreground">Una red médica que te acompaña en todo el país.</h3>
