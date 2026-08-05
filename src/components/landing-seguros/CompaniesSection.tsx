@@ -173,6 +173,14 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
     '3000': '/images/seguros/cobertura/imagen4-plan3000.png',
   }
 
+  // Mapa de plan numero a PDF de alcance de cobertura
+  const alcancePdfs: Record<string, string> = {
+    '500': '/pdfs/alcance-plan500.pdf',
+    '1000': '/pdfs/alcance-plan1000.pdf',
+    '2000': '/pdfs/alcance-plan2000.pdf',
+    '3000': '/pdfs/alcance-plan3000.pdf',
+  }
+
   // Función para mostrar la Sección 2 y hacer scroll
   const handleVerCobertura = (planNumero: string) => {
     setPlanCoberturaActiva(planNumero)
@@ -282,7 +290,8 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                   
                   {/* Imagen de cobertura según el plan seleccionado */}
                   {planCoberturaActiva && coberturImages[planCoberturaActiva] ? (
-                    <div className="relative w-full h-64 md:h-96 lg:h-[600px] rounded-lg overflow-hidden">
+                    <>
+                    <div className="relative w-full h-64 md:h-96 lg:h-[600px] rounded-2xl overflow-hidden">
                       <Image
                         src={coberturImages[planCoberturaActiva]}
                         alt={`Cobertura Plan ${planCoberturaActiva}`}
@@ -293,6 +302,22 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                         priority
                       />
                     </div>
+                    {/* Boton Ver alcance de cobertura */}
+                    {alcancePdfs[planCoberturaActiva] && (
+                      <div className="text-center mt-4">
+                        <a
+                          href={alcancePdfs[planCoberturaActiva]}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-white font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg text-sm md:text-base"
+                          style={{ backgroundColor: '#3A1E72', fontFamily: "'Poppins', sans-serif'" }}
+                        >
+                          Ver alcance de cobertura
+                          <ArrowRight className="w-4 h-4" />
+                        </a>
+                      </div>
+                    )}
+                    </>
                   ) : (
                     <div className="relative w-full h-64 md:h-96 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden flex items-center justify-center">
                       <p className="text-gray-500 dark:text-gray-400 text-sm md:text-base">
