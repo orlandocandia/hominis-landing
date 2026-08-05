@@ -163,9 +163,19 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
   
   // 👇 ESTADO PARA CONTROLAR LA VISIBILIDAD DE LA SECCIÓN 2
   const [mostrarSeccion2, setMostrarSeccion2] = useState(false)
+  const [planCoberturaActiva, setPlanCoberturaActiva] = useState<string | null>(null)
+
+  // Mapa de plan numero a imagen de cobertura
+  const coberturImages: Record<string, string> = {
+    '500': '/images/seguros/cobertura/imagen1-plan500.png',
+    '1000': '/images/seguros/cobertura/imagen2-plan1000.png',
+    '2000': '/images/seguros/cobertura/imagen3-plan2000.png',
+    '3000': '/images/seguros/cobertura/imagen4-plan3000.png',
+  }
 
   // Función para mostrar la Sección 2 y hacer scroll
-  const handleVerCobertura = () => {
+  const handleVerCobertura = (planNumero: string) => {
+    setPlanCoberturaActiva(planNumero)
     setMostrarSeccion2(true)
     setTimeout(() => {
       const seccion2 = document.getElementById('seccion2-cobertura')
@@ -247,9 +257,9 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                       >
                         {plan.descripcion}
                       </p>
-                      {/* 👇 BOTÓN "Ver cobertura" que muestra la Sección 2 */}
+                      {/* 👇 BOTÓN "Ver cobertura" que muestra la Sección 2 con la imagen del plan */}
                       <button
-                        onClick={handleVerCobertura}
+                        onClick={() => handleVerCobertura(plan.numero)}
                         className="mt-4 px-6 py-3 rounded-lg text-white font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg w-full text-sm md:text-base"
                         style={{ backgroundColor: '#3A1E72', fontFamily: "'Poppins', sans-serif'" }}
                       >
@@ -260,28 +270,36 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                 </div>
               </div>
             ) : isDoctored && n === 2 ? (
-              /* 👇 SECCIÓN 2 DE DOCTORED - COBERTURA (IMAGEN) */
+              /* 👇 SECCIÓN 2 DE DOCTORED - COBERTURA (IMAGEN SEGÚN PLAN SELECCIONADO) */
               <div className="max-w-7xl mx-auto w-full">
                 <div className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center bg-blue-50 dark:bg-blue-950/20 border-2 border-blue-200 dark:border-blue-900/40 min-h-[400px] md:min-h-[500px]">
                   <div className="text-center mb-6">
-                    <h3 className="text-2xl md:text-3xl font-bold text-foreground">Cobertura</h3>
-                    <p className="text-sm md:text-base text-muted-foreground mt-2">Seleccioná el plan para ver su cobertura</p>
+                    <h3 className="text-2xl md:text-3xl font-bold text-foreground">
+                      Cobertura{planCoberturaActiva ? ` - Plan ${planCoberturaActiva}` : ''}
+                    </h3>
+                    <p className="text-sm md:text-base text-muted-foreground mt-2">Detalle de la cobertura del plan seleccionado</p>
                   </div>
                   
-                  {/* Aquí va la imagen de cobertura (placeholder por ahora) */}
-                  <div className="relative w-full h-64 md:h-96 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden flex items-center justify-center">
-                    <p className="text-gray-500 dark:text-gray-400 text-sm md:text-base">
-                      Imagen de cobertura (próximamente)
-                    </p>
-                    {/* Cuando subas la imagen, reemplazá este div por:
-                    <Image
-                      src="/images/seguros/cobertura.png"
-                      alt="Cobertura"
-                      fill
-                      className="object-contain"
-                    />
-                    */}
-                  </div>
+                  {/* Imagen de cobertura según el plan seleccionado */}
+                  {planCoberturaActiva && coberturImages[planCoberturaActiva] ? (
+                    <div className="relative w-full h-64 md:h-96 lg:h-[600px] rounded-lg overflow-hidden">
+                      <Image
+                        src={coberturImages[planCoberturaActiva]}
+                        alt={`Cobertura Plan ${planCoberturaActiva}`}
+                        fill
+                        className="object-contain"
+                        sizes="(max-width: 768px) 100vw, 1200px"
+                        quality={85}
+                        priority
+                      />
+                    </div>
+                  ) : (
+                    <div className="relative w-full h-64 md:h-96 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden flex items-center justify-center">
+                      <p className="text-gray-500 dark:text-gray-400 text-sm md:text-base">
+                        Seleccioná un plan para ver su cobertura
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             ) : (
