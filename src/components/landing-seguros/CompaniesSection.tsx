@@ -126,7 +126,7 @@ function CompanyCard({ company, empresaActiva, onToggle }: CompanyCardProps) {
           {/* Imagen de fondo DoctoRed */}
           <div className="w-full my-3 rounded-lg overflow-hidden">
             <Image
-              src="/images/seguros/fondocartel-doctored.png"
+              src="/images/seguros/fondo_cartel_doctored.png"
               alt="Fondo DoctoRed"
               width={800}
               height={200}
