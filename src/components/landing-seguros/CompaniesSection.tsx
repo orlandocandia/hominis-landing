@@ -157,94 +157,147 @@ function CompanyCard({ company, empresaActiva, onToggle }: CompanyCardProps) {
 }
 
 function SeccionesDinamicas({ empresa }: { empresa: string }) {
+  const { t } = useTranslation()
   const nombre = empresa === 'doctored' ? 'DoctoRed' : 'Grupo Premedic'
   const isDoctored = empresa === 'doctored'
+  
+  // 👇 ESTADO PARA CONTROLAR LA VISIBILIDAD DE LA SECCIÓN 2
+  const [mostrarSeccion2, setMostrarSeccion2] = useState(false)
+
+  // Función para mostrar la Sección 2 y hacer scroll
+  const handleVerCobertura = () => {
+    setMostrarSeccion2(true)
+    setTimeout(() => {
+      const seccion2 = document.getElementById('seccion2-cobertura')
+      if (seccion2) {
+        seccion2.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    }, 200)
+  }
 
   return (
     <div className="mt-8">
-      {[1, 2, 3].map((n) => (
-        <div key={n} className="min-h-screen flex flex-col justify-center items-center py-12 px-4">
-          {/* Sección 1 de DoctoRed: planes con título y carteles */}
-          {isDoctored && n === 1 ? (
-            <div
-              className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center bg-blue-50 dark:bg-blue-950/20 border-2 border-blue-200 dark:border-blue-900/40 min-h-[600px] md:min-h-[700px] max-w-7xl"
-            >
-              {/* Título centrado */}
-              <div className="text-center mb-6 md:mb-8">
-                <h3
-                  className="text-3xl md:text-5xl lg:text-6xl font-light text-center"
-                  style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', lineHeight: '1.1' }}
-                >
-                  Precios sanos, planes flexibles.
+      {[1, 2, 3].map((n) => {
+        // 👇 SECCIÓN 2: solo se muestra si mostrarSeccion2 es true
+        if (n === 2 && !mostrarSeccion2) {
+          return null
+        }
+
+        return (
+          <div 
+            key={n} 
+            id={n === 2 ? 'seccion2-cobertura' : undefined}
+            className="min-h-screen flex flex-col justify-center items-center py-12 px-4"
+          >
+            {/* Sección 1 de DoctoRed: planes con título y carteles */}
+            {isDoctored && n === 1 ? (
+              <div
+                className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center bg-blue-50 dark:bg-blue-950/20 border-2 border-blue-200 dark:border-blue-900/40 min-h-[600px] md:min-h-[700px] max-w-7xl"
+              >
+                {/* Título centrado */}
+                <div className="text-center mb-6 md:mb-8">
+                  <h3
+                    className="text-3xl md:text-5xl lg:text-6xl font-light text-center"
+                    style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', lineHeight: '1.1' }}
+                  >
+                    Precios sanos, planes flexibles.
+                  </h3>
+                  <p
+                    className="text-xl md:text-2xl lg:text-3xl mt-2 text-center"
+                    style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 400, lineHeight: '1.4' }}
+                  >
+                    Elegí el tuyo.
+                  </p>
+                </div>
+
+                {/* Grid de 4 planes */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mt-8 w-full">
+                  {doctoredPlanes.map((plan) => (
+                    <div
+                      key={plan.numero}
+                      className="rounded-lg p-6 md:p-8 text-center shadow-md flex flex-col items-center"
+                      style={{ backgroundColor: 'rgba(255, 255, 255, 0.4)', backdropFilter: 'blur(4px)', minHeight: '200px' }}
+                    >
+                      {/* Imagen del plan */}
+                      <div className="w-full h-28 md:h-36 lg:h-40 relative mb-2">
+                        <Image
+                          src={`/images/seguros/${plan.imagen}`}
+                          alt={`Plan ${plan.numero}`}
+                          fill
+                          className="object-cover rounded-t-lg"
+                          sizes="(max-width: 768px) 100vw, 25vw"
+                          quality={85}
+                        />
+                      </div>
+                      <p
+                        className="font-medium text-xl md:text-2xl"
+                        style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 500 }}
+                      >
+                        Plan {plan.numero}
+                      </p>
+                      <p
+                        className="text-sm md:text-base font-medium"
+                        style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 600 }}
+                      >
+                        {plan.subtitulo}
+                      </p>
+                      <p
+                        className="text-xs md:text-sm mt-2 flex-1 hidden md:block"
+                        style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 400 }}
+                      >
+                        {plan.descripcion}
+                      </p>
+                      {/* 👇 BOTÓN "Ver cobertura" que muestra la Sección 2 */}
+                      <button
+                        onClick={handleVerCobertura}
+                        className="mt-4 px-6 py-3 rounded-lg text-white font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg w-full text-sm md:text-base"
+                        style={{ backgroundColor: '#3A1E72', fontFamily: "'Poppins', sans-serif'" }}
+                      >
+                        Ver cobertura →
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : isDoctored && n === 2 ? (
+              /* 👇 SECCIÓN 2 DE DOCTORED - COBERTURA (IMAGEN) */
+              <div className="max-w-7xl mx-auto w-full">
+                <div className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center bg-blue-50 dark:bg-blue-950/20 border-2 border-blue-200 dark:border-blue-900/40 min-h-[400px] md:min-h-[500px]">
+                  <div className="text-center mb-6">
+                    <h3 className="text-2xl md:text-3xl font-bold text-foreground">Cobertura</h3>
+                    <p className="text-sm md:text-base text-muted-foreground mt-2">Seleccioná el plan para ver su cobertura</p>
+                  </div>
+                  
+                  {/* Aquí va la imagen de cobertura (placeholder por ahora) */}
+                  <div className="relative w-full h-64 md:h-96 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden flex items-center justify-center">
+                    <p className="text-gray-500 dark:text-gray-400 text-sm md:text-base">
+                      Imagen de cobertura (próximamente)
+                    </p>
+                    {/* Cuando subas la imagen, reemplazá este div por:
+                    <Image
+                      src="/images/seguros/cobertura.png"
+                      alt="Cobertura"
+                      fill
+                      className="object-contain"
+                    />
+                    */}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              /* Sección 3 de DoctoRed y todas las de Premedic: placeholder */
+              <div className="max-w-4xl mx-auto w-full text-center">
+                <h3 className="text-xl md:text-2xl font-bold text-center text-foreground">
+                  Sección {n} {nombre}
                 </h3>
-                <p
-                  className="text-xl md:text-2xl lg:text-3xl mt-2 text-center"
-                  style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 400, lineHeight: '1.4' }}
-                >
-                  Elegí el tuyo.
+                <p className="text-center text-muted-foreground mt-2">
+                  Contenido de la sección {n} de {nombre}
                 </p>
               </div>
-
-              {/* Grid de 4 planes */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mt-8 w-full">
-                {doctoredPlanes.map((plan) => (
-                  <div
-                    key={plan.numero}
-                    className="rounded-lg p-6 md:p-8 text-center shadow-md flex flex-col items-center"
-                    style={{ backgroundColor: 'rgba(255, 255, 255, 0.4)', backdropFilter: 'blur(4px)', minHeight: '200px' }}
-                  >
-                    {/* Imagen del plan */}
-                    <div className="w-full h-28 md:h-36 lg:h-40 relative mb-2">
-                      <Image
-                        src={`/images/seguros/${plan.imagen}`}
-                        alt={`Plan ${plan.numero}`}
-                        fill
-                        className="object-cover rounded-t-lg"
-                        sizes="(max-width: 768px) 100vw, 25vw"
-                        quality={85}
-                      />
-                    </div>
-                    <p
-                      className="font-medium text-xl md:text-2xl"
-                      style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 500 }}
-                    >
-                      Plan {plan.numero}
-                    </p>
-                    <p
-                      className="text-sm md:text-base font-medium"
-                      style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 600 }}
-                    >
-                      {plan.subtitulo}
-                    </p>
-                    <p
-                      className="text-xs md:text-sm mt-2 flex-1 hidden md:block"
-                      style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 400 }}
-                    >
-                      {plan.descripcion}
-                    </p>
-                    <button
-                      className="mt-4 px-6 py-3 rounded-lg text-white font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg w-full text-sm md:text-base"
-                      style={{ backgroundColor: '#3A1E72', fontFamily: "'Poppins', sans-serif'" }}
-                    >
-                      Ver cobertura →
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            /* Secciones 2, 3 de DoctoRed y todas las de Premedic: placeholder */
-            <div className="max-w-4xl mx-auto w-full text-center">
-              <h3 className="text-xl md:text-2xl font-bold text-center text-foreground">
-                Sección {n} {nombre}
-              </h3>
-              <p className="text-center text-muted-foreground mt-2">
-                Contenido de la sección {n} de {nombre}
-              </p>
-            </div>
-          )}
-        </div>
-      ))}
+            )}
+          </div>
+        )
+      })}
     </div>
   )
 }
@@ -268,7 +321,7 @@ export function CompaniesSection() {
             block: 'start',
           })
         }
-      }, 350) // 350ms para asegurar que las secciones se rendericen
+      }, 350)
     }
   }
 
