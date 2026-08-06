@@ -188,6 +188,41 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
     '3000': '/images/seguros/cobertura/imagen4-plan3000.png',
   }
 
+  // Estados para el buscador de prestadores
+  const [filtros, setFiltros] = useState({
+    plan: '',
+    provincia: '',
+    especialidad: '',
+    localidad: ''
+  })
+  const [resultados, setResultados] = useState<Array<{nombre: string; especialidad: string; direccion: string; localidad: string; provincia: string}>>([])
+
+  // Datos mock de prestadores
+  const prestadoresMock = [
+    { nombre: 'Dr. Juan Pérez', especialidad: 'Cardiología', direccion: 'Av. Rivadavia 1234', localidad: 'Moreno', provincia: 'Buenos Aires' },
+    { nombre: 'Dra. María Gómez', especialidad: 'Dermatología', direccion: 'Belgrano 567', localidad: 'Morón', provincia: 'Buenos Aires' },
+    { nombre: 'Dr. Carlos López', especialidad: 'Traumatología', direccion: 'San Martín 890', localidad: 'Sarandí', provincia: 'Buenos Aires' },
+    { nombre: 'Dra. Ana Martínez', especialidad: 'Pediatría', direccion: 'Mitre 321', localidad: 'Quilmes', provincia: 'Buenos Aires' },
+    { nombre: 'Dr. Roberto Sánchez', especialidad: 'Oftalmología', direccion: 'Alsina 456', localidad: 'Moreno', provincia: 'Buenos Aires' },
+    { nombre: 'Dra. Laura Fernández', especialidad: 'Ginecología', direccion: 'Lavalle 789', localidad: 'Morón', provincia: 'Buenos Aires' },
+    { nombre: 'Dr. Martín Díaz', especialidad: 'Clínica Médica', direccion: 'Sarmiento 234', localidad: 'Sarandí', provincia: 'Buenos Aires' },
+    { nombre: 'Dra. Silvia Torres', especialidad: 'Neurología', direccion: 'Moreno 567', localidad: 'Quilmes', provincia: 'Buenos Aires' },
+  ]
+
+  const planesLista = ['500', '1000', '2000', '3000']
+  const provinciasLista = ['Buenos Aires', 'CABA', 'Córdoba', 'Mendoza', 'Santa Fe', 'Tucumán', 'Salta']
+  const especialidadesLista = ['Cardiología', 'Dermatología', 'Traumatología', 'Pediatría', 'Oftalmología', 'Ginecología', 'Clínica Médica', 'Neurología']
+
+  const buscarPrestadores = () => {
+    const resultadosFiltrados = prestadoresMock.filter(p => {
+      const matchProvincia = !filtros.provincia || p.provincia === filtros.provincia
+      const matchEspecialidad = !filtros.especialidad || p.especialidad === filtros.especialidad
+      const matchLocalidad = !filtros.localidad || p.localidad.toLowerCase().includes(filtros.localidad.toLowerCase())
+      return matchProvincia && matchEspecialidad && matchLocalidad
+    })
+    setResultados(resultadosFiltrados)
+  }
+
   return (
     <div className="mt-8">
       {[1, 2, 3].map((n) => {
@@ -211,7 +246,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                 <h2 className="text-2xl md:text-4xl font-bold text-foreground text-center">
                   {isDoctored && n === 1 ? 'Precios sanos, planes flexibles.' :
                    isDoctored && n === 2 ? 'Cobertura' :
-                   isDoctored && n === 3 ? 'Alcance de cobertura' :
+                   isDoctored && n === 3 ? 'Buscá prestadores en tu zona' :
                    !isDoctored && n === 1 ? 'Planes Grupo Premedic' :
                    !isDoctored && n === 2 ? 'Cobertura' :
                    'Alcance de cobertura'}
@@ -219,7 +254,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                 <p className="mt-2 text-sm md:text-base text-muted-foreground text-center max-w-xl mx-auto">
                   {isDoctored && n === 1 ? 'Elegí el tuyo.' :
                    isDoctored && n === 2 ? (planSeleccionado ? `Plan ${planSeleccionado}` : 'Seleccioná un plan') :
-                   isDoctored && n === 3 ? 'Conocé el alcance de tu plan' :
+                   isDoctored && n === 3 ? 'Cartilla de prestadores de Doctored' :
                    !isDoctored && n === 1 ? 'Seleccioná el plan que mejor se adapte a vos' :
                    !isDoctored && n === 2 ? (planSeleccionado ? `Plan ${planSeleccionado}` : 'Seleccioná un plan') :
                    'Conocé el alcance de tu plan'}
@@ -261,134 +296,70 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                 </div>
               )}
 
-              {/* SECCION 3: DOCTORED - BUSCADOR DE PRESTADORES */}
+              {/* SECCION 3: DOCTORED - BUSCADOR DE PRESTADORES FUNCIONAL */}
               {isDoctored && n === 3 && (
                 <div className="max-w-7xl mx-auto w-full">
                   <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
                     <div className="p-6 md:p-8">
-                      <h3 className="text-xl md:text-2xl font-bold text-foreground text-center mb-2">
-                        Buscá tu prestador
-                      </h3>
-                      <p className="text-sm text-muted-foreground text-center mb-6">
-                        Encontrá profesionales y centros médicos cerca de vos
-                      </p>
-                      
-                      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-6">
-                        {/* Plan */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mt-6">
                         <div>
                           <label className="block text-xs font-medium text-foreground mb-1">Plan</label>
-                          <select className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                          <select value={filtros.plan} onChange={(e) => setFiltros({...filtros, plan: e.target.value})} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                             <option value="">Todos los planes</option>
-                            <option value="500">Plan 500</option>
-                            <option value="1000">Plan 1000</option>
-                            <option value="2000">Plan 2000</option>
-                            <option value="3000">Plan 3000</option>
+                            {planesLista.map(p => <option key={p} value={p}>Plan {p}</option>)}
                           </select>
                         </div>
-                        
-                        {/* Provincia */}
                         <div>
                           <label className="block text-xs font-medium text-foreground mb-1">Provincia</label>
-                          <select className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                          <select value={filtros.provincia} onChange={(e) => setFiltros({...filtros, provincia: e.target.value})} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                             <option value="">Todas</option>
-                            <option value="Buenos Aires">Buenos Aires</option>
-                            <option value="CABA">CABA</option>
-                            <option value="Catamarca">Catamarca</option>
-                            <option value="Chaco">Chaco</option>
-                            <option value="Chubut">Chubut</option>
-                            <option value="Córdoba">Córdoba</option>
-                            <option value="Corrientes">Corrientes</option>
-                            <option value="Entre Ríos">Entre Ríos</option>
-                            <option value="Formosa">Formosa</option>
-                            <option value="Jujuy">Jujuy</option>
-                            <option value="La Pampa">La Pampa</option>
-                            <option value="La Rioja">La Rioja</option>
-                            <option value="Mendoza">Mendoza</option>
-                            <option value="Misiones">Misiones</option>
-                            <option value="Neuquén">Neuquén</option>
-                            <option value="Río Negro">Río Negro</option>
-                            <option value="Salta">Salta</option>
-                            <option value="San Juan">San Juan</option>
-                            <option value="San Luis">San Luis</option>
-                            <option value="Santa Cruz">Santa Cruz</option>
-                            <option value="Santa Fe">Santa Fe</option>
-                            <option value="Santiago del Estero">Santiago del Estero</option>
-                            <option value="Tierra del Fuego">Tierra del Fuego</option>
-                            <option value="Tucumán">Tucumán</option>
+                            {provinciasLista.map(p => <option key={p} value={p}>{p}</option>)}
                           </select>
                         </div>
-                        
-                        {/* Especialidad */}
                         <div>
                           <label className="block text-xs font-medium text-foreground mb-1">Especialidad</label>
-                          <select className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                          <select value={filtros.especialidad} onChange={(e) => setFiltros({...filtros, especialidad: e.target.value})} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                             <option value="">Todas</option>
-                            <option value="Alergia e Inmunología">Alergia e Inmunología</option>
-                            <option value="Cardiología">Cardiología</option>
-                            <option value="Clínica Médica">Clínica Médica</option>
-                            <option value="Dermatología">Dermatología</option>
-                            <option value="Endocrinología">Endocrinología</option>
-                            <option value="Gastroenterología">Gastroenterología</option>
-                            <option value="Ginecología">Ginecología</option>
-                            <option value="Kinesiología">Kinesiología</option>
-                            <option value="Neurología">Neurología</option>
-                            <option value="Nutrición">Nutrición</option>
-                            <option value="Oftalmología">Oftalmología</option>
-                            <option value="Odontología">Odontología</option>
-                            <option value="Oncología">Oncología</option>
-                            <option value="Pediatría">Pediatría</option>
-                            <option value="Psicología">Psicología</option>
-                            <option value="Psiquiatría">Psiquiatría</option>
-                            <option value="Reumatología">Reumatología</option>
-                            <option value="Traumatología">Traumatología</option>
-                            <option value="Urología">Urología</option>
+                            {especialidadesLista.map(e => <option key={e} value={e}>{e}</option>)}
                           </select>
                         </div>
-                        
-                        {/* Localidad */}
                         <div>
                           <label className="block text-xs font-medium text-foreground mb-1">Localidad</label>
                           <div className="flex flex-wrap gap-1 mb-1">
                             {['Moreno', 'Morón', 'Sarandí', 'Quilmes'].map((loc) => (
-                              <button
-                                key={loc}
-                                className="px-2 py-0.5 text-[10px] rounded-full border border-blue-200 text-blue-600 hover:bg-blue-50 transition-colors"
-                              >
-                                {loc}
-                              </button>
+                              <button key={loc} onClick={() => setFiltros({...filtros, localidad: loc})} className={`px-2 py-0.5 text-[10px] rounded-full border transition-colors ${filtros.localidad === loc ? 'bg-blue-600 text-white border-blue-600' : 'border-blue-200 text-blue-600 hover:bg-blue-50'}`}>{loc}</button>
                             ))}
                           </div>
-                          <input
-                            type="text"
-                            placeholder="O escribí tu localidad..."
-                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          />
+                          <input type="text" placeholder="O escribí tu localidad..." value={filtros.localidad} onChange={(e) => setFiltros({...filtros, localidad: e.target.value})} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
                         </div>
-                        
-                        {/* Buscar */}
                         <div className="flex items-end">
-                          <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors shadow-md text-sm">
-                            Buscar →
-                          </button>
+                          <button onClick={buscarPrestadores} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors shadow-md text-sm">Buscar →</button>
                         </div>
                       </div>
                       
-                      {/* RESULTADOS Y MAPA */}
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {/* Lista de resultados */}
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
                         <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
-                          <div className="text-sm text-muted-foreground text-center py-8">
-                            <p>Seleccioná los filtros y presioná "Buscar"</p>
-                            <p className="text-xs mt-1">Más de 40.000 prestadores en toda Argentina</p>
-                          </div>
+                          {resultados.length === 0 ? (
+                            <div className="text-sm text-muted-foreground text-center py-8">
+                              <p>Seleccioná los filtros y presioná "Buscar"</p>
+                              <p className="text-xs mt-1">Más de 40.000 prestadores en toda Argentina</p>
+                            </div>
+                          ) : (
+                            resultados.map((prestador, idx) => (
+                              <div key={idx} className="p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                                <p className="font-medium text-sm">{prestador.nombre}</p>
+                                <p className="text-xs text-muted-foreground">{prestador.especialidad}</p>
+                                <p className="text-xs text-muted-foreground">{prestador.direccion}</p>
+                                <p className="text-xs text-muted-foreground">{prestador.localidad}, {prestador.provincia}</p>
+                              </div>
+                            ))
+                          )}
                         </div>
-                        
-                        {/* Mapa */}
                         <div className="bg-gray-100 rounded-lg h-80 lg:h-auto min-h-[300px] flex items-center justify-center border-2 border-gray-200 relative overflow-hidden">
                           <div className="text-center text-gray-400">
                             <div className="text-5xl mb-2">🗺️</div>
                             <p className="text-sm font-medium">Mapa de prestadores</p>
-                            <p className="text-xs">Los resultados aparecerán aquí</p>
+                            <p className="text-xs">{resultados.length} prestadores encontrados</p>
                             <p className="text-xs text-gray-300 mt-2">Powered by OpenStreetMap</p>
                           </div>
                         </div>
