@@ -121,7 +121,7 @@ function CompanyCard({ company, empresaActiva, onToggle }: CompanyCardProps) {
           <h3 className="text-2xl md:text-3xl font-semibold text-[#1a6b3c] dark:text-green-400 text-center">
             Somos el respaldo que te merecés
           </h3>
-          <p className="text-sm md:text-base text-[#4a9a6a] dark:text-green-300 text-center max-w-sm px-2 leading-relaxed">
+          <p className="text-xs md:text-sm text-[#4a9a6a] dark:text-green-300 text-center max-w-sm px-2 leading-snug">
             La mejor cobertura. Amplia red médica y centros propios para cuidarte a vos y a tu familia.
           </p>
           <div className="grid grid-cols-2 gap-3 w-full max-w-sm mt-1">
