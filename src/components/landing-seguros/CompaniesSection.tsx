@@ -206,7 +206,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
   const [resultados, setResultados] = useState<any[]>([])
   const [mapaCentro, setMapaCentro] = useState<{ lat: number; lng: number } | null>(null)
 
-  // DATOS DE PRESTADORES - VERSIÓN MEJORADA CON TODOS LOS CAMPOS
+  // DATOS DE PRESTADORES
   const prestadoresMock = [
     // CABA
     { id: 1, nombre: 'Clínica Anchorena', especialidad: 'Cardiología', direccion: 'Av. Pueyrredón 830', localidad: 'CABA', provincia: 'CABA', telefono: '011-4521-8000', lat: -34.5876, lng: -58.3999, plan: '1000', mapsLink: 'https://maps.google.com/?q=Pueyrred%C3%B3n+830+CABA' },
