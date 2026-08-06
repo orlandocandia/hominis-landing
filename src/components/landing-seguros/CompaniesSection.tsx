@@ -205,116 +205,90 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
   })
   const [resultados, setResultados] = useState<any[]>([])
   const [mapaCentro, setMapaCentro] = useState<{ lat: number; lng: number } | null>(null)
-  const mapaRef = useRef<HTMLDivElement>(null)
 
+  // DATOS DE PRESTADORES - VERSIÓN MEJORADA CON TODOS LOS CAMPOS
   const prestadoresMock = [
     // CABA
-    { id: 1, nombre: 'Dr. Juan Pérez', especialidad: 'Cardiología', direccion: 'Av. Rivadavia 1234', localidad: 'CABA', provincia: 'CABA', telefono: '011-4444-1111', lat: -34.6037, lng: -58.3816, plan: '500' },
-    { id: 2, nombre: 'Dra. María Gómez', especialidad: 'Dermatología', direccion: 'Belgrano 567', localidad: 'CABA', provincia: 'CABA', telefono: '011-4444-2222', lat: -34.6118, lng: -58.3960, plan: '1000' },
-    { id: 3, nombre: 'Dr. Carlos López', especialidad: 'Traumatología', direccion: 'San Martín 890', localidad: 'CABA', provincia: 'CABA', telefono: '011-4444-3333', lat: -34.5901, lng: -58.3748, plan: '2000' },
-    { id: 4, nombre: 'Clínica Anchorena', especialidad: 'Clínica Médica', direccion: 'Av. Pueyrredón 830', localidad: 'CABA', provincia: 'CABA', telefono: '011-4521-8000', lat: -34.5876, lng: -58.3999, plan: '3000' },
-    { id: 5, nombre: 'Clínica Basterrica', especialidad: 'Pediatría', direccion: 'Av. Cabildo 2500', localidad: 'CABA', provincia: 'CABA', telefono: '011-4701-7777', lat: -34.5545, lng: -58.4576, plan: '500' },
-    { id: 6, nombre: 'Sanatorio Otamendi', especialidad: 'Ginecología', direccion: 'Av. Alzheimer 850', localidad: 'CABA', provincia: 'CABA', telefono: '011-4824-0000', lat: -34.5833, lng: -58.4122, plan: '1000' },
-    { id: 7, nombre: 'CEMIC', especialidad: 'Neurología', direccion: 'Av. Galván 4102', localidad: 'CABA', provincia: 'CABA', telefono: '011-4541-8900', lat: -34.5617, lng: -58.4593, plan: '2000' },
-    { id: 8, nombre: 'Sanatorio Finochietto', especialidad: 'Oftalmología', direccion: 'Av. Córdoba 2675', localidad: 'CABA', provincia: 'CABA', telefono: '011-4823-4444', lat: -34.5983, lng: -58.4105, plan: '3000' },
+    { id: 1, nombre: 'Clínica Anchorena', especialidad: 'Cardiología', direccion: 'Av. Pueyrredón 830', localidad: 'CABA', provincia: 'CABA', telefono: '011-4521-8000', lat: -34.5876, lng: -58.3999, plan: '1000', mapsLink: 'https://maps.google.com/?q=Pueyrred%C3%B3n+830+CABA' },
+    { id: 2, nombre: 'Sanatorio Otamendi', especialidad: 'Ginecología', direccion: 'Av. Alzheimer 850', localidad: 'CABA', provincia: 'CABA', telefono: '011-4824-0000', lat: -34.5833, lng: -58.4122, plan: '1000', mapsLink: 'https://maps.google.com/?q=Alzheimer+850+CABA' },
+    { id: 3, nombre: 'CEMIC', especialidad: 'Neurología', direccion: 'Av. Galván 4102', localidad: 'CABA', provincia: 'CABA', telefono: '011-4541-8900', lat: -34.5617, lng: -58.4593, plan: '2000', mapsLink: 'https://maps.google.com/?q=Galv%C3%A1n+4102+CABA' },
+    { id: 4, nombre: 'Sanatorio Finochietto', especialidad: 'Oftalmología', direccion: 'Av. Córdoba 2675', localidad: 'CABA', provincia: 'CABA', telefono: '011-4823-4444', lat: -34.5983, lng: -58.4105, plan: '2000', mapsLink: 'https://maps.google.com/?q=C%C3%B3rdoba+2675+CABA' },
+    { id: 5, nombre: 'Sanatorio de la Trinidad', especialidad: 'Emergencias', direccion: 'Cerviño 2550', localidad: 'CABA', provincia: 'CABA', telefono: '011-4826-0001', lat: -34.5678, lng: -58.4234, plan: '500', mapsLink: 'https://maps.google.com/?q=Cervi%C3%B1o+2550+CABA' },
+    { id: 6, nombre: 'Mater Dei', especialidad: 'Alergia', direccion: 'Av. Santa Fe 2552', localidad: 'CABA', provincia: 'CABA', telefono: '011-4827-0002', lat: -34.5789, lng: -58.4123, plan: '1000', mapsLink: 'https://maps.google.com/?q=Santa+Fe+2552+CABA' },
+    { id: 7, nombre: 'Sanatorio Favaloro', especialidad: 'Cardiología', direccion: 'Av. Belgrano 1500', localidad: 'CABA', provincia: 'CABA', telefono: '011-4829-0004', lat: -34.6123, lng: -58.3887, plan: '3000', mapsLink: 'https://maps.google.com/?q=Belgrano+1500+CABA' },
+    { id: 8, nombre: 'Fundación Hospitalaria', especialidad: 'Oncología', direccion: 'Av. Independencia 2350', localidad: 'CABA', provincia: 'CABA', telefono: '011-4830-0005', lat: -34.6234, lng: -58.3776, plan: '500', mapsLink: 'https://maps.google.com/?q=Independencia+2350+CABA' },
+    { id: 9, nombre: 'Clínica del Sol', especialidad: 'Reumatología', direccion: 'Av. Corrientes 4857', localidad: 'CABA', provincia: 'CABA', telefono: '011-4831-0006', lat: -34.5987, lng: -58.4201, plan: '1000', mapsLink: 'https://maps.google.com/?q=Corrientes+4857+CABA' },
+    { id: 10, nombre: 'Santa Isabel', especialidad: 'Urología', direccion: 'Av. La Plata 1909', localidad: 'CABA', provincia: 'CABA', telefono: '011-4832-0007', lat: -34.6345, lng: -58.4098, plan: '2000', mapsLink: 'https://maps.google.com/?q=La+Plata+1909+CABA' },
+    { id: 11, nombre: 'Clínica Basterrica', especialidad: 'Pediatría', direccion: 'Av. Cabildo 2500', localidad: 'CABA', provincia: 'CABA', telefono: '011-4701-7777', lat: -34.5545, lng: -58.4576, plan: '500', mapsLink: 'https://maps.google.com/?q=Cabildo+2500+CABA' },
+    { id: 12, nombre: 'Stamboulian', especialidad: 'Infectología', direccion: 'Av. Corrientes 4072', localidad: 'CABA', provincia: 'CABA', telefono: '011-4828-0003', lat: -34.6012, lng: -58.3998, plan: '2000', mapsLink: 'https://maps.google.com/?q=Corrientes+4072+CABA' },
     // Quilmes
-    { id: 9, nombre: 'Clínica del Niño de Quilmes', especialidad: 'Pediatría', direccion: 'Alsina 850', localidad: 'Quilmes', provincia: 'Buenos Aires', telefono: '011-4253-1111', lat: -34.7206, lng: -58.2521, plan: '500' },
-    { id: 10, nombre: 'Clínica Calchaquí', especialidad: 'Clínica Médica', direccion: 'Calchaquí 1234', localidad: 'Quilmes', provincia: 'Buenos Aires', telefono: '011-4254-2222', lat: -34.7150, lng: -58.2480, plan: '1000' },
-    { id: 11, nombre: 'Cemepro Quilmes', especialidad: 'Cardiología', direccion: 'Mitre 456', localidad: 'Quilmes', provincia: 'Buenos Aires', telefono: '011-4255-3333', lat: -34.7220, lng: -58.2600, plan: '2000' },
+    { id: 13, nombre: 'Clínica del Niño de Quilmes', especialidad: 'Pediatría', direccion: 'Alsina 850', localidad: 'Quilmes', provincia: 'Buenos Aires', telefono: '011-4253-1111', lat: -34.7206, lng: -58.2521, plan: '500', mapsLink: 'https://maps.google.com/?q=Alsina+850+Quilmes' },
+    { id: 14, nombre: 'Clínica Calchaquí', especialidad: 'Clínica Médica', direccion: 'Calchaquí 1234', localidad: 'Quilmes', provincia: 'Buenos Aires', telefono: '011-4254-2222', lat: -34.7150, lng: -58.2480, plan: '1000', mapsLink: 'https://maps.google.com/?q=Calchaqu%C3%AD+1234+Quilmes' },
+    { id: 15, nombre: 'Cemepro Quilmes', especialidad: 'Cardiología', direccion: 'Mitre 456', localidad: 'Quilmes', provincia: 'Buenos Aires', telefono: '011-4255-3333', lat: -34.7220, lng: -58.2600, plan: '2000', mapsLink: 'https://maps.google.com/?q=Mitre+456+Quilmes' },
     // Berazategui
-    { id: 12, nombre: 'Sanatorio Berazategui', especialidad: 'Traumatología', direccion: 'Av. 14 1234', localidad: 'Berazategui', provincia: 'Buenos Aires', telefono: '011-4256-4444', lat: -34.7636, lng: -58.2058, plan: '500' },
-    { id: 13, nombre: 'GH Salud Berazategui', especialidad: 'Ginecología', direccion: 'Calle 9 567', localidad: 'Berazategui', provincia: 'Buenos Aires', telefono: '011-4257-5555', lat: -34.7550, lng: -58.2100, plan: '1000' },
+    { id: 16, nombre: 'Sanatorio Berazategui', especialidad: 'Traumatología', direccion: 'Av. 14 1234', localidad: 'Berazategui', provincia: 'Buenos Aires', telefono: '011-4256-4444', lat: -34.7636, lng: -58.2058, plan: '500', mapsLink: 'https://maps.google.com/?q=Av.+14+1234+Berazategui' },
+    { id: 17, nombre: 'GH Salud Berazategui', especialidad: 'Ginecología', direccion: 'Calle 9 567', localidad: 'Berazategui', provincia: 'Buenos Aires', telefono: '011-4257-5555', lat: -34.7550, lng: -58.2100, plan: '1000', mapsLink: 'https://maps.google.com/?q=Calle+9+567+Berazategui' },
+    { id: 18, nombre: 'Nuevo Sanatorio Berazategui', especialidad: 'Emergencias', direccion: 'Av. 14 2000', localidad: 'Berazategui', provincia: 'Buenos Aires', telefono: '011-4260-0009', lat: -34.7689, lng: -58.2012, plan: '500', mapsLink: 'https://maps.google.com/?q=Av.+14+2000+Berazategui' },
     // Ranelagh
-    { id: 14, nombre: 'Clínica Privada Ranelagh', especialidad: 'Dermatología', direccion: 'Av. Mitre 890', localidad: 'Ranelagh', provincia: 'Buenos Aires', telefono: '011-4258-6666', lat: -34.7833, lng: -58.1833, plan: '2000' },
-    { id: 15, nombre: 'Clínica Santa Clara', especialidad: 'Oftalmología', direccion: 'San Martín 123', localidad: 'Ranelagh', provincia: 'Buenos Aires', telefono: '011-4259-7777', lat: -34.7800, lng: -58.1850, plan: '3000' },
+    { id: 19, nombre: 'Clínica Privada Ranelagh', especialidad: 'Dermatología', direccion: 'Av. Mitre 890', localidad: 'Ranelagh', provincia: 'Buenos Aires', telefono: '011-4258-6666', lat: -34.7833, lng: -58.1833, plan: '2000', mapsLink: 'https://maps.google.com/?q=Mitre+890+Ranelagh' },
+    { id: 20, nombre: 'Clínica Santa Clara', especialidad: 'Alergia', direccion: 'San Martín 123', localidad: 'Ranelagh', provincia: 'Buenos Aires', telefono: '011-4259-7777', lat: -34.7800, lng: -58.1850, plan: '3000', mapsLink: 'https://maps.google.com/?q=San+Mart%C3%ADn+123+Ranelagh' },
     // Lomas de Zamora
-    { id: 16, nombre: 'Clínica Boedo', especialidad: 'Clínica Médica', direccion: 'Boedo 456', localidad: 'Lomas de Zamora', provincia: 'Buenos Aires', telefono: '011-4261-8888', lat: -34.7600, lng: -58.4000, plan: '500' },
-    { id: 17, nombre: 'Dr. Roberto Sánchez', especialidad: 'Nutrición', direccion: 'España 789', localidad: 'Lomas de Zamora', provincia: 'Buenos Aires', telefono: '011-4262-9999', lat: -34.7650, lng: -58.3950, plan: '1000' },
+    { id: 21, nombre: 'Clínica Boedo', especialidad: 'Clínica Médica', direccion: 'Boedo 456', localidad: 'Lomas de Zamora', provincia: 'Buenos Aires', telefono: '011-4261-8888', lat: -34.7600, lng: -58.4000, plan: '500', mapsLink: 'https://maps.google.com/?q=Boedo+456+Lomas+de+Zamora' },
     // Lanús
-    { id: 18, nombre: 'Clínica Modelo Lanús', especialidad: 'Psicología', direccion: '25 de Mayo 321', localidad: 'Lanús', provincia: 'Buenos Aires', telefono: '011-4241-1010', lat: -34.7100, lng: -58.3900, plan: '2000' },
-    { id: 19, nombre: 'Dra. Laura Fernández', especialidad: 'Kinesiología', direccion: 'Hipólito Yrigoyen 654', localidad: 'Lanús', provincia: 'Buenos Aires', telefono: '011-4242-1212', lat: -34.7050, lng: -58.3850, plan: '3000' },
+    { id: 22, nombre: 'Clínica Modelo Lanús', especialidad: 'Psicología', direccion: '25 de Mayo 321', localidad: 'Lanús', provincia: 'Buenos Aires', telefono: '011-4241-1010', lat: -34.7100, lng: -58.3900, plan: '2000', mapsLink: 'https://maps.google.com/?q=25+de+Mayo+321+Lan%C3%BAs' },
     // Adrogué
-    { id: 20, nombre: 'Clínica Espora', especialidad: 'Fonoaudiología', direccion: 'Espora 987', localidad: 'Adrogué', provincia: 'Buenos Aires', telefono: '011-4294-1313', lat: -34.7967, lng: -58.3950, plan: '500' },
-    { id: 21, nombre: 'Centro Médico Adrogué', especialidad: 'Odontología', direccion: 'Av. Meeks 123', localidad: 'Adrogué', provincia: 'Buenos Aires', telefono: '011-4295-1414', lat: -34.7900, lng: -58.3900, plan: '1000' },
-    // Bernal
-    { id: 22, nombre: 'Sanatorio Bernal', especialidad: 'Alergia e Inmunología', direccion: 'Av. San Martín 456', localidad: 'Bernal', provincia: 'Buenos Aires', telefono: '011-4251-1515', lat: -34.7100, lng: -58.2900, plan: '2000' },
-    // Solano
-    { id: 23, nombre: 'Instituto Médico Modelo', especialidad: 'Endocrinología', direccion: 'Av. Monteverde 789', localidad: 'Solano', provincia: 'Buenos Aires', telefono: '011-4252-1616', lat: -34.7150, lng: -58.2700, plan: '3000' },
+    { id: 23, nombre: 'Clínica Espora', especialidad: 'Fonoaudiología', direccion: 'Espora 987', localidad: 'Adrogué', provincia: 'Buenos Aires', telefono: '011-4294-1313', lat: -34.7967, lng: -58.3950, plan: '500', mapsLink: 'https://maps.google.com/?q=Espora+987+Adrogu%C3%A9' },
+    { id: 24, nombre: 'Centro Médico Adrogué', especialidad: 'Odontología', direccion: 'Av. Meeks 123', localidad: 'Adrogué', provincia: 'Buenos Aires', telefono: '011-4295-1414', lat: -34.7900, lng: -58.3900, plan: '1000', mapsLink: 'https://maps.google.com/?q=Meeks+123+Adrogu%C3%A9' },
     // Moreno
-    { id: 24, nombre: 'Dr. Martín Díaz', especialidad: 'Gastroenterología', direccion: 'Av. Julio Argentino Roca 234', localidad: 'Moreno', provincia: 'Buenos Aires', telefono: '011-4458-1717', lat: -34.6333, lng: -58.7833, plan: '500' },
-    { id: 25, nombre: 'Dra. Silvia Torres', especialidad: 'Oncología', direccion: 'Belgrano 567', localidad: 'Moreno', provincia: 'Buenos Aires', telefono: '011-4459-1818', lat: -34.6300, lng: -58.7800, plan: '1000' },
-    { id: 26, nombre: 'Centro Médico Moreno', especialidad: 'Reumatología', direccion: 'Mitre 890', localidad: 'Moreno', provincia: 'Buenos Aires', telefono: '011-4460-1919', lat: -34.6350, lng: -58.7850, plan: '2000' },
+    { id: 25, nombre: 'Centro Médico Moreno', especialidad: 'Clínica Médica', direccion: 'Mitre 890', localidad: 'Moreno', provincia: 'Buenos Aires', telefono: '011-4460-1919', lat: -34.6350, lng: -58.7850, plan: '2000', mapsLink: 'https://maps.google.com/?q=Mitre+890+Moreno' },
     // Morón
-    { id: 27, nombre: 'Dr. Pablo Ramírez', especialidad: 'Urología', direccion: 'Av. Rivadavia 15987', localidad: 'Morón', provincia: 'Buenos Aires', telefono: '011-4621-2020', lat: -34.6500, lng: -58.6200, plan: '3000' },
-    { id: 28, nombre: 'Dra. Cecilia Ríos', especialidad: 'Medicina General', direccion: 'Almafuerte 321', localidad: 'Morón', provincia: 'Buenos Aires', telefono: '011-4622-2121', lat: -34.6450, lng: -58.6150, plan: '500' },
-    { id: 29, nombre: 'Clínica Morón', especialidad: 'Emergencias', direccion: 'Brown 654', localidad: 'Morón', provincia: 'Buenos Aires', telefono: '011-4623-2222', lat: -34.6550, lng: -58.6250, plan: '1000' },
+    { id: 26, nombre: 'Clínica Morón', especialidad: 'Emergencias', direccion: 'Brown 654', localidad: 'Morón', provincia: 'Buenos Aires', telefono: '011-4623-2222', lat: -34.6550, lng: -58.6250, plan: '1000', mapsLink: 'https://maps.google.com/?q=Brown+654+Mor%C3%B3n' },
     // Sarandí
-    { id: 30, nombre: 'Dr. Federico Cruz', especialidad: 'Cardiología', direccion: 'Av. Mitre 4231', localidad: 'Sarandí', provincia: 'Buenos Aires', telefono: '011-4201-2323', lat: -34.6833, lng: -58.3500, plan: '2000' },
-    { id: 31, nombre: 'Dra. Patricia Vega', especialidad: 'Pediatría', direccion: 'Leandro N. Alem 987', localidad: 'Sarandí', provincia: 'Buenos Aires', telefono: '011-4202-2424', lat: -34.6800, lng: -58.3450, plan: '3000' },
-    // Córdoba
-    { id: 32, nombre: 'Dr. Luis Acuña', especialidad: 'Clínica Médica', direccion: 'Av. Colón 1234', localidad: 'Córdoba', provincia: 'Córdoba', telefono: '0351-421-3344', lat: -31.4201, lng: -64.1888, plan: '500' },
-    { id: 33, nombre: 'Sanatorio Allende Córdoba', especialidad: 'Traumatología', direccion: 'Av. Castro Barros 500', localidad: 'Córdoba', provincia: 'Córdoba', telefono: '0351-422-5566', lat: -31.4150, lng: -64.1850, plan: '1000' },
+    { id: 27, nombre: 'Dr. Federico Cruz', especialidad: 'Cardiología', direccion: 'Av. Mitre 4231', localidad: 'Sarandí', provincia: 'Buenos Aires', telefono: '011-4201-2323', lat: -34.6833, lng: -58.3500, plan: '2000', mapsLink: 'https://maps.google.com/?q=Mitre+4231+Sarand%C3%AD' },
+    { id: 28, nombre: 'Dra. Patricia Vega', especialidad: 'Pediatría', direccion: 'Leandro N. Alem 987', localidad: 'Sarandí', provincia: 'Buenos Aires', telefono: '011-4202-2424', lat: -34.6800, lng: -58.3450, plan: '3000', mapsLink: 'https://maps.google.com/?q=Alem+987+Sarand%C3%AD' },
     // Mendoza
-    { id: 34, nombre: 'Dra. Sofía Pérez', especialidad: 'Ginecología', direccion: 'Av. San Martín 567', localidad: 'Mendoza', provincia: 'Mendoza', telefono: '0261-429-7788', lat: -32.8900, lng: -68.8400, plan: '2000' },
-    { id: 35, nombre: 'Hospital Italiano Mendoza', especialidad: 'Oftalmología', direccion: 'Av. Emilio Civit 850', localidad: 'Mendoza', provincia: 'Mendoza', telefono: '0261-425-9900', lat: -32.8950, lng: -68.8350, plan: '3000' },
-    // Rosario
-    { id: 36, nombre: 'Dr. Hernán Ruiz', especialidad: 'Neurología', direccion: 'San Martín 890', localidad: 'Rosario', provincia: 'Santa Fe', telefono: '0341-455-1212', lat: -32.9500, lng: -60.6400, plan: '500' },
-    { id: 37, nombre: 'Clínica Universitaria Rosario', especialidad: 'Dermatología', direccion: 'Av. Pellegrini 123', localidad: 'Rosario', provincia: 'Santa Fe', telefono: '0341-456-1313', lat: -32.9450, lng: -60.6350, plan: '1000' },
-    // Tucumán
-    { id: 38, nombre: 'Dr. Marcelo Aguirre', especialidad: 'Psiquiatría', direccion: 'Av. Mate de Luna 456', localidad: 'San Miguel de Tucumán', provincia: 'Tucumán', telefono: '0381-421-1414', lat: -26.8083, lng: -65.2200, plan: '2000' },
-    { id: 39, nombre: 'Clínica San Javier', especialidad: 'Kinesiología', direccion: 'Av. Aconquija 789', localidad: 'San Miguel de Tucumán', provincia: 'Tucumán', telefono: '0381-422-1515', lat: -26.8050, lng: -65.2150, plan: '3000' },
-    // Salta
-    { id: 40, nombre: 'Dra. Carolina Nieva', especialidad: 'Nutrición', direccion: 'Av. Belgrano 123', localidad: 'Salta', provincia: 'Salta', telefono: '0387-431-1616', lat: -24.7821, lng: -65.4232, plan: '500' },
-    { id: 41, nombre: 'Sanatorio Eléctrico Salta', especialidad: 'Fonoaudiología', direccion: 'Caseros 456', localidad: 'Salta', provincia: 'Salta', telefono: '0387-432-1717', lat: -24.7800, lng: -65.4200, plan: '1000' },
+    { id: 29, nombre: 'CLINICA SANTA CLARA', especialidad: 'Alergia', direccion: 'SAN MARTIN 835', localidad: 'GODOY CRUZ', provincia: 'MENDOZA', telefono: '0810-122-2424', lat: -32.9170, lng: -68.8400, plan: '500', mapsLink: 'https://maps.google.com/?q=San+Martin+835+Godoy+Cruz+Mendoza' },
+    { id: 30, nombre: 'Hospital Italiano Mendoza', especialidad: 'Oftalmología', direccion: 'Av. Emilio Civit 850', localidad: 'Mendoza', provincia: 'Mendoza', telefono: '0261-425-9900', lat: -32.8950, lng: -68.8350, plan: '3000', mapsLink: 'https://maps.google.com/?q=Emilio+Civit+850+Mendoza' },
+    // Córdoba
+    { id: 31, nombre: 'Sanatorio Allende Córdoba', especialidad: 'Traumatología', direccion: 'Av. Castro Barros 500', localidad: 'Córdoba', provincia: 'Córdoba', telefono: '0351-422-5566', lat: -31.4150, lng: -64.1850, plan: '1000', mapsLink: 'https://maps.google.com/?q=Castro+Barros+500+C%C3%B3rdoba' },
     // San Luis
-    { id: 42, nombre: 'Federación Médica de San Luis', especialidad: 'Clínica Médica', direccion: 'Av. Illia 890', localidad: 'San Luis', provincia: 'San Luis', telefono: '0266-442-1818', lat: -33.2950, lng: -66.3350, plan: '2000' },
-    { id: 43, nombre: 'Dr. Ricardo Sosa', especialidad: 'Odontología', direccion: 'Colón 321', localidad: 'San Luis', provincia: 'San Luis', telefono: '0266-443-1919', lat: -33.3000, lng: -66.3300, plan: '3000' },
-    // Más CABA
-    { id: 44, nombre: 'Sanatorio de la Trinidad', especialidad: 'Emergencias', direccion: 'Cerviño 2550', localidad: 'CABA', provincia: 'CABA', telefono: '011-4826-0001', lat: -34.5678, lng: -58.4234, plan: '500' },
-    { id: 45, nombre: 'Mater Dei', especialidad: 'Alergia e Inmunología', direccion: 'Av. Santa Fe 2552', localidad: 'CABA', provincia: 'CABA', telefono: '011-4827-0002', lat: -34.5789, lng: -58.4123, plan: '1000' },
-    { id: 46, nombre: 'Stamboulian', especialidad: 'Endocrinología', direccion: 'Av. Corrientes 4072', localidad: 'CABA', provincia: 'CABA', telefono: '011-4828-0003', lat: -34.6012, lng: -58.3998, plan: '2000' },
-    { id: 47, nombre: 'Sanatorio Favaloro', especialidad: 'Gastroenterología', direccion: 'Av. Belgrano 1500', localidad: 'CABA', provincia: 'CABA', telefono: '011-4829-0004', lat: -34.6123, lng: -58.3887, plan: '3000' },
-    { id: 48, nombre: 'Fundación Hospitalaria', especialidad: 'Oncología', direccion: 'Av. Independencia 2350', localidad: 'CABA', provincia: 'CABA', telefono: '011-4830-0005', lat: -34.6234, lng: -58.3776, plan: '500' },
-    { id: 49, nombre: 'Clínica del Sol', especialidad: 'Reumatología', direccion: 'Av. Corrientes 4857', localidad: 'CABA', provincia: 'CABA', telefono: '011-4831-0006', lat: -34.5987, lng: -58.4201, plan: '1000' },
-    { id: 50, nombre: 'Santa Isabel', especialidad: 'Urología', direccion: 'Av. La Plata 1909', localidad: 'CABA', provincia: 'CABA', telefono: '011-4832-0007', lat: -34.6345, lng: -58.4098, plan: '2000' },
-    { id: 51, nombre: 'Dr. Diego Fernández', especialidad: 'Medicina General', direccion: 'Av. Rivadavia 5678', localidad: 'CABA', provincia: 'CABA', telefono: '011-4833-0008', lat: -34.6456, lng: -58.3987, plan: '3000' },
-    { id: 52, nombre: 'Nuevo Sanatorio Berazategui', especialidad: 'Emergencias', direccion: 'Av. 14 2000', localidad: 'Berazategui', provincia: 'Buenos Aires', telefono: '011-4260-0009', lat: -34.7689, lng: -58.2012, plan: '500' },
+    { id: 32, nombre: 'Federación Médica de San Luis', especialidad: 'Clínica Médica', direccion: 'Av. Illia 890', localidad: 'San Luis', provincia: 'San Luis', telefono: '0266-442-1818', lat: -33.2950, lng: -66.3350, plan: '2000', mapsLink: 'https://maps.google.com/?q=Illia+890+San+Luis' },
+    // Rosario
+    { id: 33, nombre: 'Clínica Universitaria Rosario', especialidad: 'Dermatología', direccion: 'Av. Pellegrini 123', localidad: 'Rosario', provincia: 'Santa Fe', telefono: '0341-456-1313', lat: -32.9450, lng: -60.6350, plan: '1000', mapsLink: 'https://maps.google.com/?q=Pellegrini+123+Rosario' },
+    // Tucumán
+    { id: 34, nombre: 'Clínica San Javier', especialidad: 'Kinesiología', direccion: 'Av. Aconquija 789', localidad: 'San Miguel de Tucumán', provincia: 'Tucumán', telefono: '0381-422-1515', lat: -26.8050, lng: -65.2150, plan: '3000', mapsLink: 'https://maps.google.com/?q=Aconquija+789+Tucum%C3%A1n' },
+    // Salta
+    { id: 35, nombre: 'Sanatorio Eléctrico Salta', especialidad: 'Fonoaudiología', direccion: 'Caseros 456', localidad: 'Salta', provincia: 'Salta', telefono: '0387-432-1717', lat: -24.7800, lng: -65.4200, plan: '1000', mapsLink: 'https://maps.google.com/?q=Caseros+456+Salta' },
   ]
 
   const planes = ['500', '1000', '2000', '3000']
-  const provincias = ['Buenos Aires', 'CABA', 'Catamarca', 'Chaco', 'Chubut', 'Córdoba', 'Corrientes', 'Entre Ríos', 'Formosa', 'Jujuy', 'La Pampa', 'La Rioja', 'Mendoza', 'Misiones', 'Neuquén', 'Río Negro', 'Salta', 'San Juan', 'San Luis', 'Santa Cruz', 'Santa Fe', 'Santiago del Estero', 'Tierra del Fuego', 'Tucumán']
-  const especialidades = ['Cardiología', 'Dermatología', 'Traumatología', 'Pediatría', 'Oftalmología', 'Ginecología', 'Clínica Médica', 'Neurología', 'Nutrición', 'Psicología', 'Psiquiatría', 'Kinesiología', 'Fonoaudiología', 'Odontología', 'Alergia e Inmunología', 'Endocrinología', 'Gastroenterología', 'Oncología', 'Reumatología', 'Urología', 'Medicina General', 'Emergencias']
+  const provincias = ['CABA', 'Buenos Aires', 'Mendoza', 'Córdoba', 'Santa Fe', 'San Luis', 'Salta', 'Tucumán']
+  const especialidades = ['Alergia', 'Cardiología', 'Pediatría', 'Traumatología', 'Clínica Médica', 'Ginecología', 'Dermatología', 'Neurología', 'Oftalmología', 'Odontología', 'Kinesiología', 'Psicología', 'Fonoaudiología', 'Emergencias', 'Oncología', 'Reumatología', 'Urología', 'Infectología']
 
   const buscarPrestadores = () => {
-    console.log('BUSCADOR ACTIVADO - Filtros:', filtros)
-    console.log('Total prestadores disponibles:', prestadoresMock.length)
-    
+    console.log('🔍 Buscando con filtros:', filtros)
     let resultadosFiltrados = prestadoresMock
     
     if (filtros.plan) {
       resultadosFiltrados = resultadosFiltrados.filter(p => p.plan === filtros.plan)
-      console.log('Filtrado por plan:', filtros.plan, '->', resultadosFiltrados.length, 'resultados')
     }
     if (filtros.provincia) {
       resultadosFiltrados = resultadosFiltrados.filter(p => 
         p.provincia.toLowerCase().includes(filtros.provincia.toLowerCase())
       )
-      console.log('Filtrado por provincia:', filtros.provincia, '->', resultadosFiltrados.length, 'resultados')
     }
     if (filtros.especialidad) {
       resultadosFiltrados = resultadosFiltrados.filter(p => 
         p.especialidad.toLowerCase().includes(filtros.especialidad.toLowerCase())
       )
-      console.log('Filtrado por especialidad:', filtros.especialidad, '->', resultadosFiltrados.length, 'resultados')
     }
     if (filtros.localidad) {
       resultadosFiltrados = resultadosFiltrados.filter(p => 
         p.localidad.toLowerCase().includes(filtros.localidad.toLowerCase())
       )
-      console.log('Filtrado por localidad:', filtros.localidad, '->', resultadosFiltrados.length, 'resultados')
     }
     
-    console.log('Resultados finales:', resultadosFiltrados.length)
+    console.log('✅ Resultados encontrados:', resultadosFiltrados.length)
     setResultados(resultadosFiltrados)
     
     if (resultadosFiltrados.length > 0 && resultadosFiltrados[0].lat) {
@@ -323,23 +297,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
         lng: resultadosFiltrados[0].lng
       })
     }
-    if (resultadosFiltrados.length === 0) {
-      console.warn('No se encontraron prestadores con esos filtros')
-    }
   }
-
-  const limpiarFiltros = () => {
-    setFiltros({ plan: '', provincia: '', especialidad: '', localidad: '' })
-    setResultados([])
-    setMapaCentro(null)
-  }
-
-  // Validacion: el boton se habilita solo cuando todos los campos estan completos
-  const isFormValid = 
-    filtros.plan !== '' && 
-    filtros.provincia !== '' && 
-    filtros.especialidad !== '' && 
-    filtros.localidad !== ''
 
   return (
     <div className="mt-8">
@@ -359,7 +317,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
             }`}
           >
             <div className="max-w-7xl mx-auto w-full">
-              {/* TITULO DE SECCION - FUERA DEL DIV INTERIOR */}
+              {/* TITULO DE SECCION */}
               <div className="text-center mb-8">
                 <h2 className="text-2xl md:text-4xl font-bold text-foreground text-center">
                   {isDoctored && n === 1 ? 'Precios sanos, planes flexibles.' :
@@ -398,7 +356,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                 </div>
               )}
 
-              {/* SECCION 2: DOCTORED - COBERTURA (con padding reducido) */}
+              {/* SECCION 2: DOCTORED - COBERTURA */}
               {isDoctored && n === 2 && (
                 <div className="rounded-lg p-3 md:p-4 mx-auto w-full flex flex-col justify-center border-2 border-gray-100">
                   <div className="relative w-full max-w-3xl mx-auto rounded-2xl overflow-hidden">
@@ -419,124 +377,191 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                 <div className="max-w-7xl mx-auto w-full">
                   <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
                     <div className="p-6 md:p-8">
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mt-6">
+                      {/* Título y subtítulo */}
+                      <h3 className="text-2xl md:text-4xl font-bold text-foreground text-center">
+                        Buscá prestadores en tu zona
+                      </h3>
+                      <p className="text-sm md:text-base text-muted-foreground text-center max-w-xl mx-auto mt-2">
+                        Cartilla de prestadores de Doctored
+                      </p>
+
+                      {/* FILTROS - 4 columnas */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+                        {/* Plan */}
                         <div>
                           <label className="block text-xs font-medium text-foreground mb-1">Plan</label>
-                          <select value={filtros.plan} onChange={(e) => setFiltros({...filtros, plan: e.target.value})} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                          <select 
+                            value={filtros.plan}
+                            onChange={(e) => setFiltros({...filtros, plan: e.target.value})}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                          >
                             <option value="">Todos los planes</option>
                             {planes.map(p => <option key={p} value={p}>Plan {p}</option>)}
                           </select>
                         </div>
+
+                        {/* Provincia */}
                         <div>
                           <label className="block text-xs font-medium text-foreground mb-1">Provincia</label>
-                          <select value={filtros.provincia} onChange={(e) => setFiltros({...filtros, provincia: e.target.value})} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                          <select 
+                            value={filtros.provincia}
+                            onChange={(e) => setFiltros({...filtros, provincia: e.target.value})}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                          >
                             <option value="">Todas</option>
                             {provincias.map(p => <option key={p} value={p}>{p}</option>)}
                           </select>
                         </div>
+
+                        {/* Especialidad */}
                         <div>
                           <label className="block text-xs font-medium text-foreground mb-1">Especialidad</label>
-                          <select value={filtros.especialidad} onChange={(e) => setFiltros({...filtros, especialidad: e.target.value})} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                          <select 
+                            value={filtros.especialidad}
+                            onChange={(e) => setFiltros({...filtros, especialidad: e.target.value})}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                          >
                             <option value="">Todas</option>
                             {especialidades.map(e => <option key={e} value={e}>{e}</option>)}
                           </select>
                         </div>
+
+                        {/* Localidad */}
                         <div>
                           <label className="block text-xs font-medium text-foreground mb-1">Localidad</label>
                           <div className="flex flex-wrap gap-1 mb-1">
                             {['Moreno', 'Morón', 'Sarandí', 'Quilmes'].map((loc) => (
-                              <button key={loc} onClick={() => setFiltros({...filtros, localidad: loc})} className={`px-2 py-0.5 text-[10px] rounded-full border transition-colors ${filtros.localidad === loc ? 'bg-blue-600 text-white border-blue-600' : 'border-blue-200 text-blue-600 hover:bg-blue-50'}`}>{loc}</button>
+                              <button 
+                                key={loc} 
+                                onClick={() => setFiltros({...filtros, localidad: loc})}
+                                className={`px-2 py-0.5 text-[10px] rounded-full border transition-colors ${
+                                  filtros.localidad === loc 
+                                    ? 'bg-blue-600 text-white border-blue-600' 
+                                    : 'border-blue-200 text-blue-600 hover:bg-blue-50'
+                                }`}
+                              >
+                                {loc}
+                              </button>
                             ))}
                           </div>
-                          <input type="text" placeholder="O escribí tu localidad..." value={filtros.localidad} onChange={(e) => setFiltros({...filtros, localidad: e.target.value})} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
-                        </div>
-                        <div className="flex flex-col items-end gap-1">
-                          <button 
-                            onClick={() => {
-                              console.log('Boton Buscar clickeado')
-                              buscarPrestadores()
-                            }}
-                            disabled={!isFormValid}
-                            className={`w-full font-medium py-2 px-4 rounded-lg transition-colors shadow-md text-sm ${
-                              isFormValid 
-                                ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer' 
-                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                            }`}
-                          >
-                            {isFormValid ? 'Buscar →' : 'Completá todos los campos'}
-                          </button>
-                          {!isFormValid && (
-                            <p className="text-xs text-muted-foreground text-center w-full">
-                              Completá todos los campos para buscar prestadores
-                            </p>
-                          )}
+                          <input 
+                            type="text" 
+                            placeholder="O escribí tu localidad..." 
+                            value={filtros.localidad}
+                            onChange={(e) => setFiltros({...filtros, localidad: e.target.value})}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" 
+                          />
                         </div>
                       </div>
-                      
+
+                      {/* Botón Buscar */}
+                      <div className="mt-4">
+                        <button
+                          onClick={buscarPrestadores}
+                          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors shadow-md text-sm"
+                        >
+                          Buscar prestadores →
+                        </button>
+                      </div>
+
+                      {/* Contador de resultados */}
                       {resultados.length > 0 && (
-                        <p className="text-sm text-muted-foreground mt-4">{resultados.length} prestadores encontrados en {filtros.provincia || 'todo el país'}</p>
-                      )}
-                      
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
-                        <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
-                          {resultados.length === 0 ? (
-                            <div className="text-sm text-muted-foreground text-center py-8">
-                              <p>Seleccioná los filtros y presioná "Buscar"</p>
-                              <p className="text-xs mt-1">Más de 40.000 prestadores en toda Argentina</p>
-                              <p className="text-xs mt-2 text-amber-600">Si no encontrás resultados, probá con CABA o Buenos Aires</p>
-                            </div>
-                          ) : (
-                            resultados.map((prestador, idx) => (
-                              <div key={idx} className="p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow cursor-pointer" onClick={() => setMapaCentro({ lat: prestador.lat, lng: prestador.lng })}>
-                                <p className="font-medium text-sm">{prestador.nombre}</p>
-                                <p className="text-xs text-muted-foreground">{prestador.especialidad}</p>
-                                <p className="text-xs text-muted-foreground">{prestador.direccion}</p>
-                                <p className="text-xs text-muted-foreground">{prestador.localidad}, {prestador.provincia}</p>
-                                <p className="text-xs text-muted-foreground">{prestador.telefono}</p>
-                                <span className="inline-block text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full mt-1">Plan {prestador.plan}</span>
-                              </div>
-                            ))
-                          )}
+                        <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                          <p className="text-sm text-blue-800 font-medium">
+                            {resultados.length} prestadores encontrados
+                            {filtros.provincia && ` en ${filtros.provincia}`}
+                          </p>
                         </div>
-                        <div className="bg-gray-100 rounded-lg h-80 lg:h-auto min-h-[350px] border-2 border-gray-200 relative overflow-hidden">
-                          {resultados.length === 0 ? (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <div className="text-center text-gray-400">
-                                <div className="text-5xl mb-2">🗺️</div>
-                                <p className="text-sm font-medium">Mapa de prestadores</p>
-                                <p className="text-xs">Los resultados aparecerán aquí</p>
+                      )}
+
+                      {/* RESULTADOS + MAPA */}
+                      {resultados.length > 0 && (
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
+                          {/* Lista de prestadores */}
+                          <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
+                            {resultados.map((prestador, idx) => (
+                              <div 
+                                key={idx} 
+                                className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow bg-white cursor-pointer"
+                                onClick={() => setMapaCentro({ lat: prestador.lat, lng: prestador.lng })}
+                              >
+                                <p className="font-bold text-base text-foreground">{prestador.nombre}</p>
+                                <p className="text-sm text-blue-600 font-medium">{prestador.especialidad}</p>
+                                <p className="text-sm text-muted-foreground mt-1">{prestador.direccion}</p>
+                                <p className="text-sm text-muted-foreground">{prestador.localidad}, {prestador.provincia}</p>
+                                <p className="text-sm text-muted-foreground">{prestador.telefono}</p>
+                                <div className="flex flex-wrap items-center gap-2 mt-2">
+                                  <span className="inline-block text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
+                                    Plan {prestador.plan}
+                                  </span>
+                                  {prestador.mapsLink && (
+                                    <a 
+                                      href={prestador.mapsLink} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer"
+                                      className="text-xs text-blue-600 hover:underline flex items-center gap-1"
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      📍 Ver en Google Maps
+                                    </a>
+                                  )}
+                                </div>
                               </div>
-                            </div>
-                          ) : (
+                            ))}
+                          </div>
+
+                          {/* Mapa */}
+                          <div className="bg-gray-100 rounded-lg h-[500px] border-2 border-gray-200 relative overflow-hidden">
                             <MapContainer
-                              center={[mapaCentro?.lat || resultados[0].lat, mapaCentro?.lng || resultados[0].lng]}
+                              center={[mapaCentro?.lat || resultados[0]?.lat || -34.6037, mapaCentro?.lng || resultados[0]?.lng || -58.3816]}
                               zoom={12}
                               className="w-full h-full"
-                              style={{ height: '100%', minHeight: '350px' }}
+                              style={{ height: '100%', minHeight: '500px' }}
                             >
                               <TileLayer
                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                               />
                               {resultados.map((prestador) => (
-                                <Marker
-                                  key={prestador.id}
-                                  position={[prestador.lat, prestador.lng]}
-                                >
-                                  <Popup>
-                                    <div className="text-sm">
-                                      <p className="font-bold">{prestador.nombre}</p>
-                                      <p>{prestador.especialidad}</p>
-                                      <p className="text-xs">{prestador.direccion}</p>
-                                      <p className="text-xs">{prestador.localidad}, {prestador.provincia}</p>
-                                    </div>
-                                  </Popup>
-                                </Marker>
+                                prestador.lat && prestador.lng && (
+                                  <Marker
+                                    key={prestador.id}
+                                    position={[prestador.lat, prestador.lng]}
+                                  >
+                                    <Popup>
+                                      <div className="text-sm max-w-xs">
+                                        <p className="font-bold text-base">{prestador.nombre}</p>
+                                        <p className="text-blue-600">{prestador.especialidad}</p>
+                                        <p className="text-xs mt-1">{prestador.direccion}</p>
+                                        <p className="text-xs">{prestador.localidad}, {prestador.provincia}</p>
+                                        <p className="text-xs">{prestador.telefono}</p>
+                                        {prestador.mapsLink && (
+                                          <a 
+                                            href={prestador.mapsLink} 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            className="text-xs text-blue-600 hover:underline flex items-center gap-1 mt-1"
+                                          >
+                                            📍 Ver en Google Maps
+                                          </a>
+                                        )}
+                                      </div>
+                                    </Popup>
+                                  </Marker>
+                                )
                               ))}
                             </MapContainer>
-                          )}
+                          </div>
                         </div>
-                      </div>
+                      )}
+
+                      {/* Mensaje inicial */}
+                      {resultados.length === 0 && (
+                        <div className="text-sm text-muted-foreground text-center py-8 mt-4">
+                          <p>Seleccioná los filtros y presioná "Buscar prestadores"</p>
+                          <p className="text-xs mt-1">Más de 40.000 prestadores en toda Argentina</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
