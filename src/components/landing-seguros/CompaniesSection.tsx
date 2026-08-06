@@ -261,8 +261,145 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                 </div>
               )}
 
-              {/* SECCION 3 Y RESTO: Placeholder */}
-              {(n === 3 || !isDoctored) && (
+              {/* SECCION 3: DOCTORED - BUSCADOR DE PRESTADORES */}
+              {isDoctored && n === 3 && (
+                <div className="max-w-7xl mx-auto w-full">
+                  <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+                    <div className="p-6 md:p-8">
+                      <h3 className="text-xl md:text-2xl font-bold text-foreground text-center mb-2">
+                        Buscá tu prestador
+                      </h3>
+                      <p className="text-sm text-muted-foreground text-center mb-6">
+                        Encontrá profesionales y centros médicos cerca de vos
+                      </p>
+                      
+                      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-6">
+                        {/* Plan */}
+                        <div>
+                          <label className="block text-xs font-medium text-foreground mb-1">Plan</label>
+                          <select className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option value="">Todos los planes</option>
+                            <option value="500">Plan 500</option>
+                            <option value="1000">Plan 1000</option>
+                            <option value="2000">Plan 2000</option>
+                            <option value="3000">Plan 3000</option>
+                          </select>
+                        </div>
+                        
+                        {/* Provincia */}
+                        <div>
+                          <label className="block text-xs font-medium text-foreground mb-1">Provincia</label>
+                          <select className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option value="">Todas</option>
+                            <option value="Buenos Aires">Buenos Aires</option>
+                            <option value="CABA">CABA</option>
+                            <option value="Catamarca">Catamarca</option>
+                            <option value="Chaco">Chaco</option>
+                            <option value="Chubut">Chubut</option>
+                            <option value="Córdoba">Córdoba</option>
+                            <option value="Corrientes">Corrientes</option>
+                            <option value="Entre Ríos">Entre Ríos</option>
+                            <option value="Formosa">Formosa</option>
+                            <option value="Jujuy">Jujuy</option>
+                            <option value="La Pampa">La Pampa</option>
+                            <option value="La Rioja">La Rioja</option>
+                            <option value="Mendoza">Mendoza</option>
+                            <option value="Misiones">Misiones</option>
+                            <option value="Neuquén">Neuquén</option>
+                            <option value="Río Negro">Río Negro</option>
+                            <option value="Salta">Salta</option>
+                            <option value="San Juan">San Juan</option>
+                            <option value="San Luis">San Luis</option>
+                            <option value="Santa Cruz">Santa Cruz</option>
+                            <option value="Santa Fe">Santa Fe</option>
+                            <option value="Santiago del Estero">Santiago del Estero</option>
+                            <option value="Tierra del Fuego">Tierra del Fuego</option>
+                            <option value="Tucumán">Tucumán</option>
+                          </select>
+                        </div>
+                        
+                        {/* Especialidad */}
+                        <div>
+                          <label className="block text-xs font-medium text-foreground mb-1">Especialidad</label>
+                          <select className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option value="">Todas</option>
+                            <option value="Alergia e Inmunología">Alergia e Inmunología</option>
+                            <option value="Cardiología">Cardiología</option>
+                            <option value="Clínica Médica">Clínica Médica</option>
+                            <option value="Dermatología">Dermatología</option>
+                            <option value="Endocrinología">Endocrinología</option>
+                            <option value="Gastroenterología">Gastroenterología</option>
+                            <option value="Ginecología">Ginecología</option>
+                            <option value="Kinesiología">Kinesiología</option>
+                            <option value="Neurología">Neurología</option>
+                            <option value="Nutrición">Nutrición</option>
+                            <option value="Oftalmología">Oftalmología</option>
+                            <option value="Odontología">Odontología</option>
+                            <option value="Oncología">Oncología</option>
+                            <option value="Pediatría">Pediatría</option>
+                            <option value="Psicología">Psicología</option>
+                            <option value="Psiquiatría">Psiquiatría</option>
+                            <option value="Reumatología">Reumatología</option>
+                            <option value="Traumatología">Traumatología</option>
+                            <option value="Urología">Urología</option>
+                          </select>
+                        </div>
+                        
+                        {/* Localidad */}
+                        <div>
+                          <label className="block text-xs font-medium text-foreground mb-1">Localidad</label>
+                          <div className="flex flex-wrap gap-1 mb-1">
+                            {['Moreno', 'Morón', 'Sarandí', 'Quilmes'].map((loc) => (
+                              <button
+                                key={loc}
+                                className="px-2 py-0.5 text-[10px] rounded-full border border-blue-200 text-blue-600 hover:bg-blue-50 transition-colors"
+                              >
+                                {loc}
+                              </button>
+                            ))}
+                          </div>
+                          <input
+                            type="text"
+                            placeholder="O escribí tu localidad..."
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          />
+                        </div>
+                        
+                        {/* Buscar */}
+                        <div className="flex items-end">
+                          <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors shadow-md text-sm">
+                            Buscar →
+                          </button>
+                        </div>
+                      </div>
+                      
+                      {/* RESULTADOS Y MAPA */}
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {/* Lista de resultados */}
+                        <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
+                          <div className="text-sm text-muted-foreground text-center py-8">
+                            <p>Seleccioná los filtros y presioná "Buscar"</p>
+                            <p className="text-xs mt-1">Más de 40.000 prestadores en toda Argentina</p>
+                          </div>
+                        </div>
+                        
+                        {/* Mapa */}
+                        <div className="bg-gray-100 rounded-lg h-80 lg:h-auto min-h-[300px] flex items-center justify-center border-2 border-gray-200 relative overflow-hidden">
+                          <div className="text-center text-gray-400">
+                            <div className="text-5xl mb-2">🗺️</div>
+                            <p className="text-sm font-medium">Mapa de prestadores</p>
+                            <p className="text-xs">Los resultados aparecerán aquí</p>
+                            <p className="text-xs text-gray-300 mt-2">Powered by OpenStreetMap</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* SECCIONES DE PREMEDIC: Placeholder */}
+              {!isDoctored && (
                 <div className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center bg-white/80 border-2 border-gray-200">
                   <p className="text-center text-muted-foreground">Contenido de la sección {n} de {nombre}</p>
                 </div>
