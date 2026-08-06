@@ -196,66 +196,48 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
     '3000': '/images/seguros/cobertura/imagen4-plan3000.png',
   }
 
-  // ========== MAPA DE PROVINCIAS ==========
-  const [provinciaSeleccionada, setProvinciaSeleccionada] = useState('CABA')
-  const [mapaCentro, setMapaCentro] = useState({ lat: -34.6037, lng: -58.3816, zoom: 5 })
+  // ========== BUSCADOR DE PRESTADORES ==========
+  const [filtros, setFiltros] = useState({ plan: '', provincia: '', especialidad: '', localidad: '' })
+  const [resultados, setResultados] = useState<any[]>([])
+  const [totalPrestadores, setTotalPrestadores] = useState(0)
+  const [cargando, setCargando] = useState(false)
+  const [provinciasLista, setProvinciasLista] = useState<string[]>([])
+  const [especialidadesLista, setEspecialidadesLista] = useState<string[]>([])
+  const [mapaCentro, setMapaCentro] = useState<{ lat: number; lng: number } | null>(null)
 
-  const provinciasData = [
-    {
-      nombre: 'CABA',
-      lat: -34.6037,
-      lng: -58.3816,
-      clinicas: ['CEMIC', 'Sanatorio de la Trinidad', 'Sanatorio Finochietto', 'Sanatorio Favaloro', 'Clínica Anchorena', 'Sanatorio Otamendi', 'Mater Dei', 'Fundación Hospitalaria', 'Clínica del Sol', 'Santa Isabel', 'Clínica Basterrica', 'Stamboulian']
-    },
-    {
-      nombre: 'Buenos Aires',
-      lat: -34.9200,
-      lng: -58.2700,
-      clinicas: ['Clínica del Niño de Quilmes', 'Sanatorio Berazategui', 'Clínica Calchaquí', 'Clínica Boedo (Lomas)', 'Clínica Modelo (Lanús)', 'Clínica Espora (Adrogué)', 'Centro Médico Moreno', 'Clínica Morón', 'Cemepro Quilmes', 'GH Salud Berazategui']
-    },
-    {
-      nombre: 'Mendoza',
-      lat: -32.8900,
-      lng: -68.8400,
-      clinicas: ['Hospital Italiano Mendoza', 'Clínica Santa Clara (Godoy Cruz)']
-    },
-    {
-      nombre: 'Córdoba',
-      lat: -31.4200,
-      lng: -64.1888,
-      clinicas: ['Sanatorio Allende Córdoba']
-    },
-    {
-      nombre: 'Santa Fe',
-      lat: -32.9500,
-      lng: -60.6400,
-      clinicas: ['Clínica Universitaria Rosario']
-    },
-    {
-      nombre: 'San Luis',
-      lat: -33.2950,
-      lng: -66.3350,
-      clinicas: ['Federación Médica de San Luis']
-    },
-    {
-      nombre: 'Salta',
-      lat: -24.7800,
-      lng: -65.4200,
-      clinicas: ['Sanatorio Eléctrico Salta']
-    },
-    {
-      nombre: 'Tucumán',
-      lat: -26.8083,
-      lng: -65.2200,
-      clinicas: ['Clínica San Javier']
-    },
-    {
-      nombre: 'Formosa',
-      lat: -26.1849,
-      lng: -58.1731,
-      clinicas: ['Centro Médico DoctoRed']
+  // Cargar metadatos al montar
+  useEffect(() => {
+    fetch('/api/prestadores?meta=true')
+      .then(r => r.json())
+      .then(data => {
+        setProvinciasLista(data.provincias || [])
+        setEspecialidadesLista(data.especialidades || [])
+        setTotalPrestadores(data.total || 0)
+      })
+      .catch(e => console.error('Error cargando metadatos:', e))
+  }, [])
+
+  const isFormValid = filtros.provincia !== '' && filtros.especialidad !== '' && filtros.localidad !== ''
+
+  const buscarPrestadores = async () => {
+    setCargando(true)
+    const params = new URLSearchParams()
+    if (filtros.provincia) params.set('provincia', filtros.provincia)
+    if (filtros.especialidad) params.set('especialidad', filtros.especialidad)
+    if (filtros.localidad) params.set('localidad', filtros.localidad)
+    params.set('limit', '100')
+    try {
+      const res = await fetch(`/api/prestadores?${params}`)
+      const data = await res.json()
+      setResultados(data.resultados || [])
+      if (data.resultados && data.resultados.length > 0) {
+        setMapaCentro({ lat: data.resultados[0].lat, lng: data.resultados[0].lng })
+      }
+    } catch (e) {
+      console.error('Error buscando:', e)
     }
-  ]
+    setCargando(false)
+  }
 
   return (
     <div className="mt-8">
@@ -330,96 +312,84 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                 </div>
               )}
 
-              {/* SECCION 3 - MAPA INTERACTIVO DE PROVINCIAS */}
+              {/* SECCION 3 - BUSCADOR DE PRESTADORES CON API */}
               {isDoctored && n === 3 && (
                 <div className="max-w-7xl mx-auto w-full">
                   <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
                     <div className="p-6 md:p-8">
-                      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        {/* LISTA DE PROVINCIAS - IZQUIERDA */}
-                        <div className="space-y-2 max-h-[500px] overflow-y-auto pr-2">
-                          {provinciasData.map((prov) => (
-                            <button
-                              key={prov.nombre}
-                              onClick={() => {
-                                setProvinciaSeleccionada(prov.nombre)
-                                setMapaCentro({ lat: prov.lat, lng: prov.lng, zoom: 8 })
-                              }}
-                              className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex justify-between items-center ${
-                                provinciaSeleccionada === prov.nombre
-                                  ? 'bg-blue-600 text-white shadow-md'
-                                  : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
-                              }`}
-                            >
-                              <span className="font-medium">{prov.nombre}</span>
-                              <span className={`text-xs ${provinciaSeleccionada === prov.nombre ? 'text-white/80' : 'text-gray-400'}`}>
-                                {prov.clinicas.length} clínicas
-                              </span>
-                            </button>
-                          ))}
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+                        <div>
+                          <label className="block text-xs font-medium text-foreground mb-1">Provincia</label>
+                          <select value={filtros.provincia} onChange={(e) => setFiltros({...filtros, provincia: e.target.value})} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="">Todas</option>
+                            {provinciasLista.map(p => <option key={p} value={p}>{p}</option>)}
+                          </select>
                         </div>
-
-                        {/* MAPA + CLÍNICAS - DERECHA */}
-                        <div className="lg:col-span-2">
-                          {/* Mapa */}
-                          <div className="bg-gray-100 rounded-lg h-[400px] border-2 border-gray-200 relative overflow-hidden">
-                            <MapContainer
-                              center={[mapaCentro.lat, mapaCentro.lng]}
-                              zoom={mapaCentro.zoom || 5}
-                              className="w-full h-full"
-                              style={{ height: '100%', minHeight: '400px' }}
-                            >
-                              <TileLayer
-                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                              />
-                              {provinciasData.map((prov) => (
-                                prov.lat && prov.lng && (
-                                  <Marker
-                                    key={prov.nombre}
-                                    position={[prov.lat, prov.lng]}
-                                    eventHandlers={{
-                                      click: () => {
-                                        setProvinciaSeleccionada(prov.nombre)
-                                        setMapaCentro({ lat: prov.lat, lng: prov.lng, zoom: 8 })
-                                      }
-                                    }}
-                                  >
-                                    <Popup>
-                                      <div className="text-sm max-w-xs">
-                                        <p className="font-bold text-base">{prov.nombre}</p>
-                                        <p className="text-xs text-muted-foreground">{prov.clinicas.length} clínicas disponibles</p>
-                                        <div className="mt-2 space-y-1">
-                                          {prov.clinicas.slice(0, 3).map((clinica, idx) => (
-                                            <p key={idx} className="text-xs">{clinica}</p>
-                                          ))}
-                                          {prov.clinicas.length > 3 && (
-                                            <p className="text-xs text-blue-600">+ {prov.clinicas.length - 3} más</p>
-                                          )}
-                                        </div>
-                                      </div>
-                                    </Popup>
-                                  </Marker>
-                                )
-                              ))}
-                            </MapContainer>
-                          </div>
-
-                          {/* CLÍNICAS DE LA PROVINCIA SELECCIONADA */}
-                          {provinciaSeleccionada && (
-                            <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-                              <h4 className="font-bold text-foreground">{provinciaSeleccionada}</h4>
-                              <p className="text-sm text-muted-foreground">Clínicas y centros médicos:</p>
-                              <div className="flex flex-wrap gap-2 mt-2">
-                                {provinciasData
-                                  .find(p => p.nombre === provinciaSeleccionada)
-                                  ?.clinicas.map((clinica, idx) => (
-                                    <span key={idx} className="text-xs bg-white px-3 py-1 rounded-full border border-gray-200 shadow-sm">
-                                      {clinica}
-                                    </span>
-                                  ))}
+                        <div>
+                          <label className="block text-xs font-medium text-foreground mb-1">Especialidad</label>
+                          <select value={filtros.especialidad} onChange={(e) => setFiltros({...filtros, especialidad: e.target.value})} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="">Todas</option>
+                            {especialidadesLista.map(e => <option key={e} value={e}>{e}</option>)}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-foreground mb-1">Localidad</label>
+                          <input type="text" placeholder="Escribí tu localidad..." value={filtros.localidad} onChange={(e) => setFiltros({...filtros, localidad: e.target.value})} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                        </div>
+                        <div className="flex items-end">
+                          <button onClick={buscarPrestadores} disabled={!isFormValid || cargando} className={`w-full font-medium py-2 px-4 rounded-lg transition-colors shadow-md text-sm ${isFormValid && !cargando ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}>
+                            {cargando ? 'Buscando...' : isFormValid ? 'Buscar →' : 'Completá los campos'}
+                          </button>
+                        </div>
+                      </div>
+                      
+                      <p className="text-xs text-muted-foreground mt-3">{totalPrestadores.toLocaleString()} prestadores en toda Argentina</p>
+                      
+                      {resultados.length > 0 && (
+                        <p className="text-sm text-muted-foreground mt-2">{resultados.length} prestadores encontrados</p>
+                      )}
+                      
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
+                        <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
+                          {resultados.length === 0 ? (
+                            <div className="text-sm text-muted-foreground text-center py-8">
+                              <p>Seleccioná los filtros y presioná "Buscar"</p>
+                            </div>
+                          ) : (
+                            resultados.map((prestador, idx) => (
+                              <div key={idx} className="p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow cursor-pointer" onClick={() => setMapaCentro({ lat: prestador.lat, lng: prestador.lng })}>
+                                <p className="font-medium text-sm">{prestador.nombre}</p>
+                                <p className="text-xs text-muted-foreground">{prestador.especialidad}</p>
+                                <p className="text-xs text-muted-foreground">{prestador.direccion}</p>
+                                <p className="text-xs text-muted-foreground">{prestador.localidad}, {prestador.provincia}</p>
+                                <p className="text-xs text-muted-foreground">{prestador.telefono}</p>
+                              </div>
+                            ))
+                          )}
+                        </div>
+                        <div className="bg-gray-100 rounded-lg h-80 lg:h-auto min-h-[350px] border-2 border-gray-200 relative overflow-hidden">
+                          {resultados.length === 0 ? (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <div className="text-center text-gray-400">
+                                <div className="text-5xl mb-2">🗺️</div>
+                                <p className="text-sm font-medium">Mapa de prestadores</p>
+                                <p className="text-xs">Los resultados aparecerán aquí</p>
                               </div>
                             </div>
+                          ) : (
+                            <MapContainer center={[mapaCentro?.lat || resultados[0].lat, mapaCentro?.lng || resultados[0].lng]} zoom={12} className="w-full h-full" style={{ height: '100%', minHeight: '350px' }}>
+                              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; OpenStreetMap' />
+                              {resultados.map((prestador) => (
+                                <Marker key={prestador.id} position={[prestador.lat, prestador.lng]}>
+                                  <Popup>
+                                    <p className="font-bold">{prestador.nombre}</p>
+                                    <p>{prestador.especialidad}</p>
+                                    <p className="text-xs">{prestador.direccion}</p>
+                                    <p className="text-xs">{prestador.localidad}</p>
+                                  </Popup>
+                                </Marker>
+                              ))}
+                            </MapContainer>
                           )}
                         </div>
                       </div>
