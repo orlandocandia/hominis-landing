@@ -385,7 +385,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                           <select 
                             value={filtros.plan}
                             onChange={(e) => setFiltros({...filtros, plan: e.target.value})}
-                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                           >
                             <option value="">Todos los planes</option>
                             {planes.map(p => <option key={p} value={p}>Plan {p}</option>)}
@@ -398,7 +398,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                           <select 
                             value={filtros.provincia}
                             onChange={(e) => setFiltros({...filtros, provincia: e.target.value})}
-                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                           >
                             <option value="">Todas</option>
                             {provincias.map(p => <option key={p} value={p}>{p}</option>)}
@@ -411,7 +411,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                           <select 
                             value={filtros.especialidad}
                             onChange={(e) => setFiltros({...filtros, especialidad: e.target.value})}
-                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                           >
                             <option value="">Todas</option>
                             {especialidades.map(e => <option key={e} value={e}>{e}</option>)}
@@ -441,46 +441,14 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                             placeholder="Escribí tu localidad..." 
                             value={filtros.localidad}
                             onChange={(e) => setFiltros({...filtros, localidad: e.target.value})}
-                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg" 
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" 
                           />
                         </div>
                       </div>
 
-                      {/* Botón Buscar */}
+                      {/* Botón Buscar - AHORA LLAMA A buscarPrestadores() */}
                       <button
-                        onClick={() => {
-                          console.log('🔍 Buscando...')
-                          let resultadosFiltrados = prestadoresMock
-                          
-                          if (filtros.plan) {
-                            resultadosFiltrados = resultadosFiltrados.filter(p => p.plan === filtros.plan)
-                          }
-                          if (filtros.provincia) {
-                            resultadosFiltrados = resultadosFiltrados.filter(p => 
-                              p.provincia.toLowerCase().includes(filtros.provincia.toLowerCase())
-                            )
-                          }
-                          if (filtros.especialidad) {
-                            resultadosFiltrados = resultadosFiltrados.filter(p => 
-                              p.especialidad.toLowerCase().includes(filtros.especialidad.toLowerCase())
-                            )
-                          }
-                          if (filtros.localidad) {
-                            resultadosFiltrados = resultadosFiltrados.filter(p => 
-                              p.localidad.toLowerCase().includes(filtros.localidad.toLowerCase())
-                            )
-                          }
-                          
-                          console.log('✅ Resultados:', resultadosFiltrados.length)
-                          setResultados(resultadosFiltrados)
-                          
-                          if (resultadosFiltrados.length > 0 && resultadosFiltrados[0].lat) {
-                            setMapaCentro({
-                              lat: resultadosFiltrados[0].lat,
-                              lng: resultadosFiltrados[0].lng
-                            })
-                          }
-                        }}
+                        onClick={buscarPrestadores}
                         className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors shadow-md text-sm"
                       >
                         Buscar prestadores →
@@ -505,15 +473,32 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                             {/* Lista de prestadores */}
                             <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
                               {resultados.map((prestador, idx) => (
-                                <div key={idx} className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow bg-white cursor-pointer">
+                                <div 
+                                  key={idx} 
+                                  className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow bg-white cursor-pointer"
+                                  onClick={() => setMapaCentro({ lat: prestador.lat, lng: prestador.lng })}
+                                >
                                   <p className="font-bold text-base text-foreground">{prestador.nombre}</p>
                                   <p className="text-sm text-blue-600 font-medium">{prestador.especialidad}</p>
                                   <p className="text-sm text-muted-foreground mt-1">{prestador.direccion}</p>
                                   <p className="text-sm text-muted-foreground">{prestador.localidad}, {prestador.provincia}</p>
                                   <p className="text-sm text-muted-foreground">{prestador.telefono}</p>
-                                  <span className="inline-block text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full mt-2">
-                                    Plan {prestador.plan}
-                                  </span>
+                                  <div className="flex flex-wrap items-center gap-2 mt-2">
+                                    <span className="inline-block text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
+                                      Plan {prestador.plan}
+                                    </span>
+                                    {prestador.mapsLink && (
+                                      <a 
+                                        href={prestador.mapsLink} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="text-xs text-blue-600 hover:underline flex items-center gap-1"
+                                        onClick={(e) => e.stopPropagation()}
+                                      >
+                                        📍 Ver en Google Maps
+                                      </a>
+                                    )}
+                                  </div>
                                 </div>
                               ))}
                             </div>
@@ -538,10 +523,21 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                                     >
                                       <Popup>
                                         <div className="text-sm max-w-xs">
-                                          <p className="font-bold">{prestador.nombre}</p>
+                                          <p className="font-bold text-base">{prestador.nombre}</p>
                                           <p className="text-blue-600">{prestador.especialidad}</p>
                                           <p className="text-xs mt-1">{prestador.direccion}</p>
                                           <p className="text-xs">{prestador.localidad}, {prestador.provincia}</p>
+                                          <p className="text-xs">{prestador.telefono}</p>
+                                          {prestador.mapsLink && (
+                                            <a 
+                                              href={prestador.mapsLink} 
+                                              target="_blank" 
+                                              rel="noopener noreferrer"
+                                              className="text-xs text-blue-600 hover:underline flex items-center gap-1 mt-1"
+                                            >
+                                              📍 Ver en Google Maps
+                                            </a>
+                                          )}
                                         </div>
                                       </Popup>
                                     </Marker>
