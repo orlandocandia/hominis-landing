@@ -369,12 +369,16 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                             </div>
                           ) : (
                             resultados.map((prestador, idx) => (
-                              <div key={idx} className="p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow cursor-pointer" onClick={() => setMapaCentro({ lat: prestador.lat, lng: prestador.lng })}>
-                                <p className="font-medium text-sm">{prestador.nombre}</p>
-                                <p className="text-xs text-muted-foreground">{prestador.especialidad}</p>
-                                <p className="text-xs text-muted-foreground">{prestador.direccion}</p>
-                                <p className="text-xs text-muted-foreground">{prestador.localidad}, {prestador.provincia}</p>
-                                <p className="text-xs text-muted-foreground">{prestador.telefono}</p>
+                              <div key={idx} className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow cursor-pointer" onClick={() => setMapaCentro({ lat: prestador.lat, lng: prestador.lng })}>
+                                <p className="font-bold text-foreground">{prestador.nombre}</p>
+                                <p className="text-sm text-blue-600 font-medium">{prestador.especialidad}</p>
+                                <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+                                  <span>{prestador.nombre.includes('CENTRO') || prestador.nombre.includes('CLINICA') || prestador.nombre.includes('SANATORIO') || prestador.nombre.includes('HOSPITAL') || prestador.nombre.includes('INSTITUTO') ? '🏥' : '👩‍⚕️'}</span>
+                                  {prestador.nombre.includes('CENTRO') || prestador.nombre.includes('CLINICA') || prestador.nombre.includes('SANATORIO') || prestador.nombre.includes('HOSPITAL') || prestador.nombre.includes('INSTITUTO') ? 'Centro médico' : 'Profesional independiente'}
+                                </p>
+                                <p className="text-sm text-muted-foreground mt-1">{prestador.direccion}</p>
+                                <p className="text-sm text-muted-foreground">{prestador.localidad}, {prestador.provincia}</p>
+                                <p className="text-sm text-muted-foreground">{prestador.telefono}</p>
                               </div>
                             ))
                           )}
