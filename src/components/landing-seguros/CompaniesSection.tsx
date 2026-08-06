@@ -161,29 +161,11 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
   const nombre = empresa === 'doctored' ? 'DoctoRed' : 'Grupo Premedic'
   const isDoctored = empresa === 'doctored'
   
-  // 👇 ESTADO PARA CONTROLAR LA VISIBILIDAD DE LA SECCIÓN 2
   const [mostrarSeccion2, setMostrarSeccion2] = useState(false)
-  const [planCoberturaActiva, setPlanCoberturaActiva] = useState<string | null>(null)
+  const [planSeleccionado, setPlanSeleccionado] = useState<string | null>(null)
 
-  // Mapa de plan numero a imagen de cobertura
-  const coberturImages: Record<string, string> = {
-    '500': '/images/seguros/cobertura/imagen1-plan500.png',
-    '1000': '/images/seguros/cobertura/imagen2-plan1000.png',
-    '2000': '/images/seguros/cobertura/imagen3-plan2000.png',
-    '3000': '/images/seguros/cobertura/imagen4-plan3000.png',
-  }
-
-  // Mapa de plan numero a PDF de alcance de cobertura
-  const alcancePdfs: Record<string, string> = {
-    '500': '/pdfs/alcance-plan500.pdf',
-    '1000': '/pdfs/alcance-plan1000.pdf',
-    '2000': '/pdfs/alcance-plan2000.pdf',
-    '3000': '/pdfs/alcance-plan3000.pdf',
-  }
-
-  // Función para mostrar la Sección 2 y hacer scroll
   const handleVerCobertura = (planNumero: string) => {
-    setPlanCoberturaActiva(planNumero)
+    setPlanSeleccionado(planNumero)
     setMostrarSeccion2(true)
     setTimeout(() => {
       const seccion2 = document.getElementById('seccion2-cobertura')
@@ -193,164 +175,105 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
     }, 200)
   }
 
+  const handleVerAlcance = () => {
+    if (planSeleccionado) {
+      window.open(`/pdfs/alcance-plan${planSeleccionado}.pdf`, '_blank')
+    }
+  }
+
+  const coberturaImages: Record<string, string> = {
+    '500': '/images/seguros/cobertura/imagen1-plan500.png',
+    '1000': '/images/seguros/cobertura/imagen2-plan1000.png',
+    '2000': '/images/seguros/cobertura/imagen3-plan2000.png',
+    '3000': '/images/seguros/cobertura/imagen4-plan3000.png',
+  }
+
   return (
     <div className="mt-8">
       {[1, 2, 3].map((n) => {
-        // 👇 SECCIÓN 2: solo se muestra si mostrarSeccion2 es true
         if (n === 2 && !mostrarSeccion2) {
           return null
         }
-
-        // Color de fondo segun la seccion: 1=gris suave, 2=blanco, 3=gris azulado
-        const sectionBgColors: Record<number, string> = { 1: '#F5F7FA', 2: '#FFFFFF', 3: '#EDF2F7' }
 
         return (
           <div 
             key={n} 
             id={n === 2 ? 'seccion2-cobertura' : undefined}
-            className="min-h-screen flex flex-col justify-center items-center py-12 px-4"
-            style={{ backgroundColor: sectionBgColors[n] || '#FFFFFF' }}
+            className={`min-h-screen flex flex-col justify-center items-center py-12 px-4 ${
+              n === 1 ? 'bg-[#F5F7FA]' : 
+              n === 2 ? 'bg-white' : 
+              'bg-[#EDF2F7]'
+            }`}
           >
-            {/* Sección 1 de DoctoRed: planes con título y carteles */}
-            {isDoctored && n === 1 ? (
-              <>
-              {/* Título de sección - FUERA del div */}
+            <div className="max-w-7xl mx-auto w-full">
+              {/* TITULO DE SECCION - FUERA DEL DIV INTERIOR */}
               <div className="text-center mb-8">
                 <h2 className="text-2xl md:text-4xl font-bold text-foreground text-center">
-                  Precios sanos, planes flexibles.
+                  {isDoctored && n === 1 ? 'Precios sanos, planes flexibles.' :
+                   isDoctored && n === 2 ? 'Cobertura' :
+                   isDoctored && n === 3 ? 'Alcance de cobertura' :
+                   !isDoctored && n === 1 ? 'Planes Grupo Premedic' :
+                   !isDoctored && n === 2 ? 'Cobertura' :
+                   'Alcance de cobertura'}
                 </h2>
                 <p className="mt-2 text-sm md:text-base text-muted-foreground text-center max-w-xl mx-auto">
-                  Elegí el tuyo.
+                  {isDoctored && n === 1 ? 'Elegí el tuyo.' :
+                   isDoctored && n === 2 ? (planSeleccionado ? `Plan ${planSeleccionado}` : 'Seleccioná un plan') :
+                   isDoctored && n === 3 ? 'Conocé el alcance de tu plan' :
+                   !isDoctored && n === 1 ? 'Seleccioná el plan que mejor se adapte a vos' :
+                   !isDoctored && n === 2 ? (planSeleccionado ? `Plan ${planSeleccionado}` : 'Seleccioná un plan') :
+                   'Conocé el alcance de tu plan'}
                 </p>
               </div>
-              <div
-                className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center bg-blue-50 dark:bg-blue-950/20 border-2 border-blue-200 dark:border-blue-900/40 min-h-[600px] md:min-h-[700px] max-w-7xl"
-              >
-                {/* Grid de 4 planes */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 w-full">
-                  {doctoredPlanes.map((plan) => (
-                    <div
-                      key={plan.numero}
-                      className="rounded-lg p-6 md:p-8 text-center shadow-md flex flex-col items-center"
-                      style={{ backgroundColor: 'rgba(255, 255, 255, 0.4)', backdropFilter: 'blur(4px)', minHeight: '200px' }}
-                    >
-                      {/* Imagen del plan */}
-                      <div className="w-full h-28 md:h-36 lg:h-40 relative mb-2">
-                        <Image
-                          src={`/images/seguros/${plan.imagen}`}
-                          alt={`Plan ${plan.numero}`}
-                          fill
-                          className="object-cover rounded-t-lg"
-                          sizes="(max-width: 768px) 100vw, 25vw"
-                          quality={85}
-                        />
+
+              {/* SECCION 1: DOCTORED - PLANES */}
+              {isDoctored && n === 1 && (
+                <div className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center bg-blue-50 dark:bg-blue-950/20 border-2 border-blue-200 dark:border-blue-900/40">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 w-full">
+                    {doctoredPlanes.map((plan) => (
+                      <div key={plan.numero} className="rounded-lg p-6 md:p-8 text-center shadow-md flex flex-col items-center" style={{ backgroundColor: 'rgba(255, 255, 255, 0.4)', backdropFilter: 'blur(4px)', minHeight: '200px' }}>
+                        <div className="w-full h-28 md:h-36 lg:h-40 relative mb-2">
+                          <Image src={`/images/seguros/${plan.imagen}`} alt={`Plan ${plan.numero}`} fill className="object-cover rounded-t-lg" sizes="(max-width: 768px) 100vw, 25vw" quality={85} />
+                        </div>
+                        <p className="font-medium text-xl md:text-2xl" style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 500 }}>Plan {plan.numero}</p>
+                        <p className="text-sm md:text-base font-medium" style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 600 }}>{plan.subtitulo}</p>
+                        <p className="text-xs md:text-sm mt-2 flex-1 hidden md:block" style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 400 }}>{plan.descripcion}</p>
+                        <button onClick={() => handleVerCobertura(plan.numero)} className="mt-4 px-6 py-3 rounded-lg text-white font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg w-full text-sm md:text-base" style={{ backgroundColor: '#3A1E72', fontFamily: "'Poppins', sans-serif" }}>Ver cobertura →</button>
                       </div>
-                      <p
-                        className="font-medium text-xl md:text-2xl"
-                        style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 500 }}
-                      >
-                        Plan {plan.numero}
-                      </p>
-                      <p
-                        className="text-sm md:text-base font-medium"
-                        style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 600 }}
-                      >
-                        {plan.subtitulo}
-                      </p>
-                      <p
-                        className="text-xs md:text-sm mt-2 flex-1 hidden md:block"
-                        style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 400 }}
-                      >
-                        {plan.descripcion}
-                      </p>
-                      {/* 👇 BOTÓN "Ver cobertura" que muestra la Sección 2 con la imagen del plan */}
-                      <button
-                        onClick={() => handleVerCobertura(plan.numero)}
-                        className="mt-4 px-6 py-3 rounded-lg text-white font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg w-full text-sm md:text-base"
-                        style={{ backgroundColor: '#3A1E72', fontFamily: "'Poppins', sans-serif'" }}
-                      >
-                        Ver cobertura →
-                      </button>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-              </>
-            ) : isDoctored && n === 2 ? (
-              /* 👇 SECCIÓN 2 DE DOCTORED - COBERTURA (IMAGEN SEGÚN PLAN SELECCIONADO) */
-              <>
-              {/* Título de sección - FUERA del div */}
-              <div className="text-center mb-8">
-                <h2 className="text-2xl md:text-4xl font-bold text-foreground text-center">
-                  Cobertura{planCoberturaActiva ? ` - Plan ${planCoberturaActiva}` : ''}
-                </h2>
-                <p className="mt-2 text-sm md:text-base text-muted-foreground text-center max-w-xl mx-auto">
-                  Detalle de la cobertura del plan seleccionado
-                </p>
-              </div>
-              <div className="max-w-7xl mx-auto w-full">
-                <div className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center bg-blue-50 dark:bg-blue-950/20 border-2 border-blue-200 dark:border-blue-900/40 min-h-[400px] md:min-h-[500px]">
-                  
-                  {/* Imagen de cobertura según el plan seleccionado */}
-                  {planCoberturaActiva && coberturImages[planCoberturaActiva] ? (
-                    <>
-                    <div className="relative w-full h-64 md:h-96 lg:h-[600px] rounded-2xl overflow-hidden">
-                      <Image
-                        src={coberturImages[planCoberturaActiva]}
-                        alt={`Cobertura Plan ${planCoberturaActiva}`}
-                        fill
-                        className="object-contain"
-                        sizes="(max-width: 768px) 100vw, 1200px"
-                        quality={85}
-                        priority
-                      />
-                    </div>
-                    {/* Boton Ver alcance de cobertura */}
-                    {alcancePdfs[planCoberturaActiva] && (
-                      <div className="text-center mt-4">
-                        <a
-                          href={alcancePdfs[planCoberturaActiva]}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-white font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg text-sm md:text-base"
-                          style={{ backgroundColor: '#3A1E72', fontFamily: "'Poppins', sans-serif'" }}
-                        >
-                          Ver alcance de cobertura
-                          <ArrowRight className="w-4 h-4" />
-                        </a>
+              )}
+
+              {/* SECCION 2: DOCTORED - COBERTURA (con padding reducido) */}
+              {isDoctored && n === 2 && (
+                <div className="rounded-lg p-3 md:p-4 mx-auto w-full flex flex-col justify-center border-2 border-gray-100">
+                  <div className="relative w-full rounded-2xl overflow-hidden">
+                    {planSeleccionado && coberturaImages[planSeleccionado] ? (
+                      <Image src={coberturaImages[planSeleccionado]} alt={`Cobertura Plan ${planSeleccionado}`} width={1200} height={600} className="object-contain w-full" priority />
+                    ) : (
+                      <div className="w-full h-64 md:h-96 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                        <p className="text-gray-500 dark:text-gray-400 text-sm md:text-base">Seleccioná un plan para ver su cobertura</p>
                       </div>
                     )}
-                    </>
-                  ) : (
-                    <div className="relative w-full h-64 md:h-96 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden flex items-center justify-center">
-                      <p className="text-gray-500 dark:text-gray-400 text-sm md:text-base">
-                        Seleccioná un plan para ver su cobertura
-                      </p>
-                    </div>
-                  )}
+                  </div>
+                  <button onClick={handleVerAlcance} className="mt-6 px-6 py-3 rounded-lg text-white font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg w-full text-sm md:text-base max-w-md mx-auto" style={{ backgroundColor: '#1a6b3c', fontFamily: "'Poppins', sans-serif" }}>Ver alcance de cobertura →</button>
                 </div>
-              </div>
-              </>
-            ) : (
-              /* Sección 3 de DoctoRed y todas las de Premedic: placeholder */
-              <div className="max-w-4xl mx-auto w-full">
-                <div className="text-center mb-8">
-                  <h2 className="text-2xl md:text-4xl font-bold text-foreground text-center">
-                    Sección {n} {nombre}
-                  </h2>
-                  <p className="mt-2 text-sm md:text-base text-muted-foreground text-center max-w-xl mx-auto">
-                    Contenido de la sección {n} de {nombre}
-                  </p>
+              )}
+
+              {/* SECCION 3 Y RESTO: Placeholder */}
+              {(n === 3 || !isDoctored) && (
+                <div className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center bg-white/80 border-2 border-gray-200">
+                  <p className="text-center text-muted-foreground">Contenido de la sección {n} de {nombre}</p>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         )
       })}
     </div>
   )
 }
-
 export function CompaniesSection() {
   const { t } = useTranslation()
   const [empresaActiva, setEmpresaActiva] = useState<string | null>(null)
