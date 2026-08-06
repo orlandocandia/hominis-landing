@@ -229,8 +229,6 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
       .catch(e => console.error('Error cargando metadatos:', e))
   }, [])
 
-  const isFormValid = filtros.provincia !== '' && filtros.especialidad !== '' && filtros.localidad !== ''
-
   const buscarPrestadores = async () => {
     setCargando(true)
     const params = new URLSearchParams()
@@ -349,8 +347,8 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                           <input type="text" placeholder="Escribí tu localidad..." value={filtros.localidad} onChange={(e) => setFiltros({...filtros, localidad: e.target.value})} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
                         </div>
                         <div className="flex items-end">
-                          <button onClick={buscarPrestadores} disabled={!isFormValid || cargando} className={`w-full font-medium py-2 px-4 rounded-lg transition-colors shadow-md text-sm ${isFormValid && !cargando ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}>
-                            {cargando ? 'Buscando...' : isFormValid ? 'Buscar →' : 'Completá los campos'}
+                          <button onClick={buscarPrestadores} disabled={cargando} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors shadow-md text-sm disabled:opacity-50">
+                            {cargando ? 'Buscando...' : 'Buscar →'}
                           </button>
                         </div>
                       </div>
@@ -364,8 +362,12 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
                         <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
                           {resultados.length === 0 ? (
-                            <div className="text-sm text-muted-foreground text-center py-8">
-                              <p>Seleccioná los filtros y presioná "Buscar"</p>
+                            <div className="text-center py-12">
+                              <p className="text-lg font-medium text-foreground">No encontramos prestadores con esos filtros</p>
+                              <p className="text-sm text-muted-foreground mt-2">Probá con otros filtros o eliminá algunos</p>
+                              <button onClick={() => { setFiltros({ plan: '', provincia: '', especialidad: '', localidad: '' }); buscarPrestadores() }} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                                Limpiar filtros
+                              </button>
                             </div>
                           ) : (
                             resultados.map((prestador, idx) => (
