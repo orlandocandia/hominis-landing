@@ -267,31 +267,45 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
   const especialidades = ['Cardiología', 'Dermatología', 'Traumatología', 'Pediatría', 'Oftalmología', 'Ginecología', 'Clínica Médica', 'Neurología', 'Nutrición', 'Psicología', 'Psiquiatría', 'Kinesiología', 'Fonoaudiología', 'Odontología', 'Alergia e Inmunología', 'Endocrinología', 'Gastroenterología', 'Oncología', 'Reumatología', 'Urología', 'Medicina General', 'Emergencias']
 
   const buscarPrestadores = () => {
+    console.log('BUSCADOR ACTIVADO - Filtros:', filtros)
+    console.log('Total prestadores disponibles:', prestadoresMock.length)
+    
     let resultadosFiltrados = prestadoresMock
+    
     if (filtros.plan) {
       resultadosFiltrados = resultadosFiltrados.filter(p => p.plan === filtros.plan)
+      console.log('Filtrado por plan:', filtros.plan, '->', resultadosFiltrados.length, 'resultados')
     }
     if (filtros.provincia) {
       resultadosFiltrados = resultadosFiltrados.filter(p => 
         p.provincia.toLowerCase().includes(filtros.provincia.toLowerCase())
       )
+      console.log('Filtrado por provincia:', filtros.provincia, '->', resultadosFiltrados.length, 'resultados')
     }
     if (filtros.especialidad) {
       resultadosFiltrados = resultadosFiltrados.filter(p => 
         p.especialidad.toLowerCase().includes(filtros.especialidad.toLowerCase())
       )
+      console.log('Filtrado por especialidad:', filtros.especialidad, '->', resultadosFiltrados.length, 'resultados')
     }
     if (filtros.localidad) {
       resultadosFiltrados = resultadosFiltrados.filter(p => 
         p.localidad.toLowerCase().includes(filtros.localidad.toLowerCase())
       )
+      console.log('Filtrado por localidad:', filtros.localidad, '->', resultadosFiltrados.length, 'resultados')
     }
+    
+    console.log('Resultados finales:', resultadosFiltrados.length)
     setResultados(resultadosFiltrados)
+    
     if (resultadosFiltrados.length > 0 && resultadosFiltrados[0].lat) {
       setMapaCentro({
         lat: resultadosFiltrados[0].lat,
         lng: resultadosFiltrados[0].lng
       })
+    }
+    if (resultadosFiltrados.length === 0) {
+      console.warn('No se encontraron prestadores con esos filtros')
     }
   }
 
@@ -419,7 +433,10 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                         </div>
                         <div className="flex flex-col items-end gap-1">
                           <button 
-                            onClick={buscarPrestadores}
+                            onClick={() => {
+                              console.log('Boton Buscar clickeado')
+                              buscarPrestadores()
+                            }}
                             disabled={!isFormValid}
                             className={`w-full font-medium py-2 px-4 rounded-lg transition-colors shadow-md text-sm ${
                               isFormValid 
@@ -447,6 +464,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                             <div className="text-sm text-muted-foreground text-center py-8">
                               <p>Seleccioná los filtros y presioná "Buscar"</p>
                               <p className="text-xs mt-1">Más de 40.000 prestadores en toda Argentina</p>
+                              <p className="text-xs mt-2 text-amber-600">Si no encontrás resultados, probá con CABA o Buenos Aires</p>
                             </div>
                           ) : (
                             resultados.map((prestador, idx) => (
