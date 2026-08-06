@@ -206,7 +206,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
   const [resultados, setResultados] = useState<any[]>([])
   const [mapaCentro, setMapaCentro] = useState<{ lat: number; lng: number } | null>(null)
 
-  // DATOS DE PRESTADORES
+  // DATOS DE PRESTADORES - VERSIÓN CORREGIDA CON MÁS DATOS
   const prestadoresMock = [
     // CABA
     { id: 1, nombre: 'Clínica Anchorena', especialidad: 'Cardiología', direccion: 'Av. Pueyrredón 830', localidad: 'CABA', provincia: 'CABA', telefono: '011-4521-8000', lat: -34.5876, lng: -58.3999, plan: '1000', mapsLink: 'https://maps.google.com/?q=Pueyrred%C3%B3n+830+CABA' },
@@ -265,31 +265,43 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
   const provincias = ['CABA', 'Buenos Aires', 'Mendoza', 'Córdoba', 'Santa Fe', 'San Luis', 'Salta', 'Tucumán']
   const especialidades = ['Alergia', 'Cardiología', 'Pediatría', 'Traumatología', 'Clínica Médica', 'Ginecología', 'Dermatología', 'Neurología', 'Oftalmología', 'Odontología', 'Kinesiología', 'Psicología', 'Fonoaudiología', 'Emergencias', 'Oncología', 'Reumatología', 'Urología', 'Infectología']
 
+  // ========== FUNCIÓN DE BÚSQUEDA CORREGIDA ==========
   const buscarPrestadores = () => {
     console.log('🔍 Buscando con filtros:', filtros)
     let resultadosFiltrados = prestadoresMock
     
+    // Filtro por Plan - COMPARACIÓN EXACTA
     if (filtros.plan) {
       resultadosFiltrados = resultadosFiltrados.filter(p => p.plan === filtros.plan)
+      console.log('Filtrado por plan:', filtros.plan, '→', resultadosFiltrados.length)
     }
+    
+    // Filtro por Provincia - COMPARACIÓN EXACTA (sin includes)
     if (filtros.provincia) {
-      resultadosFiltrados = resultadosFiltrados.filter(p => 
-        p.provincia.toLowerCase().includes(filtros.provincia.toLowerCase())
-      )
+      resultadosFiltrados = resultadosFiltrados.filter(p => p.provincia === filtros.provincia)
+      console.log('Filtrado por provincia:', filtros.provincia, '→', resultadosFiltrados.length)
     }
+    
+    // Filtro por Especialidad - COMPARACIÓN EXACTA (sin includes)
     if (filtros.especialidad) {
-      resultadosFiltrados = resultadosFiltrados.filter(p => 
-        p.especialidad.toLowerCase().includes(filtros.especialidad.toLowerCase())
-      )
+      resultadosFiltrados = resultadosFiltrados.filter(p => p.especialidad === filtros.especialidad)
+      console.log('Filtrado por especialidad:', filtros.especialidad, '→', resultadosFiltrados.length)
     }
+    
+    // Filtro por Localidad - con includes (para coincidencia parcial)
     if (filtros.localidad) {
       resultadosFiltrados = resultadosFiltrados.filter(p => 
         p.localidad.toLowerCase().includes(filtros.localidad.toLowerCase())
       )
+      console.log('Filtrado por localidad:', filtros.localidad, '→', resultadosFiltrados.length)
     }
     
-    console.log('✅ Resultados encontrados:', resultadosFiltrados.length)
+    console.log('✅ Resultados finales:', resultadosFiltrados.length)
     setResultados(resultadosFiltrados)
+    
+    if (resultadosFiltrados.length === 0) {
+      console.warn('⚠️ No se encontraron prestadores con esos filtros')
+    }
     
     if (resultadosFiltrados.length > 0 && resultadosFiltrados[0].lat) {
       setMapaCentro({
@@ -446,7 +458,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                         </div>
                       </div>
 
-                      {/* Botón Buscar - AHORA LLAMA A buscarPrestadores() */}
+                      {/* Botón Buscar */}
                       <button
                         onClick={buscarPrestadores}
                         className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors shadow-md text-sm"
@@ -459,6 +471,9 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                         <div className="text-sm text-muted-foreground text-center py-8 mt-4">
                           <p>Seleccioná los filtros y presioná "Buscar prestadores"</p>
                           <p className="text-xs mt-1">Más de 40.000 prestadores en toda Argentina</p>
+                          {filtros.plan || filtros.provincia || filtros.especialidad || filtros.localidad ? (
+                            <p className="text-xs text-amber-600 mt-2">No hay resultados para los filtros seleccionados. Probá con otros.</p>
+                          ) : null}
                         </div>
                       ) : (
                         <>
