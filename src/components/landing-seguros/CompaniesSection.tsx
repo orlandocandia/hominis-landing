@@ -201,11 +201,15 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
           return null
         }
 
+        // Color de fondo segun la seccion: 1=gris suave, 2=blanco, 3=gris azulado
+        const sectionBgColors: Record<number, string> = { 1: '#F5F7FA', 2: '#FFFFFF', 3: '#EDF2F7' }
+
         return (
           <div 
             key={n} 
             id={n === 2 ? 'seccion2-cobertura' : undefined}
             className="min-h-screen flex flex-col justify-center items-center py-12 px-4"
+            style={{ backgroundColor: sectionBgColors[n] || '#FFFFFF' }}
           >
             {/* Sección 1 de DoctoRed: planes con título y carteles */}
             {isDoctored && n === 1 ? (
