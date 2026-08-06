@@ -248,9 +248,9 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
               {/* SECCION 2: DOCTORED - COBERTURA (con padding reducido) */}
               {isDoctored && n === 2 && (
                 <div className="rounded-lg p-3 md:p-4 mx-auto w-full flex flex-col justify-center border-2 border-gray-100">
-                  <div className="relative w-full rounded-2xl overflow-hidden">
+                  <div className="relative w-full max-w-3xl mx-auto rounded-2xl overflow-hidden">
                     {planSeleccionado && coberturaImages[planSeleccionado] ? (
-                      <Image src={coberturaImages[planSeleccionado]} alt={`Cobertura Plan ${planSeleccionado}`} width={1200} height={600} className="object-contain w-full" priority />
+                      <Image src={coberturaImages[planSeleccionado]} alt={`Cobertura Plan ${planSeleccionado}`} width={800} height={400} className="object-contain w-full h-auto" priority quality={85} />
                     ) : (
                       <div className="w-full h-64 md:h-96 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
                         <p className="text-gray-500 dark:text-gray-400 text-sm md:text-base">Seleccioná un plan para ver su cobertura</p>
