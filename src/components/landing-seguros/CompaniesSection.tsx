@@ -209,27 +209,21 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
           >
             {/* Sección 1 de DoctoRed: planes con título y carteles */}
             {isDoctored && n === 1 ? (
+              <>
+              {/* Título de sección - FUERA del div */}
+              <div className="text-center mb-8">
+                <h2 className="text-2xl md:text-4xl font-bold text-foreground text-center">
+                  Precios sanos, planes flexibles.
+                </h2>
+                <p className="mt-2 text-sm md:text-base text-muted-foreground text-center max-w-xl mx-auto">
+                  Elegí el tuyo.
+                </p>
+              </div>
               <div
                 className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center bg-blue-50 dark:bg-blue-950/20 border-2 border-blue-200 dark:border-blue-900/40 min-h-[600px] md:min-h-[700px] max-w-7xl"
               >
-                {/* Título centrado */}
-                <div className="text-center mb-6 md:mb-8">
-                  <h3
-                    className="text-3xl md:text-5xl lg:text-6xl font-light text-center"
-                    style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', lineHeight: '1.1' }}
-                  >
-                    Precios sanos, planes flexibles.
-                  </h3>
-                  <p
-                    className="text-xl md:text-2xl lg:text-3xl mt-2 text-center"
-                    style={{ fontFamily: "'Poppins', sans-serif", color: '#3A1E72', fontWeight: 400, lineHeight: '1.4' }}
-                  >
-                    Elegí el tuyo.
-                  </p>
-                </div>
-
                 {/* Grid de 4 planes */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mt-8 w-full">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 w-full">
                   {doctoredPlanes.map((plan) => (
                     <div
                       key={plan.numero}
@@ -277,16 +271,21 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                   ))}
                 </div>
               </div>
+              </>
             ) : isDoctored && n === 2 ? (
               /* 👇 SECCIÓN 2 DE DOCTORED - COBERTURA (IMAGEN SEGÚN PLAN SELECCIONADO) */
+              <>
+              {/* Título de sección - FUERA del div */}
+              <div className="text-center mb-8">
+                <h2 className="text-2xl md:text-4xl font-bold text-foreground text-center">
+                  Cobertura{planCoberturaActiva ? ` - Plan ${planCoberturaActiva}` : ''}
+                </h2>
+                <p className="mt-2 text-sm md:text-base text-muted-foreground text-center max-w-xl mx-auto">
+                  Detalle de la cobertura del plan seleccionado
+                </p>
+              </div>
               <div className="max-w-7xl mx-auto w-full">
                 <div className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center bg-blue-50 dark:bg-blue-950/20 border-2 border-blue-200 dark:border-blue-900/40 min-h-[400px] md:min-h-[500px]">
-                  <div className="text-center mb-6">
-                    <h3 className="text-2xl md:text-3xl font-bold text-foreground">
-                      Cobertura{planCoberturaActiva ? ` - Plan ${planCoberturaActiva}` : ''}
-                    </h3>
-                    <p className="text-sm md:text-base text-muted-foreground mt-2">Detalle de la cobertura del plan seleccionado</p>
-                  </div>
                   
                   {/* Imagen de cobertura según el plan seleccionado */}
                   {planCoberturaActiva && coberturImages[planCoberturaActiva] ? (
@@ -327,15 +326,18 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                   )}
                 </div>
               </div>
+              </>
             ) : (
               /* Sección 3 de DoctoRed y todas las de Premedic: placeholder */
-              <div className="max-w-4xl mx-auto w-full text-center">
-                <h3 className="text-xl md:text-2xl font-bold text-center text-foreground">
-                  Sección {n} {nombre}
-                </h3>
-                <p className="text-center text-muted-foreground mt-2">
-                  Contenido de la sección {n} de {nombre}
-                </p>
+              <div className="max-w-4xl mx-auto w-full">
+                <div className="text-center mb-8">
+                  <h2 className="text-2xl md:text-4xl font-bold text-foreground text-center">
+                    Sección {n} {nombre}
+                  </h2>
+                  <p className="mt-2 text-sm md:text-base text-muted-foreground text-center max-w-xl mx-auto">
+                    Contenido de la sección {n} de {nombre}
+                  </p>
+                </div>
               </div>
             )}
           </div>
