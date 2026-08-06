@@ -8,6 +8,17 @@ import { AmarMascotasBenefit } from './AmarMascotasBenefit'
 import { MejorCuidadosBenefit } from './MejorCuidadosBenefit'
 import { DoctoRedCarrusel } from './DoctoRedCarrusel'
 import { COMPANIES, type Company } from './companies'
+import 'leaflet/dist/leaflet.css'
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import L from 'leaflet'
+
+// Icono personalizado para marcadores de Leaflet
+const leafletIcon = new L.Icon({
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+})
 
 const COMPANY_KEYS: Record<string, { desc: string; slogan: string; benefit: string }> = {
   doctored: {
@@ -264,15 +275,27 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
       resultadosFiltrados = resultadosFiltrados.filter(p => p.plan === filtros.plan)
     }
     if (filtros.provincia) {
-      resultadosFiltrados = resultadosFiltrados.filter(p => p.provincia === filtros.provincia)
+      resultadosFiltrados = resultadosFiltrados.filter(p => 
+        p.provincia.toLowerCase().includes(filtros.provincia.toLowerCase())
+      )
     }
     if (filtros.especialidad) {
-      resultadosFiltrados = resultadosFiltrados.filter(p => p.especialidad === filtros.especialidad)
+      resultadosFiltrados = resultadosFiltrados.filter(p => 
+        p.especialidad.toLowerCase().includes(filtros.especialidad.toLowerCase())
+      )
     }
     if (filtros.localidad) {
-      resultadosFiltrados = resultadosFiltrados.filter(p => p.localidad.toLowerCase().includes(filtros.localidad.toLowerCase()))
+      resultadosFiltrados = resultadosFiltrados.filter(p => 
+        p.localidad.toLowerCase().includes(filtros.localidad.toLowerCase())
+      )
     }
     setResultados(resultadosFiltrados)
+    if (resultadosFiltrados.length > 0 && resultadosFiltrados[0].lat) {
+      setMapaCentro({
+        lat: resultadosFiltrados[0].lat,
+        lng: resultadosFiltrados[0].lng
+      })
+    }
   }
 
   const limpiarFiltros = () => {
@@ -441,25 +464,44 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                             ))
                           )}
                         </div>
-                        <div ref={mapaRef} className="bg-gray-100 rounded-lg h-80 lg:h-auto min-h-[350px] border-2 border-gray-200 relative overflow-hidden">
-                          <div className="w-full h-full flex items-center justify-center">
-                            {resultados.length === 0 ? (
+                        <div className="bg-gray-100 rounded-lg h-80 lg:h-auto min-h-[350px] border-2 border-gray-200 relative overflow-hidden">
+                          {resultados.length === 0 ? (
+                            <div className="w-full h-full flex items-center justify-center">
                               <div className="text-center text-gray-400">
                                 <div className="text-5xl mb-2">🗺️</div>
                                 <p className="text-sm font-medium">Mapa de prestadores</p>
                                 <p className="text-xs">Los resultados aparecerán aquí</p>
                               </div>
-                            ) : (
-                              <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                                <div className="text-center text-gray-500">
-                                  <div className="text-4xl mb-2">📍</div>
-                                  <p className="text-sm font-medium">{resultados.length} prestadores encontrados</p>
-                                  <p className="text-xs text-gray-400">Hacé clic en un resultado para centrar el mapa</p>
-                                  <p className="text-xs text-gray-300 mt-2">Mapa interactivo (Leaflet)</p>
-                                </div>
-                              </div>
-                            )}
-                          </div>
+                            </div>
+                          ) : (
+                            <MapContainer
+                              center={[mapaCentro?.lat || resultados[0].lat, mapaCentro?.lng || resultados[0].lng]}
+                              zoom={12}
+                              className="w-full h-full"
+                              style={{ height: '100%', minHeight: '350px' }}
+                            >
+                              <TileLayer
+                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                              />
+                              {resultados.map((prestador) => (
+                                <Marker
+                                  key={prestador.id}
+                                  position={[prestader.lat, prestador.lng]}
+                                  icon={leafletIcon}
+                                >
+                                  <Popup>
+                                    <div className="text-sm">
+                                      <p className="font-bold">{prestador.nombre}</p>
+                                      <p>{prestador.especialidad}</p>
+                                      <p className="text-xs">{prestador.direccion}</p>
+                                      <p className="text-xs">{prestador.localidad}, {prestador.provincia}</p>
+                                    </div>
+                                  </Popup>
+                                </Marker>
+                              ))}
+                            </MapContainer>
+                          )}
                         </div>
                       </div>
                     </div>
