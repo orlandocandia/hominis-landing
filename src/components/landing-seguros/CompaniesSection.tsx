@@ -9,16 +9,13 @@ import { MejorCuidadosBenefit } from './MejorCuidadosBenefit'
 import { DoctoRedCarrusel } from './DoctoRedCarrusel'
 import { COMPANIES, type Company } from './companies'
 import 'leaflet/dist/leaflet.css'
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
-import L from 'leaflet'
+import dynamic from 'next/dynamic'
 
-// Icono personalizado para marcadores de Leaflet
-const leafletIcon = new L.Icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-})
+// Leaflet components cargados dinamicamente (solo cliente) para evitar error SSR
+const MapContainer = dynamic(() => import('react-leaflet').then(m => m.MapContainer), { ssr: false })
+const TileLayer = dynamic(() => import('react-leaflet').then(m => m.TileLayer), { ssr: false })
+const Marker = dynamic(() => import('react-leaflet').then(m => m.Marker), { ssr: false })
+const Popup = dynamic(() => import('react-leaflet').then(m => m.Popup), { ssr: false })
 
 const COMPANY_KEYS: Record<string, { desc: string; slogan: string; benefit: string }> = {
   doctored: {
@@ -488,8 +485,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                                 <Marker
                                   key={prestador.id}
                                   position={[prestader.lat, prestador.lng]}
-                                  icon={leafletIcon}
-                                >
+                                                                  >
                                   <Popup>
                                     <div className="text-sm">
                                       <p className="font-bold">{prestador.nombre}</p>
