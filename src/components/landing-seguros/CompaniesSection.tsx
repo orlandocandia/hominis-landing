@@ -133,8 +133,8 @@ function CompanyCard({ company, empresaActiva, onToggle }: CompanyCardProps) {
           {/* Carrusel Premedic - 12 logos, 4 visibles */}
           <div className="my-1 w-full overflow-hidden">
             <div className="flex doctored-carrusel-track">
-              {Array.from({ length: 12 }, (_, i) => \`/images/seguros/carrusel_premedic/logo-\${i + 1}.png\`).concat(
-                Array.from({ length: 12 }, (_, i) => \`/images/seguros/carrusel_premedic/logo-\${i + 1}.png\`)
+              {Array.from({ length: 12 }, (_, i) => `/images/seguros/carrusel_premedic/logo-\${i + 1}.png`).concat(
+                Array.from({ length: 12 }, (_, i) => `/images/seguros/carrusel_premedic/logo-\${i + 1}.png`)
               ).map((src, index) => (
                 <div
                   key={index}
@@ -144,7 +144,7 @@ function CompanyCard({ company, empresaActiva, onToggle }: CompanyCardProps) {
                   <div className="relative w-full h-12 md:h-16 lg:h-20">
                     <Image
                       src={src}
-                      alt={\`Logo Premedic \${(index % 12) + 1}\`}
+                      alt={`Logo Premedic \${(index % 12) + 1}`}
                       fill
                       className="object-contain"
                       sizes="(max-width: 768px) 25vw, 200px"
