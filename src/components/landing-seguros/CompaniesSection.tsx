@@ -281,6 +281,13 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
     setMapaCentro(null)
   }
 
+  // Validacion: el boton se habilita solo cuando todos los campos estan completos
+  const isFormValid = 
+    filtros.plan !== '' && 
+    filtros.provincia !== '' && 
+    filtros.especialidad !== '' && 
+    filtros.localidad !== ''
+
   return (
     <div className="mt-8">
       {[1, 2, 3].map((n) => {
@@ -390,8 +397,23 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                           </div>
                           <input type="text" placeholder="O escribí tu localidad..." value={filtros.localidad} onChange={(e) => setFiltros({...filtros, localidad: e.target.value})} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
                         </div>
-                        <div className="flex items-end gap-2">
-                          <button onClick={buscarPrestadores} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors shadow-md text-sm">Buscar →</button>
+                        <div className="flex flex-col items-end gap-1">
+                          <button 
+                            onClick={buscarPrestadores}
+                            disabled={!isFormValid}
+                            className={`w-full font-medium py-2 px-4 rounded-lg transition-colors shadow-md text-sm ${
+                              isFormValid 
+                                ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer' 
+                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            }`}
+                          >
+                            {isFormValid ? 'Buscar →' : 'Completá todos los campos'}
+                          </button>
+                          {!isFormValid && (
+                            <p className="text-xs text-muted-foreground text-center w-full">
+                              Completá todos los campos para buscar prestadores
+                            </p>
+                          )}
                         </div>
                       </div>
                       
