@@ -188,39 +188,49 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
     '3000': '/images/seguros/cobertura/imagen4-plan3000.png',
   }
 
-  // Estados para el buscador de prestadores
+  // ========== BUSCADOR DE PRESTADORES ==========
   const [filtros, setFiltros] = useState({
     plan: '',
     provincia: '',
     especialidad: '',
     localidad: ''
   })
-  const [resultados, setResultados] = useState<Array<{nombre: string; especialidad: string; direccion: string; localidad: string; provincia: string}>>([])
+  const [resultados, setResultados] = useState<any[]>([])
 
-  // Datos mock de prestadores
   const prestadoresMock = [
-    { nombre: 'Dr. Juan Pérez', especialidad: 'Cardiología', direccion: 'Av. Rivadavia 1234', localidad: 'Moreno', provincia: 'Buenos Aires' },
-    { nombre: 'Dra. María Gómez', especialidad: 'Dermatología', direccion: 'Belgrano 567', localidad: 'Morón', provincia: 'Buenos Aires' },
-    { nombre: 'Dr. Carlos López', especialidad: 'Traumatología', direccion: 'San Martín 890', localidad: 'Sarandí', provincia: 'Buenos Aires' },
-    { nombre: 'Dra. Ana Martínez', especialidad: 'Pediatría', direccion: 'Mitre 321', localidad: 'Quilmes', provincia: 'Buenos Aires' },
-    { nombre: 'Dr. Roberto Sánchez', especialidad: 'Oftalmología', direccion: 'Alsina 456', localidad: 'Moreno', provincia: 'Buenos Aires' },
-    { nombre: 'Dra. Laura Fernández', especialidad: 'Ginecología', direccion: 'Lavalle 789', localidad: 'Morón', provincia: 'Buenos Aires' },
-    { nombre: 'Dr. Martín Díaz', especialidad: 'Clínica Médica', direccion: 'Sarmiento 234', localidad: 'Sarandí', provincia: 'Buenos Aires' },
-    { nombre: 'Dra. Silvia Torres', especialidad: 'Neurología', direccion: 'Moreno 567', localidad: 'Quilmes', provincia: 'Buenos Aires' },
+    { id: 1, nombre: 'Dr. Juan Pérez', especialidad: 'Cardiología', direccion: 'Av. Rivadavia 1234', localidad: 'Moreno', provincia: 'Buenos Aires', telefono: '011-4444-1111' },
+    { id: 2, nombre: 'Dra. María Gómez', especialidad: 'Dermatología', direccion: 'Belgrano 567', localidad: 'Morón', provincia: 'Buenos Aires', telefono: '011-4444-2222' },
+    { id: 3, nombre: 'Dr. Carlos López', especialidad: 'Traumatología', direccion: 'San Martín 890', localidad: 'Sarandí', provincia: 'Buenos Aires', telefono: '011-4444-3333' },
+    { id: 4, nombre: 'Dra. Ana Martínez', especialidad: 'Pediatría', direccion: 'Mitre 321', localidad: 'Quilmes', provincia: 'Buenos Aires', telefono: '011-4444-4444' },
+    { id: 5, nombre: 'Dr. Roberto Sánchez', especialidad: 'Oftalmología', direccion: 'Alsina 456', localidad: 'Moreno', provincia: 'Buenos Aires', telefono: '011-4444-5555' },
+    { id: 6, nombre: 'Dra. Laura Fernández', especialidad: 'Ginecología', direccion: 'Lavalle 789', localidad: 'Morón', provincia: 'Buenos Aires', telefono: '011-4444-6666' },
+    { id: 7, nombre: 'Dr. Martín Díaz', especialidad: 'Clínica Médica', direccion: 'Sarmiento 234', localidad: 'Sarandí', provincia: 'Buenos Aires', telefono: '011-4444-7777' },
+    { id: 8, nombre: 'Dra. Silvia Torres', especialidad: 'Neurología', direccion: 'Moreno 567', localidad: 'Quilmes', provincia: 'Buenos Aires', telefono: '011-4444-8888' },
+    { id: 9, nombre: 'Dr. Pablo Ramírez', especialidad: 'Cardiología', direccion: 'Rivadavia 987', localidad: 'Moreno', provincia: 'Buenos Aires', telefono: '011-4444-9999' },
+    { id: 10, nombre: 'Dra. Cecilia Ríos', especialidad: 'Pediatría', direccion: 'Belgrano 654', localidad: 'Morón', provincia: 'Buenos Aires', telefono: '011-4444-0000' },
   ]
 
-  const planesLista = ['500', '1000', '2000', '3000']
-  const provinciasLista = ['Buenos Aires', 'CABA', 'Córdoba', 'Mendoza', 'Santa Fe', 'Tucumán', 'Salta']
-  const especialidadesLista = ['Cardiología', 'Dermatología', 'Traumatología', 'Pediatría', 'Oftalmología', 'Ginecología', 'Clínica Médica', 'Neurología']
+  const planes = ['500', '1000', '2000', '3000']
+  const provincias = ['Buenos Aires', 'CABA', 'Córdoba', 'Mendoza', 'Santa Fe', 'Tucumán', 'Salta']
+  const especialidades = ['Cardiología', 'Dermatología', 'Traumatología', 'Pediatría', 'Oftalmología', 'Ginecología', 'Clínica Médica', 'Neurología', 'Nutrición', 'Psicología']
 
   const buscarPrestadores = () => {
-    const resultadosFiltrados = prestadoresMock.filter(p => {
-      const matchProvincia = !filtros.provincia || p.provincia === filtros.provincia
-      const matchEspecialidad = !filtros.especialidad || p.especialidad === filtros.especialidad
-      const matchLocalidad = !filtros.localidad || p.localidad.toLowerCase().includes(filtros.localidad.toLowerCase())
-      return matchProvincia && matchEspecialidad && matchLocalidad
-    })
+    let resultadosFiltrados = prestadoresMock
+    if (filtros.provincia) {
+      resultadosFiltrados = resultadosFiltrados.filter(p => p.provincia.toLowerCase().includes(filtros.provincia.toLowerCase()))
+    }
+    if (filtros.especialidad) {
+      resultadosFiltrados = resultadosFiltrados.filter(p => p.especialidad.toLowerCase().includes(filtros.especialidad.toLowerCase()))
+    }
+    if (filtros.localidad) {
+      resultadosFiltrados = resultadosFiltrados.filter(p => p.localidad.toLowerCase().includes(filtros.localidad.toLowerCase()))
+    }
     setResultados(resultadosFiltrados)
+  }
+
+  const limpiarFiltros = () => {
+    setFiltros({ plan: '', provincia: '', especialidad: '', localidad: '' })
+    setResultados([])
   }
 
   return (
@@ -296,7 +306,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                 </div>
               )}
 
-              {/* SECCION 3: DOCTORED - BUSCADOR DE PRESTADORES FUNCIONAL */}
+              {/* SECCION 3 - BUSCADOR DE PRESTADORES (con funcionalidad) */}
               {isDoctored && n === 3 && (
                 <div className="max-w-7xl mx-auto w-full">
                   <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
@@ -306,21 +316,21 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                           <label className="block text-xs font-medium text-foreground mb-1">Plan</label>
                           <select value={filtros.plan} onChange={(e) => setFiltros({...filtros, plan: e.target.value})} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                             <option value="">Todos los planes</option>
-                            {planesLista.map(p => <option key={p} value={p}>Plan {p}</option>)}
+                            {planes.map(p => <option key={p} value={p}>Plan {p}</option>)}
                           </select>
                         </div>
                         <div>
                           <label className="block text-xs font-medium text-foreground mb-1">Provincia</label>
                           <select value={filtros.provincia} onChange={(e) => setFiltros({...filtros, provincia: e.target.value})} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                             <option value="">Todas</option>
-                            {provinciasLista.map(p => <option key={p} value={p}>{p}</option>)}
+                            {provincias.map(p => <option key={p} value={p}>{p}</option>)}
                           </select>
                         </div>
                         <div>
                           <label className="block text-xs font-medium text-foreground mb-1">Especialidad</label>
                           <select value={filtros.especialidad} onChange={(e) => setFiltros({...filtros, especialidad: e.target.value})} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                             <option value="">Todas</option>
-                            {especialidadesLista.map(e => <option key={e} value={e}>{e}</option>)}
+                            {especialidades.map(e => <option key={e} value={e}>{e}</option>)}
                           </select>
                         </div>
                         <div>
@@ -332,12 +342,16 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                           </div>
                           <input type="text" placeholder="O escribí tu localidad..." value={filtros.localidad} onChange={(e) => setFiltros({...filtros, localidad: e.target.value})} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
                         </div>
-                        <div className="flex items-end">
+                        <div className="flex items-end gap-2">
                           <button onClick={buscarPrestadores} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors shadow-md text-sm">Buscar →</button>
                         </div>
                       </div>
                       
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                      {resultados.length > 0 && (
+                        <p className="text-sm text-muted-foreground mt-4">{resultados.length} prestadores encontrados</p>
+                      )}
+                      
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
                         <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
                           {resultados.length === 0 ? (
                             <div className="text-sm text-muted-foreground text-center py-8">
@@ -351,6 +365,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                                 <p className="text-xs text-muted-foreground">{prestador.especialidad}</p>
                                 <p className="text-xs text-muted-foreground">{prestador.direccion}</p>
                                 <p className="text-xs text-muted-foreground">{prestador.localidad}, {prestador.provincia}</p>
+                                <p className="text-xs text-muted-foreground">{prestador.telefono}</p>
                               </div>
                             ))
                           )}
