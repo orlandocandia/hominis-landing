@@ -317,7 +317,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
             }`}
           >
             <div className="max-w-7xl mx-auto w-full">
-              {/* TITULO DE SECCION */}
+              {/* TITULO DE SECCION - SOLO UNO (fuera del div) */}
               <div className="text-center mb-8">
                 <h2 className="text-2xl md:text-4xl font-bold text-foreground text-center">
                   {isDoctored && n === 1 ? 'Precios sanos, planes flexibles.' :
@@ -377,23 +377,15 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                 <div className="max-w-7xl mx-auto w-full">
                   <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
                     <div className="p-6 md:p-8">
-                      {/* Título y subtítulo */}
-                      <h3 className="text-2xl md:text-4xl font-bold text-foreground text-center">
-                        Buscá prestadores en tu zona
-                      </h3>
-                      <p className="text-sm md:text-base text-muted-foreground text-center max-w-xl mx-auto mt-2">
-                        Cartilla de prestadores de Doctored
-                      </p>
-
                       {/* FILTROS - 4 columnas */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {/* Plan */}
                         <div>
                           <label className="block text-xs font-medium text-foreground mb-1">Plan</label>
                           <select 
                             value={filtros.plan}
                             onChange={(e) => setFiltros({...filtros, plan: e.target.value})}
-                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
                           >
                             <option value="">Todos los planes</option>
                             {planes.map(p => <option key={p} value={p}>Plan {p}</option>)}
@@ -406,7 +398,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                           <select 
                             value={filtros.provincia}
                             onChange={(e) => setFiltros({...filtros, provincia: e.target.value})}
-                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
                           >
                             <option value="">Todas</option>
                             {provincias.map(p => <option key={p} value={p}>{p}</option>)}
@@ -419,7 +411,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                           <select 
                             value={filtros.especialidad}
                             onChange={(e) => setFiltros({...filtros, especialidad: e.target.value})}
-                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
                           >
                             <option value="">Todas</option>
                             {especialidades.map(e => <option key={e} value={e}>{e}</option>)}
@@ -446,121 +438,119 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                           </div>
                           <input 
                             type="text" 
-                            placeholder="O escribí tu localidad..." 
+                            placeholder="Escribí tu localidad..." 
                             value={filtros.localidad}
                             onChange={(e) => setFiltros({...filtros, localidad: e.target.value})}
-                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" 
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg" 
                           />
                         </div>
                       </div>
 
                       {/* Botón Buscar */}
-                      <div className="mt-4">
-                        <button
-                          onClick={buscarPrestadores}
-                          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors shadow-md text-sm"
-                        >
-                          Buscar prestadores →
-                        </button>
-                      </div>
+                      <button
+                        onClick={() => {
+                          console.log('🔍 Buscando...')
+                          let resultadosFiltrados = prestadoresMock
+                          
+                          if (filtros.plan) {
+                            resultadosFiltrados = resultadosFiltrados.filter(p => p.plan === filtros.plan)
+                          }
+                          if (filtros.provincia) {
+                            resultadosFiltrados = resultadosFiltrados.filter(p => 
+                              p.provincia.toLowerCase().includes(filtros.provincia.toLowerCase())
+                            )
+                          }
+                          if (filtros.especialidad) {
+                            resultadosFiltrados = resultadosFiltrados.filter(p => 
+                              p.especialidad.toLowerCase().includes(filtros.especialidad.toLowerCase())
+                            )
+                          }
+                          if (filtros.localidad) {
+                            resultadosFiltrados = resultadosFiltrados.filter(p => 
+                              p.localidad.toLowerCase().includes(filtros.localidad.toLowerCase())
+                            )
+                          }
+                          
+                          console.log('✅ Resultados:', resultadosFiltrados.length)
+                          setResultados(resultadosFiltrados)
+                          
+                          if (resultadosFiltrados.length > 0 && resultadosFiltrados[0].lat) {
+                            setMapaCentro({
+                              lat: resultadosFiltrados[0].lat,
+                              lng: resultadosFiltrados[0].lng
+                            })
+                          }
+                        }}
+                        className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors shadow-md text-sm"
+                      >
+                        Buscar prestadores →
+                      </button>
 
-                      {/* Contador de resultados */}
-                      {resultados.length > 0 && (
-                        <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                          <p className="text-sm text-blue-800 font-medium">
-                            {resultados.length} prestadores encontrados
-                            {filtros.provincia && ` en ${filtros.provincia}`}
-                          </p>
-                        </div>
-                      )}
-
-                      {/* RESULTADOS + MAPA */}
-                      {resultados.length > 0 && (
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
-                          {/* Lista de prestadores */}
-                          <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
-                            {resultados.map((prestador, idx) => (
-                              <div 
-                                key={idx} 
-                                className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow bg-white cursor-pointer"
-                                onClick={() => setMapaCentro({ lat: prestador.lat, lng: prestador.lng })}
-                              >
-                                <p className="font-bold text-base text-foreground">{prestador.nombre}</p>
-                                <p className="text-sm text-blue-600 font-medium">{prestador.especialidad}</p>
-                                <p className="text-sm text-muted-foreground mt-1">{prestador.direccion}</p>
-                                <p className="text-sm text-muted-foreground">{prestador.localidad}, {prestador.provincia}</p>
-                                <p className="text-sm text-muted-foreground">{prestador.telefono}</p>
-                                <div className="flex flex-wrap items-center gap-2 mt-2">
-                                  <span className="inline-block text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
-                                    Plan {prestador.plan}
-                                  </span>
-                                  {prestador.mapsLink && (
-                                    <a 
-                                      href={prestador.mapsLink} 
-                                      target="_blank" 
-                                      rel="noopener noreferrer"
-                                      className="text-xs text-blue-600 hover:underline flex items-center gap-1"
-                                      onClick={(e) => e.stopPropagation()}
-                                    >
-                                      📍 Ver en Google Maps
-                                    </a>
-                                  )}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-
-                          {/* Mapa */}
-                          <div className="bg-gray-100 rounded-lg h-[500px] border-2 border-gray-200 relative overflow-hidden">
-                            <MapContainer
-                              center={[mapaCentro?.lat || resultados[0]?.lat || -34.6037, mapaCentro?.lng || resultados[0]?.lng || -58.3816]}
-                              zoom={12}
-                              className="w-full h-full"
-                              style={{ height: '100%', minHeight: '500px' }}
-                            >
-                              <TileLayer
-                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                              />
-                              {resultados.map((prestador) => (
-                                prestador.lat && prestador.lng && (
-                                  <Marker
-                                    key={prestador.id}
-                                    position={[prestador.lat, prestador.lng]}
-                                  >
-                                    <Popup>
-                                      <div className="text-sm max-w-xs">
-                                        <p className="font-bold text-base">{prestador.nombre}</p>
-                                        <p className="text-blue-600">{prestador.especialidad}</p>
-                                        <p className="text-xs mt-1">{prestador.direccion}</p>
-                                        <p className="text-xs">{prestador.localidad}, {prestador.provincia}</p>
-                                        <p className="text-xs">{prestador.telefono}</p>
-                                        {prestador.mapsLink && (
-                                          <a 
-                                            href={prestador.mapsLink} 
-                                            target="_blank" 
-                                            rel="noopener noreferrer"
-                                            className="text-xs text-blue-600 hover:underline flex items-center gap-1 mt-1"
-                                          >
-                                            📍 Ver en Google Maps
-                                          </a>
-                                        )}
-                                      </div>
-                                    </Popup>
-                                  </Marker>
-                                )
-                              ))}
-                            </MapContainer>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Mensaje inicial */}
-                      {resultados.length === 0 && (
+                      {/* Mostrar resultados */}
+                      {resultados.length === 0 ? (
                         <div className="text-sm text-muted-foreground text-center py-8 mt-4">
                           <p>Seleccioná los filtros y presioná "Buscar prestadores"</p>
                           <p className="text-xs mt-1">Más de 40.000 prestadores en toda Argentina</p>
                         </div>
+                      ) : (
+                        <>
+                          <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                            <p className="text-sm text-blue-800 font-medium">
+                              {resultados.length} prestadores encontrados
+                              {filtros.provincia && ` en ${filtros.provincia}`}
+                            </p>
+                          </div>
+
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
+                            {/* Lista de prestadores */}
+                            <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
+                              {resultados.map((prestador, idx) => (
+                                <div key={idx} className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow bg-white cursor-pointer">
+                                  <p className="font-bold text-base text-foreground">{prestador.nombre}</p>
+                                  <p className="text-sm text-blue-600 font-medium">{prestador.especialidad}</p>
+                                  <p className="text-sm text-muted-foreground mt-1">{prestador.direccion}</p>
+                                  <p className="text-sm text-muted-foreground">{prestador.localidad}, {prestador.provincia}</p>
+                                  <p className="text-sm text-muted-foreground">{prestador.telefono}</p>
+                                  <span className="inline-block text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full mt-2">
+                                    Plan {prestador.plan}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+
+                            {/* Mapa */}
+                            <div className="bg-gray-100 rounded-lg h-[500px] border-2 border-gray-200 relative overflow-hidden">
+                              <MapContainer
+                                center={[mapaCentro?.lat || resultados[0]?.lat || -34.6037, mapaCentro?.lng || resultados[0]?.lng || -58.3816]}
+                                zoom={12}
+                                className="w-full h-full"
+                                style={{ height: '100%', minHeight: '500px' }}
+                              >
+                                <TileLayer
+                                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                                />
+                                {resultados.map((prestador) => (
+                                  prestador.lat && prestador.lng && (
+                                    <Marker
+                                      key={prestador.id}
+                                      position={[prestador.lat, prestador.lng]}
+                                    >
+                                      <Popup>
+                                        <div className="text-sm max-w-xs">
+                                          <p className="font-bold">{prestador.nombre}</p>
+                                          <p className="text-blue-600">{prestador.especialidad}</p>
+                                          <p className="text-xs mt-1">{prestador.direccion}</p>
+                                          <p className="text-xs">{prestador.localidad}, {prestador.provincia}</p>
+                                        </div>
+                                      </Popup>
+                                    </Marker>
+                                  )
+                                ))}
+                              </MapContainer>
+                            </div>
+                          </div>
+                        </>
                       )}
                     </div>
                   </div>
