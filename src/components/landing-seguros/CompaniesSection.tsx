@@ -124,7 +124,39 @@ function CompanyCard({ company, empresaActiva, onToggle }: CompanyCardProps) {
           <p className="text-xs md:text-sm text-[#4a9a6a] dark:text-green-300 text-center max-w-sm px-2 leading-snug">
             La mejor cobertura. Amplia red médica y centros propios para cuidarte a vos y a tu familia.
           </p>
-          <div className="grid grid-cols-2 gap-3 w-full max-w-sm mt-1">
+
+          {/* Título +1000 sanatorios */}
+          <p className="text-sm md:text-base font-medium text-[#4a9a6a] dark:text-green-300 text-center mb-3 mt-3">
+            Nos apoyan +1000 sanatorios, centros médicos, profesionales en todo el país
+          </p>
+
+          {/* Carrusel Premedic - 12 logos, 4 visibles */}
+          <div className="my-1 w-full overflow-hidden">
+            <div className="flex doctored-carrusel-track">
+              {Array.from({ length: 12 }, (_, i) => \`/images/seguros/carrusel_premedic/logo-\${i + 1}.png\`).concat(
+                Array.from({ length: 12 }, (_, i) => \`/images/seguros/carrusel_premedic/logo-\${i + 1}.png\`)
+              ).map((src, index) => (
+                <div
+                  key={index}
+                  className="flex-shrink-0 flex justify-center items-center p-2"
+                  style={{ width: '25%' }}
+                >
+                  <div className="relative w-full h-12 md:h-16 lg:h-20">
+                    <Image
+                      src={src}
+                      alt={\`Logo Premedic \${(index % 12) + 1}\`}
+                      fill
+                      className="object-contain"
+                      sizes="(max-width: 768px) 25vw, 200px"
+                      quality={85}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 w-full max-w-sm mt-3">
             <AmarMascotasBenefit />
             <div className="flex flex-col items-center justify-center p-3 bg-white dark:bg-gray-800 rounded-lg border border-green-200 dark:border-green-800 shadow-sm h-[90px]">
               <div className="flex items-start gap-2">
