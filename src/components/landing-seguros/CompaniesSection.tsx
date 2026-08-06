@@ -132,13 +132,13 @@ function CompanyCard({ company, empresaActiva, onToggle }: CompanyCardProps) {
                 <span className="text-xs font-medium text-foreground">Centros médicos propios</span>
               </div>
             </div>
-            <MejorCuidadosBenefit />
             <div className="flex flex-col items-center justify-center p-3 bg-white dark:bg-gray-800 rounded-lg border border-green-200 dark:border-green-800 shadow-sm h-[90px]">
               <div className="flex items-start gap-2">
                 <MapPin className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
                 <span className="text-xs font-medium text-foreground">Presencia en 5 provincias</span>
               </div>
             </div>
+            <MejorCuidadosBenefit />
           </div>
         </>
       ) : (
