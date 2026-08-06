@@ -141,7 +141,7 @@ function CompanyCard({ company, empresaActiva, onToggle }: CompanyCardProps) {
                   className="flex-shrink-0 flex justify-center items-center p-2"
                   style={{ width: '25%' }}
                 >
-                  <div className="relative w-full h-20 md:h-28 lg:h-36">
+                  <div className="relative w-full h-14 md:h-20 lg:h-24">
                     <Image
                       src={src}
                       alt={`Logo Premedic ${(index % 12) + 1}`}
