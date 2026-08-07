@@ -540,12 +540,15 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                         className="aspect-square rounded-lg bg-white/10 border border-white/20 flex items-center justify-center"
                       />
                     ))}
-                    <div className="col-start-2 col-span-1">
-                      <div className="aspect-square rounded-lg bg-white/10 border border-white/20 flex items-center justify-center" />
+                    <div className="col-span-1">
+                      <div className="aspect-square rounded-lg bg-white/10 border border-white/20 flex items-center justify-center w-full" />
                     </div>
                     <div className="col-span-1">
-                      <div className="aspect-square rounded-lg bg-white/10 border border-white/20 flex items-center justify-center" />
+                      <div className="aspect-square rounded-lg bg-white/10 border border-white/20 flex items-center justify-center w-full" />
                     </div>
+                    <div className="col-span-1"></div>
+                    <div className="col-span-1"></div>
+                    <div className="col-span-1"></div>
                   </div>
                 </div>
               )}
