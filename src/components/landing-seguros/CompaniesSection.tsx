@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
-import { ArrowRight, Building2, MapPin } from 'lucide-react'
+import { ArrowRight, Building2, MapPin, Star, Hospital, Bed, ClipboardList, Tooth, Phone, Home, Pill, Plane, Coins, RotateCcw, Award, Check, X } from 'lucide-react'
 import { useTranslation } from './useTranslation'
 import { AmarMascotasBenefit } from './AmarMascotasBenefit'
 import { MejorCuidadosBenefit } from './MejorCuidadosBenefit'
@@ -239,6 +239,33 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
     '3000': '/images/seguros/cobertura/imagen4-plan3000.png',
   }
 
+  // ========== DATOS DE PLANES PREMEDIC ==========
+  const premedicPlanes = [
+    { id: 'aportes', nombre: 'PLAN POR APORTES' },
+    { id: 'simple', nombre: 'PLAN SIMPLE' },
+    { id: 'c100', nombre: 'PLAN C-100' },
+    { id: '200', nombre: 'PLAN 200' },
+    { id: '300', nombre: 'PLAN 300' },
+    { id: '400', nombre: 'PLAN 400' },
+    { id: '500', nombre: 'PLAN 500' },
+  ]
+
+  const premedicFilas = [
+    { label: 'Tipo de plan', icono: Star, datos: { 'aportes': 'Por aportes', 'simple': 'Básico', 'c100': 'Estándar', '200': 'Intermedio', '300': 'Avanzado', '400': 'Premium', '500': 'Top' } },
+    { label: 'Nivel de cobertura', icono: Award, datos: { 'aportes': 'Básico', 'simple': 'Básico', 'c100': 'Estándar', '200': 'Intermedio', '300': 'Alto', '400': 'Muy alto', '500': 'Máximo' } },
+    { label: 'Internación', icono: Hospital, datos: { 'aportes': true, 'simple': true, 'c100': true, '200': true, '300': true, '400': true, '500': true } },
+    { label: 'Habitación', icono: Bed, datos: { 'aportes': 'Compartida', 'simple': 'Compartida', 'c100': 'Individual', '200': 'Individual', '300': 'Individual', '400': 'Individual c/baño', '500': 'Suite' } },
+    { label: 'Cartilla médica', icono: ClipboardList, datos: { 'aportes': 'Amplia', 'simple': 'Amplia', 'c100': 'Amplia', '200': 'Amplia', '300': 'Muy amplia', '400': 'Muy amplia', '500': 'Nacional' } },
+    { label: 'Odontología', icono: Tooth, datos: { 'aportes': false, 'simple': true, 'c100': true, '200': true, '300': true, '400': true, '500': true } },
+    { label: 'Telemedicina', icono: Phone, datos: { 'aportes': false, 'simple': false, 'c100': true, '200': true, '300': true, '400': true, '500': true } },
+    { label: 'Médico a domicilio', icono: Home, datos: { 'aportes': false, 'simple': false, 'c100': false, '200': true, '300': true, '400': true, '500': true } },
+    { label: 'Medicamentos', icono: Pill, datos: { 'aportes': '40% desc.', 'simple': '40% desc.', 'c100': '40% desc.', '200': '50% desc.', '300': '50% desc.', '400': '60% desc.', '500': '70% desc.' } },
+    { label: 'Asistencia al viajero', icono: Plane, datos: { 'aportes': false, 'simple': false, 'c100': true, '200': true, '300': true, '400': true, '500': true } },
+    { label: 'Bonos / Coseguros', icono: Coins, datos: { 'aportes': 'Sin bonos', 'simple': 'Con coseguro', 'c100': 'Con coseguro', '200': 'Bajo coseguro', '300': 'Bajo coseguro', '400': 'Mínimo coseguro', '500': 'Sin coseguro' } },
+    { label: 'Reintegros', icono: RotateCcw, datos: { 'aportes': false, 'simple': false, 'c100': false, '200': '30%', '300': '40%', '400': '50%', '500': '60%' } },
+    { label: 'Beneficios destacados', icono: Star, datos: { 'aportes': 'Acceso por aportes', 'simple': 'Económico', 'c100': 'Buena relación costo-beneficio', '200': 'Cobertura completa', '300': 'Alta cobertura', '400': 'Premium sin copagos', '500': 'Máxima cobertura' } },
+  ]
+
   // ========== BUSCADOR DE PRESTADORES ==========
   const [filtros, setFiltros] = useState({ plan: '', provincia: '', especialidad: '', localidad: '' })
   const [resultados, setResultados] = useState<any[]>([])
@@ -447,36 +474,106 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                 </div>
               )}
 
-              {/* SECCION 1 DE PREMEDIC - Con colores y tamano igual a DoctoRed */}
+              {/* SECCION 1 DE PREMEDIC - TABLA COMPARATIVA DE PLANES */}
               {!isDoctored && n === 1 && (
                 <div 
-                  className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center min-h-[600px] md:min-h-[700px] max-w-7xl"
+                  className="rounded-lg p-4 md:p-8 mx-auto w-full flex flex-col justify-center min-h-[600px] md:min-h-[700px] max-w-7xl"
                   style={{ backgroundColor: '#077B7A' }}
                 >
-                  <div className="text-center mb-6 md:mb-8">
-                    <h3 
-                      className="text-3xl md:text-5xl lg:text-6xl font-light text-center text-white"
-                      style={{ fontFamily: "'Poppins', sans-serif", lineHeight: '1.1' }}
-                    >
-                      Planes Grupo Premedic
-                    </h3>
-                    <p 
-                      className="text-xl md:text-2xl lg:text-3xl mt-2 text-center text-white/90"
-                      style={{ fontFamily: "'Poppins', sans-serif", fontWeight: 400, lineHeight: '1.4' }}
-                    >
-                      Elegí el plan que mejor se adapte a vos
-                    </p>
+                  {/* Titulo */}
+                  <div className="text-center mb-4 md:mb-6">
+                    <h3 className="text-2xl md:text-4xl font-bold text-white tracking-wide">PLANES PREMEDIC</h3>
+                    <p className="text-base md:text-xl text-white/90 mt-1">7 planes pensados para cada etapa de tu vida</p>
+                    <p className="text-xs md:text-sm text-white/70 mt-2 max-w-2xl mx-auto">Elegí el plan que más se adapte a vos y tu familia. Todos nuestros planes te brindan cobertura médica de calidad y una amplia red de prestadores.</p>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mt-8 w-full">
-                    <p className="text-white/80 text-center col-span-full">Próximamente: planes de Grupo Premedic</p>
+
+                  {/* Tabla con scroll horizontal */}
+                  <div className="overflow-x-auto rounded-lg">
+                    <table className="w-full text-xs md:text-sm border-collapse">
+                      <thead>
+                        <tr className="bg-white/10">
+                          <th className="p-2 md:p-3 text-left text-white font-semibold sticky left-0 bg-[#077B7A] z-10 min-w-[120px]">COMPARATIVA DE PLANES</th>
+                          {premedicPlanes.map((plan) => (
+                            <th key={plan.id} className="p-2 md:p-3 text-center text-white font-semibold min-w-[80px] md:min-w-[100px]">
+                              <button 
+                                onClick={() => handleVerCobertura(plan.id)}
+                                className="hover:text-yellow-300 transition-colors cursor-pointer underline decoration-dotted underline-offset-2"
+                              >
+                                {plan.nombre}
+                              </button>
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {premedicFilas.map((fila, idx) => (
+                          <tr key={idx} className={idx % 2 === 0 ? 'bg-white/5' : 'bg-transparent'}>
+                            <td className="p-2 md:p-3 text-left text-white/90 font-medium sticky left-0 z-10 min-w-[120px]" style={{ backgroundColor: idx % 2 === 0 ? 'rgba(7,123,122,0.95)' : '#077B7A' }}>
+                              <div className="flex items-center gap-1.5">
+                                <fila.icono className="w-3.5 h-3.5 md:w-4 md:h-4 flex-shrink-0 text-white/70" />
+                                <span>{fila.label}</span>
+                              </div>
+                            </td>
+                            {premedicPlanes.map((plan) => {
+                              const valor = (fila.datos as any)[plan.id];
+                              return (
+                                <td key={plan.id} className="p-2 md:p-3 text-center text-white/80">
+                                  {valor === true ? <Check className="w-4 h-4 text-green-400 mx-auto" /> : 
+                                   valor === false ? <X className="w-4 h-4 text-red-400/60 mx-auto" /> : 
+                                   <span className="text-xs">{valor}</span>}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Nota */}
+                  <p className="text-xs text-white/50 text-center mt-4">Hacé clic en el nombre del plan para ver su cobertura detallada</p>
+                </div>
+              )}
+
+              {/* SECCION 2 DE PREMEDIC - COBERTURA DEL PLAN SELECCIONADO */}
+              {!isDoctored && n === 2 && planSeleccionado && (
+                <div className="max-w-7xl mx-auto w-full">
+                  <div className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center border-2 border-teal-200 bg-white">
+                    <div className="relative w-full max-w-3xl mx-auto rounded-2xl overflow-hidden">
+                      {planSeleccionado ? (
+                        <div className="p-6 md:p-8 bg-[#077B7A] rounded-2xl">
+                          <h4 className="text-xl md:text-2xl font-bold text-white mb-4">Cobertura - {premedicPlanes.find(p => p.id === planSeleccionado)?.nombre || planSeleccionado}</h4>
+                          <div className="space-y-2">
+                            {premedicFilas.map((fila, idx) => {
+                              const valor = (fila.datos as any)[planSeleccionado];
+                              return (
+                                <div key={idx} className="flex items-center justify-between border-b border-white/10 py-2">
+                                  <span className="text-sm text-white/80 flex items-center gap-2">
+                                    <fila.icono className="w-4 h-4 text-white/60" />
+                                    {fila.label}
+                                  </span>
+                                  <span className="text-sm text-white font-medium">
+                                    {valor === true ? 'Incluido' : valor === false ? 'No incluido' : valor}
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="w-full h-64 bg-gray-100 flex items-center justify-center rounded-2xl">
+                          <p className="text-gray-500 text-sm">Seleccioná un plan para ver su cobertura</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}
 
-              {/* SECCIONES 2 Y 3 DE PREMEDIC: Placeholder */}
-              {!isDoctored && n !== 1 && (
+              {/* SECCION 3 DE PREMEDIC: Placeholder */}
+              {!isDoctored && n === 3 && (
                 <div className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center bg-white/80 border-2 border-gray-200">
-                  <p className="text-center text-muted-foreground">Contenido de la sección {n} de {nombre}</p>
+                  <p className="text-center text-muted-foreground">Próximamente: buscador de prestadores de Premedic</p>
                 </div>
               )}
             </div>
