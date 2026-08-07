@@ -533,7 +533,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                   className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center min-h-[400px] md:min-h-[500px] max-w-7xl"
                   style={{ backgroundColor: '#077B7A' }}
                 >
-                  <div className="grid grid-cols-5 gap-3 md:gap-4 w-full max-w-4xl mx-auto">
+                  <div className="grid grid-cols-5 gap-4 w-full">
                     {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
                       <div
                         key={i}
