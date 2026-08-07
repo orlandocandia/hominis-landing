@@ -447,8 +447,34 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                 </div>
               )}
 
-              {/* SECCIONES DE PREMEDIC: Placeholder */}
-              {!isDoctored && (
+              {/* SECCION 1 DE PREMEDIC - Con colores y tamano igual a DoctoRed */}
+              {!isDoctored && n === 1 && (
+                <div 
+                  className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center min-h-[600px] md:min-h-[700px] max-w-7xl"
+                  style={{ backgroundColor: '#077B7A' }}
+                >
+                  <div className="text-center mb-6 md:mb-8">
+                    <h3 
+                      className="text-3xl md:text-5xl lg:text-6xl font-light text-center text-white"
+                      style={{ fontFamily: "'Poppins', sans-serif", lineHeight: '1.1' }}
+                    >
+                      Planes Grupo Premedic
+                    </h3>
+                    <p 
+                      className="text-xl md:text-2xl lg:text-3xl mt-2 text-center text-white/90"
+                      style={{ fontFamily: "'Poppins', sans-serif", fontWeight: 400, lineHeight: '1.4' }}
+                    >
+                      Elegí el plan que mejor se adapte a vos
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mt-8 w-full">
+                    <p className="text-white/80 text-center col-span-full">Próximamente: planes de Grupo Premedic</p>
+                  </div>
+                </div>
+              )}
+
+              {/* SECCIONES 2 Y 3 DE PREMEDIC: Placeholder */}
+              {!isDoctored && n !== 1 && (
                 <div className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center bg-white/80 border-2 border-gray-200">
                   <p className="text-center text-muted-foreground">Contenido de la sección {n} de {nombre}</p>
                 </div>
