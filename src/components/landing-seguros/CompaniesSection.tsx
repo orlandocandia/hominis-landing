@@ -331,7 +331,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                   {isDoctored && n === 1 ? 'Precios sanos, planes flexibles.' :
                    isDoctored && n === 2 ? 'Cobertura' :
                    isDoctored && n === 3 ? 'Cobertura en todo el país' :
-                   !isDoctored && n === 1 ? 'Planes Grupo Premedic' :
+                   !isDoctored && n === 1 ? 'PLANES PREMEDIC' :
                    !isDoctored && n === 2 ? 'Cobertura' :
                    'Alcance de cobertura'}
                 </h2>
@@ -339,10 +339,15 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                   {isDoctored && n === 1 ? 'Elegí el tuyo.' :
                    isDoctored && n === 2 ? (planSeleccionado ? `Plan ${planSeleccionado}` : 'Seleccioná un plan') :
                    isDoctored && n === 3 ? 'DoctoRed tiene más de 40.000 prestadores en todas las provincias' :
-                   !isDoctored && n === 1 ? 'Seleccioná el plan que mejor se adapte a vos' :
+                   !isDoctored && n === 1 ? '7 planes pensados para cada etapa de tu vida' :
                    !isDoctored && n === 2 ? (planSeleccionado ? `Plan ${planSeleccionado}` : 'Seleccioná un plan') :
                    'Conocé el alcance de tu plan'}
                 </p>
+                {!isDoctored && n === 1 && (
+                  <p className="mt-2 text-sm md:text-base text-muted-foreground text-center max-w-2xl mx-auto">
+                    Elegí el plan que más se adapte a vos y tu familia. Todos nuestros planes te brindan cobertura médica de calidad y una amplia red de prestadores.
+                  </p>
+                )}
               </div>
 
               {/* SECCION 1: DOCTORED - PLANES */}
@@ -480,13 +485,6 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                   className="rounded-lg p-4 md:p-8 mx-auto w-full flex flex-col justify-center min-h-[600px] md:min-h-[700px] max-w-7xl"
                   style={{ backgroundColor: '#077B7A' }}
                 >
-                  {/* Titulo */}
-                  <div className="text-center mb-4 md:mb-6">
-                    <h3 className="text-2xl md:text-4xl font-bold text-white tracking-wide">PLANES PREMEDIC</h3>
-                    <p className="text-base md:text-xl text-white/90 mt-1">7 planes pensados para cada etapa de tu vida</p>
-                    <p className="text-xs md:text-sm text-white/70 mt-2 max-w-2xl mx-auto">Elegí el plan que más se adapte a vos y tu familia. Todos nuestros planes te brindan cobertura médica de calidad y una amplia red de prestadores.</p>
-                  </div>
-
                   {/* Tabla con scroll horizontal */}
                   <div className="overflow-x-auto rounded-lg">
                     <table className="w-full text-xs md:text-sm border-collapse">
