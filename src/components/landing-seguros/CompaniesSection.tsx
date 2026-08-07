@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
-import { ArrowRight, Building2, MapPin, Star, Hospital, Bed, ClipboardList, Tooth, Phone, Home, Pill, Plane, Coins, RotateCcw, Award, Check, X } from 'lucide-react'
+import { ArrowRight, Building2, MapPin, Star, Hospital, Bed, ClipboardList, Smile, Phone, Home, Pill, Plane, Coins, RotateCcw, Award, Check, X } from 'lucide-react'
 import { useTranslation } from './useTranslation'
 import { AmarMascotasBenefit } from './AmarMascotasBenefit'
 import { MejorCuidadosBenefit } from './MejorCuidadosBenefit'
@@ -256,7 +256,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
     { label: 'Internación', icono: Hospital, datos: { 'aportes': true, 'simple': true, 'c100': true, '200': true, '300': true, '400': true, '500': true } },
     { label: 'Habitación', icono: Bed, datos: { 'aportes': 'Compartida', 'simple': 'Compartida', 'c100': 'Individual', '200': 'Individual', '300': 'Individual', '400': 'Individual c/baño', '500': 'Suite' } },
     { label: 'Cartilla médica', icono: ClipboardList, datos: { 'aportes': 'Amplia', 'simple': 'Amplia', 'c100': 'Amplia', '200': 'Amplia', '300': 'Muy amplia', '400': 'Muy amplia', '500': 'Nacional' } },
-    { label: 'Odontología', icono: Tooth, datos: { 'aportes': false, 'simple': true, 'c100': true, '200': true, '300': true, '400': true, '500': true } },
+    { label: 'Odontología', icono: Smile, datos: { 'aportes': false, 'simple': true, 'c100': true, '200': true, '300': true, '400': true, '500': true } },
     { label: 'Telemedicina', icono: Phone, datos: { 'aportes': false, 'simple': false, 'c100': true, '200': true, '300': true, '400': true, '500': true } },
     { label: 'Médico a domicilio', icono: Home, datos: { 'aportes': false, 'simple': false, 'c100': false, '200': true, '300': true, '400': true, '500': true } },
     { label: 'Medicamentos', icono: Pill, datos: { 'aportes': '40% desc.', 'simple': '40% desc.', 'c100': '40% desc.', '200': '50% desc.', '300': '50% desc.', '400': '60% desc.', '500': '70% desc.' } },
