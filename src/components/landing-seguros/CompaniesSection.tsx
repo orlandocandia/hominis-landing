@@ -527,31 +527,31 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                 </div>
               )}
 
-              {/* SECCION 2 DE PREMEDIC - 12 CARTELITOS */}
-              {!isDoctored && n === 2 && planSeleccionado && (
-                <div 
-                  className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center min-h-[400px] md:min-h-[500px] max-w-7xl"
-                  style={{ backgroundColor: '#077B7A' }}
-                >
-                  <div className="grid grid-cols-5 gap-4 w-full">
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
-                      <div
-                        key={i}
-                        className="aspect-square rounded-lg bg-white/10 border border-white/20 flex items-center justify-center"
-                      />
-                    ))}
-                    <div className="col-span-1">
-                      <div className="aspect-square rounded-lg bg-white/10 border border-white/20 flex items-center justify-center w-full" />
+              {/* SECCION 2 DE PREMEDIC - CARTELITOS DINAMICOS SEGUN PLAN */}
+              {!isDoctored && n === 2 && planSeleccionado && (() => {
+                const cantidadPorPlan: Record<string, number> = {
+                  'aportes': 11, 'simple': 11, 'c100': 8, '200': 11, '300': 10, '400': 12, '500': 12
+                }
+                const total = cantidadPorPlan[planSeleccionado] || 0
+                return (
+                  <div 
+                    className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center min-h-[400px] md:min-h-[500px] max-w-7xl"
+                    style={{ backgroundColor: '#077B7A' }}
+                  >
+                    <div className="grid grid-cols-5 gap-4 w-full">
+                      {Array.from({ length: total }, (_, i) => i + 1).map((num) => (
+                        <div
+                          key={num}
+                          className="aspect-square rounded-lg bg-white/10 border border-white/20 flex items-center justify-center w-full"
+                        />
+                      ))}
+                      {total < 12 && Array.from({ length: 12 - total }, (_, i) => (
+                        <div key={`empty-${i}`} className="aspect-square" />
+                      ))}
                     </div>
-                    <div className="col-span-1">
-                      <div className="aspect-square rounded-lg bg-white/10 border border-white/20 flex items-center justify-center w-full" />
-                    </div>
-                    <div className="col-span-1"></div>
-                    <div className="col-span-1"></div>
-                    <div className="col-span-1"></div>
                   </div>
-                </div>
-              )}
+                )
+              })()}
 
               {/* SECCION 3 DE PREMEDIC: Placeholder */}
               {!isDoctored && n === 3 && (
