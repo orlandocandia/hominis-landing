@@ -343,11 +343,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                    !isDoctored && n === 2 ? (planSeleccionado ? `Plan ${planSeleccionado}` : 'Seleccioná un plan') :
                    'Conocé el alcance de tu plan'}
                 </p>
-                {!isDoctored && n === 1 && (
-                  <p className="mt-2 text-sm md:text-base text-muted-foreground text-center max-w-2xl mx-auto">
-                    Elegí el plan que más se adapte a vos y tu familia. Todos nuestros planes te brindan cobertura médica de calidad y una amplia red de prestadores.
-                  </p>
-                )}
+
               </div>
 
               {/* SECCION 1: DOCTORED - PLANES */}
