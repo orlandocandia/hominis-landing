@@ -492,13 +492,11 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                         <tr className="bg-white/10">
                           <th className="p-2 md:p-3 text-left text-white font-semibold sticky left-0 bg-[#077B7A] z-10 min-w-[120px]">COMPARATIVA DE PLANES</th>
                           {premedicPlanes.map((plan) => (
-                            <th key={plan.id} className="p-2 md:p-3 text-center text-white font-semibold min-w-[80px] md:min-w-[100px]">
-                              <button 
-                                onClick={() => handleVerCobertura(plan.id)}
-                                className="hover:text-yellow-300 transition-colors cursor-pointer underline decoration-dotted underline-offset-2"
-                              >
+                            <th key={plan.id} className="p-2 md:p-3 text-center text-white font-semibold min-w-[80px] md:min-w-[100px] group cursor-pointer hover:bg-white/5 transition-colors" onClick={() => handleVerCobertura(plan.id)}>
+                              <span className="group-hover:text-yellow-300 group-hover:scale-105 inline-flex items-center gap-1 transition-all duration-200">
                                 {plan.nombre}
-                              </button>
+                                <ArrowRight className="w-3 h-3 text-white/60 group-hover:text-yellow-300 group-hover:translate-x-1 transition-all duration-200" />
+                              </span>
                             </th>
                           ))}
                         </tr>
