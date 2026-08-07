@@ -188,7 +188,6 @@ function CompanyCard({ company, empresaActiva, onToggle }: CompanyCardProps) {
           </div>
           <div className="text-center">
             <h3 className="text-base md:text-lg font-bold text-foreground">Una red médica que te acompaña en todo el país.</h3>
-            <p className="text-xs md:text-sm text-muted-foreground mt-1 max-w-2xl mx-auto">Contamos con una amplia red para que siempre tengas atención médica cerca de tu casa.</p>
           </div>
 
           {/* CARRUSEL de imágenes (logos de clínicas) - entre el texto gris y el botón */}
