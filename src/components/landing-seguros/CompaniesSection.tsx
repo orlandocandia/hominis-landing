@@ -332,7 +332,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                    isDoctored && n === 2 ? 'Cobertura' :
                    isDoctored && n === 3 ? 'Cobertura en todo el país' :
                    !isDoctored && n === 1 ? 'PLANES PREMEDIC' :
-                   !isDoctored && n === 2 ? 'Cobertura' :
+                   !isDoctored && n === 2 ? (planSeleccionado ? (premedicPlanes.find(p => p.id === planSeleccionado)?.nombre || 'Cobertura') : 'Cobertura') :
                    'Alcance de cobertura'}
                 </h2>
                 <p className="mt-2 text-sm md:text-base text-muted-foreground text-center max-w-xl mx-auto">
@@ -340,7 +340,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                    isDoctored && n === 2 ? (planSeleccionado ? `Plan ${planSeleccionado}` : 'Seleccioná un plan') :
                    isDoctored && n === 3 ? 'DoctoRed tiene más de 40.000 prestadores en todas las provincias' :
                    !isDoctored && n === 1 ? '7 planes pensados para cada etapa de tu vida' :
-                   !isDoctored && n === 2 ? (planSeleccionado ? `Plan ${planSeleccionado}` : 'Seleccioná un plan') :
+                   !isDoctored && n === 2 ? '7 planes pensados para cada etapa de tu vida' :
                    'Conocé el alcance de tu plan'}
                 </p>
 
@@ -527,36 +527,24 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                 </div>
               )}
 
-              {/* SECCION 2 DE PREMEDIC - COBERTURA DEL PLAN SELECCIONADO */}
+              {/* SECCION 2 DE PREMEDIC - 12 CARTELITOS */}
               {!isDoctored && n === 2 && planSeleccionado && (
-                <div className="max-w-7xl mx-auto w-full">
-                  <div className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center border-2 border-teal-200 bg-white">
-                    <div className="relative w-full max-w-3xl mx-auto rounded-2xl overflow-hidden">
-                      {planSeleccionado ? (
-                        <div className="p-6 md:p-8 bg-[#077B7A] rounded-2xl">
-                          <h4 className="text-xl md:text-2xl font-bold text-white mb-4">Cobertura - {premedicPlanes.find(p => p.id === planSeleccionado)?.nombre || planSeleccionado}</h4>
-                          <div className="space-y-2">
-                            {premedicFilas.map((fila, idx) => {
-                              const valor = (fila.datos as any)[planSeleccionado];
-                              return (
-                                <div key={idx} className="flex items-center justify-between border-b border-white/10 py-2">
-                                  <span className="text-sm text-white/80 flex items-center gap-2">
-                                    <fila.icono className="w-4 h-4 text-white/60" />
-                                    {fila.label}
-                                  </span>
-                                  <span className="text-sm text-white font-medium">
-                                    {valor === true ? 'Incluido' : valor === false ? 'No incluido' : valor}
-                                  </span>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="w-full h-64 bg-gray-100 flex items-center justify-center rounded-2xl">
-                          <p className="text-gray-500 text-sm">Seleccioná un plan para ver su cobertura</p>
-                        </div>
-                      )}
+                <div 
+                  className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center min-h-[400px] md:min-h-[500px] max-w-7xl"
+                  style={{ backgroundColor: '#077B7A' }}
+                >
+                  <div className="grid grid-cols-5 gap-3 md:gap-4 w-full max-w-4xl mx-auto">
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
+                      <div
+                        key={i}
+                        className="aspect-square rounded-lg bg-white/10 border border-white/20 flex items-center justify-center"
+                      />
+                    ))}
+                    <div className="col-start-2 col-span-1">
+                      <div className="aspect-square rounded-lg bg-white/10 border border-white/20 flex items-center justify-center" />
+                    </div>
+                    <div className="col-span-1">
+                      <div className="aspect-square rounded-lg bg-white/10 border border-white/20 flex items-center justify-center" />
                     </div>
                   </div>
                 </div>
