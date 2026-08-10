@@ -550,6 +550,19 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
 
                 const basePath = '/images/seguros/planporaportes-premedic'
 
+                const cartelitosC100 = [
+                  { icono: 'icono1.svg', imagen: 'imagen1.png', texto: 'Habitación Internación Compartida' },
+                  { icono: 'icono3.svg', imagen: 'imagen2.png', texto: 'Red odontológica propia' },
+                  { icono: 'icono3.svg', imagen: 'imagen3.png', texto: 'Psicología y Kinesioterapia' },
+                  { icono: 'icono4.svg', imagen: 'imagen4.png', texto: 'Médico por Videollamada' },
+                  { icono: 'icono5.svg', imagen: 'imagen5.png', texto: 'Ortodoncia con Arancel Preferencial' },
+                  { icono: 'icono6.svg', imagen: 'imagen6.png', texto: 'Programa de Bienestar' },
+                  { icono: 'icono7.svg', imagen: 'imagen7.png', texto: 'Prótesis implantes Odontológicos' },
+                  { icono: 'icono8.svg', imagen: 'imagene8.png', texto: 'Red de Ópticas con Descuento de 20% a 40%' },
+                ]
+
+                const basePathC100 = '/images/seguros/planc100-premedic'
+
                 return (
                   <div 
                     className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center min-h-[400px] md:min-h-[500px] max-w-7xl"
@@ -558,28 +571,31 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                     <div className="grid grid-cols-5 gap-4 w-full">
                       {Array.from({ length: total }, (_, i) => i).map((idx) => {
                         const isAportes = planSeleccionado === 'aportes' && cartelitosAportes[idx]
+                        const isC100 = planSeleccionado === 'c100' && cartelitosC100[idx]
+                        const cartelito = isAportes ? cartelitosAportes[idx] : isC100 ? cartelitosC100[idx] : null
+                        const currentBasePath = isAportes ? basePath : isC100 ? basePathC100 : ''
                         return (
                           <div
                             key={idx}
                             className="group relative aspect-square rounded-lg bg-white/10 border border-white/20 w-full overflow-hidden cursor-pointer"
                           >
-                            {isAportes ? (
+                            {cartelito ? (
                               <>
                                 {/* Estado normal: icono + texto */}
                                 <div className="absolute inset-0 flex flex-col items-center justify-center p-3 transition-opacity duration-300 group-hover:opacity-0">
                                   <img
-                                    src={`${basePath}/${cartelitosAportes[idx].icono}`}
+                                    src={`${currentBasePath}/${cartelito.icono}`}
                                     alt={`Icono ${idx + 1}`}
                                     className="w-8 h-8 md:w-10 md:h-10 mb-2"
                                   />
                                   <span className="text-white text-[10px] md:text-xs text-center font-medium leading-tight">
-                                    {cartelitosAportes[idx].texto}
+                                    {cartelito.texto}
                                   </span>
                                 </div>
                                 {/* Estado hover: imagen con fade */}
                                 <div className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                                   <Image
-                                    src={`${basePath}/${cartelitosAportes[idx].imagen}`}
+                                    src={`${currentBasePath}/${cartelito.imagen}`}
                                     alt={`Imagen ${idx + 1}`}
                                     fill
                                     className="object-cover"
