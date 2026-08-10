@@ -527,24 +527,73 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                 </div>
               )}
 
-              {/* SECCION 2 DE PREMEDIC - CARTELITOS DINAMICOS SEGUN PLAN */}
+              {/* SECCION 2 DE PREMEDIC - CARTELITOS INTERACTIVOS SEGUN PLAN */}
               {!isDoctored && n === 2 && planSeleccionado && (() => {
                 const cantidadPorPlan: Record<string, number> = {
                   'aportes': 11, 'simple': 11, 'c100': 8, '200': 11, '300': 10, '400': 12, '500': 12
                 }
                 const total = cantidadPorPlan[planSeleccionado] || 0
+
+                const cartelitosAportes = [
+                  { icono: 'icono1.svg', imagen: 'imagen1.png', texto: '+ 200 Clínicas y Sanatorios' },
+                  { icono: 'icono2.svg', imagen: 'imagen2.png', texto: '+ 1000 Centros Médicos y profesionales' },
+                  { icono: 'icono3.svg', imagen: 'imagen3.png', texto: 'Cuota 0, sólo con tu aporte, cobertura integral' },
+                  { icono: 'icono4.svg', imagen: 'imagen4.png', texto: 'Centros médicos propios' },
+                  { icono: 'icono5.svg', imagen: 'imagen5.png', texto: 'Red odontológica propia' },
+                  { icono: 'icono6.svg', imagen: 'imagen6.png', texto: 'Médico por Videollamada' },
+                  { icono: 'icono7.svg', imagen: 'imagen7.png', texto: 'Médico a domicilio sin cargo' },
+                  { icono: 'icono8.svg', imagen: 'imagen8.png', texto: 'Descuentos en amplia red de Farmacias' },
+                  { icono: 'icono9.svg', imagen: 'imagen9.png', texto: 'SIN coseguros en consultas Pediátricas, Clínicas y Ginecológicas' },
+                  { icono: 'icono10.svg', imagen: 'imagen10.png', texto: 'Asistencia al Viajero cobertura nacional y países limítrofes con Cardinal Assistance' },
+                  { icono: 'icono11.svg', imagen: 'imagen11.png', texto: 'Servicios de anticonceptivos a domicilio' },
+                ]
+
+                const basePath = '/images/seguros/planporaportes-premedic'
+
                 return (
                   <div 
                     className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center min-h-[400px] md:min-h-[500px] max-w-7xl"
                     style={{ backgroundColor: '#077B7A' }}
                   >
                     <div className="grid grid-cols-5 gap-4 w-full">
-                      {Array.from({ length: total }, (_, i) => i + 1).map((num) => (
-                        <div
-                          key={num}
-                          className="aspect-square rounded-lg bg-white/10 border border-white/20 flex items-center justify-center w-full"
-                        />
-                      ))}
+                      {Array.from({ length: total }, (_, i) => i).map((idx) => {
+                        const isAportes = planSeleccionado === 'aportes' && cartelitosAportes[idx]
+                        return (
+                          <div
+                            key={idx}
+                            className="group relative aspect-square rounded-lg bg-white/10 border border-white/20 w-full overflow-hidden cursor-pointer"
+                          >
+                            {isAportes ? (
+                              <>
+                                {/* Estado normal: icono + texto */}
+                                <div className="absolute inset-0 flex flex-col items-center justify-center p-3 transition-opacity duration-300 group-hover:opacity-0">
+                                  <img
+                                    src={`${basePath}/${cartelitosAportes[idx].icono}`}
+                                    alt={`Icono ${idx + 1}`}
+                                    className="w-8 h-8 md:w-10 md:h-10 mb-2"
+                                  />
+                                  <span className="text-white text-[10px] md:text-xs text-center font-medium leading-tight">
+                                    {cartelitosAportes[idx].texto}
+                                  </span>
+                                </div>
+                                {/* Estado hover: imagen con fade */}
+                                <div className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                  <Image
+                                    src={`${basePath}/${cartelitosAportes[idx].imagen}`}
+                                    alt={`Imagen ${idx + 1}`}
+                                    fill
+                                    className="object-cover"
+                                    sizes="(max-width: 768px) 20vw, 200px"
+                                    quality={85}
+                                  />
+                                </div>
+                              </>
+                            ) : (
+                              <div className="flex items-center justify-center w-full h-full" />
+                            )}
+                          </div>
+                        )
+                      })}
                       {total < 12 && Array.from({ length: 12 - total }, (_, i) => (
                         <div key={`empty-${i}`} className="aspect-square" />
                       ))}
