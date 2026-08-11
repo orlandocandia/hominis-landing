@@ -595,6 +595,21 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
 
                 const basePathPlan200 = '/images/seguros/plan200-premedic'
 
+                const cartelitosPlan300 = [
+                  { icono: 'icono1.png', imagen: 'imagen1.png', texto: 'Red odontológica propia' },
+                  { icono: 'icono2.svg', imagen: 'imagen2.png', texto: 'Habitación Internación Compartida' },
+                  { icono: 'icono3.svg', imagen: 'imagen3.png', texto: 'Amplia cartilla en CABA, la provincia de Buenos Aires, Córdoba, Tucumán, Misiones y Mendoza.' },
+                  { icono: 'icono4.svg', imagen: 'imagen4.png', texto: 'Centros médicos propios' },
+                  { icono: 'icono5.svg', imagen: 'imagen5.png', texto: 'Médico a domicilio sin cargo' },
+                  { icono: 'icono6.svg', imagen: 'imagen6.png', texto: 'Médico por Videollamada' },
+                  { icono: 'icono7.svg', imagen: 'imagen7.png', texto: 'Programa de Bienestar' },
+                  { icono: 'icono8.svg', imagen: 'imagen8.png', texto: 'Descuentos en amplia red de Farmacias' },
+                  { icono: 'icono9.svg', imagen: 'imagen9.png', texto: 'Asistencia al Viajero cobertura nacional y países limítrofes con Cardinal Assistance' },
+                  { icono: 'icono10.svg', imagen: 'imagen10.png', texto: 'Servicios de anticonceptivos a domicilio' },
+                ]
+
+                const basePathPlan300 = '/images/seguros/plan300-premedic'
+
                 return (
                   <div 
                     className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center min-h-[400px] md:min-h-[500px] max-w-7xl"
@@ -606,8 +621,9 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                         const isC100 = planSeleccionado === 'c100' && cartelitosC100[idx]
                         const isSimple = planSeleccionado === 'simple' && cartelitosSimple[idx]
                         const isPlan200 = planSeleccionado === '200' && cartelitosPlan200[idx]
-                        const cartelito = isAportes ? cartelitosAportes[idx] : isC100 ? cartelitosC100[idx] : isSimple ? cartelitosSimple[idx] : isPlan200 ? cartelitosPlan200[idx] : null
-                        const currentBasePath = isAportes ? basePath : isC100 ? basePathC100 : isSimple ? basePathSimple : isPlan200 ? basePathPlan200 : ''
+                        const isPlan300 = planSeleccionado === '300' && cartelitosPlan300[idx]
+                        const cartelito = isAportes ? cartelitosAportes[idx] : isC100 ? cartelitosC100[idx] : isSimple ? cartelitosSimple[idx] : isPlan200 ? cartelitosPlan200[idx] : isPlan300 ? cartelitosPlan300[idx] : null
+                        const currentBasePath = isAportes ? basePath : isC100 ? basePathC100 : isSimple ? basePathSimple : isPlan200 ? basePathPlan200 : isPlan300 ? basePathPlan300 : ''
                         return (
                           <div
                             key={idx}
