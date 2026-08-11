@@ -563,6 +563,22 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
 
                 const basePathC100 = '/images/seguros/planc100-premedic'
 
+                const cartelitosSimple = [
+                  { icono: 'icono1.svg', imagen: 'imagen1.png', texto: 'Centros médicos propios' },
+                  { icono: 'icono2.svg', imagen: 'imagen2.png', texto: 'Descuentos en amplia red de Farmacias' },
+                  { icono: 'icono3.svg', imagen: 'imagen3.png', texto: 'Médico por Videollamada' },
+                  { icono: 'icono4.svg', imagen: 'imagen4.png', texto: 'Programa de Bienestar' },
+                  { icono: 'icono5.svg', imagen: 'imagen5.png', texto: 'Servicios de anticonceptivos a domicilio' },
+                  { icono: 'icono6.svg', imagen: 'imagen6.png', texto: 'Red odontológica propia' },
+                  { icono: 'icono7.svg', imagen: 'imagen7.png', texto: 'Asistencia al Viajero cobertura nacional y países limítrofes con Cardinal Assistance' },
+                  { icono: 'icono8.svg', imagen: 'imagen8.png', texto: 'Red de Ópticas con Descuento de 20% a 40%' },
+                  { icono: 'icono9.png', imagen: 'imagen9.png', texto: 'Estudios y prácticas con arancel preferencial' },
+                  { icono: 'icono10.png', imagen: 'imagen10.png', texto: 'Urgencias y emergencias (no incluye internación)' },
+                  { icono: 'icono11.png', imagen: 'imgen11.png', texto: 'Todos los meses una consulta sin cargo' },
+                ]
+
+                const basePathSimple = '/images/seguros/plansimple-premedic'
+
                 return (
                   <div 
                     className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center min-h-[400px] md:min-h-[500px] max-w-7xl"
@@ -572,8 +588,9 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                       {Array.from({ length: total }, (_, i) => i).map((idx) => {
                         const isAportes = planSeleccionado === 'aportes' && cartelitosAportes[idx]
                         const isC100 = planSeleccionado === 'c100' && cartelitosC100[idx]
-                        const cartelito = isAportes ? cartelitosAportes[idx] : isC100 ? cartelitosC100[idx] : null
-                        const currentBasePath = isAportes ? basePath : isC100 ? basePathC100 : ''
+                        const isSimple = planSeleccionado === 'simple' && cartelitosSimple[idx]
+                        const cartelito = isAportes ? cartelitosAportes[idx] : isC100 ? cartelitosC100[idx] : isSimple ? cartelitosSimple[idx] : null
+                        const currentBasePath = isAportes ? basePath : isC100 ? basePathC100 : isSimple ? basePathSimple : ''
                         return (
                           <div
                             key={idx}
