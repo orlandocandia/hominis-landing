@@ -627,7 +627,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                         return (
                           <div
                             key={idx}
-                            className="group relative aspect-square rounded-lg border border-gray-200 w-full overflow-hidden cursor-pointer" style={{ backgroundColor: '#F8F8F8' }}
+                            className="group relative aspect-square rounded-lg bg-white/10 border border-white/20 w-full overflow-hidden cursor-pointer"
                           >
                             {cartelito ? (
                               <>
