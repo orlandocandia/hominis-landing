@@ -127,15 +127,37 @@ const websiteJsonLd = {
   description: 'Asesoramiento personalizado en planes de cobertura médica. Planes Vita Más y Aqua Más.',
 };
 
-// ScrollToTop: fuerza scroll al inicio al cargar/recargar la pagina
+// ScrollToTop: fuerza scroll al inicio al cargar/recargar la pagina.
+// El navegador, por defecto, restaura la posicion de scroll anterior al
+// recargar (F5 / Ctrl+Shift+R). Esto hace que vuelva a "Contactos" si el
+// usuario estaba ahi. Para evitarlo:
+//   1. Desactivamos la restauracion automatica con history.scrollRestoration='manual'
+//   2. Limpiamos cualquier hash (#contacto) de la URL
+//   3. Forzamos scroll a top:0 en varios momentos (parse, DOMContentLoaded, load)
+// El script va en <head> para ejecutarse lo antes posible, antes de que el
+// navegador intente restaurar el scroll.
 function ScrollToTop() {
-  return (
-    <script
-      dangerouslySetInnerHTML={{
-        __html: 'window.scrollTo(0, 0); if (window.location.hash) { window.history.replaceState(null, "", window.location.pathname); }'
-      }}
-    />
-  )
+  const script = `
+    (function() {
+      try {
+        if ('scrollRestoration' in history) {
+          history.scrollRestoration = 'manual';
+        }
+        if (window.location.hash) {
+          window.history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
+        window.scrollTo(0, 0);
+        document.addEventListener('DOMContentLoaded', function() {
+          window.scrollTo(0, 0);
+        });
+        window.addEventListener('load', function() {
+          window.scrollTo(0, 0);
+          setTimeout(function() { window.scrollTo(0, 0); }, 0);
+        });
+      } catch (e) {}
+    })();
+  `
+  return <script dangerouslySetInnerHTML={{ __html: script }} />
 }
 
 export default function RootLayout({
@@ -146,6 +168,10 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <head>
+        {/* ScrollToTop DEBE ir primero, antes que cualquier otro script,
+            para desactivar la restauracion automatica de scroll del navegador
+            antes de que intente restaurar la posicion anterior (Contactos). */}
+        <ScrollToTop />
         {/* Structured Data for Google Search - helps show photo and rich results */}
         <script
           type="application/ld+json"
@@ -164,7 +190,6 @@ export default function RootLayout({
         className={`${inter.variable} ${playfair.variable} antialiased bg-background text-foreground`}
         suppressHydrationWarning
       >
-        <ScrollToTop />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <I18nProvider>
             <AuthProvider>
