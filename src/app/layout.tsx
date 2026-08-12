@@ -127,6 +127,14 @@ const websiteJsonLd = {
   description: 'Asesoramiento personalizado en planes de cobertura médica. Planes Vita Más y Aqua Más.',
 };
 
+// ScrollToTop: fuerza scroll al inicio al cargar/recargar la pagina
+function ScrollToTop() {
+  if (typeof window !== 'undefined') {
+    window.scrollTo(0, 0)
+  }
+  return null
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -153,6 +161,7 @@ export default function RootLayout({
         className={`${inter.variable} ${playfair.variable} antialiased bg-background text-foreground`}
         suppressHydrationWarning
       >
+        <ScrollToTop />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <I18nProvider>
             <AuthProvider>
