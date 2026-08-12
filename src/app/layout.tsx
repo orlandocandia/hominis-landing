@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
@@ -129,9 +130,9 @@ const websiteJsonLd = {
 
 // ScrollToTop: fuerza scroll al inicio al cargar/recargar la pagina
 function ScrollToTop() {
-  if (typeof window !== 'undefined') {
-    window.scrollTo(0, 0)
-  }
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [])
   return null
 }
 
