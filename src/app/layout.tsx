@@ -132,7 +132,7 @@ function ScrollToTop() {
   return (
     <script
       dangerouslySetInnerHTML={{
-        __html: 'window.scrollTo(0, 0);'
+        __html: 'window.scrollTo(0, 0); if (window.location.hash) { window.history.replaceState(null, "", window.location.pathname); }'
       }}
     />
   )
