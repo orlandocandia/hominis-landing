@@ -596,7 +596,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                 const basePathPlan200 = '/images/seguros/plan200-premedic'
 
                 const cartelitosPlan300 = [
-                  { icono: 'icono1.png', imagen: 'imagen1.png', texto: 'Red odontológica propia' },
+                  { icono: 'icono1.svg', imagen: 'imagen1.png', texto: 'Red odontológica propia' },
                   { icono: 'icono2.svg', imagen: 'imagen2.png', texto: 'Habitación Internación Compartida' },
                   { icono: 'icono3.svg', imagen: 'imagen3.png', texto: 'Amplia cartilla en CABA, Buenos Aires y otras provincias.' },
                   { icono: 'icono4.svg', imagen: 'imagen4.png', texto: 'Centros médicos propios' },
