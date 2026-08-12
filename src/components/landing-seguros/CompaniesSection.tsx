@@ -581,7 +581,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
 
                 const cartelitosPlan200 = [
                   { icono: 'icono1.svg', imagen: 'imagen1.png', texto: 'Habitación Internación Compartida' },
-                  { icono: 'icono2.svg', imagen: 'imagen2.png', texto: 'Amplia cartilla en CABA, la provincia de Buenos Aires, Córdoba, Tucumán, Misiones y Mendoza.' },
+                  { icono: 'icono2.svg', imagen: 'imagen2.png', texto: 'Amplia cartilla en CABA, Buenos Aires y otras provincias.' },
                   { icono: 'icono3.svg', imagen: 'imagen3.png', texto: 'Centros médicos propios' },
                   { icono: 'icono4.svg', imagen: 'imagen4.png', texto: 'Red odontológica propia' },
                   { icono: 'icono5.svg', imagen: 'imagen5.png', texto: 'Médico por Videollamada' },
@@ -598,7 +598,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                 const cartelitosPlan300 = [
                   { icono: 'icono1.png', imagen: 'imagen1.png', texto: 'Red odontológica propia' },
                   { icono: 'icono2.svg', imagen: 'imagen2.png', texto: 'Habitación Internación Compartida' },
-                  { icono: 'icono3.svg', imagen: 'imagen3.png', texto: 'Amplia cartilla en CABA, la provincia de Buenos Aires, Córdoba, Tucumán, Misiones y Mendoza.' },
+                  { icono: 'icono3.svg', imagen: 'imagen3.png', texto: 'Amplia cartilla en CABA, Buenos Aires y otras provincias.' },
                   { icono: 'icono4.svg', imagen: 'imagen4.png', texto: 'Centros médicos propios' },
                   { icono: 'icono5.svg', imagen: 'imagen5.png', texto: 'Médico a domicilio sin cargo' },
                   { icono: 'icono6.svg', imagen: 'imagen6.png', texto: 'Médico por Videollamada' },
