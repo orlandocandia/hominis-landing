@@ -628,6 +628,24 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
 
                 const basePathPlan400 = '/images/seguros/plan400-premedic'
 
+                // Plan 500 — 12 cartelitos (todos .svg)
+                const cartelitosPlan500 = [
+                  { icono: 'icono1.svg', imagen: 'imagen1.png', texto: 'Habitación individual' },
+                  { icono: 'icono2.svg', imagen: 'imagen2.png', texto: 'Más de 5000 Sanatorios, centros médicos y profesionales de acceso directo en CABA, toda la provincia de Buenos Aires, Córdoba, Tucumán y Misiones y Mendoza' },
+                  { icono: 'icono3.svg', imagen: 'imagen3.png', texto: 'Centros médicos propios' },
+                  { icono: 'icono4.svg', imagen: 'imagen4.png', texto: 'Red odontológica propia' },
+                  { icono: 'icono5.svg', imagen: 'imagen5.png', texto: 'Descuentos en Implantes, Ortodoncia y estética dental' },
+                  { icono: 'icono6.svg', imagen: 'imagen6.png', texto: 'Cobertura en blanqueamientos y tratamientos para dejar de fumar' },
+                  { icono: 'icono7.svg', imagen: 'imagen7.png', texto: 'Médico a domicilio sin cargo' },
+                  { icono: 'icono8.svg', imagen: 'imagen8.png', texto: 'Médico por Videollamada' },
+                  { icono: 'icono9.svg', imagen: 'imagen9.png', texto: 'Programa de Bienestar' },
+                  { icono: 'icono10.svg', imagen: 'imagen10.png', texto: 'Descuentos en amplia red de Farmacias' },
+                  { icono: 'icono11.svg', imagen: 'imagen11.png', texto: 'Asistencia al Viajero cobertura nacional y países limítrofes con Cardinal Assistance' },
+                  { icono: 'icono12.svg', imagen: 'imagen12.png', texto: 'Servicios de anticonceptivos a domicilio' },
+                ]
+
+                const basePathPlan500 = '/images/seguros/plan500-premedic'
+
                 return (
                   <div 
                     className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center min-h-[400px] md:min-h-[500px] max-w-7xl"
@@ -641,8 +659,9 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                         const isPlan200 = planSeleccionado === '200' && cartelitosPlan200[idx]
                         const isPlan300 = planSeleccionado === '300' && cartelitosPlan300[idx]
                         const isPlan400 = planSeleccionado === '400' && cartelitosPlan400[idx]
-                        const cartelito = isAportes ? cartelitosAportes[idx] : isC100 ? cartelitosC100[idx] : isSimple ? cartelitosSimple[idx] : isPlan200 ? cartelitosPlan200[idx] : isPlan300 ? cartelitosPlan300[idx] : isPlan400 ? cartelitosPlan400[idx] : null
-                        const currentBasePath = isAportes ? basePath : isC100 ? basePathC100 : isSimple ? basePathSimple : isPlan200 ? basePathPlan200 : isPlan300 ? basePathPlan300 : isPlan400 ? basePathPlan400 : ''
+                        const isPlan500 = planSeleccionado === '500' && cartelitosPlan500[idx]
+                        const cartelito = isAportes ? cartelitosAportes[idx] : isC100 ? cartelitosC100[idx] : isSimple ? cartelitosSimple[idx] : isPlan200 ? cartelitosPlan200[idx] : isPlan300 ? cartelitosPlan300[idx] : isPlan400 ? cartelitosPlan400[idx] : isPlan500 ? cartelitosPlan500[idx] : null
+                        const currentBasePath = isAportes ? basePath : isC100 ? basePathC100 : isSimple ? basePathSimple : isPlan200 ? basePathPlan200 : isPlan300 ? basePathPlan300 : isPlan400 ? basePathPlan400 : isPlan500 ? basePathPlan500 : ''
                         return (
                           <div
                             key={idx}
