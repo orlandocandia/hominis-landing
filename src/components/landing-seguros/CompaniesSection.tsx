@@ -610,9 +610,9 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
 
                 const basePathPlan300 = '/images/seguros/plan300-premedic'
 
-                // Plan 400 — 12 cartelitos (icono1.png, resto .svg)
+                // Plan 400 — 12 cartelitos (todos .svg)
                 const cartelitosPlan400 = [
-                  { icono: 'icono1.png', imagen: 'imagen1.png', texto: 'Habitación individual' },
+                  { icono: 'icono1.svg', imagen: 'imagen1.png', texto: 'Habitación individual' },
                   { icono: 'icono2.svg', imagen: 'imagen2.png', texto: 'Más de 5000 sanatorios, centros médicos y profesionales en CABA, Buenos Aires, Córdoba, Tucumán, Misiones y Mendoza.' },
                   { icono: 'icono3.svg', imagen: 'imagen3.png', texto: 'Cobertura en internación y cirugía (Según PMO)' },
                   { icono: 'icono4.svg', imagen: 'imagen4.png', texto: 'Centros médicos propios' },
