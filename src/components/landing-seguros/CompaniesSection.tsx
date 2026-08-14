@@ -282,6 +282,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
   const [filtrosProvincia, setFiltrosProvincia] = useState('')
   const [filtrosEspecialidad, setFiltrosEspecialidad] = useState('')
   const [filtrosLocalidad, setFiltrosLocalidad] = useState('')
+  const [busquedaRealizada, setBusquedaRealizada] = useState(false)
 
   // Datos mock de prestadores (cartilla demo). Cubre todas las provincias y
   // especialidades expuestas en los filtros para que la busqueda devuelva
@@ -326,6 +327,15 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
       )
     }
     setResultados(filtrados)
+    setBusquedaRealizada(true)
+  }
+
+  const limpiarFiltrosPremedic = () => {
+    setFiltrosProvincia('')
+    setFiltrosEspecialidad('')
+    setFiltrosLocalidad('')
+    setResultados([])
+    setBusquedaRealizada(false)
   }
 
   // Cargar metadatos al montar
@@ -843,9 +853,21 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                       {/* RESULTADOS */}
                       <div className="mt-4 space-y-3 max-h-96 overflow-y-auto pr-1">
                         {resultados.length === 0 ? (
-                          <div className="text-sm text-muted-foreground text-center py-8">
-                            <p>Seleccioná los filtros y presioná “Buscar prestadores”</p>
-                            <p className="text-xs mt-1">+1000 prestadores en toda Argentina</p>
+                          <div className="text-center py-8">
+                            {busquedaRealizada ? (
+                              <>
+                                <p className="text-lg font-medium text-foreground">No encontramos prestadores con esos filtros</p>
+                                <p className="text-sm text-muted-foreground mt-2">Probá con otros filtros o limpiá la búsqueda</p>
+                                <button onClick={limpiarFiltrosPremedic} className="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm">
+                                  Limpiar filtros
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <p className="text-sm text-muted-foreground">Seleccioná los filtros y presioná “Buscar prestadores”</p>
+                                <p className="text-xs text-muted-foreground mt-1">+1000 prestadores en toda Argentina</p>
+                              </>
+                            )}
                           </div>
                         ) : (
                           resultados.map((prestador, idx) => (
