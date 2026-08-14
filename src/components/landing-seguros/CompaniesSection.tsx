@@ -275,6 +275,59 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
   const [especialidadesLista, setEspecialidadesLista] = useState<string[]>([])
   const [mapaCentro, setMapaCentro] = useState<{ lat: number; lng: number } | null>(null)
 
+  // ========== BUSCADOR CARTILLA PREMEDIC (Seccion 3) ==========
+  // Estados propios del buscador de Premedic. Reutiliza `resultados` (ya declarado arriba)
+  // para no duplicar estado. La funcion se llama buscarPrestadoresPremedic para no
+  // chocar con buscarPrestadores (DoctoRed).
+  const [filtrosProvincia, setFiltrosProvincia] = useState('')
+  const [filtrosEspecialidad, setFiltrosEspecialidad] = useState('')
+  const [filtrosLocalidad, setFiltrosLocalidad] = useState('')
+
+  // Datos mock de prestadores (cartilla demo). Cubre todas las provincias y
+  // especialidades expuestas en los filtros para que la busqueda devuelva
+  // resultados variados. Reemplazar por cartilla real cuando este disponible.
+  const prestadoresMock = [
+    { id: 1, nombre: 'Premedic Medical Center', especialidad: 'Clínica Médica', direccion: 'Av. Rivadavia 1234', localidad: 'CABA', provincia: 'CABA', telefono: '011-4444-1111' },
+    { id: 2, nombre: 'Smile Group', especialidad: 'Odontología', direccion: 'Av. Santa Fe 2552', localidad: 'CABA', provincia: 'CABA', telefono: '011-4444-2222' },
+    { id: 3, nombre: 'Centro Multidiagnóstico Premedic', especialidad: 'Diagnóstico por Imágenes', direccion: 'Av. Corrientes 4857', localidad: 'CABA', provincia: 'CABA', telefono: '011-4444-3333' },
+    { id: 4, nombre: 'Instituto del Corazón Premedic', especialidad: 'Cardiología', direccion: 'Av. Cabildo 1500', localidad: 'CABA', provincia: 'CABA', telefono: '011-4444-4444' },
+    { id: 5, nombre: 'Hospital Privado Premedic Norte', especialidad: 'Pediatría', direccion: 'Av. Maipú 2000', localidad: 'Vicente López', provincia: 'Buenos Aires', telefono: '011-4555-1111' },
+    { id: 6, nombre: 'Centro Ginecológico Premedic', especialidad: 'Ginecología', direccion: 'San Martín 850', localidad: 'La Plata', provincia: 'Buenos Aires', telefono: '011-4555-2222' },
+    { id: 7, nombre: 'Traumato Premedic Sur', especialidad: 'Traumatología', direccion: 'Av. Hipólito Yrigoyen 3200', localidad: 'Lomas de Zamora', provincia: 'Buenos Aires', telefono: '011-4555-3333' },
+    { id: 8, nombre: 'Oftalmológica Premedic', especialidad: 'Oftalmología', direccion: 'Av. Meeks 410', localidad: 'Banfield', provincia: 'Buenos Aires', telefono: '011-4555-4444' },
+    { id: 9, nombre: 'Sanatorio Premedic Córdoba', especialidad: 'Clínica Médica', direccion: 'Av. Colón 1100', localidad: 'Córdoba', provincia: 'Córdoba', telefono: '0351-444-1111' },
+    { id: 10, nombre: 'Centro Odontológico Premedic Córdoba', especialidad: 'Odontología', direccion: 'Av. Vélez Sarsfield 1200', localidad: 'Córdoba', provincia: 'Córdoba', telefono: '0351-444-2222' },
+    { id: 11, nombre: 'Instituto Cardiológico Premedic Mendoza', especialidad: 'Cardiología', direccion: 'Av. San Martín 900', localidad: 'Mendoza', provincia: 'Mendoza', telefono: '0261-444-1111' },
+    { id: 12, nombre: 'Diagnóstico Premedic Mendoza', especialidad: 'Diagnóstico por Imágenes', direccion: 'Patricias Mendocinas 550', localidad: 'Mendoza', provincia: 'Mendoza', telefono: '0261-444-2222' },
+    { id: 13, nombre: 'Hospital Premedic Tucumán', especialidad: 'Pediatría', direccion: 'Av. Mate de Luna 2100', localidad: 'San Miguel de Tucumán', provincia: 'Tucumán', telefono: '0381-444-1111' },
+    { id: 14, nombre: 'Ginecología Premedic Tucumán', especialidad: 'Ginecología', direccion: 'Av. Alem 1200', localidad: 'San Miguel de Tucumán', provincia: 'Tucumán', telefono: '0381-444-2222' },
+    { id: 15, nombre: 'Sanatorio Premedic Misiones', especialidad: 'Traumatología', direccion: 'Av. Roque Pérez 800', localidad: 'Posadas', provincia: 'Misiones', telefono: '0376-444-1111' },
+    { id: 16, nombre: 'Clínica Premedic Santa Fe', especialidad: 'Clínica Médica', direccion: 'Av. Aristóbulo del Valle 2200', localidad: 'Rosario', provincia: 'Santa Fe', telefono: '0341-444-1111' },
+    { id: 17, nombre: 'Oftalmología Premedic Santa Fe', especialidad: 'Oftalmología', direccion: 'San Lorenzo 1400', localidad: 'Santa Fe', provincia: 'Santa Fe', telefono: '0342-444-1111' },
+    { id: 18, nombre: 'Centro Médico Premedic CABA', especialidad: 'Pediatría', direccion: 'Av. Pueyrredón 1800', localidad: 'CABA', provincia: 'CABA', telefono: '011-4444-5555' },
+  ]
+
+  // Funcion de busqueda para la cartilla de Premedic (filtra sobre prestadoresMock).
+  const buscarPrestadoresPremedic = () => {
+    let filtrados = prestadoresMock
+    if (filtrosProvincia) {
+      filtrados = filtrados.filter(p =>
+        p.provincia.toLowerCase().includes(filtrosProvincia.toLowerCase())
+      )
+    }
+    if (filtrosEspecialidad) {
+      filtrados = filtrados.filter(p =>
+        p.especialidad.toLowerCase().includes(filtrosEspecialidad.toLowerCase())
+      )
+    }
+    if (filtrosLocalidad.trim()) {
+      filtrados = filtrados.filter(p =>
+        p.localidad.toLowerCase().includes(filtrosLocalidad.trim().toLowerCase())
+      )
+    }
+    setResultados(filtrados)
+  }
+
   // Cargar metadatos al montar
   useEffect(() => {
     fetch('/api/prestadores?meta=true')
@@ -333,6 +386,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                    isDoctored && n === 3 ? 'Cobertura en todo el país' :
                    !isDoctored && n === 1 ? 'PLANES PREMEDIC' :
                    !isDoctored && n === 2 ? (planSeleccionado ? (premedicPlanes.find(p => p.id === planSeleccionado)?.nombre || 'Cobertura') : 'Cobertura') :
+                   !isDoctored && n === 3 ? 'Cartilla Médica' :
                    'Alcance de cobertura'}
                 </h2>
                 <p className="mt-2 text-sm md:text-base text-muted-foreground text-center max-w-xl mx-auto">
@@ -341,6 +395,7 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                    isDoctored && n === 3 ? 'DoctoRed tiene más de 40.000 prestadores en todas las provincias' :
                    !isDoctored && n === 1 ? '7 planes pensados para cada etapa de tu vida' :
                    !isDoctored && n === 2 ? '7 planes pensados para cada etapa de tu vida' :
+                   !isDoctored && n === 3 ? 'Visitá nuestros centros médicos propios' :
                    'Conocé el alcance de tu plan'}
                 </p>
 
@@ -706,10 +761,106 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                 )
               })()}
 
-              {/* SECCION 3 DE PREMEDIC: Placeholder */}
+              {/* SECCION 3 DE PREMEDIC - BUSCADOR CARTILLA MEDICA */}
               {!isDoctored && n === 3 && (
-                <div className="rounded-lg p-6 md:p-8 mx-auto w-full flex flex-col justify-center bg-white/80 border-2 border-gray-200">
-                  <p className="text-center text-muted-foreground">Próximamente: buscador de prestadores de Premedic</p>
+                <div className="max-w-7xl mx-auto w-full">
+                  <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+                    <div className="p-6 md:p-8">
+                      {/* Banner */}
+                      <div className="bg-green-50 rounded-lg p-4 mb-6 text-center border border-green-200">
+                        <p className="text-green-800 font-medium text-sm md:text-base">
+                          Nos apoyan +1000 sanatorios, centros médicos, profesionales en todo el país
+                        </p>
+                      </div>
+
+                      {/* FILTROS */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <label className="block text-xs font-medium text-foreground mb-1">Provincia</label>
+                          <select
+                            value={filtrosProvincia}
+                            onChange={(e) => setFiltrosProvincia(e.target.value)}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                          >
+                            <option value="">Todas</option>
+                            <option value="CABA">CABA</option>
+                            <option value="Buenos Aires">Buenos Aires</option>
+                            <option value="Córdoba">Córdoba</option>
+                            <option value="Mendoza">Mendoza</option>
+                            <option value="Tucumán">Tucumán</option>
+                            <option value="Misiones">Misiones</option>
+                            <option value="Santa Fe">Santa Fe</option>
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-medium text-foreground mb-1">Especialidad</label>
+                          <select
+                            value={filtrosEspecialidad}
+                            onChange={(e) => setFiltrosEspecialidad(e.target.value)}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                          >
+                            <option value="">Todas</option>
+                            <option value="Cardiología">Cardiología</option>
+                            <option value="Clínica Médica">Clínica Médica</option>
+                            <option value="Odontología">Odontología</option>
+                            <option value="Pediatría">Pediatría</option>
+                            <option value="Ginecología">Ginecología</option>
+                            <option value="Traumatología">Traumatología</option>
+                            <option value="Oftalmología">Oftalmología</option>
+                            <option value="Diagnóstico por Imágenes">Diagnóstico por Imágenes</option>
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-medium text-foreground mb-1">Localidad</label>
+                          <input
+                            type="text"
+                            placeholder="Escribí una localidad..."
+                            value={filtrosLocalidad}
+                            onChange={(e) => setFiltrosLocalidad(e.target.value)}
+                            onKeyDown={(e) => { if (e.key === 'Enter') buscarPrestadoresPremedic() }}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Botón Buscar */}
+                      <button
+                        onClick={buscarPrestadoresPremedic}
+                        className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 rounded-lg transition-colors shadow-md text-sm"
+                      >
+                        Buscar prestadores →
+                      </button>
+
+                      {/* Contador de resultados */}
+                      {resultados.length > 0 && (
+                        <p className="text-sm text-muted-foreground mt-4">
+                          {resultados.length} prestador{resultados.length === 1 ? '' : 'es'} encontrado{resultados.length === 1 ? '' : 's'}
+                        </p>
+                      )}
+
+                      {/* RESULTADOS */}
+                      <div className="mt-4 space-y-3 max-h-96 overflow-y-auto pr-1">
+                        {resultados.length === 0 ? (
+                          <div className="text-sm text-muted-foreground text-center py-8">
+                            <p>Seleccioná los filtros y presioná “Buscar prestadores”</p>
+                            <p className="text-xs mt-1">+1000 prestadores en toda Argentina</p>
+                          </div>
+                        ) : (
+                          resultados.map((prestador, idx) => (
+                            <div key={idx} className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow bg-white">
+                              <p className="font-bold text-foreground">{prestador.nombre}</p>
+                              <p className="text-sm text-green-600 font-medium">{prestador.especialidad}</p>
+                              <p className="text-sm text-muted-foreground mt-1">{prestador.direccion}</p>
+                              <p className="text-sm text-muted-foreground">{prestador.localidad}, {prestador.provincia}</p>
+                              <p className="text-sm text-muted-foreground">{prestador.telefono}</p>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
