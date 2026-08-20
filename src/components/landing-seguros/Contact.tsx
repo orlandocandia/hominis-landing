@@ -9,9 +9,10 @@ import { useTranslation } from './useTranslation'
 import { COMPANIES } from './companies'
 
 // Datos de contacto y redes sociales
-const WHATSAPP_NUMBER = '5493810000000'
-const WHATSAPP_DISPLAY = '+54 9 381 000-0000'
-const EMAIL = 'info@asesoradesalud.com.ar'
+const WHATSAPP_NUMBER = '541176199167'
+const WHATSAPP_DISPLAY = '+54 11 7619-9167'
+const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}`
+const EMAIL = 'asesoradesalud@gmail.com'
 const FACEBOOK_URL = 'https://facebook.com/tu-pagina'
 const FACEBOOK_DISPLAY = '/tu-pagina'
 const INSTAGRAM_URL = 'https://instagram.com/tu-perfil'
@@ -37,13 +38,14 @@ export function Contact() {
   // Links de contacto con dark: variants para modo oscuro
   const CONTACT_LINKS: ContactLink[] = [
     {
-      href: `tel:+${WHATSAPP_NUMBER}`,
+      href: WHATSAPP_URL,
       icon: Phone,
       iconColor: 'text-green-600 dark:text-green-400',
       bgClass: 'bg-green-50 dark:bg-green-950/30',
       hoverClass: 'hover:bg-green-100 dark:hover:bg-green-950/50',
       borderClass: 'border-green-200 dark:border-green-900/50',
       display: WHATSAPP_DISPLAY,
+      external: true,
     },
     {
       href: `mailto:${EMAIL}`,
