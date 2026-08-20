@@ -7,7 +7,7 @@ import { db } from '@/lib/db'
  */
 export async function getDemoUserId(): Promise<string | null> {
   const admin = await db.user.findFirst({
-    where: { role: 'ADMIN' },
+    where: { rol: 'ADMIN' },
     select: { id: true },
   })
   return admin?.id ?? null
