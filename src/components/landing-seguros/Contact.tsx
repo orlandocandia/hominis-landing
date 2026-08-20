@@ -12,7 +12,7 @@ import { COMPANIES } from './companies'
 const WHATSAPP_NUMBER = '541176199167'
 const WHATSAPP_DISPLAY = '+54 11 7619-9167'
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}`
-const EMAIL = 'asesoradesalud@gmail.com'
+const EMAIL = 'asesoradesalud.info@gmail.com'
 const FACEBOOK_URL = 'https://facebook.com/tu-pagina'
 const FACEBOOK_DISPLAY = '/tu-pagina'
 const INSTAGRAM_URL = 'https://instagram.com/tu-perfil'
