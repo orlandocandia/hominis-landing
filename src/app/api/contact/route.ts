@@ -12,14 +12,14 @@ export const dynamic = 'force-dynamic'
 // Se leen de variables de entorno:
 //   GMAIL_USER          -> cuenta de Gmail que ENVIA (asesoradesalud.info@gmail.com)
 //   GMAIL_APP_PASSWORD   -> contraseña de aplicacion de Google (16 caracteres)
-//   CONTACT_EMAIL        -> destino de las notificaciones (default = GMAIL_USER)
+//   EMAIL_TO        -> destino de las notificaciones (default = GMAIL_USER)
 //
 // Para produccion, setear estas 3 vars en Vercel (Settings -> Environment Variables).
 // ===================================================================
 const GMAIL_USER = process.env.GMAIL_USER || 'asesoradesalud.info@gmail.com'
 const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD || ''
 // Destino por defecto = la misma cuenta que envia (Gmail enviando a si mismo).
-const CONTACT_EMAIL = process.env.CONTACT_EMAIL || GMAIL_USER
+const EMAIL_TO = process.env.EMAIL_TO || GMAIL_USER
 
 interface ContactPayload {
   nombre?: string
@@ -33,7 +33,7 @@ interface ContactPayload {
 // Recibe el formulario de contacto de la landing de seguros.
 // Hace tres cosas (todas best-effort para que el lead nunca se pierda):
 //   1. Registra el lead en la tabla Contacto (visible en el dashboard).
-//   2. Envia un email a CONTACT_EMAIL via Gmail SMTP (si hay app password).
+//   2. Envia un email a EMAIL_TO via Gmail SMTP (si hay app password).
 //   3. Crea una notificacion para el admin (best-effort).
 export async function POST(request: Request) {
   try {
@@ -90,12 +90,12 @@ export async function POST(request: Request) {
         })
         const info = await transporter.sendMail({
           from: `Landing Asesora de Salud <${GMAIL_USER}>`,
-          to: CONTACT_EMAIL,
+          to: EMAIL_TO,
           replyTo: email, // el interesado, para que Agustina pueda responder directo
           subject: `Nuevo lead de la landing — ${nombre}`,
           html: renderEmailHtml({ nombre, telefono, email, empresa, mensaje, ip }),
         })
-        console.log('[contact] Email enviado:', info.messageId, '->', CONTACT_EMAIL)
+        console.log('[contact] Email enviado:', info.messageId, '->', EMAIL_TO)
         emailStatus = 'sent'
       } catch (emailErr) {
         console.error('Error enviando email de contacto via Gmail:', emailErr)
