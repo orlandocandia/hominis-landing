@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+
 import { Phone, Mail, Facebook, Instagram, Send, CheckCircle2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useTranslation } from './useTranslation'
@@ -30,6 +31,8 @@ interface ContactLink {
 export function Contact() {
   const { t } = useTranslation()
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
   // Links de contacto con dark: variants para modo oscuro
   const CONTACT_LINKS: ContactLink[] = [
@@ -73,17 +76,53 @@ export function Contact() {
     },
   ]
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setSubmitted(true)
-    e.currentTarget.reset()
-    setTimeout(() => setSubmitted(false), 5000)
+    setSubmitting(true)
+    setErrorMsg(null)
+
+    const form = e.currentTarget
+    const formData = new FormData(form)
+    const payload = {
+      nombre: String(formData.get('nombre') || ''),
+      telefono: String(formData.get('telefono') || ''),
+      email: String(formData.get('email') || ''),
+      empresa: String(formData.get('empresa') || ''),
+      mensaje: String(formData.get('mensaje') || ''),
+    }
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      const data = await res.json().catch(() => null)
+
+      if (!res.ok || !data?.ok) {
+        const msg =
+          data?.error ||
+          (res.status === 400
+            ? 'Faltan campos requeridos'
+            : 'No se pudo enviar el mensaje. Intentá de nuevo.')
+        throw new Error(msg)
+      }
+
+      // Exito: mostrar confirmacion y limpiar el form
+      setSubmitted(true)
+      form.reset()
+      setTimeout(() => setSubmitted(false), 6000)
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : 'Error inesperado al enviar.')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
     <section
       id="contacto"
-      className="w-full min-h-[calc(100vh-4rem)] flex items-start justify-center scroll-mt-16 bg-gradient-to-b from-white to-indigo-50/60"
+      className="w-full min-h-[calc(100vh-4rem)] flex items-start justify-center scroll-mt-16 bg-white dark:bg-background"
       aria-labelledby="contacto-title"
     >
       <div className="w-full max-w-5xl mx-auto px-4 py-12">
@@ -122,6 +161,16 @@ export function Contact() {
                 >
                   <CheckCircle2 className="h-4 w-4 shrink-0" />
                   {t('contacto.success')}
+                </div>
+              )}
+
+              {errorMsg && (
+                <div
+                  role="alert"
+                  className="flex items-start gap-2 rounded-md border border-red-200 bg-red-50 dark:border-red-900/40 dark:bg-red-950/20 p-3 text-sm text-red-700 dark:text-red-300"
+                >
+                  <span className="shrink-0 font-bold">!</span>
+                  <span>{errorMsg}</span>
                 </div>
               )}
 
@@ -206,10 +255,11 @@ export function Contact() {
 
               <Button
                 type="submit"
-                className="bg-gradient-to-r from-blue-600 to-cyan-500"
+                disabled={submitting}
+                className="bg-gradient-to-r from-blue-600 to-cyan-500 disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                <Send className="mr-2 h-4 w-4" />
-                {t('contacto.enviar')}
+                <Send className={`mr-2 h-4 w-4 ${submitting ? 'animate-pulse' : ''}`} />
+                {submitting ? 'Enviando…' : t('contacto.enviar')}
               </Button>
 
               {/* Texto legal debajo del botón */}
