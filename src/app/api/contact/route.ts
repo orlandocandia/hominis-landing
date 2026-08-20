@@ -1,18 +1,25 @@
 import { NextResponse } from 'next/server'
+import nodemailer from 'nodemailer'
 import { db } from '@/lib/db'
 import { getDemoUserId } from '@/lib/demo-user'
 
 export const dynamic = 'force-dynamic'
 
-// Destino por defecto del formulario de contacto de la landing de seguros.
-// Se puede sobreescribir con la variable de entorno CONTACT_EMAIL en Vercel.
-const CONTACT_EMAIL = process.env.CONTACT_EMAIL || 'asesoradesaludagustinacandia@gmail.com'
-
-// Remitente del email. Si no hay dominio verificado configurado, se usa el
-// dominio demo de Resend (onboarding@resend.dev), que solo entrega al dueno
-// de la cuenta de Resend. Para produccion, configurar RESEND_FROM con un
-// dominio verificado en Resend, ej: "Asesora de Salud <noreply@asesoradesalud.com.ar>"
-const RESEND_FROM = process.env.RESEND_FROM || 'Landing Asesora de Salud <onboarding@resend.dev>'
+// ===================================================================
+// CONFIGURACION DE EMAIL (Gmail SMTP con contraseña de aplicacion)
+// ===================================================================
+// Los credenciales NUNCA se hardcodean en el codigo (el repo es publico).
+// Se leen de variables de entorno:
+//   GMAIL_USER          -> cuenta de Gmail que ENVIA (asesoradesalud.info@gmail.com)
+//   GMAIL_APP_PASSWORD   -> contraseña de aplicacion de Google (16 caracteres)
+//   CONTACT_EMAIL        -> destino de las notificaciones (default = GMAIL_USER)
+//
+// Para produccion, setear estas 3 vars en Vercel (Settings -> Environment Variables).
+// ===================================================================
+const GMAIL_USER = process.env.GMAIL_USER || 'asesoradesalud.info@gmail.com'
+const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD || ''
+// Destino por defecto = la misma cuenta que envia (Gmail enviando a si mismo).
+const CONTACT_EMAIL = process.env.CONTACT_EMAIL || GMAIL_USER
 
 interface ContactPayload {
   nombre?: string
@@ -24,9 +31,9 @@ interface ContactPayload {
 
 // POST /api/contact
 // Recibe el formulario de contacto de la landing de seguros.
-// Hace dos cosas (ambas best-effort para que el lead nunca se pierda):
+// Hace tres cosas (todas best-effort para que el lead nunca se pierda):
 //   1. Registra el lead en la tabla Contacto (visible en el dashboard).
-//   2. Envia un email a CONTACT_EMAIL via Resend (si RESEND_API_KEY esta seteado).
+//   2. Envia un email a CONTACT_EMAIL via Gmail SMTP (si hay app password).
 //   3. Crea una notificacion para el admin (best-effort).
 export async function POST(request: Request) {
   try {
@@ -69,32 +76,33 @@ export async function POST(request: Request) {
       },
     })
 
-    // 2) Enviar email via Resend (best-effort: si falla, el lead ya esta guardado).
-    //    Solo se intenta si hay RESEND_API_KEY configurado.
+    // 2) Enviar email via Gmail SMTP + nodemailer (best-effort: si falla, el
+    //    lead ya esta guardado en la DB). Solo se intenta si hay app password.
     let emailStatus: 'sent' | 'skipped' | 'failed' = 'skipped'
-    if (process.env.RESEND_API_KEY) {
+    if (GMAIL_APP_PASSWORD) {
       try {
-        const { Resend } = await import('resend')
-        const resend = new Resend(process.env.RESEND_API_KEY)
-        const { error } = await resend.emails.send({
-          from: RESEND_FROM,
+        const transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: GMAIL_USER,
+            pass: GMAIL_APP_PASSWORD,
+          },
+        })
+        const info = await transporter.sendMail({
+          from: `Landing Asesora de Salud <${GMAIL_USER}>`,
           to: CONTACT_EMAIL,
           replyTo: email, // el interesado, para que Agustina pueda responder directo
           subject: `Nuevo lead de la landing — ${nombre}`,
           html: renderEmailHtml({ nombre, telefono, email, empresa, mensaje, ip }),
         })
-        if (error) {
-          console.error('Resend devolvio error:', error)
-          emailStatus = 'failed'
-        } else {
-          emailStatus = 'sent'
-        }
+        console.log('[contact] Email enviado:', info.messageId, '->', CONTACT_EMAIL)
+        emailStatus = 'sent'
       } catch (emailErr) {
-        console.error('Error enviando email de contacto:', emailErr)
+        console.error('Error enviando email de contacto via Gmail:', emailErr)
         emailStatus = 'failed'
       }
     } else {
-      console.warn('[contact] RESEND_API_KEY no configurado — lead guardado en DB pero email NO enviado')
+      console.warn('[contact] GMAIL_APP_PASSWORD no configurado — lead guardado en DB pero email NO enviado')
     }
 
     // 3) Notificacion para el admin del dashboard (best-effort, no rompe si falla)
