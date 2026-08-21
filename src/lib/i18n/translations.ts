@@ -42,6 +42,19 @@ export const translations: Record<Locale, TranslationDict> = {
     'footer.rights': 'Todos los derechos reservados.',
     'footer.powered': 'Panel de control Fase 3',
 
+    // Landing de Hominis (www.asesoradesalud.com.ar raiz)
+    'landing.nav.home': 'Inicio',
+    'landing.nav.about': 'Sobre Mí',
+    'landing.nav.plans': 'Planes',
+    'landing.nav.promotions': 'Promos',
+    'landing.nav.services': 'Servicios',
+    'landing.nav.contact': 'Contacto',
+    'landing.hero.title': 'Juro vivir a lo grande',
+    'landing.hero.titleHighlight': 'con Hominis',
+    'landing.hero.subtitle': 'Asesoría personalizada en planes de salud Hominis con más de 10 años de experiencia. Te ayudo a elegir entre Vita Más y Aqua Más, dos planes con la misma calidad médica y diferente forma de pagar.',
+    'landing.hero.cta': 'Solicitá tu asesoramiento',
+    'landing.plans.title': 'Elegí tu plan',
+
     // Landing de seguros
     'seguros.brand': 'Tu Asesora en Salud',
     'seguros.nav.inicio': 'Inicio',
