@@ -12,10 +12,10 @@ const WHATSAPP_NUMBER = '541176199167'
 const WHATSAPP_DISPLAY = '+54 11 7619-9167'
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}`
 const EMAIL = 'asesoradesalud.info@gmail.com'
-const FACEBOOK_URL = 'https://facebook.com/tu-pagina'
-const FACEBOOK_DISPLAY = '/tu-pagina'
-const INSTAGRAM_URL = 'https://instagram.com/tu-perfil'
-const INSTAGRAM_DISPLAY = '@tu-perfil'
+const FACEBOOK_URL = 'https://www.facebook.com/hominis'
+const FACEBOOK_DISPLAY = 'Hominis'
+const INSTAGRAM_URL = 'https://www.instagram.com/hominisok/'
+const INSTAGRAM_DISPLAY = '@hominisok (Próximamente)'
 
 interface ContactLink {
   href: string
@@ -246,13 +246,41 @@ export function Contact() {
             </div>
           </form>
 
-          {/* Datos de contacto + Redes + QR */}
-          <div className="flex flex-col gap-4">
-            <h3 className="text-lg font-bold text-foreground">
-              {t('contacto.datosTitle')}
+          {/* WhatsApp Directo + QR grande + datos — estilo Hominis (centrado, QR como foco) */}
+          <div className="flex flex-col items-center gap-4">
+            {/* Título */}
+            <h3 className="text-xl md:text-2xl font-bold text-foreground text-center">
+              WhatsApp Directo
             </h3>
 
-            <div className="flex flex-col gap-3">
+            {/* Texto arriba del QR */}
+            <p className="text-sm md:text-base font-medium text-foreground text-center">
+              Escaneá y escribí a Agustina
+            </p>
+
+            {/* QR grande */}
+            <div className="inline-block bg-white p-4 rounded-2xl border-2 border-[#077B7A]/30 shadow-lg">
+              <Image
+                src="/images/qr-contacto.png"
+                alt="WhatsApp +54 11 7619-9167"
+                width={224}
+                height={224}
+                className="object-contain"
+                style={{ width: '14rem', height: '14rem' }}
+                priority
+              />
+            </div>
+
+            {/* Texto abajo del QR */}
+            <p className="text-sm text-muted-foreground text-center">
+              Apretá con la cámara de tu celular
+            </p>
+
+            {/* Divider */}
+            <div className="w-full border-t border-border my-1" />
+
+            {/* Links de contacto */}
+            <div className="flex flex-col gap-3 w-full">
               {CONTACT_LINKS.map((link) => {
                 const Icon = link.icon
                 return (
@@ -272,25 +300,10 @@ export function Contact() {
               })}
             </div>
 
-            {/* Código QR */}
-            <div className="mt-4 pt-4 border-t border-border text-center">
-              <p className="text-sm font-medium text-foreground mb-3">
-                {t('contacto.qrTitle')}
-              </p>
-              <div className="inline-block bg-white p-3 rounded-xl border border-border shadow-sm">
-                <Image
-                  src="/images/qr-contacto.png"
-                  alt={t('contacto.qrTitle')}
-                  width={128}
-                  height={128}
-                  className="w-32 h-32 object-contain"
-                  style={{ width: '8rem', height: '8rem' }}
-                />
-              </div>
-              <p className="text-xs text-muted-foreground mt-3">
-                {t('contacto.qrSubtitle')}
-              </p>
-            </div>
+            {/* Texto al pie */}
+            <p className="text-sm md:text-base font-semibold text-[#077B7A] text-center mt-1">
+              WhatsApp +54 11 7619-9167
+            </p>
           </div>
         </div>
       </div>
