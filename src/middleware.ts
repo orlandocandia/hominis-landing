@@ -1,88 +1,45 @@
-// Middleware — subdomain redirect + role-based route protection
-// ──────────────────────────────────────────────────────────────────────
-import { withAuth } from 'next-auth/middleware';
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 
-// ─── Subdomain redirect ───
-// cotiza.asesoradesalud.com.ar → /seguros (rewrite, not redirect)
-function subdomainMiddleware(req: NextRequest): NextResponse | null {
-  const host = req.headers.get('host') || '';
-  const pathname = req.nextUrl.pathname;
+/**
+ * Middleware de la landing de seguros.
+ *
+ * Reescribe a la ruta `/seguros` (donde esta el formulario de contacto
+ * que envia emails a asesoradesalud.info@gmail.com) los siguientes hosts:
+ *
+ *   - cotiza.asesoradesalud.com.ar  (subdominio de seguros)
+ *   - www.cotiza.asesoradesalud.com.ar
+ *   - asesoradesalud.com.ar         (dominio apex)
+ *   - www.asesoradesalud.com.ar      (www del dominio apex)
+ *
+ * El dominio apex y su www apuntan a /seguros porque en page.tsx (raiz)
+ * vive el dashboard CRM, que NO tiene formulario de contacto. Reescribir
+ * (en vez de redirigir 301) mantiene la URL limpia en el navegador del
+ * usuario y evita una segunda peticion.
+ *
+ * El resto de las rutas pasan sin alteracion.
+ */
+export function middleware(req: NextRequest) {
+  const host = req.headers.get('host') ?? ''
+  // Normalizar: quitar puerto si lo hubiera
+  const hostname = host.split(':')[0].toLowerCase()
 
-  // If visiting cotiza subdomain at root, rewrite to /seguros
-  if ((host === 'cotiza.asesoradesalud.com.ar' || host === 'www.cotiza.asesoradesalud.com.ar') && pathname === '/') {
-    return NextResponse.rewrite(new URL('/seguros', req.url));
+  const shouldShowLanding =
+    hostname === 'cotiza.asesoradesalud.com.ar' ||
+    hostname === 'www.cotiza.asesoradesalud.com.ar' ||
+    hostname.startsWith('cotiza.') ||
+    hostname === 'asesoradesalud.com.ar' ||
+    hostname === 'www.asesoradesalud.com.ar'
+
+  if (shouldShowLanding && req.nextUrl.pathname !== '/seguros') {
+    const url = req.nextUrl.clone()
+    url.pathname = '/seguros'
+    return NextResponse.rewrite(url)
   }
 
-  return null;
-}
-
-// ─── Auth-based protection ───
-const authMiddleware = withAuth(
-  (req) => {
-    const role = req.nextauth.token?.role;
-    const path = req.nextUrl.pathname;
-    const isApi = path.startsWith('/api/');
-
-    // ─── ADMIN area ───
-    if (path.startsWith('/admin') || path.startsWith('/api/admin')) {
-      if (role !== 'ADMIN') {
-        if (isApi) return NextResponse.json({ error: 'Forbidden: se requiere rol ADMIN' }, { status: 403 });
-        const dest = role === 'VENDEDOR' ? '/vendedor' : '/login';
-        return NextResponse.redirect(new URL(dest, req.url));
-      }
-      return NextResponse.next();
-    }
-
-    // ─── VENDEDOR area ───
-    if (path.startsWith('/vendedor') || path.startsWith('/api/vendedor')) {
-      if (role !== 'VENDEDOR') {
-        if (isApi) return NextResponse.json({ error: 'Forbidden: se requiere rol VENDEDOR' }, { status: 403 });
-        const dest = role === 'ADMIN' ? '/admin' : '/login';
-        return NextResponse.redirect(new URL(dest, req.url));
-      }
-      return NextResponse.next();
-    }
-
-    return NextResponse.next();
-  },
-  {
-    pages: { signIn: '/login' },
-    callbacks: {
-      authorized: ({ token }) => !!token,
-    },
-  }
-);
-
-// ─── Combined middleware ───
-export default function middleware(req: NextRequest) {
-  // 1. Check subdomain first (no auth needed)
-  const subdomainResponse = subdomainMiddleware(req);
-  if (subdomainResponse) return subdomainResponse;
-
-  // 2. For protected routes, use auth middleware
-  const path = req.nextUrl.pathname;
-  if (
-    path.startsWith('/admin') ||
-    path.startsWith('/vendedor') ||
-    path.startsWith('/api/admin') ||
-    path.startsWith('/api/vendedor')
-  ) {
-    // @ts-expect-error - withAuth expects specific types
-    return authMiddleware(req);
-  }
-
-  return NextResponse.next();
+  return NextResponse.next()
 }
 
 export const config = {
-  matcher: [
-    '/',
-    '/admin/:path*',
-    '/vendedor/:path*',
-    '/api/admin/:path*',
-    '/api/vendedor/:path*',
-  ],
-};
-
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|images|api).*)'],
+}
