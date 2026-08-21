@@ -138,7 +138,7 @@ export function Contact() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           {/* Formulario */}
           <form
             onSubmit={handleSubmit}
@@ -263,10 +263,10 @@ export function Contact() {
               <Image
                 src="/images/qr-contacto.png"
                 alt="WhatsApp +54 11 7619-9167"
-                width={224}
-                height={224}
+                width={192}
+                height={192}
                 className="object-contain"
-                style={{ width: '14rem', height: '14rem' }}
+                style={{ width: '12rem', height: '12rem' }}
                 priority
               />
             </div>
