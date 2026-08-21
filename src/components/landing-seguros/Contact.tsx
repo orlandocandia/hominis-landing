@@ -283,7 +283,12 @@ export function Contact() {
             {/* Divider */}
             <div className="w-full border-t border-border my-1" />
 
-            {/* 6. QR (chico, centrado) */}
+            {/* Texto arriba del QR */}
+            <p className="text-sm md:text-base font-medium text-foreground text-center">
+              Escaneá con la cámara de tu celular y escribíme
+            </p>
+
+            {/* QR (chico, centrado) */}
             <div className="inline-block bg-white p-3 rounded-2xl border-2 border-[#077B7A]/30 shadow-lg">
               <Image
                 src="/images/qr-contacto.png"
@@ -296,19 +301,9 @@ export function Contact() {
               />
             </div>
 
-            {/* 7. Texto: Escaneá y escribí a Agustina */}
-            <p className="text-sm md:text-base font-medium text-foreground text-center">
-              Escaneá y escribí a Agustina
-            </p>
-
-            {/* 8. Texto: Apretá con la cámara de tu celular */}
-            <p className="text-sm text-muted-foreground text-center">
-              Apretá con la cámara de tu celular
-            </p>
-
-            {/* Texto al pie */}
-            <p className="text-sm md:text-base font-semibold text-[#077B7A] text-center mt-1">
-              WhatsApp +54 11 7619-9167
+            {/* Texto debajo del QR */}
+            <p className="text-sm md:text-base font-medium text-center">
+              💬 +54 11 7619-9167
             </p>
           </div>
         </div>
