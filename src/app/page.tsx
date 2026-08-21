@@ -23,7 +23,6 @@ import { LanguageSelector } from '@/components/language-selector'
 import { NotificationBell } from '@/components/notification-bell'
 import { useI18n } from '@/lib/i18n/provider'
 import { toast } from 'sonner'
-import { ContactSection } from '@/components/hominis/ContactSection'
 
 interface VendorMetrics {
   contacts: number
@@ -503,33 +502,15 @@ export default function EquipoPage() {
         )}
       </main>
 
-      {/* ===== Sección de Contacto (landing de Hominis) ===== */}
-      <ContactSection />
-
       {/* ===== Footer ===== */}
       <footer className="mt-auto border-t border-border bg-muted/30">
-        <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-center gap-3 px-4 py-5 text-xs text-muted-foreground sm:flex-row sm:justify-between sm:px-6">
-          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
-            <a
-              href="https://wa.me/541176199167"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 hover:text-foreground transition"
-            >
-              <Phone className="h-3.5 w-3.5 text-green-600 dark:text-green-400" aria-hidden />
-              +54 11 7619-9167
-            </a>
-            <a
-              href="mailto:asesoradesalud.info@gmail.com"
-              className="flex items-center gap-1.5 hover:text-foreground transition"
-            >
-              <Mail className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" aria-hidden />
-              asesoradesalud.info@gmail.com
-            </a>
-          </div>
+        <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-2 px-4 py-5 text-xs text-muted-foreground sm:flex-row sm:px-6">
+          <p>
+            © {new Date().getFullYear()} {t('app.title')} — {t('footer.rights')}
+          </p>
           <p className="flex items-center gap-1.5">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden />
-            © {new Date().getFullYear()} {t('app.title')} — {t('footer.powered')}
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            {t('footer.powered')}
           </p>
         </div>
       </footer>
