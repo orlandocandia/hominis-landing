@@ -138,11 +138,11 @@ export function Contact() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
           {/* Formulario */}
           <form
             onSubmit={handleSubmit}
-            className="flex flex-col rounded-xl border border-border bg-card overflow-hidden min-w-0"
+            className="flex flex-col h-full rounded-xl border border-border bg-card overflow-hidden min-w-0"
             aria-label={t('contacto.formTitle')}
           >
             {/* Título con fondo de color */}
@@ -247,7 +247,7 @@ export function Contact() {
           </form>
 
           {/* WhatsApp Directo + QR grande + datos — contenedor profesional (shadow, rounded, padding) */}
-          <div className="flex flex-col items-center gap-4 bg-white dark:bg-card shadow-lg rounded-2xl p-8 md:p-10 border border-border">
+          <div className="flex flex-col items-center gap-4 h-full justify-center bg-white dark:bg-card shadow-lg rounded-2xl p-8 md:p-10 border border-border">
             {/* Título */}
             <h3 className="text-xl md:text-2xl font-bold text-foreground text-center">
               WhatsApp Directo
