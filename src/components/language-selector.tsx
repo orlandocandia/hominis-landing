@@ -25,30 +25,21 @@ const I18nContext = createContext<I18nContextValue>({
   setLocale: () => {},
 });
 
-// All translations loaded upfront (no async per-key fetch)
+// All translations loaded upfront synchronously (imported from translations.ts).
+// No async fetch needed — translations are bundled at build time.
+import { translations as ALL_I18N } from '@/lib/i18n/translations';
+
 const ALL_TRANSLATIONS: Record<Locale, Record<string, any>> = {
-  es: {},
-  en: {},
-  pt: {},
+  es: ALL_I18N.es,
+  en: ALL_I18N.en,
+  pt: ALL_I18N.pt,
 };
 
-let translationsLoaded = false;
+let translationsLoaded = true;
 
 async function loadAllTranslations() {
-  if (translationsLoaded) return;
-  try {
-    const [es, en, pt] = await Promise.all([
-      fetch('/api/i18n/es').then((r) => r.json()),
-      fetch('/api/i18n/en').then((r) => r.json()),
-      fetch('/api/i18n/pt').then((r) => r.json()),
-    ]);
-    ALL_TRANSLATIONS.es = es;
-    ALL_TRANSLATIONS.en = en;
-    ALL_TRANSLATIONS.pt = pt;
-    translationsLoaded = true;
-  } catch (e) {
-    console.error('[i18n] Failed to load translations:', e);
-  }
+  // No-op: translations are already imported synchronously.
+  translationsLoaded = true;
 }
 
 // ─── Provider: wraps the app, holds locale state ───
@@ -74,16 +65,22 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     setLocaleState(newLocale);
   }, []);
 
-  // Translation function — looks up nested keys in the loaded translations
+  // Translation function — supports flat keys ('landing.hero.title')
+  // and nested keys ({landing:{hero:{title}}}).
   const t = useCallback(
     (key: string, params?: Record<string, string>) => {
       const translations = ALL_TRANSLATIONS[locale];
       if (!translations) return key;
-      const keys = key.split('.');
-      let value: any = translations;
-      for (const k of keys) {
-        value = value?.[k];
-        if (value === undefined) break;
+      // First try the flat key directly (translations.ts uses flat keys).
+      let value: any = translations[key];
+      // Fallback to nested lookup (for nested dictionaries).
+      if (value === undefined) {
+        const keys = key.split('.');
+        value = translations as any;
+        for (const k of keys) {
+          value = value?.[k];
+          if (value === undefined) break;
+        }
       }
       if (typeof value === 'string' && params) {
         return value.replace(/\{(\w+)\}/g, (_, p) => params[p] || '');
