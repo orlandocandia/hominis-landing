@@ -6,7 +6,6 @@ import Image from 'next/image'
 import { Phone, Mail, Facebook, Instagram, Send, CheckCircle2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useTranslation } from './useTranslation'
-import { COMPANIES } from './companies'
 
 // Datos de contacto y redes sociales
 const WHATSAPP_NUMBER = '541176199167'
@@ -89,7 +88,6 @@ export function Contact() {
       nombre: String(formData.get('nombre') || ''),
       telefono: String(formData.get('telefono') || ''),
       email: String(formData.get('email') || ''),
-      empresa: String(formData.get('empresa') || ''),
       mensaje: String(formData.get('mensaje') || ''),
     }
 
@@ -217,29 +215,6 @@ export function Contact() {
                   placeholder="tu@email.com"
                   className="h-10 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label htmlFor="empresa" className="text-sm font-medium text-foreground">
-                  {t('contacto.empresa')} <span className="text-red-500">*</span>
-                </label>
-                <select
-                  id="empresa"
-                  name="empresa"
-                  required
-                  defaultValue=""
-                  className="h-10 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="" disabled>
-                    {t('contacto.empresaPlaceholder')}
-                  </option>
-                  {COMPANIES.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
-                  <option value="ambas">{t('contacto.empresaAmbas')}</option>
-                </select>
               </div>
 
               <div className="flex flex-col gap-1.5">
