@@ -227,9 +227,9 @@ export function Contact() {
                 <textarea
                   id="mensaje"
                   name="mensaje"
-                  rows={4}
+                  rows={5}
                   placeholder={t('contacto.mensajePlaceholder')}
-                  className="rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[120px]"
                 />
               </div>
 
@@ -249,40 +249,9 @@ export function Contact() {
             </div>
           </form>
 
-          {/* WhatsApp Directo + QR grande + datos — contenedor profesional (shadow, rounded, padding) */}
+          {/* WhatsApp Directo + QR + datos — contenedor profesional (shadow, rounded, padding) */}
           <div className="flex flex-col items-center gap-4 h-full justify-center bg-white dark:bg-card shadow-lg rounded-2xl p-8 md:p-10 border border-border">
-            {/* Título */}
-            <h3 className="text-xl md:text-2xl font-bold text-foreground text-center">
-              WhatsApp Directo
-            </h3>
-
-            {/* Texto arriba del QR */}
-            <p className="text-sm md:text-base font-medium text-foreground text-center">
-              Escaneá y escribí a Agustina
-            </p>
-
-            {/* QR grande */}
-            <div className="inline-block bg-white p-4 rounded-2xl border-2 border-[#077B7A]/30 shadow-lg">
-              <Image
-                src="/images/qr-contacto.png"
-                alt="WhatsApp +54 11 7619-9167"
-                width={192}
-                height={192}
-                className="object-contain"
-                style={{ width: '12rem', height: '12rem' }}
-                priority
-              />
-            </div>
-
-            {/* Texto abajo del QR */}
-            <p className="text-sm text-muted-foreground text-center">
-              Apretá con la cámara de tu celular
-            </p>
-
-            {/* Divider */}
-            <div className="w-full border-t border-border my-1" />
-
-            {/* Links de contacto */}
+            {/* Datos de contacto (primero) */}
             <div className="flex flex-col gap-3 w-full">
               {CONTACT_LINKS.map((link) => {
                 const Icon = link.icon
@@ -305,6 +274,37 @@ export function Contact() {
                 )
               })}
             </div>
+
+            {/* Divider */}
+            <div className="w-full border-t border-border my-1" />
+
+            {/* Título */}
+            <h3 className="text-xl md:text-2xl font-bold text-foreground text-center">
+              WhatsApp Directo
+            </h3>
+
+            {/* Texto arriba del QR */}
+            <p className="text-sm md:text-base font-medium text-foreground text-center">
+              Escaneá y escribí a Agustina
+            </p>
+
+            {/* QR (chico) */}
+            <div className="inline-block bg-white p-3 rounded-2xl border-2 border-[#077B7A]/30 shadow-lg">
+              <Image
+                src="/images/qr-contacto.png"
+                alt="WhatsApp +54 11 7619-9167"
+                width={144}
+                height={144}
+                className="object-contain"
+                style={{ width: '9rem', height: '9rem' }}
+                priority
+              />
+            </div>
+
+            {/* Texto abajo del QR */}
+            <p className="text-sm text-muted-foreground text-center">
+              Apretá con la cámara de tu celular
+            </p>
 
             {/* Texto al pie */}
             <p className="text-sm md:text-base font-semibold text-[#077B7A] text-center mt-1">
