@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic'
 // Se leen de variables de entorno:
 //   GMAIL_USER          -> cuenta de Gmail que ENVIA (asesoradesalud.info@gmail.com)
 //   GMAIL_APP_PASSWORD   -> contraseña de aplicacion de Google (16 caracteres)
-//   EMAIL_TO        -> destino de las notificaciones (default = GMAIL_USER)
+//   EMAIL_TO             -> destino de las notificaciones (default = GMAIL_USER)
 //
 // Para produccion, setear estas 3 vars en Vercel (Settings -> Environment Variables).
 // ===================================================================
@@ -25,117 +25,124 @@ interface ContactPayload {
   nombre?: string
   telefono?: string
   email?: string
-  empresa?: string
   mensaje?: string
 }
 
 // POST /api/contact
 // Recibe el formulario de contacto de la landing de seguros.
-// Hace tres cosas (todas best-effort para que el lead nunca se pierda):
-//   1. Registra el lead en la tabla Contacto (visible en el dashboard).
-//   2. Envia un email a EMAIL_TO via Gmail SMTP (si hay app password).
-//   3. Crea una notificacion para el admin (best-effort).
+// El flujo es best-effort en cada paso para que un fallo en la DB
+// (ej. tabla no migrada en Vercel) NUNCA impida que el email se envie.
+//   1. Guardar el lead en la tabla Contacto (best-effort, no rompe si falla).
+//   2. Enviar email a EMAIL_TO via Gmail SMTP (best-effort).
+//   3. Crear notificacion para el admin (best-effort).
 export async function POST(request: Request) {
+  const body = (await request.json().catch(() => null)) as ContactPayload | null
+  if (!body) {
+    return NextResponse.json({ error: 'Cuerpo de la petición inválido' }, { status: 400 })
+  }
+
+  const nombre = (body.nombre || '').trim()
+  const telefono = (body.telefono || '').trim()
+  const email = (body.email || '').trim().toLowerCase()
+  const mensaje = (body.mensaje || '').trim()
+
+  // Validacion de campos requeridos (coincide con los required del form).
+  // El campo "empresa" se elimino porque solo trabajamos con Premedic.
+  if (!nombre || !telefono || !email) {
+    return NextResponse.json(
+      { error: 'Faltan campos requeridos (nombre, telefono, email)' },
+      { status: 400 }
+    )
+  }
+
+  // IP del cliente (para auditoria del lead); respetando x-forwarded-for
+  const forwarded = request.headers.get('x-forwarded-for')
+  const ip = forwarded ? forwarded.split(',')[0].trim() : null
+
+  // 1) Registrar el lead en la tabla Contacto (legacy landing leads).
+  //    BEST-EFFORT: si la DB falla (ej. tabla no migrada en Vercel), el lead
+  //    no se guarda pero el email igual se envia (no rompemos el flujo).
+  let leadId: string | null = null
   try {
-    const body = (await request.json().catch(() => null)) as ContactPayload | null
-    if (!body) {
-      return NextResponse.json({ error: 'Cuerpo de la petición inválido' }, { status: 400 })
-    }
-
-    const nombre = (body.nombre || '').trim()
-    const telefono = (body.telefono || '').trim()
-    const email = (body.email || '').trim().toLowerCase()
-    const empresa = (body.empresa || '').trim()
-    const mensaje = (body.mensaje || '').trim()
-
-    // Validacion de campos requeridos (coincide con los required del form)
-    if (!nombre || !telefono || !email || !empresa) {
-      return NextResponse.json(
-        { error: 'Faltan campos requeridos (nombre, telefono, email, empresa)' },
-        { status: 400 }
-      )
-    }
-
-    // IP del cliente (para auditoria del lead); respetando x-forwarded-for
-    const forwarded = request.headers.get('x-forwarded-for')
-    const ip = forwarded ? forwarded.split(',')[0].trim() : null
-
-    // 1) Registrar el lead en la tabla Contacto (legacy landing leads).
-    //    segmento = empresa de interes, origen = landing, estado = NUEVO.
     const nuevoLead = await db.contacto.create({
       data: {
         nombre,
         email,
         telefono,
-        segmento: empresa,
+        segmento: 'premedic', // unico company disponible
         mensaje: mensaje || null,
-        cobertura: empresa, // duplicamos empresa de interes en cobertura para el CRM
         origen: 'landing-seguros',
         ip,
         estado: 'NUEVO',
       },
     })
+    leadId = nuevoLead.id
+  } catch (dbErr) {
+    // La DB no debe bloquear el envio del email. Se loggea para diagnostico.
+    console.error('[contact] Error guardando lead en DB (el email igual se enviara):', dbErr)
+  }
 
-    // 2) Enviar email via Gmail SMTP + nodemailer (best-effort: si falla, el
-    //    lead ya esta guardado en la DB). Solo se intenta si hay app password.
-    let emailStatus: 'sent' | 'skipped' | 'failed' = 'skipped'
-    if (GMAIL_APP_PASSWORD) {
-      try {
-        const transporter = nodemailer.createTransport({
-          service: 'gmail',
-          auth: {
-            user: GMAIL_USER,
-            pass: GMAIL_APP_PASSWORD,
-          },
-        })
-        const info = await transporter.sendMail({
-          from: `Landing Asesora de Salud <${GMAIL_USER}>`,
-          to: EMAIL_TO,
-          replyTo: email, // el interesado, para que Agustina pueda responder directo
-          subject: `Nuevo lead de la landing — ${nombre}`,
-          html: renderEmailHtml({ nombre, telefono, email, empresa, mensaje, ip }),
-        })
-        console.log('[contact] Email enviado:', info.messageId, '->', EMAIL_TO)
-        emailStatus = 'sent'
-      } catch (emailErr) {
-        console.error('Error enviando email de contacto via Gmail:', emailErr)
-        emailStatus = 'failed'
-      }
-    } else {
-      console.warn('[contact] GMAIL_APP_PASSWORD no configurado — lead guardado en DB pero email NO enviado')
-    }
-
-    // 3) Notificacion para el admin del dashboard (best-effort, no rompe si falla)
+  // 2) Enviar email via Gmail SMTP + nodemailer (best-effort).
+  //    Solo se intenta si hay app password configurada.
+  let emailStatus: 'sent' | 'skipped' | 'failed' = 'skipped'
+  if (GMAIL_APP_PASSWORD) {
     try {
-      const adminId = await getDemoUserId()
-      if (adminId) {
-        await db.notification.create({
-          data: {
-            userId: adminId,
-            type: 'CONTACT',
-            title: 'Nuevo lead de la landing',
-            message: `${nombre} (${email}) — empresa: ${empresa}`,
-            link: '/',
-          },
-        })
-      }
-    } catch (notifErr) {
-      // No rompemos el flujo si la notificacion falla (el lead ya esta guardado)
-      console.error('Error creando notificacion de contacto:', notifErr)
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: GMAIL_USER,
+          pass: GMAIL_APP_PASSWORD,
+        },
+      })
+      const info = await transporter.sendMail({
+        from: `Landing Asesora de Salud <${GMAIL_USER}>`,
+        to: EMAIL_TO,
+        replyTo: email, // el interesado, para que Agustina pueda responder directo
+        subject: `Nuevo lead de la landing — ${nombre}`,
+        html: renderEmailHtml({ nombre, telefono, email, mensaje, ip }),
+      })
+      console.log('[contact] Email enviado:', info.messageId, '->', EMAIL_TO)
+      emailStatus = 'sent'
+    } catch (emailErr) {
+      console.error('[contact] Error enviando email via Gmail:', emailErr)
+      emailStatus = 'failed'
     }
+  } else {
+    console.warn('[contact] GMAIL_APP_PASSWORD no configurado — email NO enviado')
+  }
 
-    return NextResponse.json({
-      ok: true,
-      id: nuevoLead.id,
-      email: emailStatus,
-    })
-  } catch (error) {
-    console.error('Error en POST /api/contact:', error)
+  // 3) Notificacion para el admin del dashboard (best-effort, no rompe si falla)
+  try {
+    const adminId = await getDemoUserId()
+    if (adminId) {
+      await db.notification.create({
+        data: {
+          userId: adminId,
+          type: 'CONTACT',
+          title: 'Nuevo lead de la landing',
+          message: `${nombre} (${email}) — tel: ${telefono}`,
+          link: '/',
+        },
+      })
+    }
+  } catch (notifErr) {
+    console.error('[contact] Error creando notificacion (no bloquea el envio):', notifErr)
+  }
+
+  // Si el email se envio correctamente, consideramos el envio exitoso aun si
+  // la DB fallo. Si el email fallo Y la DB fallo, ahi si devolvemos error.
+  if (emailStatus === 'failed' && !leadId) {
     return NextResponse.json(
-      { error: 'Error interno del servidor', detail: String(error) },
+      { error: 'No se pudo enviar el mensaje. Intentá de nuevo.' },
       { status: 500 }
     )
   }
+
+  return NextResponse.json({
+    ok: true,
+    id: leadId,
+    email: emailStatus,
+  })
 }
 
 // Plantilla HTML simple y legible para el email que recibe Agustina.
@@ -143,14 +150,12 @@ function renderEmailHtml({
   nombre,
   telefono,
   email,
-  empresa,
   mensaje,
   ip,
 }: {
   nombre: string
   telefono: string
   email: string
-  empresa: string
   mensaje: string
   ip: string | null
 }): string {
@@ -158,7 +163,6 @@ function renderEmailHtml({
     ['Nombre', nombre],
     ['Email', email],
     ['Teléfono', telefono],
-    ['Empresa de interés', empresa],
     ['Mensaje', mensaje || '(sin mensaje)'],
     ['IP de origen', ip || '(no disponible)'],
   ]
