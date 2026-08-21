@@ -11,14 +11,11 @@
 
 ### 1.1 ¿Qué es Hominis CRM?
 
-Hominis CRM es un sistema integral de gestión de clientes y ventas diseñado específicamente para asesores de salud. Permite captar clientes potenciales a través de un formulario en la landing pública, gestionar los leads de manera profesional, asignar tareas a vendedores, supervisar el equipo de ventas en tiempo real, y visualizar estadísticas y reportes actualizados al instante.
+Hominis CRM es un sistema integral de gestión de clientes y ventas diseñado específicamente para asesores de salud. El sistema permite captar clientes potenciales a través de un formulario en la landing pública, gestionar los leads de manera profesional con un panel de administración completo, asignar tareas a vendedores, supervisar el equipo de ventas en tiempo real, y visualizar estadísticas y reportes actualizados al instante.
 
 ### 1.2 ¿Para quién está pensado?
 
-El sistema está diseñado para dos tipos de usuarios:
-
-- **Administradores** (Agustina): Gestión completa del negocio — empresas, vendedores, leads, tareas, actividad y reportes.
-- **Vendedores**: Gestión de su trabajo diario — tareas asignadas, leads a contactar y perfil personal.
+El sistema está diseñado para dos tipos de usuarios. Los administradores (como Agustina) tienen acceso completo a todas las funcionalidades del sistema, incluyendo la gestión de empresas, vendedores, leads, tareas y reportes. Los vendedores tienen acceso a un panel personalizado donde pueden gestionar sus tareas asignadas, contactar leads por WhatsApp, y actualizar su perfil y contraseña.
 
 ### 1.3 Requisitos técnicos
 
@@ -31,11 +28,11 @@ El sistema está diseñado para dos tipos de usuarios:
 
 ### 1.4 Acceso al sistema
 
-**URL de acceso:** `https://www.asesoradesalud.com.ar/login`
+**URL de acceso:** https://www.asesoradesalud.com.ar/login
 
 | Rol | Email | Contraseña |
 |-----|-------|------------|
-| Administrador | `acandia@mphominis.com.ar` | `Hominis2025!` |
+| Administrador | acandia@mphominis.com.ar | Hominis2025! |
 | Vendedor | (creado por el administrador) | (asignada al crear) |
 
 ---
@@ -44,273 +41,214 @@ El sistema está diseñado para dos tipos de usuarios:
 
 ### 2.1 Estructura de la landing
 
-La landing pública es la página principal que ven los clientes potenciales. Está compuesta por nueve secciones que guían al visitante desde la presentación hasta el formulario de contacto.
+La landing pública es la página principal que ven los clientes potenciales cuando visitan el sitio web. Está compuesta por nueve secciones principales que guían al visitante desde la presentación inicial hasta el formulario de contacto.
 
-![Landing Pública — Página principal](/images/docs/landing/hero.png)
+### 2.2 Secciones de la landing
 
-*Imagen: Página principal de Hominis CRM con todas las secciones*
+**2.2.1 Header y navegación**
 
-### 2.2 Sección Inicio (Hero)
+El header superior contiene el logo de Hominis, links de navegación rápida (Inicio, Sobre Mí, Planes, Promos, Servicios, Sucursal, Contacto) y botones de selector de idioma y tema (claro/oscuro).
 
-Esta es la primera impresión del visitante. Incluye una foto de la asesora, el título "Tu bienestar, mi compromiso", una descripción de los servicios, un botón para solicitar asesoramiento, y estadísticas clave (clientes asesorados, años de experiencia, satisfacción).
+**2.2.2 Sección Inicio (Hero)**
 
-### 2.3 Sección Sobre Mí
+Esta es la primera impresión que tiene el visitante. Incluye una foto de la asesora, un título destacado ("Tu bienestar, mi compromiso"), una descripción de los servicios, y un botón de call-to-action para solicitar asesoramiento. También muestra estadísticas clave como clientes asesorados, años de experiencia y porcentaje de satisfacción.
+
+**2.2.3 Sección Sobre Mí**
 
 Presenta a Agustina C. Candia con una descripción profesional, sus características principales (atención personalizada, respuesta inmediata, asesoramiento gratuito) y una foto.
 
-### 2.4 Sección Planes
+**2.2.4 Sección Planes**
 
-Muestra una comparativa visual entre Vita Más (Premium: sin copagos, urgencias 24/7, odontología sin cargo, experiencia concierge) y Aqua Más (Ahorro: copagos flexibles, farmacia con descuento). Cada plan tiene un botón de contratación.
+Muestra una comparativa visual entre los dos planes disponibles: Vita Más (Premium, sin copagos, urgencias 24/7, odontología sin cargo, experiencia concierge) y Aqua Más (Ahorro, copagos flexibles, urgencias 24/7 sin copagos, farmacia con descuento). Cada plan tiene un botón de contratación.
 
-### 2.5 Sección Promociones
+**2.2.5 Sección Promociones**
 
-Descuentos escalonados para nuevos socios con débito automático, divididos en tres períodos (meses 1-3, 4-6, 7-12).
+Presenta los descuentos escalonados para nuevos socios que adhieran al débito automático, divididos en tres períodos (meses 1-3, 4-6, 7-12) con porcentajes diferenciados para Aqua Más y Vita Más.
 
-### 2.6 Sección Servicios Digitales
+**2.2.6 Sección Servicios Digitales**
 
-Describe beneficios adicionales: médico virtual por videollamada, asistencia al viajero y farmacia digital.
+Describe los beneficios adicionales como médico virtual (consultas por videollamada), asistencia al viajero, y farmacia digital.
 
-### 2.7 Sección Sucursal
+**2.2.7 Sección Sucursal**
 
-Ubicación física con mapa interactivo, horarios de atención y datos de contacto.
+Muestra la ubicación física con un mapa interactivo, horarios de atención y datos de contacto (teléfono, email, dirección).
 
-### 2.8 Formulario de Contacto
+**2.2.8 Formulario de Contacto**
 
-El formulario de contacto es la herramienta principal de captación de leads. Los campos son:
+El formulario de contacto es la herramienta principal de captación de leads. Cuando un cliente potencial completa y envía el formulario, sus datos se guardan automáticamente en la base de datos del CRM, se envía una notificación por email a la asesora, y el lead aparece inmediatamente en el panel de administración.
+
+Los campos del formulario son:
 
 | Campo | Obligatorio | Descripción |
 |-------|-------------|-------------|
 | Nombre completo | Sí | Nombre y apellido del cliente |
-| Email | Sí | Correo electrónico |
+| Email | Sí | Correo electrónico de contacto |
 | Teléfono/WhatsApp | Sí | Número de teléfono |
 | Situación laboral | Sí | Recibo de sueldo, Monotributo o Particular |
 | Edad | No | Edad del cliente |
-| Cobertura | No | CABA o GBA |
-| Mensaje | No | Consulta adicional |
+| Cobertura de interés | No | CABA o GBA |
+| Mensaje | No | Consulta adicional del cliente |
 
-**¿Qué pasa después de enviar el formulario?**
+**2.2.9 Footer**
 
-1. Los datos se guardan en la base de datos con estado "NUEVO"
-2. Se envía un email de notificación a la asesora
-3. El lead aparece en el panel de administración
-4. El cliente ve un mensaje de confirmación
+El footer contiene información legal, enlaces a redes sociales, y el copyright del sitio.
 
-### 2.9 Footer
+### 2.3 Cómo funciona el formulario de contacto
 
-Información legal, enlaces a redes sociales y copyright.
+Cuando un cliente completa el formulario, el sistema ejecuta automáticamente los siguientes pasos: primero, valida todos los campos obligatorios y sanitiza los datos para prevenir inyecciones. Luego, guarda la información en la base de datos con estado "NUEVO" y asigna el lead a la empresa Hominis. Inmediatamente después, envía un email de notificación a la asesora con todos los datos del cliente. También crea una notificación en el panel de administración para que el lead sea visible en la campanita de notificaciones. Finalmente, el cliente ve un mensaje de confirmación en pantalla.
+
+### 2.4 Notificaciones por email
+
+Cada vez que se recibe un nuevo lead desde el formulario, el sistema envía automáticamente un email a asesoradesalud.info@gmail.com con el nombre, email, teléfono y mensaje del cliente. Este email incluye un enlace directo al panel de administración para gestionar el lead.
 
 ---
 
 ## 3. Panel de Administración
 
-### 3.1 Acceso al panel (login)
+### 3.1 Acceso al panel
 
-Para acceder al panel, navegá a `https://www.asesoradesalud.com.ar/login`, ingresá tu email y contraseña, y hacé clic en "Ingresar".
+Para acceder al panel de administración, abrí tu navegador y navegá a https://www.asesoradesalud.com.ar/login. Ingresá tu email y contraseña en los campos correspondientes. Hacé clic en el botón "Ingresar". El sistema validará tus credenciales y te redirigirá automáticamente al panel de administración.
 
-![Página de Login](/images/docs/admin/login.png)
-
-*Imagen: Página de inicio de sesión del sistema*
-
-Si olvidaste tu contraseña, hacé clic en "¿Olvidaste tu contraseña?" para recibir un link de recuperación por email (válido por 1 hora).
+Si olvidaste tu contraseña, hacé clic en el enlace "¿Olvidaste tu contraseña?" debajo del formulario de login. Se abrirá una página donde podrás ingresar tu email para recibir un link de recuperación. El link será válido por una hora y te permitirá establecer una nueva contraseña.
 
 ### 3.2 Estructura del panel
 
-El panel tiene tres zonas: menú lateral izquierdo, header superior y área de contenido principal.
+El panel de administración tiene una estructura clara con tres zonas principales. El menú lateral izquierdo permite navegar entre las diferentes secciones del sistema. El header superior contiene información del usuario, notificaciones, selector de idioma, selector de tema y botón de cerrar sesión. El área principal muestra el contenido de la sección seleccionada.
 
 **Menú lateral:**
 
 | Opción | Descripción |
 |--------|-------------|
-| Mensajes | Gestión de leads recibidos |
-| Dashboard | Estadísticas generales |
-| Empresas | Gestión de empresas |
+| Mensajes | Gestión de leads recibidos desde la landing |
+| Dashboard | Estadísticas generales del sistema |
+| Empresas | Gestión de empresas del sistema |
 | Vendedores | Gestión de vendedores |
-| Equipo | Panel de control del equipo |
-| Tareas | Gestión de tareas |
-| Actividad | Historial de actividad |
-| Ayuda | Preguntas frecuentes |
+| Equipo | Panel de control del equipo de ventas |
+| Tareas | Gestión de tareas asignadas a vendedores |
+| Actividad | Historial completo de actividad |
+| Ayuda | Preguntas frecuentes y guía |
 
-### 3.3 Dashboard
+### 3.3 Sección: Dashboard
 
-El Dashboard muestra cinco estadísticas principales del sistema.
+El Dashboard es la primera pantalla que ve el administrador al iniciar sesión. Muestra cinco tarjetas de estadísticas con los principales indicadores del sistema. Total Leads muestra la cantidad total de mensajes recibidos desde la landing. Nuevos indica cuántos leads están en estado "Nuevo" sin atender. Atendidos muestra los leads que fueron marcados como atendidos. Conversión calcula el porcentaje de leads atendidos sobre el total. Vendedores muestra la cantidad de vendedores activos en el sistema.
 
-![Dashboard del Administrador](/images/docs/admin/dashboard.png)
-
-*Imagen: Dashboard con estadísticas de Total Leads, Nuevos, Atendidos, Conversión y Vendedores*
-
-| Métrica | Descripción |
-|---------|-------------|
-| Total Leads | Cantidad total de mensajes recibidos |
-| Nuevos | Leads en estado "Nuevo" |
-| Atendidos | Leads marcados como atendidos |
-| Conversión | Porcentaje de conversión |
-| Vendedores | Cantidad de vendedores activos |
-
-### 3.4 Mensajes (Leads)
+### 3.4 Sección: Mensajes (Leads)
 
 #### 3.4.1 Lista de mensajes
 
-La lista muestra todos los leads recibidos desde el formulario de contacto.
-
-![Lista de Mensajes](/images/docs/admin/leads-list.png)
-
-*Imagen: Tabla de mensajes con cliente, contacto, mensaje, estado y fecha*
+La lista de mensajes muestra todos los leads recibidos desde el formulario de contacto de la landing. Cada lead se muestra en una tabla con las siguientes columnas: un checkbox para selección, nombre del cliente con su segmento, email y teléfono, mensaje truncado, estado (Nuevo, Leído, Atendido, Rechazado) y fecha de recepción.
 
 #### 3.4.2 Filtros y búsqueda
 
-Hacé clic en "Filtros" para expandir el panel. Podés filtrar por estado, fecha (desde/hasta) y buscar por nombre, email o teléfono.
+El sistema permite filtrar los mensajes por estado (Nuevo, Leído, Atendido, Rechazado), por fecha (desde/hasta), y buscar por nombre, email o teléfono. Para aplicar filtros, hacé clic en el botón "Filtros" para expandir el panel de filtros, seleccioná los criterios deseados, y hacé clic en "Aplicar". Para limpiar los filtros, hacé clic en el botón con la X.
 
 #### 3.4.3 Acciones individuales
 
-| Acción | Ícono | Descripción |
-|--------|-------|-------------|
-| WhatsApp | 💬 | Abre WhatsApp Web con el número del cliente |
-| Marcar como leído | ✓ | Cambia el estado a "Leído" |
-| Eliminar | 🗑️ | Elimina el lead permanentemente |
-| Exportar | 📥 | Descarga los datos en formato JSON |
-| Imprimir | 🖨️ | Abre la ventana de impresión |
-| Expandir | 🔽 | Muestra el mensaje completo en la lista |
+Cada lead tiene un conjunto de acciones disponibles en la columna derecha de la tabla. El botón WhatsApp (verde) abre WhatsApp Web con el número del cliente ya cargado. El botón de marcar como leído (check) cambia el estado del lead a "Leído". El botón de eliminar (rojo) elimina permanentemente el lead. El botón de exportar (descargar) descarga los datos del lead en formato JSON. El botón de imprimir (impresora) abre una ventana de impresión con los datos del lead. El botón de expandir (flecha) muestra el mensaje completo del cliente sin salir de la lista.
 
 #### 3.4.4 Acciones masivas
 
-Seleccioná múltiples leads con los checkboxes y aparecerá una barra con: Marcar como leídos, Marcar como atendidos, Eliminar.
+Seleccionando múltiples leads con los checkboxes, aparece una barra de acciones masivas en la parte superior. Las acciones disponibles son: marcar como leídos (cambia el estado de todos los seleccionados a "Leído"), marcar como atendidos (cambia el estado a "Atendido"), y eliminar (elimina todos los seleccionados).
 
-#### 3.4.5 Exportar a Excel/PDF
+#### 3.4.5 Paginación
 
-- **📊 Excel**: Genera un archivo .xlsx con todos los leads filtrados
-- **📄 PDF**: Genera un documento PDF con tabla formateada
+La lista muestra 15 leads por página. Si hay más de 15 leads, aparecen controles de paginación en la parte inferior con botones de "Anterior" y "Siguiente", y un indicador de página actual sobre el total de páginas.
 
-#### 3.4.6 Paginación
+#### 3.4.6 Exportar a Excel/PDF
 
-La lista muestra 15 leads por página con controles de Anterior/Siguiente.
+El sistema permite exportar los leads filtrados a dos formatos. El botón "Excel" genera un archivo .xlsx con todas las columnas de los leads, incluyendo nombre, email, teléfono, mensaje, estado, segmento y fecha. El botón "PDF" genera un documento PDF con una tabla formateada de los leads, que se abre en una ventana de impresión del navegador.
 
-### 3.5 Empresas
+### 3.5 Sección: Empresas
 
 #### 3.5.1 Lista de empresas
 
-![Lista de Empresas](/images/docs/admin/companies-list.png)
-
-*Imagen: Tarjetas de empresas con nombre, estado, email, teléfono y dirección*
+La sección de empresas muestra todas las empresas registradas en el sistema en formato de tarjetas. Cada tarjeta muestra el nombre de la empresa, badge de estado (Activa/Inactiva), email, teléfono y dirección.
 
 #### 3.5.2 Crear nueva empresa
 
-Hacé clic en "Nueva Empresa" y completá: nombre, email, teléfono, dirección y checkbox de activa.
+Para crear una nueva empresa, hacé clic en el botón "Nueva Empresa". Se abrirá un formulario donde deberás completar: nombre de la empresa, email, teléfono, dirección y un checkbox para marcarla como activa. Hacé clic en "Crear" para guardar.
 
 #### 3.5.3 Editar empresa
 
-Hacé clic en el botón ✏️, modificá los campos y hacé clic en "Actualizar".
+Para editar una empresa existente, hacé clic en el botón de editar (lápiz) en la tarjeta de la empresa. Se abrirá el formulario con los datos actuales. Modificá los campos necesarios y hacé clic en "Actualizar".
 
 #### 3.5.4 Eliminar empresa
 
-Hacé clic en 🗑️. El sistema verificará si tiene vendedores asignados antes de desactivarla.
+Para eliminar una empresa, hacé clic en el botón de eliminar (papelera). El sistema verificará si la empresa tiene vendedores asignados. Si los tiene, no permitirá la eliminación y mostrará un mensaje indicando que se reasignen los vendedores primero. Si no tiene vendedores, la empresa será desactivada (soft-delete).
 
-### 3.6 Vendedores
+### 3.6 Sección: Vendedores
 
 #### 3.6.1 Lista de vendedores
 
-![Lista de Vendedores](/images/docs/admin/vendors-list.png)
-
-*Imagen: Tarjetas de vendedores con avatar, métricas y acciones*
-
-Cada tarjeta muestra: avatar, nombre, estado (Activo/Inactivo), email, teléfono, empresa, y tres métricas (Leads, Pendientes, Completadas).
+La lista de vendedores muestra todos los vendedores registrados en tarjetas individuales. Cada tarjeta contiene: avatar con iniciales del vendedor, nombre completo, badge de estado (Activo/Inactivo), email, teléfono, empresa asignada, y tres métricas (leads asignados, tareas pendientes, tareas completadas).
 
 #### 3.6.2 Crear nuevo vendedor
 
-Hacé clic en "Nuevo Vendedor" y completá: nombre completo, email (usuario), contraseña (mín. 6 caracteres), teléfono y empresa asignada.
+Para crear un nuevo vendedor, hacé clic en "Nuevo Vendedor". Completá los campos: nombre completo, email (que será su usuario de acceso), contraseña (mínimo 6 caracteres), teléfono, y empresa asignada. Al crear el vendedor, recibirá acceso inmediato al sistema con sus credenciales.
 
 #### 3.6.3 Activar/Desactivar vendedor
 
-Usá el botón Activar/Desactivar en cada tarjeta. Los inactivos no pueden iniciar sesión.
+Cada tarjeta de vendedor tiene un botón para activar o desactivar. Un vendedor activo puede iniciar sesión normalmente. Un vendedor inactivo no puede iniciar sesión pero sus datos se conservan en el sistema.
 
 #### 3.6.4 Eliminar vendedor
 
-Hacé clic en 🗑️. El sistema verifica si tiene leads o tareas asignadas antes de eliminar.
+Para eliminar un vendedor, hacé clic en el botón de eliminar. El sistema verificará si el vendedor tiene leads o tareas asignadas. Si los tiene, no permitirá la eliminación. Si no tiene dependencias, el vendedor será eliminado permanentemente.
 
 #### 3.6.5 Detalle del vendedor
 
-![Detalle de Vendedor](/images/docs/admin/vendors-detail.png)
+Al hacer clic en "Ver" en la tarjeta de un vendedor, se abre la página de detalle que muestra: avatar grande, nombre, estado, rol, datos de contacto completos (email, teléfono, empresa, fecha de alta), cuatro métricas (leads asignados, leads atendidos, tareas pendientes, tareas completadas) y botones de acciones rápidas para ver sus tareas y leads filtrados.
 
-*Imagen: Página de detalle con datos de contacto, 4 métricas y acciones rápidas*
+### 3.7 Sección: Equipo
 
-### 3.7 Equipo
+El panel de equipo muestra una vista general del equipo de ventas con tres tarjetas de estadísticas en la parte superior: cantidad de vendedores activos, total de leads en el sistema, y tareas pendientes. Debajo, se muestra el mismo grid de vendedores con sus métricas, pero con botones de acción rápida para ver tareas y leads de cada vendedor.
 
-![Panel de Equipo](/images/docs/admin/team-dashboard.png)
-
-*Imagen: Panel de control del equipo con estadísticas agregadas y grid de vendedores*
-
-Muestra tres estadísticas (Vendedores activos, Leads totales, Tareas pendientes) y el grid de vendedores con métricas y botones de acción rápida.
-
-### 3.8 Tareas
+### 3.8 Sección: Tareas
 
 #### 3.8.1 Lista de tareas
 
-![Lista de Tareas](/images/docs/admin/tasks-list.png)
-
-*Imagen: Tareas ordenadas por prioridad con badges de estado, tipo y vendedor asignado*
+La lista de tareas muestra todas las tareas del sistema ordenadas por prioridad (Alta primero) y fecha límite. Cada tarea muestra: ícono según el tipo (visita, llamada, WhatsApp, email, reunión, tarea), título, badges de estado y prioridad, descripción, vendedor asignado, fecha límite, y lead relacionado si existe.
 
 #### 3.8.2 Filtros y búsqueda
 
-Filtros disponibles: estado, tipo, prioridad, vendedor y búsqueda por título.
+Los filtros disponibles son: por estado (Pendiente, En progreso, Completada, Cancelada), por tipo, por prioridad (Alta, Media, Baja), por vendedor, y búsqueda por título.
 
 #### 3.8.3 Crear nueva tarea
 
-![Crear Nueva Tarea](/images/docs/admin/tasks-create.png)
-
-*Imagen: Formulario para crear tarea con título, descripción, tipo, prioridad, fecha y vendedor*
-
-Completá: título, descripción, tipo (Visita, Llamada, WhatsApp, Email, Reunión, Tarea), prioridad (Alta, Media, Baja), fecha límite obligatoria, vendedor asignado y lead relacionado (opcional). Al crear la tarea, el vendedor recibe una notificación automática.
+Para crear una tarea, hacé clic en "Nueva Tarea". Completá: título descriptivo, descripción con detalles, tipo de tarea, prioridad, fecha límite obligatoria, vendedor al que se asigna, y lead relacionado (opcional). Al crear la tarea, el vendedor recibe automáticamente una notificación en la campanita del sistema y un email de aviso.
 
 #### 3.8.4 Completar tarea
 
-Hacé clic en "Completar" en la tarjeta. El sistema cambia el estado, registra la fecha y crea un registro en el historial de actividad.
+Para marcar una tarea como completada, hacé clic en el botón "Completar" en la tarjeta de la tarea. El sistema cambia el estado a "Completada", registra la fecha de completado, y crea un registro en el historial de actividad.
 
-### 3.9 Actividad
+### 3.9 Sección: Actividad
 
-![Historial de Actividad](/images/docs/admin/activity-list.png)
+El historial de actividad muestra todas las acciones realizadas en el sistema en orden cronológico. Cada actividad muestra: ícono según el tipo de acción, nombre del usuario que realizó la acción, descripción de la acción, lead relacionado si aplica, nota si existe, tiempo relativo ("hace 2 horas") y fecha absoluta.
 
-*Imagen: Timeline de acciones con íconos, usuarios, descripciones y tiempo relativo*
+Los tipos de acciones registradas incluyen: creación de leads, cambios de estado, tareas completadas, envíos de WhatsApp, llamadas realizadas, emails enviados, visitas registradas, notas agregadas y reasignaciones de leads.
 
-Muestra todas las acciones del sistema: leads creados, estados cambiados, tareas completadas, WhatsApp enviados, etc. Filtros por acción, vendedor, búsqueda y fechas. Botón "Exportar CSV" para descargar el historial.
+Los filtros permiten buscar por tipo de acción, vendedor, texto libre y rango de fechas. El botón "Exportar CSV" descarga un archivo con todos los registros filtrados.
 
 ### 3.10 Configuración
 
 #### 3.10.1 Cambiar idioma
 
-Hacé clic en el selector de idioma (🌐) y seleccioná: Español, Inglés o Portugués. El cambio es instantáneo.
+El sistema soporta tres idiomas: Español (por defecto), Inglés y Portugués. Para cambiar el idioma, hacé clic en el selector de idioma (icono de globo) en el header y seleccioná el idioma deseado. El cambio es instantáneo.
 
 #### 3.10.2 Cambiar tema
 
-![Modo Oscuro](/images/docs/admin/theme-dark.png)
-
-*Imagen: Dashboard en modo oscuro*
-
-Hacé clic en el botón luna/sol (🌙/☀️) para alternar entre modo claro y oscuro.
+Para alternar entre modo claro y oscuro, hacé clic en el botón de luna/sol en el header. El cambio es instantáneo y se mantiene en futuras visitas.
 
 #### 3.10.3 Cerrar sesión
 
-Hacé clic en "Cerrar Sesión" en el header.
+Para cerrar sesión, hacé clic en el botón "Cerrar Sesión" en el header. Serás redirigido a la página de login.
 
 ### 3.11 Ayuda
 
-#### 3.11.1 Guía contextual
+El sistema incluye un botón de ayuda flotante (signo de pregunta) en la esquina inferior derecha de todas las páginas del dashboard. Al hacer clic, se abre un panel con dos pestañas.
 
-![Ayuda — Guía](/images/docs/admin/help-guide.png)
+La pestaña "Guía" muestra ayuda contextual según la sección donde te encuentres. Por ejemplo, si estás en Mensajes, mostrará cómo ver, filtrar y responder mensajes. Si estás en Tareas, mostrará cómo crear y gestionar tareas.
 
-*Imagen: Panel de ayuda con guía contextual según la sección actual*
-
-Hacé clic en el botón flotante ❓ abajo a la derecha. La pestaña "Guía" muestra ayuda específica de la sección donde te encontrás.
-
-#### 3.11.2 Chat con IA
-
-Cambiá a la pestaña "Chat IA" para hacer preguntas en lenguaje natural. El asistente responde con información del sistema según tu rol.
-
-### 3.12 Notificaciones
-
-![Notificaciones](/images/docs/admin/notifications.png)
-
-*Imagen: Campanita de notificaciones con lista de avisos*
-
-Hacé clic en la campanita del header para ver tus notificaciones (nuevas tareas, nuevos leads, etc.). Podés marcarlas como leídas individualmente o todas juntas.
+La pestaña "Chat IA" permite hacer preguntas en lenguaje natural. El asistente responde con información específica sobre el sistema según el rol del usuario (admin o vendedor).
 
 ---
 
@@ -318,63 +256,31 @@ Hacé clic en la campanita del header para ver tus notificaciones (nuevas tareas
 
 ### 4.1 Acceso al panel
 
-El vendedor accede desde la misma URL (`https://www.asesoradesalud.com.ar/login`) con sus credenciales. El sistema detecta el rol automáticamente y redirige al panel del vendedor.
+El vendedor accede al sistema desde la misma URL que el administrador: https://www.asesoradesalud.com.ar/login. Ingresa sus credenciales y el sistema detecta automáticamente su rol, redirigiéndolo al panel del vendedor.
 
 ### 4.2 Estructura del panel
 
-Menú lateral: Dashboard, Mis Tareas, Mis Leads, Mi Perfil, Ayuda.
+El panel del vendedor tiene la misma estructura que el del administrador pero con menos opciones. El menú lateral incluye: Dashboard, Mis Tareas, Mis Leads, Mi Perfil y Ayuda.
 
-### 4.3 Dashboard
+### 4.3 Sección: Dashboard
 
-![Dashboard del Vendedor](/images/docs/vendor/dashboard.png)
+El dashboard del vendedor muestra cuatro estadísticas personales: tareas pendientes, tareas completadas, leads asignados y leads atendidos. Debajo, muestra las últimas 5 tareas pendientes con título y fecha límite, y los últimos 5 leads asignados con nombre, teléfono y botón de WhatsApp directo.
 
-*Imagen: Dashboard con 4 estadísticas personales, últimas tareas y leads*
+### 4.4 Sección: Mis Tareas
 
-Muestra cuatro métricas: tareas pendientes, tareas completadas, leads asignados, leads atendidos. Debajo, las últimas 5 tareas pendientes y los últimos 5 leads con botón de WhatsApp directo.
+La lista de tareas del vendedor muestra solo las tareas asignadas a él. Cada tarea muestra título, estado, prioridad, fecha límite y lead relacionado. Los filtros permiten buscar por estado, prioridad y texto. El botón "Completar" permite marcar una tarea como finalizada.
 
-### 4.4 Mis Tareas
+### 4.5 Sección: Mis Leads
 
-![Mis Tareas](/images/docs/vendor/tasks-list.png)
+La lista de leads muestra solo los leads asignados al vendedor. Cada lead muestra nombre, estado, teléfono, email y mensaje si existe. Los filtros permiten buscar por estado y texto libre. El botón WhatsApp abre una conversación directa con el cliente. El dropdown de estado permite cambiar el progreso del lead (Nuevo, Leído, En contacto, Reunión, Presupuesto, Atendido, Rechazado).
 
-*Imagen: Lista de tareas asignadas al vendedor con filtros y botón Completar*
+### 4.6 Sección: Mi Perfil
 
-Muestra solo las tareas del vendedor, ordenadas por prioridad y fecha límite. Filtros por estado, prioridad y búsqueda. Botón "Completar" para marcar tareas como finalizadas.
-
-### 4.5 Mis Leads
-
-![Mis Leads](/images/docs/vendor/leads-list.png)
-
-*Imagen: Lista de leads con estado, contacto, mensaje y acciones de WhatsApp y cambio de estado*
-
-Muestra los leads asignados al vendedor. Cada lead tiene: nombre, estado, teléfono, email, mensaje y dos acciones: botón WhatsApp (abre conversación directa) y dropdown de estado (Nuevo, Leído, En contacto, Reunión, Presupuesto, Atendido, Rechazado).
-
-### 4.6 Mi Perfil
-
-![Mi Perfil](/images/docs/vendor/profile.png)
-
-*Imagen: Página de perfil con datos editables y cambio de contraseña*
-
-Permite editar nombre y teléfono (email y empresa no se pueden modificar). En la sección "Cambiar contraseña", ingresá la nueva contraseña dos veces y guardá. Dejá vacío para mantener la actual.
+La página de perfil permite al vendedor ver y editar sus datos personales. Los campos editables son: nombre completo y teléfono. El email y la empresa no se pueden modificar. En la sección de cambio de contraseña, el vendedor puede ingresar una nueva contraseña (mínimo 6 caracteres), confirmarla, y guardar los cambios.
 
 ### 4.7 Configuración
 
-Mismas opciones que el admin: cambio de idioma, tema claro/oscuro y cierre de sesión.
-
-### 4.8 Ayuda
-
-![Ayuda del Vendedor](/images/docs/vendor/help-guide.png)
-
-*Imagen: Panel de ayuda con guía contextual para el vendedor*
-
-Botón flotante ❓ con guía contextual y chat con IA, igual que en el panel admin pero con información específica para vendedores.
-
-### 4.9 Notificaciones
-
-![Notificaciones del Vendedor](/images/docs/vendor/notifications.png)
-
-*Imagen: Campanita de notificaciones del vendedor*
-
-El vendedor recibe notificaciones cuando se le asigna una nueva tarea o un nuevo lead. Hacé clic en la campanita para verlas y marcarlas como leídas.
+El vendedor tiene acceso a las mismas opciones de configuración que el administrador: cambio de idioma, cambio de tema (claro/oscuro), y cierre de sesión.
 
 ---
 
@@ -382,43 +288,31 @@ El vendedor recibe notificaciones cuando se le asigna una nueva tarea o un nuevo
 
 ### 5.1 Para administradores
 
-**¿Cómo puedo ver los mensajes de los clientes?**
-Los mensajes aparecen en la sección "Mensajes" del panel. Podés filtrarlos por estado, fecha y buscar por nombre o email.
+**¿Cómo puedo ver los mensajes de los clientes?** Los mensajes aparecen en la sección "Mensajes" del panel de administración. Podés filtrarlos por estado, segmento o fecha.
 
-**¿Cómo asigno una tarea a un vendedor?**
-En "Tareas", hacé clic en "Nueva Tarea", completá los datos y seleccioná el vendedor. Recibirá una notificación automática.
+**¿Cómo asigno una tarea a un vendedor?** En la sección "Tareas", hacé clic en "Nueva Tarea", completá los datos y seleccioná el vendedor en el campo "Asignar a". El vendedor recibirá una notificación automática.
 
-**¿Cómo contacto a un lead por WhatsApp?**
-Hacé clic en el botón verde de WhatsApp junto al lead. Se abrirá WhatsApp Web con el número del cliente.
+**¿Cómo contacto a un lead por WhatsApp?** En la lista de mensajes o leads, hacé clic en el botón verde de WhatsApp que aparece junto a cada registro. Se abrirá WhatsApp Web con el número del cliente ya cargado.
 
-**¿Cómo creo un nuevo vendedor?**
-En "Vendedores", hacé clic en "Nuevo Vendedor", completá sus datos y seleccioná la empresa.
+**¿Cómo creo un nuevo vendedor?** En la sección "Vendedores", hacé clic en "Nuevo Vendedor", completá sus datos y seleccioná la empresa a la que pertenece. El vendedor podrá iniciar sesión inmediatamente.
 
-**¿Cómo exporto los leads a Excel?**
-En "Mensajes", hacé clic en el botón "Excel". Se descargará un archivo con los leads filtrados.
+**¿Cómo exporto los leads a Excel?** En la sección "Mensajes", hacé clic en el botón verde "Excel". Se descargará un archivo Excel con todos los leads filtrados actualmente.
 
-**¿Cómo cambio el idioma?**
-Hacé clic en el selector de idioma (🌐) en el header y seleccioná el idioma.
+**¿Cómo cambio el idioma del sistema?** Hacé clic en el selector de idioma (icono de globo) en el header y seleccioná el idioma deseado: Español, Inglés o Portugués.
 
 ### 5.2 Para vendedores
 
-**¿Cómo veo mis tareas?**
-Andá a "Mis Tareas" en el menú lateral. Verás todas tus tareas ordenadas por prioridad.
+**¿Cómo veo mis tareas?** En el panel del vendedor, andá a la sección "Mis Tareas". Allí verás todas las tareas asignadas ordenadas por prioridad.
 
-**¿Cómo completo una tarea?**
-Hacé clic en "Completar" en la tarea correspondiente.
+**¿Cómo completo una tarea?** En "Mis Tareas", hacé clic en el botón "Completar" en la tarea correspondiente. La tarea cambiará a estado "Completada" automáticamente.
 
-**¿Cómo contacto a un lead?**
-En "Mis Leads", hacé clic en el botón "WhatsApp" junto al lead.
+**¿Cómo contacto a un lead?** En "Mis Leads", hacé clic en el botón "WhatsApp" junto al lead que querés contactar. Se abrirá WhatsApp Web con el número del cliente.
 
-**¿Cómo cambio el estado de un lead?**
-Usá el dropdown de estado junto a cada lead para actualizar su progreso.
+**¿Cómo cambio el estado de un lead?** En "Mis Leads", usá el dropdown de estado que aparece junto a cada lead para actualizar su progreso (Nuevo, Leído, En contacto, etc.).
 
-**¿Cómo edito mi perfil?**
-En "Mi Perfil", modificá los datos y hacé clic en "Guardar cambios".
+**¿Cómo edito mi perfil?** En "Mi Perfil", modificá los campos que quieras actualizar y hacé clic en "Guardar cambios".
 
-**¿Cómo cambio mi contraseña?**
-En "Mi Perfil", ingresá la nueva contraseña, confirmala y guardá.
+**¿Cómo cambio mi contraseña?** En "Mi Perfil", ingresá la nueva contraseña en el campo correspondiente, confirmala y hacé clic en "Guardar cambios".
 
 ---
 
@@ -426,15 +320,17 @@ En "Mi Perfil", ingresá la nueva contraseña, confirmala y guardá.
 
 ### 6.1 Contacto de soporte
 
+Si tenés algún problema con el sistema, podés contactar a:
+
 | Contacto | Detalle |
 |----------|---------|
-| Email | asesoradesaludagustinacandia@gmail.com |
-| Teléfono | 11-6555-5534 |
-| WhatsApp | wa.me/5491165555534 |
+| Email | asesoradesalud.info@gmail.com |
+| Teléfono | +54 11 7619-9167 |
+| WhatsApp | wa.me/541176199167 |
 
 ### 6.2 Reportar problemas
 
-Al reportar un problema, incluí: descripción del problema, pasos para reproducirlo, captura de pantalla, navegador y dispositivo.
+Al reportar un problema, por favor incluí la siguiente información para que podamos ayudarte más rápido: una descripción clara del problema (qué está pasando), los pasos exactos para reproducirlo (cómo se puede repetir), una captura de pantalla si es posible, el navegador que estás usando (Chrome, Firefox, etc.) y el tipo de dispositivo (computadora, celular o tablet).
 
 ---
 
@@ -444,9 +340,9 @@ Al reportar un problema, incluí: descripción del problema, pasos para reproduc
 
 | Sección | Funcionalidades |
 |---------|-----------------|
-| Mensajes | Ver, filtrar, buscar, WhatsApp, acciones masivas, exportar Excel/PDF, imprimir |
+| Mensajes | Ver, filtrar, buscar, WhatsApp, marcar leído/atendido, eliminar, exportar Excel/PDF, imprimir, acciones masivas, paginación |
 | Dashboard | 5 estadísticas en tiempo real |
-| Empresas | Crear, editar, desactivar |
+| Empresas | Crear, editar, desactivar, ver estado |
 | Vendedores | Crear, editar, activar/desactivar, eliminar, ver detalle con métricas |
 | Equipo | Panel de control con métricas agregadas |
 | Tareas | Crear, filtrar, completar, eliminar, notificar al vendedor |
@@ -467,4 +363,4 @@ Al reportar un problema, incluí: descripción del problema, pasos para reproduc
 
 ---
 
-*Manual de Usuario — Hominis CRM v1.0 — Julio 2026*
+*Este manual fue generado para Hominis CRM — Sistema de gestión de salud. Versión 1.0 — Julio 2026.*
