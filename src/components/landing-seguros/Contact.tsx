@@ -246,8 +246,8 @@ export function Contact() {
             </div>
           </form>
 
-          {/* WhatsApp Directo + QR grande + datos — estilo Hominis (centrado, QR como foco) */}
-          <div className="flex flex-col items-center gap-4">
+          {/* WhatsApp Directo + QR grande + datos — contenedor profesional (shadow, rounded, padding) */}
+          <div className="flex flex-col items-center gap-4 bg-white dark:bg-card shadow-lg rounded-2xl p-8 md:p-10 border border-border">
             {/* Título */}
             <h3 className="text-xl md:text-2xl font-bold text-foreground text-center">
               WhatsApp Directo
