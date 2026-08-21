@@ -251,7 +251,12 @@ export function Contact() {
 
           {/* WhatsApp Directo + QR + datos — contenedor profesional (shadow, rounded, padding) */}
           <div className="flex flex-col items-center gap-4 h-full justify-center bg-white dark:bg-card shadow-lg rounded-2xl p-8 md:p-10 border border-border">
-            {/* Datos de contacto (primero) */}
+            {/* 1. Título (primero) */}
+            <h3 className="text-xl md:text-2xl font-bold text-foreground text-center">
+              WhatsApp Directo
+            </h3>
+
+            {/* 2-5. Datos de contacto (teléfono, correo, Facebook, Instagram) */}
             <div className="flex flex-col gap-3 w-full">
               {CONTACT_LINKS.map((link) => {
                 const Icon = link.icon
@@ -278,30 +283,25 @@ export function Contact() {
             {/* Divider */}
             <div className="w-full border-t border-border my-1" />
 
-            {/* Título */}
-            <h3 className="text-xl md:text-2xl font-bold text-foreground text-center">
-              WhatsApp Directo
-            </h3>
-
-            {/* Texto arriba del QR */}
-            <p className="text-sm md:text-base font-medium text-foreground text-center">
-              Escaneá y escribí a Agustina
-            </p>
-
-            {/* QR (chico) */}
+            {/* 6. QR (chico, centrado) */}
             <div className="inline-block bg-white p-3 rounded-2xl border-2 border-[#077B7A]/30 shadow-lg">
               <Image
                 src="/images/qr-contacto.png"
                 alt="WhatsApp +54 11 7619-9167"
-                width={144}
-                height={144}
+                width={128}
+                height={128}
                 className="object-contain"
-                style={{ width: '9rem', height: '9rem' }}
+                style={{ width: '8rem', height: '8rem' }}
                 priority
               />
             </div>
 
-            {/* Texto abajo del QR */}
+            {/* 7. Texto: Escaneá y escribí a Agustina */}
+            <p className="text-sm md:text-base font-medium text-foreground text-center">
+              Escaneá y escribí a Agustina
+            </p>
+
+            {/* 8. Texto: Apretá con la cámara de tu celular */}
             <p className="text-sm text-muted-foreground text-center">
               Apretá con la cámara de tu celular
             </p>
