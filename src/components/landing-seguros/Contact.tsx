@@ -26,6 +26,7 @@ interface ContactLink {
   borderClass: string
   display: string
   external?: boolean
+  social?: boolean
 }
 
 export function Contact() {
@@ -64,6 +65,7 @@ export function Contact() {
       borderClass: 'border-blue-200 dark:border-blue-900/50',
       display: FACEBOOK_DISPLAY,
       external: true,
+      social: true,
     },
     {
       href: INSTAGRAM_URL,
@@ -74,6 +76,7 @@ export function Contact() {
       borderClass: 'border-pink-200 dark:border-pink-900/50',
       display: INSTAGRAM_DISPLAY,
       external: true,
+      social: true,
     },
   ]
 
@@ -289,12 +292,15 @@ export function Contact() {
                     href={link.href}
                     target={link.external ? '_blank' : undefined}
                     rel={link.external ? 'noopener noreferrer' : undefined}
-                    className={`flex items-center gap-3 p-3 rounded-lg border transition ${link.bgClass} ${link.hoverClass} ${link.borderClass}`}
+                    aria-label={link.display}
+                    className={`flex items-center ${link.social ? 'justify-center' : 'gap-3'} p-3 rounded-lg border transition ${link.bgClass} ${link.hoverClass} ${link.borderClass}`}
                   >
                     <Icon className={`h-5 w-5 shrink-0 ${link.iconColor}`} aria-hidden />
-                    <span className="text-sm font-medium text-foreground">
-                      {link.display}
-                    </span>
+                    {!link.social && (
+                      <span className="text-sm font-medium text-foreground">
+                        {link.display}
+                      </span>
+                    )}
                   </a>
                 )
               })}
