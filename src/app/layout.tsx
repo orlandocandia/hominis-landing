@@ -75,8 +75,8 @@ const jsonLd = {
   description: 'Asesora de salud especializada en planes de cobertura médica Vita Más y Aqua Más. Atención personalizada en Lomas de Zamora y online.',
   image: 'https://asesoradesalud.com.ar/agustina_c_candia.png',
   url: 'https://asesoradesalud.com.ar',
-  telephone: '+5491165555534',
-  email: 'acandia@mphominis.com.ar',
+  telephone: '+5491176199167',
+  email: 'asesoradesalud.info@gmail.com',
   address: {
     '@type': 'PostalAddress',
     streetAddress: 'Portela 266',
@@ -90,7 +90,7 @@ const jsonLd = {
     url: 'https://hominis.com.ar',
   },
   sameAs: [
-    'https://facebook.com/hominis_agustinacandiaasesor',
+    'https://www.facebook.com/hominis',
   ],
 };
 
@@ -101,8 +101,8 @@ const localBusinessJsonLd = {
   description: 'Asesoramiento personalizado en planes de cobertura médica Vita Más y Aqua Más. Promos hasta 40% OFF para nuevos socios.',
   image: 'https://asesoradesalud.com.ar/agustina_c_candia.png',
   url: 'https://asesoradesalud.com.ar',
-  telephone: '+5491165555534',
-  email: 'acandia@mphominis.com.ar',
+  telephone: '+5491176199167',
+  email: 'asesoradesalud.info@gmail.com',
   address: {
     '@type': 'PostalAddress',
     streetAddress: 'Portela 266',
