@@ -4,12 +4,15 @@ import Image from 'next/image'
 import { Phone, Mail, Facebook, Instagram } from 'lucide-react'
 import { useTranslation } from './useTranslation'
 
-// Número de WhatsApp real de la clienta (formato internacional sin + ni espacios)
-const WHATSAPP_NUMBER = '5493810000000'
-const WHATSAPP_DISPLAY = '+54 9 381 000-0000'
-const EMAIL = 'info@asesoradesalud.com.ar'
-const FACEBOOK_URL = 'https://facebook.com/tu-pagina'
-const INSTAGRAM_URL = 'https://instagram.com/tu-perfil'
+// Datos de contacto reales de la clienta
+const WHATSAPP_NUMBER = '541176199167'
+const WHATSAPP_DISPLAY = '+54 11 7619-9167'
+const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}`
+const EMAIL = 'asesoradesalud.info@gmail.com'
+const FACEBOOK_URL = 'https://www.facebook.com/hominis'
+const FACEBOOK_DISPLAY = 'Hominis'
+const INSTAGRAM_URL = 'https://www.instagram.com/hominisok/'
+const INSTAGRAM_DISPLAY = '@hominisok (Próximamente)'
 
 export function Footer() {
   const { t } = useTranslation()
@@ -45,7 +48,9 @@ export function Footer() {
           {/* Datos de contacto con iconos (fila horizontal en desktop, wrap en mobile) */}
           <div className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm text-muted-foreground">
             <a
-              href={`tel:+${WHATSAPP_NUMBER}`}
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center gap-2 hover:text-foreground transition"
             >
               <Phone className="h-4 w-4 text-green-600 dark:text-green-400" aria-hidden />
@@ -65,7 +70,7 @@ export function Footer() {
               className="flex items-center gap-2 hover:text-foreground transition"
             >
               <Facebook className="h-4 w-4 text-[#1877F2] dark:text-blue-400" aria-hidden />
-              Facebook
+              {FACEBOOK_DISPLAY}
             </a>
             <a
               href={INSTAGRAM_URL}
@@ -74,7 +79,7 @@ export function Footer() {
               className="flex items-center gap-2 hover:text-foreground transition"
             >
               <Instagram className="h-4 w-4 text-[#E4405F] dark:text-pink-400" aria-hidden />
-              Instagram
+              {INSTAGRAM_DISPLAY}
             </a>
           </div>
 
