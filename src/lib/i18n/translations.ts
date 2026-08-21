@@ -150,6 +150,19 @@ export const translations: Record<Locale, TranslationDict> = {
     'footer.rights': 'All rights reserved.',
     'footer.powered': 'Control panel Phase 3',
 
+    // Hominis landing (www.asesoradesalud.com.ar root)
+    'landing.nav.home': 'Home',
+    'landing.nav.about': 'About Me',
+    'landing.nav.plans': 'Plans',
+    'landing.nav.promotions': 'Promotions',
+    'landing.nav.services': 'Services',
+    'landing.nav.contact': 'Contact',
+    'landing.hero.title': 'I swear to live big',
+    'landing.hero.titleHighlight': 'with Hominis',
+    'landing.hero.subtitle': 'Personalized health plan advice from Hominis with over 10 years of experience. I help you choose between Vita Más and Aqua Más, two plans with the same medical quality and different payment options.',
+    'landing.hero.cta': 'Request your advice',
+    'landing.plans.title': 'Choose your plan',
+
     // Health insurance landing
     'seguros.brand': 'Your Health Advisor',
     'seguros.nav.inicio': 'Home',
@@ -244,6 +257,19 @@ export const translations: Record<Locale, TranslationDict> = {
     'common.refresh': 'Atualizar',
     'footer.rights': 'Todos os direitos reservados.',
     'footer.powered': 'Painel de controle Fase 3',
+
+    // Landing da Hominis (www.asesoradesalud.com.ar raiz)
+    'landing.nav.home': 'Início',
+    'landing.nav.about': 'Sobre Mim',
+    'landing.nav.plans': 'Planos',
+    'landing.nav.promotions': 'Promoções',
+    'landing.nav.services': 'Serviços',
+    'landing.nav.contact': 'Contato',
+    'landing.hero.title': 'Juro viver grande',
+    'landing.hero.titleHighlight': 'com a Hominis',
+    'landing.hero.subtitle': 'Aconselhamento personalizado em planos de saúde Hominis com mais de 10 anos de experiência. Ajudo você a escolher entre Vita Más e Aqua Más, dois planos com a mesma qualidade médica e diferentes formas de pagamento.',
+    'landing.hero.cta': 'Solicite seu aconselhamento',
+    'landing.plans.title': 'Escolha seu plano',
 
     // Landing de seguros de saúde
     'seguros.brand': 'Sua Consultora de Saúde',
