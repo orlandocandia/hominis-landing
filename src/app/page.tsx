@@ -255,7 +255,7 @@ function HeroSection() {
               <span className="text-hominis-gold">{t('landing.hero.titleHighlight')}</span>
             </h1>
 
-            <p className="text-lg sm:text-xl text-white/80 max-w-xl mb-8 leading-relaxed">
+            <p className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto text-center mb-8 leading-relaxed">
               {t('landing.hero.subtitle')}
             </p>
 
@@ -1248,15 +1248,6 @@ function Footer() {
               >
                 <Facebook className="w-4 h-4" />
                 hominis_agustinacandiaasesor
-              </a>
-              <a
-                href="https://maps.google.com/?q=Portela+266+Lomas+de+Zamora"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors"
-              >
-                <MapPin className="w-4 h-4" />
-                Portela 266, Lomas de Zamora
               </a>
             </div>
           </div>
