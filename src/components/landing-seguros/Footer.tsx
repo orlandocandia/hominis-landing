@@ -67,19 +67,19 @@ export function Footer() {
               href={FACEBOOK_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 hover:text-foreground transition"
+              aria-label="Facebook"
+              className="flex items-center hover:text-foreground transition"
             >
               <Facebook className="h-4 w-4 text-[#1877F2] dark:text-blue-400" aria-hidden />
-              {FACEBOOK_DISPLAY}
             </a>
             <a
               href={INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 hover:text-foreground transition"
+              aria-label="Instagram"
+              className="flex items-center hover:text-foreground transition"
             >
               <Instagram className="h-4 w-4 text-[#E4405F] dark:text-pink-400" aria-hidden />
-              {INSTAGRAM_DISPLAY}
             </a>
           </div>
 
