@@ -316,7 +316,7 @@ export function ContactSection() {
                 {/* Segmento + Edad */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium">{t('landing.contact.situation')}</Label>
+                    <Label htmlFor="segmento" className="text-sm font-medium">{t('landing.contact.situation')}</Label>
                     <Select
                       value={formData.segmento}
                       onValueChange={(val) =>
@@ -324,7 +324,7 @@ export function ContactSection() {
                       }
                       required
                     >
-                      <SelectTrigger className="w-full rounded-xl h-12 data-[size=default]:h-12">
+                      <SelectTrigger id="segmento" className="w-full rounded-xl h-12 data-[size=default]:h-12">
                         <SelectValue placeholder={t('landing.contact.situationPlaceholder')} />
                       </SelectTrigger>
                       <SelectContent>
@@ -360,7 +360,7 @@ export function ContactSection() {
 
                 {/* Cobertura */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium">
+                  <Label htmlFor="cobertura" className="text-sm font-medium">
                     {t('landing.contact.coverage')}
                   </Label>
                   <Select
@@ -369,7 +369,7 @@ export function ContactSection() {
                       setFormData((p) => ({ ...p, cobertura: val }))
                     }
                   >
-                    <SelectTrigger className="w-full rounded-xl h-12 data-[size=default]:h-12">
+                    <SelectTrigger id="cobertura" className="w-full rounded-xl h-12 data-[size=default]:h-12">
                       <SelectValue placeholder={t('landing.contact.coveragePlaceholder')} />
                     </SelectTrigger>
                     <SelectContent>
