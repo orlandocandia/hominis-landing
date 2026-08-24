@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
+import { cookies } from 'next/headers'
 import { db } from '@/lib/db'
 import { getDemoUserId } from '@/lib/demo-user'
 
@@ -59,6 +60,18 @@ export async function POST(request: Request) {
   const forwarded = request.headers.get('x-forwarded-for')
   const ip = forwarded ? forwarded.split(',')[0].trim() : null
 
+  // Capturar UTM de cookies (seteadas por el componente UtmCapturer en la landing).
+  // El modelo Contacto (legacy) no tiene campos UTM, pero se incluyen en el email
+  // para que Agustina vea la fuente de cada lead.
+  const cookieStore = await cookies()
+  const utm = {
+    source: cookieStore.get('utm_source')?.value || null,
+    medium: cookieStore.get('utm_medium')?.value || null,
+    campaign: cookieStore.get('utm_campaign')?.value || null,
+    term: cookieStore.get('utm_term')?.value || null,
+    content: cookieStore.get('utm_content')?.value || null,
+  }
+
   // 1) Registrar el lead en la tabla Contacto (legacy landing leads).
   //    BEST-EFFORT: si la DB falla (ej. tabla no migrada en Vercel), el lead
   //    no se guarda pero el email igual se envia (no rompemos el flujo).
@@ -99,7 +112,7 @@ export async function POST(request: Request) {
         to: EMAIL_TO,
         replyTo: email, // el interesado, para que Agustina pueda responder directo
         subject: `Nuevo lead de la landing — ${nombre}`,
-        html: renderEmailHtml({ nombre, telefono, email, mensaje, ip }),
+        html: renderEmailHtml({ nombre, telefono, email, mensaje, ip, utm }),
       })
       console.log('[contact] Email enviado:', info.messageId, '->', EMAIL_TO)
       emailStatus = 'sent'
@@ -152,12 +165,14 @@ function renderEmailHtml({
   email,
   mensaje,
   ip,
+  utm,
 }: {
   nombre: string
   telefono: string
   email: string
   mensaje: string
   ip: string | null
+  utm: { source: string | null; medium: string | null; campaign: string | null; term: string | null; content: string | null }
 }): string {
   const rows = [
     ['Nombre', nombre],
@@ -165,6 +180,9 @@ function renderEmailHtml({
     ['Teléfono', telefono],
     ['Mensaje', mensaje || '(sin mensaje)'],
     ['IP de origen', ip || '(no disponible)'],
+    ['UTM source', utm.source || '(directo)'],
+    ['UTM medium', utm.medium || '(no disponible)'],
+    ['UTM campaign', utm.campaign || '(no disponible)'],
   ]
     .map(
       ([label, value]) =>
