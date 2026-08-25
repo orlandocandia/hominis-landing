@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Agustina C. Candia" }],
   icons: {
-    icon: "/logo_hominis.png",
+    icon: "/logo.svg",
   },
   openGraph: {
     title: "Agustina C. Candia — Asesora de Salud | Tu bienestar, mi compromiso",
@@ -172,6 +172,9 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <head>
+        {/* Preconnect para Google Fonts (mejora LCP al preestablecer conexion) */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         {/* ScrollToTop DEBE ir primero, antes que cualquier otro script,
             para desactivar la restauracion automatica de scroll del navegador
             antes de que intente restaurar la posicion anterior (Contactos). */}
