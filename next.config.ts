@@ -1,16 +1,18 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   typescript: {
     ignoreBuildErrors: true,
   },
   reactStrictMode: false,
+  // Exponer DATABASE_URL para que Prisma la encuentre durante el build de Vercel.
+  // Sin esto, el comando `prisma generate` (postinstall) falla con "URL_INVALID: The URL 'undefined'".
+  env: {
+    DATABASE_URL: process.env.DATABASE_URL || "",
+  },
   // nodemailer usa requires dinamicos / dependencias nativas que Webpack/Turbopack
   // no pueden empaquetar al hacer `next build` (especialmente en Vercel).
-  // Marcarlo como paquete externo hace que Next.js lo resuelva en runtime desde
-  // node_modules en vez de intentar bundlearlo. Fix estandar para nodemailer.
-  serverExternalPackages: ["nodemailer"],
+  serverExternalPackages: ["nodemailer", "@libsql/client", "@prisma/adapter-libsql"],
 };
 
 export default nextConfig;
