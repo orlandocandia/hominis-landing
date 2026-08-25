@@ -26,7 +26,7 @@ export function MejorCuidadosBenefit() {
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/images/seguros/mejorcuidados.jpg"
+            src="/images/seguros/mejorcuidados.webp"
             alt="El mejor de sus cuidados"
             className="w-full h-full object-cover"
           />
