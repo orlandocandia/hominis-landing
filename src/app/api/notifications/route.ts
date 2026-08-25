@@ -1,45 +1,60 @@
-// GET /api/notifications — list current user's notifications (unread first)
-// DELETE /api/notifications — mark all as read
-import { NextResponse } from 'next/server';
-import { getAuthSession } from '@/lib/auth';
-import { getTursoClient } from '@/lib/turso-config';
+import { NextResponse } from 'next/server'
+import { db } from '@/lib/db'
+import { getDemoUserId } from '@/lib/demo-user'
 
+export const dynamic = 'force-dynamic'
+
+// GET /api/notifications  -> list notifications for the current (demo admin) user
 export async function GET() {
   try {
-    const session = await getAuthSession();
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
-    const libsql = getTursoClient();
-    // Multiempresa: notificaciones del usuario; VENDEDOR implícitamente filtra por empresaId via su user
-    // (las notificaciones se crean con la empresaId del usuario destinatario)
-    const result = await libsql.execute({
-      sql: `SELECT * FROM Notification WHERE userId = ? ORDER BY read ASC, createdAt DESC LIMIT 50`,
-      args: [session.user.id],
-    });
-    const unreadRes = await libsql.execute({
-      sql: 'SELECT COUNT(*) as n FROM Notification WHERE userId = ? AND read = 0',
-      args: [session.user.id],
-    });
-    const unread = Number((unreadRes.rows[0] as any).n);
-    return NextResponse.json({ notifications: result.rows, unread });
-  } catch (e: any) {
-    console.error('[notifications GET] error:', e);
-    return NextResponse.json({ error: 'Error del servidor' }, { status: 500 });
+    const userId = await getDemoUserId()
+    if (!userId) {
+      return NextResponse.json([])
+    }
+
+    const notifications = await db.notification.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      take: 30,
+    })
+
+    return NextResponse.json(notifications)
+  } catch (error) {
+    console.error('Error en GET /api/notifications:', error)
+    return NextResponse.json(
+      { error: 'Error interno del servidor' },
+      { status: 500 }
+    )
   }
 }
 
-export async function DELETE() {
+// PATCH /api/notifications  { readAll: true }  -> mark all as read
+export async function PATCH(request: Request) {
   try {
-    const session = await getAuthSession();
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
-    const libsql = getTursoClient();
-    await libsql.execute({
-      sql: 'UPDATE Notification SET read = 1 WHERE userId = ? AND read = 0',
-      args: [session.user.id],
-    });
-    return NextResponse.json({ ok: true });
-  } catch (e: any) {
-    console.error('[notifications DELETE] error:', e);
-    return NextResponse.json({ error: 'Error del servidor' }, { status: 500 });
+    const userId = await getDemoUserId()
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const body = await request.json().catch(() => ({}))
+
+    if (body?.readAll) {
+      await db.notification.updateMany({
+        where: { userId, read: false },
+        data: { read: true },
+      })
+      return NextResponse.json({ success: true })
+    }
+
+    return NextResponse.json(
+      { error: 'Operación no soportada' },
+      { status: 400 }
+    )
+  } catch (error) {
+    console.error('Error en PATCH /api/notifications:', error)
+    return NextResponse.json(
+      { error: 'Error interno del servidor' },
+      { status: 500 }
+    )
   }
 }
-
