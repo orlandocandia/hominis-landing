@@ -78,8 +78,8 @@ function CompanyCard({ company, empresaActiva, onToggle }: CompanyCardProps) {
         {/* Carrusel Premedic - 12 logos, 4 visibles */}
         <div className="my-1 w-full overflow-hidden">
           <div className="flex doctored-carrusel-track">
-            {Array.from({ length: 12 }, (_, i) => `/images/seguros/carrusel_premedic/logo-${i + 1}.png`).concat(
-              Array.from({ length: 12 }, (_, i) => `/images/seguros/carrusel_premedic/logo-${i + 1}.png`)
+            {Array.from({ length: 12 }, (_, i) => `/images/seguros/carrusel_premedic/logo-${i + 1}.webp`).concat(
+              Array.from({ length: 12 }, (_, i) => `/images/seguros/carrusel_premedic/logo-${i + 1}.webp`)
             ).map((src, index) => (
               <div
                 key={index}
@@ -332,113 +332,113 @@ function SeccionesDinamicas({ empresa }: { empresa: string }) {
                 const total = cantidadPorPlan[planSeleccionado] || 0
 
                 const cartelitosAportes = [
-                  { icono: 'icono1.svg', imagen: 'imagen1.png', texto: '+ 200 Clínicas y Sanatorios' },
-                  { icono: 'icono2.svg', imagen: 'imagen2.png', texto: '+ 1000 Centros Médicos y profesionales' },
-                  { icono: 'icono3.svg', imagen: 'imagen3.png', texto: 'Cuota 0, sólo con tu aporte, cobertura integral' },
-                  { icono: 'icono4.svg', imagen: 'imagen4.png', texto: 'Centros médicos propios' },
-                  { icono: 'icono5.svg', imagen: 'imagen5.png', texto: 'Red odontológica propia' },
-                  { icono: 'icono6.svg', imagen: 'imagen6.png', texto: 'Médico por Videollamada' },
-                  { icono: 'icono7.svg', imagen: 'imagen7.png', texto: 'Médico a domicilio sin cargo' },
-                  { icono: 'icono8.svg', imagen: 'imagen8.png', texto: 'Descuentos en amplia red de Farmacias' },
-                  { icono: 'icono9.svg', imagen: 'imagen9.png', texto: 'SIN coseguros en consultas Pediátricas, Clínicas y Ginecológicas' },
-                  { icono: 'icono10.svg', imagen: 'imagen10.png', texto: 'Asistencia al Viajero cobertura nacional y países limítrofes con Cardinal Assistance' },
-                  { icono: 'icono11.svg', imagen: 'imagen11.png', texto: 'Servicios de anticonceptivos a domicilio' },
+                  { icono: 'icono1.svg', imagen: 'imagen1.webp', texto: '+ 200 Clínicas y Sanatorios' },
+                  { icono: 'icono2.svg', imagen: 'imagen2.webp', texto: '+ 1000 Centros Médicos y profesionales' },
+                  { icono: 'icono3.svg', imagen: 'imagen3.webp', texto: 'Cuota 0, sólo con tu aporte, cobertura integral' },
+                  { icono: 'icono4.svg', imagen: 'imagen4.webp', texto: 'Centros médicos propios' },
+                  { icono: 'icono5.svg', imagen: 'imagen5.webp', texto: 'Red odontológica propia' },
+                  { icono: 'icono6.svg', imagen: 'imagen6.webp', texto: 'Médico por Videollamada' },
+                  { icono: 'icono7.svg', imagen: 'imagen7.webp', texto: 'Médico a domicilio sin cargo' },
+                  { icono: 'icono8.svg', imagen: 'imagen8.webp', texto: 'Descuentos en amplia red de Farmacias' },
+                  { icono: 'icono9.svg', imagen: 'imagen9.webp', texto: 'SIN coseguros en consultas Pediátricas, Clínicas y Ginecológicas' },
+                  { icono: 'icono10.svg', imagen: 'imagen10.webp', texto: 'Asistencia al Viajero cobertura nacional y países limítrofes con Cardinal Assistance' },
+                  { icono: 'icono11.svg', imagen: 'imagen11.webp', texto: 'Servicios de anticonceptivos a domicilio' },
                 ]
 
                 const basePath = '/images/seguros/planporaportes-premedic'
 
                 const cartelitosC100 = [
-                  { icono: 'icono1.svg', imagen: 'imagen1.png', texto: 'Habitación Internación Compartida' },
-                  { icono: 'icono3.svg', imagen: 'imagen2.png', texto: 'Red odontológica propia' },
-                  { icono: 'icono3.svg', imagen: 'imagen3.png', texto: 'Psicología y Kinesioterapia' },
-                  { icono: 'icono4.svg', imagen: 'imagen4.png', texto: 'Médico por Videollamada' },
-                  { icono: 'icono5.svg', imagen: 'imagen5.png', texto: 'Ortodoncia con Arancel Preferencial' },
-                  { icono: 'icono6.svg', imagen: 'imagen6.png', texto: 'Programa de Bienestar' },
-                  { icono: 'icono7.svg', imagen: 'imagen7.png', texto: 'Prótesis implantes Odontológicos' },
-                  { icono: 'icono8.svg', imagen: 'imagene8.png', texto: 'Red de Ópticas con Descuento de 20% a 40%' },
+                  { icono: 'icono1.svg', imagen: 'imagen1.webp', texto: 'Habitación Internación Compartida' },
+                  { icono: 'icono3.svg', imagen: 'imagen2.webp', texto: 'Red odontológica propia' },
+                  { icono: 'icono3.svg', imagen: 'imagen3.webp', texto: 'Psicología y Kinesioterapia' },
+                  { icono: 'icono4.svg', imagen: 'imagen4.webp', texto: 'Médico por Videollamada' },
+                  { icono: 'icono5.svg', imagen: 'imagen5.webp', texto: 'Ortodoncia con Arancel Preferencial' },
+                  { icono: 'icono6.svg', imagen: 'imagen6.webp', texto: 'Programa de Bienestar' },
+                  { icono: 'icono7.svg', imagen: 'imagen7.webp', texto: 'Prótesis implantes Odontológicos' },
+                  { icono: 'icono8.svg', imagen: 'imagene8.webp', texto: 'Red de Ópticas con Descuento de 20% a 40%' },
                 ]
 
                 const basePathC100 = '/images/seguros/planc100-premedic'
 
                 const cartelitosSimple = [
-                  { icono: 'icono1.svg', imagen: 'imagen1.png', texto: 'Centros médicos propios' },
-                  { icono: 'icono2.svg', imagen: 'imagen2.png', texto: 'Descuentos en amplia red de Farmacias' },
-                  { icono: 'icono3.svg', imagen: 'imagen3.png', texto: 'Médico por Videollamada' },
-                  { icono: 'icono4.svg', imagen: 'imagen4.png', texto: 'Programa de Bienestar' },
-                  { icono: 'icono5.svg', imagen: 'imagen5.png', texto: 'Servicios de anticonceptivos a domicilio' },
-                  { icono: 'icono6.svg', imagen: 'imagen6.png', texto: 'Red odontológica propia' },
-                  { icono: 'icono7.svg', imagen: 'imagen7.png', texto: 'Asistencia al Viajero cobertura nacional y países limítrofes con Cardinal Assistance' },
-                  { icono: 'icono8.svg', imagen: 'imagen8.png', texto: 'Red de Ópticas con Descuento de 20% a 40%' },
-                  { icono: 'icono9.png', imagen: 'imagen9.png', texto: 'Estudios y prácticas con arancel preferencial' },
-                  { icono: 'icono10.png', imagen: 'imagen10.png', texto: 'Urgencias y emergencias (no incluye internación)' },
-                  { icono: 'icono11.png', imagen: 'imgen11.png', texto: 'Todos los meses una consulta sin cargo' },
+                  { icono: 'icono1.svg', imagen: 'imagen1.webp', texto: 'Centros médicos propios' },
+                  { icono: 'icono2.svg', imagen: 'imagen2.webp', texto: 'Descuentos en amplia red de Farmacias' },
+                  { icono: 'icono3.svg', imagen: 'imagen3.webp', texto: 'Médico por Videollamada' },
+                  { icono: 'icono4.svg', imagen: 'imagen4.webp', texto: 'Programa de Bienestar' },
+                  { icono: 'icono5.svg', imagen: 'imagen5.webp', texto: 'Servicios de anticonceptivos a domicilio' },
+                  { icono: 'icono6.svg', imagen: 'imagen6.webp', texto: 'Red odontológica propia' },
+                  { icono: 'icono7.svg', imagen: 'imagen7.webp', texto: 'Asistencia al Viajero cobertura nacional y países limítrofes con Cardinal Assistance' },
+                  { icono: 'icono8.svg', imagen: 'imagen8.webp', texto: 'Red de Ópticas con Descuento de 20% a 40%' },
+                  { icono: 'icono9.webp', imagen: 'imagen9.webp', texto: 'Estudios y prácticas con arancel preferencial' },
+                  { icono: 'icono10.webp', imagen: 'imagen10.webp', texto: 'Urgencias y emergencias (no incluye internación)' },
+                  { icono: 'icono11.webp', imagen: 'imgen11.webp', texto: 'Todos los meses una consulta sin cargo' },
                 ]
 
                 const basePathSimple = '/images/seguros/plansimple-premedic'
 
                 const cartelitosPlan200 = [
-                  { icono: 'icono1.svg', imagen: 'imagen1.png', texto: 'Habitación Internación Compartida' },
-                  { icono: 'icono2.svg', imagen: 'imagen2.png', texto: 'Amplia cartilla en CABA, Buenos Aires y otras provincias.' },
-                  { icono: 'icono3.svg', imagen: 'imagen3.png', texto: 'Centros médicos propios' },
-                  { icono: 'icono4.svg', imagen: 'imagen4.png', texto: 'Red odontológica propia' },
-                  { icono: 'icono5.svg', imagen: 'imagen5.png', texto: 'Médico por Videollamada' },
-                  { icono: 'icono6.svg', imagen: 'imagen6.png', texto: 'Médico a domicilio sin cargo' },
-                  { icono: 'icono7.svg', imagen: 'imagen7.png', texto: 'Programa de Bienestar' },
-                  { icono: 'icono8.svg', imagen: 'imagen8.png', texto: 'Descuentos en amplia red de Farmacias' },
-                  { icono: 'icono9.svg', imagen: 'imagen9.png', texto: 'Plan con coseguros (excepto en guardias, consultas pediátricas, clínicas y de ginecología)' },
-                  { icono: 'icono10.svg', imagen: 'imagen10.png', texto: 'Asistencia al Viajero cobertura nacional y países limítrofes con Cardinal Assistance' },
-                  { icono: 'icono11.svg', imagen: 'imagen11.png', texto: 'Servicios de anticonceptivos a domicilio' },
+                  { icono: 'icono1.svg', imagen: 'imagen1.webp', texto: 'Habitación Internación Compartida' },
+                  { icono: 'icono2.svg', imagen: 'imagen2.webp', texto: 'Amplia cartilla en CABA, Buenos Aires y otras provincias.' },
+                  { icono: 'icono3.svg', imagen: 'imagen3.webp', texto: 'Centros médicos propios' },
+                  { icono: 'icono4.svg', imagen: 'imagen4.webp', texto: 'Red odontológica propia' },
+                  { icono: 'icono5.svg', imagen: 'imagen5.webp', texto: 'Médico por Videollamada' },
+                  { icono: 'icono6.svg', imagen: 'imagen6.webp', texto: 'Médico a domicilio sin cargo' },
+                  { icono: 'icono7.svg', imagen: 'imagen7.webp', texto: 'Programa de Bienestar' },
+                  { icono: 'icono8.svg', imagen: 'imagen8.webp', texto: 'Descuentos en amplia red de Farmacias' },
+                  { icono: 'icono9.svg', imagen: 'imagen9.webp', texto: 'Plan con coseguros (excepto en guardias, consultas pediátricas, clínicas y de ginecología)' },
+                  { icono: 'icono10.svg', imagen: 'imagen10.webp', texto: 'Asistencia al Viajero cobertura nacional y países limítrofes con Cardinal Assistance' },
+                  { icono: 'icono11.svg', imagen: 'imagen11.webp', texto: 'Servicios de anticonceptivos a domicilio' },
                 ]
 
                 const basePathPlan200 = '/images/seguros/plan200-premedic'
 
                 const cartelitosPlan300 = [
-                  { icono: 'icono1.svg', imagen: 'imagen1.png', texto: 'Red odontológica propia' },
-                  { icono: 'icono2.svg', imagen: 'imagen2.png', texto: 'Habitación Internación Compartida' },
-                  { icono: 'icono3.svg', imagen: 'imagen3.png', texto: 'Amplia cartilla en CABA, Buenos Aires y otras provincias.' },
-                  { icono: 'icono4.svg', imagen: 'imagen4.png', texto: 'Centros médicos propios' },
-                  { icono: 'icono5.svg', imagen: 'imagen5.png', texto: 'Médico a domicilio sin cargo' },
-                  { icono: 'icono6.svg', imagen: 'imagen6.png', texto: 'Médico por Videollamada' },
-                  { icono: 'icono7.svg', imagen: 'imagen7.png', texto: 'Programa de Bienestar' },
-                  { icono: 'icono8.svg', imagen: 'imagen8.png', texto: 'Descuentos en amplia red de Farmacias' },
-                  { icono: 'icono9.svg', imagen: 'imagen9.png', texto: 'Asistencia al Viajero cobertura nacional y países limítrofes con Cardinal Assistance' },
-                  { icono: 'icono10.svg', imagen: 'imagen10.png', texto: 'Servicios de anticonceptivos a domicilio' },
+                  { icono: 'icono1.svg', imagen: 'imagen1.webp', texto: 'Red odontológica propia' },
+                  { icono: 'icono2.svg', imagen: 'imagen2.webp', texto: 'Habitación Internación Compartida' },
+                  { icono: 'icono3.svg', imagen: 'imagen3.webp', texto: 'Amplia cartilla en CABA, Buenos Aires y otras provincias.' },
+                  { icono: 'icono4.svg', imagen: 'imagen4.webp', texto: 'Centros médicos propios' },
+                  { icono: 'icono5.svg', imagen: 'imagen5.webp', texto: 'Médico a domicilio sin cargo' },
+                  { icono: 'icono6.svg', imagen: 'imagen6.webp', texto: 'Médico por Videollamada' },
+                  { icono: 'icono7.svg', imagen: 'imagen7.webp', texto: 'Programa de Bienestar' },
+                  { icono: 'icono8.svg', imagen: 'imagen8.webp', texto: 'Descuentos en amplia red de Farmacias' },
+                  { icono: 'icono9.svg', imagen: 'imagen9.webp', texto: 'Asistencia al Viajero cobertura nacional y países limítrofes con Cardinal Assistance' },
+                  { icono: 'icono10.svg', imagen: 'imagen10.webp', texto: 'Servicios de anticonceptivos a domicilio' },
                 ]
 
                 const basePathPlan300 = '/images/seguros/plan300-premedic'
 
                 // Plan 400 — 12 cartelitos (todos .svg)
                 const cartelitosPlan400 = [
-                  { icono: 'icono1.svg', imagen: 'imagen1.png', texto: 'Habitación individual' },
-                  { icono: 'icono2.svg', imagen: 'imagen2.png', texto: 'Más de 5000 sanatorios, centros médicos y profesionales en CABA, Buenos Aires, Córdoba, Tucumán, Misiones y Mendoza.' },
-                  { icono: 'icono3.svg', imagen: 'imagen3.png', texto: 'Cobertura en internación y cirugía (Según PMO)' },
-                  { icono: 'icono4.svg', imagen: 'imagen4.png', texto: 'Centros médicos propios' },
-                  { icono: 'icono5.svg', imagen: 'imagen5.png', texto: 'Red odontológica propia' },
-                  { icono: 'icono6.svg', imagen: 'imagen6.png', texto: 'Descuentos en Implantes, Ortodoncia y estética dental' },
-                  { icono: 'icono7.svg', imagen: 'imagen7.png', texto: 'Médico a domicilio sin cargo' },
-                  { icono: 'icono8.svg', imagen: 'imagen8.png', texto: 'Médico por Videollamada' },
-                  { icono: 'icono9.svg', imagen: 'imagen9.png', texto: 'Programa de Bienestar' },
-                  { icono: 'icono10.svg', imagen: 'imagen10.png', texto: 'Descuentos en amplia red de Farmacias' },
-                  { icono: 'icono11.svg', imagen: 'imagen11.png', texto: 'Asistencia al Viajero cobertura nacional y países limítrofes con Cardinal Assistance' },
-                  { icono: 'icono12.svg', imagen: 'imagen12.png', texto: 'Servicios de anticonceptivos a domicilio' },
+                  { icono: 'icono1.svg', imagen: 'imagen1.webp', texto: 'Habitación individual' },
+                  { icono: 'icono2.svg', imagen: 'imagen2.webp', texto: 'Más de 5000 sanatorios, centros médicos y profesionales en CABA, Buenos Aires, Córdoba, Tucumán, Misiones y Mendoza.' },
+                  { icono: 'icono3.svg', imagen: 'imagen3.webp', texto: 'Cobertura en internación y cirugía (Según PMO)' },
+                  { icono: 'icono4.svg', imagen: 'imagen4.webp', texto: 'Centros médicos propios' },
+                  { icono: 'icono5.svg', imagen: 'imagen5.webp', texto: 'Red odontológica propia' },
+                  { icono: 'icono6.svg', imagen: 'imagen6.webp', texto: 'Descuentos en Implantes, Ortodoncia y estética dental' },
+                  { icono: 'icono7.svg', imagen: 'imagen7.webp', texto: 'Médico a domicilio sin cargo' },
+                  { icono: 'icono8.svg', imagen: 'imagen8.webp', texto: 'Médico por Videollamada' },
+                  { icono: 'icono9.svg', imagen: 'imagen9.webp', texto: 'Programa de Bienestar' },
+                  { icono: 'icono10.svg', imagen: 'imagen10.webp', texto: 'Descuentos en amplia red de Farmacias' },
+                  { icono: 'icono11.svg', imagen: 'imagen11.webp', texto: 'Asistencia al Viajero cobertura nacional y países limítrofes con Cardinal Assistance' },
+                  { icono: 'icono12.svg', imagen: 'imagen12.webp', texto: 'Servicios de anticonceptivos a domicilio' },
                 ]
 
                 const basePathPlan400 = '/images/seguros/plan400-premedic'
 
                 // Plan 500 — 12 cartelitos (todos .svg)
                 const cartelitosPlan500 = [
-                  { icono: 'icono1.svg', imagen: 'imagen1.png', texto: 'Habitación individual' },
-                  { icono: 'icono2.svg', imagen: 'imagen2.png', texto: 'Más de 5000 Sanatorios, centros médicos y profesionales de acceso directo en CABA, toda la provincia de Buenos Aires, Córdoba, Tucumán y Misiones y Mendoza' },
-                  { icono: 'icono3.svg', imagen: 'imagen3.png', texto: 'Centros médicos propios' },
-                  { icono: 'icono4.svg', imagen: 'imagen4.png', texto: 'Red odontológica propia' },
-                  { icono: 'icono5.svg', imagen: 'imagen5.png', texto: 'Descuentos en Implantes, Ortodoncia y estética dental' },
-                  { icono: 'icono6.svg', imagen: 'imagen6.png', texto: 'Cobertura en blanqueamientos y tratamientos para dejar de fumar' },
-                  { icono: 'icono7.svg', imagen: 'imagen7.png', texto: 'Médico a domicilio sin cargo' },
-                  { icono: 'icono8.svg', imagen: 'imagen8.png', texto: 'Médico por Videollamada' },
-                  { icono: 'icono9.svg', imagen: 'imagen9.png', texto: 'Programa de Bienestar' },
-                  { icono: 'icono10.svg', imagen: 'imagen10.png', texto: 'Descuentos en amplia red de Farmacias' },
-                  { icono: 'icono11.svg', imagen: 'imagen11.png', texto: 'Asistencia al Viajero cobertura nacional y países limítrofes con Cardinal Assistance' },
-                  { icono: 'icono12.svg', imagen: 'imagen12.png', texto: 'Servicios de anticonceptivos a domicilio' },
+                  { icono: 'icono1.svg', imagen: 'imagen1.webp', texto: 'Habitación individual' },
+                  { icono: 'icono2.svg', imagen: 'imagen2.webp', texto: 'Más de 5000 Sanatorios, centros médicos y profesionales de acceso directo en CABA, toda la provincia de Buenos Aires, Córdoba, Tucumán y Misiones y Mendoza' },
+                  { icono: 'icono3.svg', imagen: 'imagen3.webp', texto: 'Centros médicos propios' },
+                  { icono: 'icono4.svg', imagen: 'imagen4.webp', texto: 'Red odontológica propia' },
+                  { icono: 'icono5.svg', imagen: 'imagen5.webp', texto: 'Descuentos en Implantes, Ortodoncia y estética dental' },
+                  { icono: 'icono6.svg', imagen: 'imagen6.webp', texto: 'Cobertura en blanqueamientos y tratamientos para dejar de fumar' },
+                  { icono: 'icono7.svg', imagen: 'imagen7.webp', texto: 'Médico a domicilio sin cargo' },
+                  { icono: 'icono8.svg', imagen: 'imagen8.webp', texto: 'Médico por Videollamada' },
+                  { icono: 'icono9.svg', imagen: 'imagen9.webp', texto: 'Programa de Bienestar' },
+                  { icono: 'icono10.svg', imagen: 'imagen10.webp', texto: 'Descuentos en amplia red de Farmacias' },
+                  { icono: 'icono11.svg', imagen: 'imagen11.webp', texto: 'Asistencia al Viajero cobertura nacional y países limítrofes con Cardinal Assistance' },
+                  { icono: 'icono12.svg', imagen: 'imagen12.webp', texto: 'Servicios de anticonceptivos a domicilio' },
                 ]
 
                 const basePathPlan500 = '/images/seguros/plan500-premedic'
