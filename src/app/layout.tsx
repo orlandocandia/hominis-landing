@@ -24,9 +24,9 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://asesoradesalud.com.ar'),
-  title: "Agustina C. Candia — Asesora de Salud | Planes Vita Más y Aqua Más",
+  title: "Asesora de Salud | Hominis",
   description:
-    "Agustina C. Candia, asesora de salud. Asesoramiento personalizado en planes de cobertura médica Vita Más y Aqua Más. Promos hasta 40% OFF. Atención en Lomas de Zamora y online. ¡Consultá gratis!",
+    "Asesoría personalizada en planes de salud Hominis. Planes Vita Más y Aqua Más con la mejor cobertura médica.",
   keywords: [
     "obras sociales",
     "cobertura médica",
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     icon: "/logo.svg",
   },
   openGraph: {
-    title: "Agustina C. Candia — Asesora de Salud | Tu bienestar, mi compromiso",
+    title: "Asesora de Salud | Hominis",
     description:
       "Asesoramiento personalizado en cobertura médica. Planes Vita Más y Aqua Más con promos hasta 40% OFF. ¡Consultá gratis!",
     url: "https://asesoradesalud.com.ar",
