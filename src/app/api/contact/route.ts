@@ -145,9 +145,9 @@ export async function POST(request: Request) {
         data: {
           userId: adminId,
           type: 'CONTACT',
-          title: 'Nuevo lead de la landing',
+          title: `Nuevo lead de ${emailConfig.label}`,
           message: `${nombre} (${email}) — tel: ${telefono}`,
-          link: '/',
+          link: '/dashboard',
         },
       })
     }
