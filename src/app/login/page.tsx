@@ -80,7 +80,7 @@ const handleSubmit = async (e: React.FormEvent) => {
           className="inline-flex items-center gap-2 text-white/70 hover:text-white text-sm mb-6 transition-colors dark:text-muted-foreground dark:hover:text-foreground"
         >
           <ArrowLeft className="w-4 h-4" />
-          {t('auth.login.back') || 'Volver al sitio'}
+          {'Volver al sitio'}
         </a>
 
         <Card className="border-0 shadow-2xl shadow-black/20 rounded-2xl overflow-hidden">
@@ -90,10 +90,10 @@ const handleSubmit = async (e: React.FormEvent) => {
               <Shield className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-2xl font-serif font-bold text-white">
-              {t('auth.login.title') || 'Panel de Gestión'}
+              {'Panel de Gestión'}
             </h1>
             <p className="text-white/70 text-sm mt-2">
-              {t('auth.login.subtitle') || 'Ingresá tus credenciales para acceder al dashboard'}
+              {'Ingresá tus credenciales para acceder al dashboard'}
             </p>
           </div>
 
@@ -110,7 +110,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-sm font-medium">
-                  {t('auth.login.email') || 'Email'}
+                  {'Email'}
                 </Label>
                 <Input
                   id="email"
@@ -127,7 +127,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-sm font-medium">
-                  {t('auth.login.password') || 'Contraseña'}
+                  {'Contraseña'}
                 </Label>
                 <div className="relative">
                   <Input
@@ -169,7 +169,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                 ) : (
                   <div className="flex items-center gap-2">
                     <LogIn className="w-5 h-5" />
-                    {t('auth.login.submit') || 'Ingresar'}
+                    {'Ingresar'}
                   </div>
                 )}
               </Button>
