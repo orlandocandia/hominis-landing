@@ -27,6 +27,7 @@ interface ContactPayload {
   telefono?: string
   email?: string
   mensaje?: string
+  origen?: string // 'landing-hominis' | 'landing-seguros' — para diferenciar en el email
 }
 
 // POST /api/contact
@@ -46,6 +47,18 @@ export async function POST(request: Request) {
   const telefono = (body.telefono || '').trim()
   const email = (body.email || '').trim().toLowerCase()
   const mensaje = (body.mensaje || '').trim()
+
+  // Origen del lead: 'landing-hominis' (www.asesoradesalud.com.ar) o
+  // 'landing-seguros' (cotiza.asesoradesalud.com.ar). Se usa para el subject
+  // y el from del email, para que Agustina sepa de que landing viene cada lead.
+  const origen = (body.origen || '').trim() === 'landing-hominis' ? 'landing-hominis' : 'landing-seguros'
+
+  // Configuracion de email segun el origen
+  const isHominis = origen === 'landing-hominis'
+  const emailConfig = {
+    label: isHominis ? 'Hominis' : 'Cotiza Seguros',
+    fromName: isHominis ? 'Hominis - Asesor de Salud' : 'Cotiza - Asesora de Salud',
+  }
 
   // Validacion de campos requeridos (coincide con los required del form).
   // El campo "empresa" se elimino porque solo trabajamos con Premedic.
@@ -84,7 +97,7 @@ export async function POST(request: Request) {
         telefono,
         segmento: 'premedic', // unico company disponible
         mensaje: mensaje || null,
-        origen: 'landing-seguros',
+        origen,
         ip,
         estado: 'NUEVO',
       },
@@ -108,10 +121,10 @@ export async function POST(request: Request) {
         },
       })
       const info = await transporter.sendMail({
-        from: `Landing Asesora de Salud <${GMAIL_USER}>`,
+        from: `${emailConfig.fromName} <${GMAIL_USER}>`,
         to: EMAIL_TO,
         replyTo: email, // el interesado, para que Agustina pueda responder directo
-        subject: `Nuevo lead de la landing — ${nombre}`,
+        subject: `Nuevo lead de ${emailConfig.label} — ${nombre}`,
         html: renderEmailHtml({ nombre, telefono, email, mensaje, ip, utm }),
       })
       console.log('[contact] Email enviado:', info.messageId, '->', EMAIL_TO)
