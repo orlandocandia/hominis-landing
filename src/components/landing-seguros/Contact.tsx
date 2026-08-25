@@ -92,6 +92,7 @@ export function Contact() {
       telefono: String(formData.get('telefono') || ''),
       email: String(formData.get('email') || ''),
       mensaje: String(formData.get('mensaje') || ''),
+      origen: 'landing-seguros',
     }
 
     try {
