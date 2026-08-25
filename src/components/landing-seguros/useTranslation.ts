@@ -26,19 +26,16 @@ const translations: Record<Locale, Record<string, string>> = {
     'lang.select': 'Idioma',
 
     'hero.badge': 'Asesoramiento en salud • Sin costo',
-    'hero.title': 'Encontrá el plan de salud ideal para vos y tu familia.',
+    'hero.title': 'Encontrá el plan de salud que mejor se adapta a vos',
     'hero.subtitle':
-      'Te ayudamos a comparar las mejores opciones y elegir la cobertura que realmente necesitás, con asesoramiento personalizado, acompañamiento durante todo el proceso y sin costo para vos.',
-    'hero.cta': 'Quiero asesoramiento',
+      'Con mi experiencia, encontrás la cobertura médica ideal para vos y tu familia sin vueltas ni costo.',
+    'hero.cta': 'Asesorate',
 
     'empresas.title': 'Empresas que representamos',
     'empresas.subtitle': 'Elegí la empresa de tu interés para conocer más detalles.',
     'empresas.verMas': 'Ver más',
-    'empresas.doctored.desc': 'Cobertura médica de calidad con planes flexibles.',
     'empresas.premedic.desc': 'El respaldo que te merecés con amplia red médica.',
-    'empresas.doctored.slogan': 'Tu salud, nuestra prioridad',
     'empresas.premedic.slogan': 'Cuidamos lo que más valorás',
-    'empresas.doctored.benefit': 'Planes desde $18.000/mes • Cobertura inmediata',
     'empresas.premedic.benefit': 'Red de +5.000 profesionales • Guardia 24hs',
     'empresas.verPlanes': 'Ver Planes',
 
@@ -92,19 +89,16 @@ const translations: Record<Locale, Record<string, string>> = {
     'lang.select': 'Language',
 
     'hero.badge': 'Health advice • Free of charge',
-    'hero.title': 'Find the ideal health plan for you and your family.',
+    'hero.title': 'Find the health plan that best fits you',
     'hero.subtitle':
-      'We help you compare the best options and choose the coverage you really need, with personalized advice, support throughout the process and at no cost to you.',
-    'hero.cta': 'I want advice',
+      'With my experience, you find the ideal medical coverage for you and your family, no strings attached and free.',
+    'hero.cta': 'Get advice',
 
     'empresas.title': 'Companies we represent',
     'empresas.subtitle': 'Choose the company of your interest to learn more.',
     'empresas.verMas': 'See more',
-    'empresas.doctored.desc': 'Quality medical coverage with flexible plans.',
     'empresas.premedic.desc': 'The backing you deserve with a wide medical network.',
-    'empresas.doctored.slogan': 'Your health, our priority',
     'empresas.premedic.slogan': 'We care for what you value most',
-    'empresas.doctored.benefit': 'Plans from $18,000/month • Immediate coverage',
     'empresas.premedic.benefit': 'Network of +5,000 professionals • 24h emergency',
     'empresas.verPlanes': 'View Plans',
 
@@ -158,19 +152,16 @@ const translations: Record<Locale, Record<string, string>> = {
     'lang.select': 'Idioma',
 
     'hero.badge': 'Consultoria em saúde • Grátis',
-    'hero.title': 'Encontre o plano de saúde ideal para você e sua família.',
+    'hero.title': 'Encontre o plano de saúde que melhor se adapta a você',
     'hero.subtitle':
-      'Ajudamos você a comparar as melhores opções e escolher a cobertura que você realmente precisa, com assessoria personalizada, acompanhamento durante todo o processo e sem custo para você.',
-    'hero.cta': 'Quero assessoria',
+      'Com minha experiência, você encontra a cobertura médica ideal para você e sua família sem complicação e grátis.',
+    'hero.cta': 'Acesse agora',
 
     'empresas.title': 'Empresas que representamos',
     'empresas.subtitle': 'Escolha a empresa do seu interesse para saber mais.',
     'empresas.verMas': 'Ver mais',
-    'empresas.doctored.desc': 'Cobertura médica de qualidade com planos flexíveis.',
     'empresas.premedic.desc': 'O respaldo que você merece com ampla rede médica.',
-    'empresas.doctored.slogan': 'Sua saúde, nossa prioridade',
     'empresas.premedic.slogan': 'Cuidamos do que você mais valoriza',
-    'empresas.doctored.benefit': 'Planos a partir de $18.000/mês • Cobertura imediata',
     'empresas.premedic.benefit': 'Rede de +5.000 profissionais • Plantão 24h',
     'empresas.verPlanes': 'Ver Planos',
 
