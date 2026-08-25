@@ -1,23 +1,40 @@
-// PATCH /api/notifications/[id] — mark a single notification as read
-import { NextResponse } from 'next/server';
-import { getAuthSession } from '@/lib/auth';
-import { getTursoClient } from '@/lib/turso-config';
+import { NextResponse } from 'next/server'
+import { db } from '@/lib/db'
+import { getDemoUserId } from '@/lib/demo-user'
 
-export async function PATCH(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+export const dynamic = 'force-dynamic'
+
+// PATCH /api/notifications/[id]  { read: true }  -> mark one as read
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const session = await getAuthSession();
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
-    const { id } = await params;
-    const libsql = getTursoClient();
-    // Verify ownership
-    const existing = await libsql.execute({ sql: 'SELECT userId FROM Notification WHERE id = ?', args: [id] });
-    if (existing.rows.length === 0) return NextResponse.json({ error: 'No encontrada' }, { status: 404 });
-    if (existing.rows[0].userId !== session.user.id) return NextResponse.json({ error: 'No autorizado' }, { status: 403 });
-    await libsql.execute({ sql: 'UPDATE Notification SET read = 1 WHERE id = ?', args: [id] });
-    return NextResponse.json({ ok: true });
-  } catch (e: any) {
-    console.error('[notification PATCH] error:', e);
-    return NextResponse.json({ error: 'Error del servidor' }, { status: 500 });
+    const userId = await getDemoUserId()
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const { id } = await params
+    const body = await request.json().catch(() => ({}))
+
+    // Make sure the notification belongs to the user
+    const notif = await db.notification.findUnique({ where: { id } })
+    if (!notif || notif.userId !== userId) {
+      return NextResponse.json({ error: 'No encontrada' }, { status: 404 })
+    }
+
+    const updated = await db.notification.update({
+      where: { id },
+      data: { read: body?.read ?? true },
+    })
+
+    return NextResponse.json(updated)
+  } catch (error) {
+    console.error('Error en PATCH /api/notifications/[id]:', error)
+    return NextResponse.json(
+      { error: 'Error interno del servidor' },
+      { status: 500 }
+    )
   }
 }
-
