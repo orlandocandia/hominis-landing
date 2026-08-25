@@ -1,15 +1,14 @@
-// Auth helper - getServerSession wrapper
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from './config';
+import { getServerSession } from 'next-auth'
+import { authOptions } from './config'
 
 export async function getAuthSession() {
-  return getServerSession(authOptions);
+  return getServerSession(authOptions)
 }
 
 export async function requireAuth() {
-  const session = await getAuthSession();
+  const session = await getAuthSession()
   if (!session?.user) {
-    return null;
+    return null
   }
-  return session;
+  return session
 }
