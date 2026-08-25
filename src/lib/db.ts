@@ -5,7 +5,7 @@ const globalForPrisma = globalThis as unknown as {
 }
 
 function createPrismaClient(): PrismaClient {
-  const databaseUrl = process.env.DATABASE_URL || 'file:../dev.db'
+  const databaseUrl = process.env.DATABASE_URL || 'file:./prisma/dev.db'
   
   // If using Turso (libsql://), use the libSQL adapter
   if (databaseUrl.startsWith('libsql://') || databaseUrl.startsWith('libsql:')) {
@@ -30,6 +30,16 @@ function createPrismaClient(): PrismaClient {
   return new PrismaClient({ log: ['error', 'warn'] })
 }
 
-export const db = globalForPrisma.prisma ?? createPrismaClient()
-
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db
+// Lazy initialization: only create the PrismaClient when db is first accessed.
+// This prevents PrismaClient from being instantiated during the build (when
+// DATABASE_URL may not be available), which would cause URL_INVALID errors.
+// The Proxy defers createPrismaClient() to the first property access.
+export const db = new Proxy({} as PrismaClient, {
+  get(_target, prop) {
+    if (!globalForPrisma.prisma) {
+      globalForPrisma.prisma = createPrismaClient()
+    }
+    const value = (globalForPrisma.prisma as any)[prop]
+    return typeof value === 'function' ? value.bind(globalForPrisma.prisma) : value
+  },
+})
