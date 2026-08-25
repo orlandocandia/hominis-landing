@@ -125,7 +125,7 @@ export async function POST(request: Request) {
         to: EMAIL_TO,
         replyTo: email, // el interesado, para que Agustina pueda responder directo
         subject: `Nuevo lead de ${emailConfig.label} — ${nombre}`,
-        html: renderEmailHtml({ nombre, telefono, email, mensaje, ip, utm }),
+        html: renderEmailHtml({ nombre, telefono, email, mensaje, origen }),
       })
       console.log('[contact] Email enviado:', info.messageId, '->', EMAIL_TO)
       emailStatus = 'sent'
@@ -171,49 +171,138 @@ export async function POST(request: Request) {
   })
 }
 
-// Plantilla HTML simple y legible para el email que recibe Agustina.
+// Plantilla HTML del email que recibe Agustina. Diseño limpio, responsive,
+// con badge de origen, boton de WhatsApp directo, y link al CRM.
+// NO incluye datos tecnicos (IP, UTM) — son irrelevantes para la clienta.
 function renderEmailHtml({
   nombre,
   telefono,
   email,
   mensaje,
-  ip,
-  utm,
+  origen,
 }: {
   nombre: string
   telefono: string
   email: string
   mensaje: string
-  ip: string | null
-  utm: { source: string | null; medium: string | null; campaign: string | null; term: string | null; content: string | null }
+  origen: string
 }): string {
-  const rows = [
-    ['Nombre', nombre],
-    ['Email', email],
-    ['Teléfono', telefono],
-    ['Mensaje', mensaje || '(sin mensaje)'],
-    ['IP de origen', ip || '(no disponible)'],
-    ['UTM source', utm.source || '(directo)'],
-    ['UTM medium', utm.medium || '(no disponible)'],
-    ['UTM campaign', utm.campaign || '(no disponible)'],
-  ]
-    .map(
-      ([label, value]) =>
-        `<tr><td style="padding:6px 12px;color:#64748b;font-size:13px;white-space:nowrap;vertical-align:top">${label}</td><td style="padding:6px 12px;font-size:14px;vertical-align:top">${escapeHtml(String(value))}</td></tr>`
-    )
-    .join('')
+  const isHominis = origen === 'landing-hominis'
+  const brandName = isHominis ? 'Hominis' : 'Cotiza Seguros'
+  const brandEmoji = isHominis ? '🏥' : '📋'
+  const brandColor = isHominis ? '#1d4ed8' : '#059669' // azul / verde
+  const brandColorLight = isHominis ? '#eff6ff' : '#ecfdf5'
+  const greetingName = isHominis ? 'Hominis' : 'Cotiza'
+
+  // WhatsApp link: limpia el telefono (solo digitos) + mensaje predefinido
+  const cleanPhone = telefono.replace(/\D/g, '')
+  const waText = encodeURIComponent(
+    `Hola ${nombre}! Soy Agustina de ${greetingName}. Recibí tu consulta, ¿cómo puedo ayudarte?`
+  )
+  const waLink = `https://wa.me/${cleanPhone}?text=${waText}`
+
+  // CRM link
+  const crmLink = 'https://www.asesoradesalud.com.ar/dashboard'
+
   return `
-    <div style="font-family:Inter,Arial,sans-serif;max-width:560px;margin:auto;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden">
-      <div style="background:#077B7A;color:#fff;padding:16px 20px">
-        <h2 style="margin:0;font-size:16px;font-weight:600">Nuevo lead de la landing de seguros</h2>
-        <p style="margin:4px 0 0;font-size:13px;opacity:.9">Cotiza. Asesora de Salud — formulario de contacto</p>
-      </div>
-      <table style="width:100%;border-collapse:collapse">${rows}</table>
-      <div style="background:#f8fafc;padding:12px 20px;font-size:11px;color:#94a3b8">
-        Respondé directamente a este email para contactar a ${escapeHtml(nombre)}.
-      </div>
-    </div>
-  `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0;padding:0;background:#f3f4f6;font-family:Arial,Helvetica,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f3f4f6;">
+    <tr>
+      <td align="center" style="padding:20px;">
+        <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+
+          <!-- Banner de origen -->
+          <tr>
+            <td style="background:${brandColor};padding:16px 24px;">
+              <span style="font-size:20px;">${brandEmoji}</span>
+              <span style="color:#ffffff;font-size:16px;font-weight:bold;margin-left:8px;">${escapeHtml(brandName)} — Asesoría de Salud</span>
+            </td>
+          </tr>
+
+          <!-- Contenido -->
+          <tr>
+            <td style="padding:24px;">
+
+              <h2 style="margin:0 0 8px;font-size:20px;color:#1f2937;">¡Nuevo lead de contacto!</h2>
+              <p style="margin:0 0 20px;font-size:14px;color:#6b7280;">Una persona completó el formulario en la landing de ${escapeHtml(brandName)}.</p>
+
+              <table width="100%" cellpadding="0" cellspacing="0" style="background:${brandColorLight};border-radius:8px;margin-bottom:20px;">
+                <tr><td style="padding:16px;">
+
+                  <!-- Nombre -->
+                  <p style="margin:0 0 12px;font-size:15px;color:#1f2937;">
+                    <strong>👤 Nombre:</strong> ${escapeHtml(nombre)}
+                  </p>
+
+                  <!-- Telefono -->
+                  <p style="margin:0 0 12px;font-size:15px;color:#1f2937;">
+                    <strong>📞 Teléfono:</strong>
+                    <a href="tel:${escapeHtml(telefono)}" style="color:${brandColor};text-decoration:none;font-weight:600;">${escapeHtml(telefono)}</a>
+                  </p>
+
+                  <!-- Email -->
+                  <p style="margin:0 0 12px;font-size:15px;color:#1f2937;">
+                    <strong>✉️ Email:</strong>
+                    <a href="mailto:${escapeHtml(email)}" style="color:${brandColor};text-decoration:none;font-weight:600;">${escapeHtml(email)}</a>
+                  </p>
+
+                  <!-- Mensaje (si hay) -->
+                  ${mensaje ? `
+                  <p style="margin:0;font-size:15px;color:#1f2937;">
+                    <strong>💬 Mensaje:</strong><br>
+                    <span style="display:inline-block;margin-top:4px;padding:8px 12px;background:#ffffff;border-radius:6px;font-size:14px;color:#374151;">${escapeHtml(mensaje)}</span>
+                  </p>
+                  ` : ''}
+
+                </td></tr>
+              </table>
+
+              <!-- Boton WhatsApp -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding:8px 0 20px;">
+                    <a href="${waLink}" target="_blank"
+                       style="display:inline-block;background:#25D366;color:#ffffff;padding:14px 32px;text-decoration:none;border-radius:50px;font-weight:bold;font-size:16px;">
+                       💬 Contactar por WhatsApp
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Acciones rapidas -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #e5e7eb;padding-top:16px;">
+                <tr>
+                  <td style="font-size:14px;color:#6b7280;">
+                    📌 <a href="${crmLink}" style="color:${brandColor};text-decoration:none;font-weight:600;">Ver en el CRM</a>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding:12px 24px;background:#f9fafb;text-align:center;">
+              <p style="margin:0;font-size:12px;color:#9ca3af;">
+                Este correo fue enviado desde el formulario de contacto de ${escapeHtml(brandName)}.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `.trim()
 }
 
 function escapeHtml(s: string): string {
