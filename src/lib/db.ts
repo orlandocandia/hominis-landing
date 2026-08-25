@@ -5,7 +5,7 @@ const globalForPrisma = globalThis as unknown as {
 }
 
 function createPrismaClient(): PrismaClient {
-  const databaseUrl = process.env.DATABASE_URL || ''
+  const databaseUrl = process.env.DATABASE_URL || 'file:../dev.db'
   
   // If using Turso (libsql://), use the libSQL adapter
   if (databaseUrl.startsWith('libsql://') || databaseUrl.startsWith('libsql:')) {
