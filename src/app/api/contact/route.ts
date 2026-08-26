@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
 import { cookies } from 'next/headers'
 import { db } from '@/lib/db'
-import { getDemoUserId } from '@/lib/demo-user'
+import { requireAuth } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
@@ -137,9 +137,22 @@ export async function POST(request: Request) {
     console.warn('[contact] GMAIL_APP_PASSWORD no configurado — email NO enviado')
   }
 
-  // 3) Notificacion para el admin del dashboard (best-effort, no rompe si falla)
+  // 3) Notificacion para el admin del dashboard (best-effort).
+  //    Intenta obtener el userId de la sesion real; si no hay sesion
+  //    (ej. el lead vino de la landing publica), busca el primer ADMIN.
   try {
-    const adminId = await getDemoUserId()
+    const session = await requireAuth()
+    let adminId: string | null = null
+    if (session?.user) {
+      adminId = (session.user as any).id as string
+    } else {
+      // Fallback: buscar el primer ADMIN (para leads de landing publica)
+      const admin = await db.user.findFirst({
+        where: { rol: 'ADMIN' },
+        select: { id: true },
+      })
+      adminId = admin?.id ?? null
+    }
     if (adminId) {
       await db.notification.create({
         data: {
