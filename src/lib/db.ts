@@ -1,42 +1,47 @@
 import { PrismaClient } from '@prisma/client'
+import { createClient } from '@libsql/client'
+import { PrismaLibSql } from '@prisma/adapter-libsql'
 
-console.log('[DB] Inicializando PrismaClient en runtime...')
-console.log('[DB] DATABASE_URL exists?', !!process.env.DATABASE_URL)
-console.log('[DB] DATABASE_URL value:', process.env.DATABASE_URL)
+// 🔥 FUNCIÓN que obtiene la URL solo cuando se llama
+function getDatabaseUrl(): string {
+  const url = process.env.DATABASE_URL
+  console.log('[DB] getDatabaseUrl() called, DATABASE_URL exists?', !!url)
+  if (!url) {
+    console.error('[DB] CRITICAL: DATABASE_URL is undefined in runtime!')
+    // Fallback para que no falle con undefined
+    return 'libsql://hominins-db-orlandocandia.aws-us-east-2.turso.io'
+  }
+  return url
+}
 
+// 🔥 FUNCIÓN que crea el cliente solo cuando se necesita
+function createPrismaClient(): PrismaClient {
+  const databaseUrl = getDatabaseUrl()
+  console.log('[DB] Creating PrismaClient with URL:', databaseUrl)
+
+  // Turso (libsql://) → usa adapter
+  if (databaseUrl.startsWith('libsql://')) {
+    const authToken = process.env.TURSO_AUTH_TOKEN || ''
+    const libsql = createClient({ url: databaseUrl, authToken })
+    const adapter = new PrismaLibSql(libsql)
+    return new PrismaClient({ adapter })
+  }
+
+  // Local (file:) → SQLite estándar
+  return new PrismaClient({ datasourceUrl: databaseUrl })
+}
+
+// 🔥 LAZY initialization: solo se crea cuando se accede a `db`
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
 }
 
-function createPrismaClient(): PrismaClient {
-  const databaseUrl = process.env.DATABASE_URL || 'file:./dev.db'
-  console.log('[DB] Using URL:', databaseUrl)
-
-  // Si la URL es de Turso (libsql://), usar el adapter de libSQL
-  if (databaseUrl.startsWith('libsql://') || databaseUrl.startsWith('libsql:')) {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { PrismaLibSql } = require('@prisma/adapter-libsql')
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { createClient } = require('@libsql/client')
-
-      console.log('[DB] Usando Turso (libSQL adapter)')
-      const libsql = createClient({
-        url: databaseUrl,
-        authToken: process.env.TURSO_AUTH_TOKEN || undefined,
-      })
-      const adapter = new PrismaLibSql(libsql)
-      return new PrismaClient({ adapter, log: ['error', 'warn'] })
-    } catch (e) {
-      console.error('[DB] Error cargando libSQL adapter, fallback a SQLite:', e)
+export const db = new Proxy({} as PrismaClient, {
+  get(_target, prop) {
+    if (!globalForPrisma.prisma) {
+      globalForPrisma.prisma = createPrismaClient()
     }
-  }
-
-  // SQLite local (desarrollo) o fallback
-  console.log('[DB] Usando SQLite estandar')
-  return new PrismaClient({ datasourceUrl: databaseUrl, log: ['error', 'warn'] })
-}
-
-export const db = globalForPrisma.prisma ?? createPrismaClient()
-
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db
+    const value = (globalForPrisma.prisma as any)[prop]
+    return typeof value === 'function' ? value.bind(globalForPrisma.prisma) : value
+  },
+})
