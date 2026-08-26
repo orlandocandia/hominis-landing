@@ -22,6 +22,18 @@ export const authOptions: NextAuthOptions = {
           return null
         }
 
+        // --- USUARIO ADMIN HARDCODEADO PARA PRUEBAS ---
+        if (credentials.email === 'admin@hominis.com' && credentials.password === 'Hominis2025!') {
+          console.log('[AUTH] ✅ Admin hardcodeado autenticado correctamente')
+          return {
+            id: 'admin-hardcodeado',
+            email: 'admin@hominis.com',
+            name: 'Admin',
+            role: 'ADMIN',
+          }
+        }
+        // --- FIN ADMIN HARDCODEADO ---
+
         console.log('[AUTH] Buscando usuario en DB...')
         const user = await db.user.findFirst({
           where: { email: credentials.email, activo: true },
