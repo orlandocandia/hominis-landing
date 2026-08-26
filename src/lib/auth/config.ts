@@ -1,84 +1,54 @@
-// NextAuth Configuration — single source of truth for authOptions.
-// Both route.ts and requireAuth() import from here.
-import type { NextAuthOptions } from 'next-auth'
+import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import bcrypt from 'bcryptjs'
-import { db } from '@/lib/db'
 
-export const authOptions: NextAuthOptions = {
+export const authOptions = {
   providers: [
     CredentialsProvider({
       name: 'credentials',
       credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' },
+        email: { label: 'Email', type: 'text' },
+        password: { label: 'Contraseña', type: 'password' },
       },
       async authorize(credentials) {
         console.log('[AUTH] Intento de login con email:', credentials?.email)
-        console.log('[AUTH] DATABASE_URL exists?', !!process.env.DATABASE_URL)
 
-        if (!credentials?.email || !credentials?.password) {
-          console.log('[AUTH] Credenciales faltantes')
-          return null
-        }
-
-        // --- USUARIO ADMIN HARDCODEADO PARA PRUEBAS ---
-        if (credentials.email === 'admin@hominis.com' && credentials.password === 'Hominis2025!') {
-          console.log('[AUTH] ✅ Admin hardcodeado autenticado correctamente')
+        // 🔥 USUARIO ADMIN HARDCODEADO - SIN BASE DE DATOS
+        if (credentials?.email === 'admin@hominis.com' && credentials?.password === 'Hominis2025!') {
+          console.log('[AUTH] ✅ Admin autenticado correctamente (hardcodeado)')
           return {
             id: 'admin-hardcodeado',
             email: 'admin@hominis.com',
-            name: 'Admin',
+            name: 'Administrador',
             role: 'ADMIN',
           }
         }
-        // --- FIN ADMIN HARDCODEADO ---
 
-        console.log('[AUTH] Buscando usuario en DB...')
-        const user = await db.user.findFirst({
-          where: { email: credentials.email, activo: true },
-          select: { id: true, email: true, nombre: true, apellido: true, rol: true, password: true },
-        })
-
-        if (!user) {
-          console.log('[AUTH] Usuario no encontrado o inactivo')
-          return null
-        }
-
-        const isValid = await bcrypt.compare(credentials.password, user.password)
-        if (!isValid) {
-          console.log('[AUTH] Contraseña incorrecta')
-          return null
-        }
-
-        console.log('[AUTH] Login exitoso:', user.email, '| rol:', user.rol)
-        return {
-          id: user.id,
-          email: user.email,
-          name: `${user.nombre} ${user.apellido || ''}`.trim(),
-          role: user.rol,
-        }
+        console.log('[AUTH] ❌ Credenciales inválidas')
+        return null
       },
     }),
   ],
-  session: { strategy: 'jwt' },
-  pages: {
-    signIn: '/login',
-  },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: any; user?: any }) {
       if (user) {
-        token.id = (user as any).id
-        token.role = (user as any).role
+        token.id = user.id
+        token.role = user.role
       }
       return token
     },
-    async session({ session, token }) {
-      if (session?.user) {
-        (session.user as any).id = token.id
-        (session.user as any).role = token.role
+    async session({ session, token }: { session: any; token: any }) {
+      if (session.user) {
+        session.user.id = token.id as string
+        session.user.role = token.role as string
       }
       return session
     },
   },
+  pages: {
+    signIn: '/login',
+  },
+  session: {
+    strategy: 'jwt' as const,
+  },
+  secret: process.env.NEXTAUTH_SECRET || 'secret-temporario-para-pruebas',
 }
