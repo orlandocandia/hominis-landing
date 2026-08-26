@@ -1,4 +1,5 @@
-// NextAuth Configuration — uses PrismaClient via db.ts (no turso-config)
+// NextAuth Configuration — single source of truth for authOptions.
+// Both route.ts and requireAuth() import from here.
 import type { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs'
@@ -15,7 +16,6 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         console.log('[AUTH] Intento de login con email:', credentials?.email)
         console.log('[AUTH] DATABASE_URL exists?', !!process.env.DATABASE_URL)
-        console.log('[AUTH] DATABASE_URL value:', process.env.DATABASE_URL)
 
         if (!credentials?.email || !credentials?.password) {
           console.log('[AUTH] Credenciales faltantes')
@@ -28,11 +28,18 @@ export const authOptions: NextAuthOptions = {
           select: { id: true, email: true, nombre: true, apellido: true, rol: true, password: true },
         })
 
-        if (!user) return null
+        if (!user) {
+          console.log('[AUTH] Usuario no encontrado o inactivo')
+          return null
+        }
 
         const isValid = await bcrypt.compare(credentials.password, user.password)
-        if (!isValid) return null
+        if (!isValid) {
+          console.log('[AUTH] Contraseña incorrecta')
+          return null
+        }
 
+        console.log('[AUTH] Login exitoso:', user.email, '| rol:', user.rol)
         return {
           id: user.id,
           email: user.email,
