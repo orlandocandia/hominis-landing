@@ -1,20 +1,21 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { getDemoUserId } from '@/lib/demo-user'
+import { requireAuth } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
-// PATCH /api/notifications/[id]  { read: true }  -> mark one as read
+// PATCH /api/notifications/[id] { read: true } -> mark one as read
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const userId = await getDemoUserId()
-    if (!userId) {
+    const session = await requireAuth()
+    if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const userId = (session.user as any).id as string
     const { id } = await params
     const body = await request.json().catch(() => ({}))
 
