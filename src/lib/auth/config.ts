@@ -13,10 +13,16 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
+        console.log('[AUTH] Intento de login con email:', credentials?.email)
+        console.log('[AUTH] DATABASE_URL exists?', !!process.env.DATABASE_URL)
+        console.log('[AUTH] DATABASE_URL value:', process.env.DATABASE_URL)
+
         if (!credentials?.email || !credentials?.password) {
+          console.log('[AUTH] Credenciales faltantes')
           return null
         }
 
+        console.log('[AUTH] Buscando usuario en DB...')
         const user = await db.user.findFirst({
           where: { email: credentials.email, activo: true },
           select: { id: true, email: true, nombre: true, apellido: true, rol: true, password: true },
