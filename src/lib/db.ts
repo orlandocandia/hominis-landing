@@ -7,9 +7,11 @@ function getDatabaseUrl(): string {
   const url = process.env.DATABASE_URL
   console.log('[DB] getDatabaseUrl() called, DATABASE_URL exists?', !!url)
   if (!url) {
-    console.error('[DB] CRITICAL: DATABASE_URL is undefined in runtime!')
-    // Fallback para que no falle con undefined
-    return 'libsql://hominins-db-orlandocandia.aws-us-east-2.turso.io'
+    throw new Error(
+      '[DB] CRITICAL: DATABASE_URL no está configurada. ' +
+      'Setear en .env (local) o en Vercel → Settings → Environment Variables (producción). ' +
+      'Formato: libsql://<tu-db>.turso.io (Turso) o file:./prisma/dev.db (SQLite local)'
+    )
   }
   return url
 }
