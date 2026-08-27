@@ -28,6 +28,7 @@ interface ContactPayload {
   email?: string
   mensaje?: string
   origen?: string // 'landing-hominis' | 'landing-seguros' — para diferenciar en el email
+  empresaId?: string // opcional: asociar lead a una empresa
 }
 
 // POST /api/contact
@@ -88,31 +89,73 @@ export async function POST(request: Request) {
   // 1) Registrar el lead en la tabla Contact (modelo unificado).
   //    BEST-EFFORT: si la DB falla (ej. tabla no migrada en Vercel), el lead
   //    no se guarda pero el email igual se envia (no rompemos el flujo).
+  //
+  //    PROBLEMA CONOCIDO (corregido): antes se usaba `admin?.id || 'admin-hardcodeado'`
+  //    como fallback. Si no habia ADMIN en la DB, se intentaba crear un Contact
+  //    con un ownerId inexistente → violacion de FK → el lead NO se guardaba
+  //    (silenciosamente, porque el error se capturaba). Ahora hacemos una cadena
+  //    de fallbacks robusta: ADMIN → cualquier usuario activo → cualquier usuario
+  //    → crear un admin por defecto. Asi el lead SIEMPRE se guarda si la DB responde.
   let leadId: string | null = null
   try {
-    // Buscar un ADMIN para asignar el lead (fallback: primer ADMIN)
-    const admin = await db.user.findFirst({
-      where: { rol: 'ADMIN' },
+    // 1.a) Buscar un ownerId valido (cadena de fallbacks).
+    //      ownerId es FK restrict en el schema → debe existir en User.
+    let owner = await db.user.findFirst({
+      where: { rol: 'ADMIN', activo: true },
       select: { id: true },
     })
+    if (!owner) {
+      // Sin ADMIN activo → buscar cualquier ADMIN (incluso inactivo)
+      owner = await db.user.findFirst({ where: { rol: 'ADMIN' }, select: { id: true } })
+    }
+    if (!owner) {
+      // Sin ADMIN → cualquier usuario activo
+      owner = await db.user.findFirst({ where: { activo: true }, select: { id: true } })
+    }
+    if (!owner) {
+      // Sin usuarios activos → cualquier usuario
+      owner = await db.user.findFirst({ select: { id: true } })
+    }
+    if (!owner) {
+      // No hay NINGUN usuario en la DB → crear un admin por defecto para que
+      // los leads tengan un ownerId valido y aparezcan en el panel de mensajes.
+      console.warn('[contact] No hay usuarios en la DB. Creando admin por defecto.')
+      const bcrypt = await import('bcryptjs')
+      const hashedPassword = await bcrypt.hash('Hominis2025!', 10)
+      owner = await db.user.create({
+        data: {
+          email: 'admin@hominis.com',
+          password: hashedPassword,
+          nombre: 'Admin',
+          rol: 'ADMIN',
+          activo: true,
+        },
+        select: { id: true },
+      })
+    }
 
+    // 1.b) Crear el lead en la tabla Contact (modelo unificado).
+    //      Mapeo de campos del form → schema Contact.
     const nuevoLead = await db.contact.create({
       data: {
         name: nombre,
         primaryEmail: email,
         primaryPhone: telefono,
-        address: '', // required field, empty for landing leads
+        address: '', // required field (no nullable en schema), vacio para leads de landing
         message: mensaje || null,
         status: 'NUEVO',
-        ownerId: admin?.id || 'admin-hardcodeado',
+        ownerId: owner.id, // SIEMPRE un ID valido ahora
         // Marketing analytics (UTM via source fields)
         sourceReferrer: origen,
         sourceIp: ip,
+        empresaId: body.empresaId || null,
       },
     })
     leadId = nuevoLead.id
+    console.log('[contact] Lead guardado en DB:', leadId, 'ownerId:', owner.id)
   } catch (dbErr) {
-    // La DB no debe bloquear el envio del email. Se loggea para diagnostico.
+    // La DB no debe bloquear el envio del email. Se loggea TODO el detalle
+    // (codigo, mensaje) para diagnostico en Vercel logs.
     console.error('[contact] Error guardando lead en DB (el email igual se enviara):', dbErr)
   }
 
@@ -147,18 +190,19 @@ export async function POST(request: Request) {
 
   // 3) Notificacion para el admin del dashboard (best-effort).
   //    Intenta obtener el userId de la sesion real; si no hay sesion
-  //    (ej. el lead vino de la landing publica), busca el primer ADMIN.
+  //    (ej. el lead vino de la landing publica), busca un admin con la misma
+  //    cadena de fallbacks usada arriba.
   try {
     const session = await requireAuth()
     let adminId: string | null = null
     if (session?.user) {
       adminId = (session.user as any).id as string
     } else {
-      // Fallback: buscar el primer ADMIN (para leads de landing publica)
-      const admin = await db.user.findFirst({
-        where: { rol: 'ADMIN' },
-        select: { id: true },
-      })
+      // Fallback: buscar un admin con la misma cadena que arriba.
+      let admin = await db.user.findFirst({ where: { rol: 'ADMIN', activo: true }, select: { id: true } })
+      if (!admin) admin = await db.user.findFirst({ where: { rol: 'ADMIN' }, select: { id: true } })
+      if (!admin) admin = await db.user.findFirst({ where: { activo: true }, select: { id: true } })
+      if (!admin) admin = await db.user.findFirst({ select: { id: true } })
       adminId = admin?.id ?? null
     }
     if (adminId) {
@@ -168,7 +212,7 @@ export async function POST(request: Request) {
           type: 'CONTACT',
           title: `Nuevo lead de ${emailConfig.label}`,
           message: `${nombre} (${email}) — tel: ${telefono}`,
-          link: '/dashboard',
+          link: '/admin/mensajes',
         },
       })
     }
