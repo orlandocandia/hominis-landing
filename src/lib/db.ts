@@ -22,8 +22,8 @@ import { PrismaLibSql } from '@prisma/adapter-libsql'
 // (y preferir el env var cuando esté disponible).
 // ═══════════════════════════════════════════════════════════════
 
-// 🔥 VERSION MARKER — v6-explicit-datasourceUrl (para detectar si el nuevo codigo esta live)
-export const DB_VERSION = 'v6-explicit-datasourceUrl'
+// 🔥 VERSION MARKER — v7-adapter-only-fresh-prisma (para detectar si el nuevo codigo esta live)
+export const DB_VERSION = 'v7-adapter-only-fresh-prisma'
 
 // 🔥 HARDCODEADO — Turso production DB
 const TURSO_DATABASE_URL = 'libsql://hominins-db-orlandocandia.aws-us-east-2.turso.io'
@@ -106,9 +106,10 @@ function createPrismaClient(): PrismaClient {
     }
     const libsql = createClient({ url: databaseUrl, authToken })
     const adapter = new PrismaLibSql(libsql)
-    // Pasar datasourceUrl EXPLICITAMENTE para forzar a Prisma a usar esta URL
-    // en lugar de leer process.env.DATABASE_URL (que en Vercel puede ser "undefined").
-    return new PrismaClient({ adapter, datasourceUrl: 'file:./prisma/dev.db' })
+    // SOLO pasar adapter (NO datasourceUrl) — el adapter maneja la conexion a Turso.
+    // El schema tiene url="file:./prisma/dev.db" hardcoded, que Prisma valida internamente
+    // pero NO usa para la conexion (el adapter la maneja).
+    return new PrismaClient({ adapter })
   }
 
   // Local (file:) → SQLite estándar
