@@ -24,8 +24,8 @@ import { PrismaLibSQL } from '@prisma/adapter-libsql'
 // (y preferir el env var cuando esté disponible).
 // ═══════════════════════════════════════════════════════════════
 
-// 🔥 VERSION MARKER — v10-correct-adapter-name (para detectar si el nuevo codigo esta live)
-export const DB_VERSION = 'v10-correct-adapter-name'
+// 🔥 VERSION MARKER — v11-set-env-correct-adapter (para detectar si el nuevo codigo esta live)
+export const DB_VERSION = 'v11-set-env-correct-adapter'
 
 // 🔥 HARDCODEADO — Turso production DB
 const TURSO_DATABASE_URL = 'libsql://hominins-db-orlandocandia.aws-us-east-2.turso.io'
@@ -89,11 +89,13 @@ function createPrismaClient(): PrismaClient {
   console.log('[DB] Creating PrismaClient — isTurso:', isTurso, ', URL prefix:', databaseUrl.slice(0, 25))
 
   // CRÍTICO: Vercel setea process.env.DATABASE_URL al string "undefined" en runtime.
-  // Cuando Prisma ve que process.env.DATABASE_URL existe, lo usa para la conexion
-  // en lugar del adapter. Esto causa URL_INVALID o Error code 14.
-  // FIX: DELETE process.env.DATABASE_URL — Prisma usara el adapter para la conexion.
-  delete process.env.DATABASE_URL
-  console.log('[DB] process.env.DATABASE_URL DELETED — Prisma will use adapter for connection')
+  // Prisma lee este env var para validar la datasource URL. Si es "undefined", lanza URL_INVALID.
+  //
+  // FIX: Setear process.env.DATABASE_URL a 'file:./prisma/dev.db' (valido para sqlite).
+  // Prisma lo usara para validacion. La CONEXION REAL a Turso la maneja el adapter
+  // (PrismaLibSQL, v6.x, nombre correcto en mayusculas).
+  process.env.DATABASE_URL = 'file:./prisma/dev.db'
+  console.log('[DB] process.env.DATABASE_URL set to file:./prisma/dev.db for Prisma validation')
 
   // Turso (libsql://) → usa adapter
   if (isTurso) {
