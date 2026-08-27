@@ -22,8 +22,8 @@ import { PrismaLibSql } from '@prisma/adapter-libsql'
 // (y preferir el env var cuando esté disponible).
 // ═══════════════════════════════════════════════════════════════
 
-// 🔥 VERSION MARKER — v7-adapter-only-fresh-prisma (para detectar si el nuevo codigo esta live)
-export const DB_VERSION = 'v7-adapter-only-fresh-prisma'
+// 🔥 VERSION MARKER — v8-adapter-v6-compatible (para detectar si el nuevo codigo esta live)
+export const DB_VERSION = 'v8-adapter-v6-compatible'
 
 // 🔥 HARDCODEADO — Turso production DB
 const TURSO_DATABASE_URL = 'libsql://hominins-db-orlandocandia.aws-us-east-2.turso.io'
