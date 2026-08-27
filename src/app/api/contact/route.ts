@@ -96,7 +96,15 @@ export async function POST(request: Request) {
   //    (silenciosamente, porque el error se capturaba). Ahora hacemos una cadena
   //    de fallbacks robusta: ADMIN → cualquier usuario activo → cualquier usuario
   //    → crear un admin por defecto. Asi el lead SIEMPRE se guarda si la DB responde.
+  //
+  //    PROBLEMA 2 (corregido): si el schema de la DB de produccion (Turso) esta
+  //    desactualizado (ej. falta la columna empresaId porque no se corrio
+  //    `prisma db push`), el db.contact.create() con todos los campos falla.
+  //    Ahora se intenta primero el create completo, y si falla, se reintenta con
+  //    un payload MINIMO (solo los 3 campos required: name, address, ownerId).
+  //    Asi el lead SIEMPRE se guarda aunque el schema este desactualizado.
   let leadId: string | null = null
+  let dbError: string | null = null
   try {
     // 1.a) Buscar un ownerId valido (cadena de fallbacks).
     //      ownerId es FK restrict en el schema → debe existir en User.
@@ -136,27 +144,50 @@ export async function POST(request: Request) {
 
     // 1.b) Crear el lead en la tabla Contact (modelo unificado).
     //      Mapeo de campos del form → schema Contact.
-    const nuevoLead = await db.contact.create({
-      data: {
-        name: nombre,
-        primaryEmail: email,
-        primaryPhone: telefono,
-        address: '', // required field (no nullable en schema), vacio para leads de landing
-        message: mensaje || null,
-        status: 'NUEVO',
-        ownerId: owner.id, // SIEMPRE un ID valido ahora
-        // Marketing analytics (UTM via source fields)
-        sourceReferrer: origen,
-        sourceIp: ip,
-        empresaId: body.empresaId || null,
-      },
-    })
-    leadId = nuevoLead.id
-    console.log('[contact] Lead guardado en DB:', leadId, 'ownerId:', owner.id)
+    //      Intento 1: payload completo (todos los campos).
+    try {
+      const nuevoLead = await db.contact.create({
+        data: {
+          name: nombre,
+          primaryEmail: email,
+          primaryPhone: telefono,
+          address: '', // required field (no nullable en schema), vacio para leads de landing
+          message: mensaje || null,
+          status: 'NUEVO',
+          ownerId: owner.id, // SIEMPRE un ID valido ahora
+          // Marketing analytics (UTM via source fields)
+          sourceReferrer: origen,
+          sourceIp: ip,
+          empresaId: body.empresaId || null,
+        },
+      })
+      leadId = nuevoLead.id
+      console.log('[contact] Lead guardado en DB (full):', leadId, 'ownerId:', owner.id)
+    } catch (fullErr) {
+      // Intento 1 fallo (probablemente schema desactualizado: columna empresaId,
+      // sourceReferrer, o sourceIp no existe en la DB de produccion).
+      // Intento 2: payload MINIMO (solo los 3 campos required por el schema).
+      console.warn('[contact] Create completo fallo, reintentando con payload minimo. Error:', (fullErr as Error)?.message)
+      try {
+        const nuevoLead = await db.contact.create({
+          data: {
+            name: nombre,
+            address: '', // required
+            ownerId: owner.id, // required (FK)
+            status: 'NUEVO',
+          },
+        })
+        leadId = nuevoLead.id
+        console.log('[contact] Lead guardado en DB (minimal fallback):', leadId, 'ownerId:', owner.id)
+      } catch (minErr) {
+        // Ambos intentos fallaron. Guardar el error para diagnostico.
+        dbError = (minErr as Error)?.message?.slice(0, 300) || String(minErr)
+        console.error('[contact] Error guardando lead en DB (ambos intentos fallaron):', minErr)
+      }
+    }
   } catch (dbErr) {
-    // La DB no debe bloquear el envio del email. Se loggea TODO el detalle
-    // (codigo, mensaje) para diagnostico en Vercel logs.
-    console.error('[contact] Error guardando lead en DB (el email igual se enviara):', dbErr)
+    dbError = (dbErr as Error)?.message?.slice(0, 300) || String(dbErr)
+    console.error('[contact] Error en la cadena de ownerId/email (el email igual se enviara):', dbErr)
   }
 
   // 2) Enviar email via Gmail SMTP + nodemailer (best-effort).
@@ -224,15 +255,18 @@ export async function POST(request: Request) {
   // la DB fallo. Si el email fallo Y la DB fallo, ahi si devolvemos error.
   if (emailStatus === 'failed' && !leadId) {
     return NextResponse.json(
-      { error: 'No se pudo enviar el mensaje. Intentá de nuevo.' },
+      { error: 'No se pudo enviar el mensaje. Intentá de nuevo.', dbError },
       { status: 500 }
     )
   }
 
+  // dbError se incluye solo cuando el lead no se guardo, para diagnostico.
+  // Si el lead se guardo OK (leadId !== null), dbError queda en null y no se envia.
   return NextResponse.json({
     ok: true,
     id: leadId,
     email: emailStatus,
+    ...(leadId ? {} : { dbError }), // exponer dbError solo si el lead NO se guardo
   })
 }
 
