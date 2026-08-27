@@ -13,6 +13,8 @@ import { Card } from '@/components/ui/card'
 const NAV_LINKS = [
   { href: '/admin', label: 'Dashboard', icon: ShieldCheck },
   { href: '/admin/mensajes', label: 'Mensajes', icon: Mail },
+  { href: '/admin/vendedores', label: 'Vendedores', icon: Users },
+  { href: '/admin/tareas', label: 'Tareas', icon: ListTodo },
   { href: '/admin/empresas', label: 'Empresas', icon: Building2 },
 ]
 
