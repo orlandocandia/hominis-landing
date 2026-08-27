@@ -1,16 +1,18 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { getToken } from 'next-auth/jwt'
 
 /**
- * Proxy — routing basado en dominio.
+ * Proxy — routing + auth protection.
  *
- * Reescribe el subdominio `cotiza.asesoradesalud.com.ar` a `/seguros`.
- * El resto de las rutas pasan sin alteración.
+ * 1. Rewrite cotiza.asesoradesalud.com.ar → /seguros
+ * 2. Protect /admin/* and /vendedor/* — redirect to /login if no session
  */
 export async function proxy(req: NextRequest) {
   const host = req.headers.get('host') ?? ''
   const hostname = host.split(':')[0].toLowerCase()
 
+  // --- Subdominio cotiza → /seguros ---
   const isCotizaSubdomain =
     hostname === 'cotiza.asesoradesalud.com.ar' ||
     hostname === 'www.cotiza.asesoradesalud.com.ar' ||
@@ -20,6 +22,25 @@ export async function proxy(req: NextRequest) {
     const url = req.nextUrl.clone()
     url.pathname = '/seguros'
     return NextResponse.rewrite(url)
+  }
+
+  // --- Auth protection for dashboard routes ---
+  const { pathname } = req.nextUrl
+  const isProtectedRoute =
+    pathname.startsWith('/admin') ||
+    pathname.startsWith('/vendedor')
+
+  if (isProtectedRoute) {
+    const token = await getToken({
+      req,
+      secret: process.env.NEXTAUTH_SECRET,
+    })
+
+    if (!token) {
+      const loginUrl = new URL('/login', req.url)
+      loginUrl.searchParams.set('callbackUrl', pathname)
+      return NextResponse.redirect(loginUrl)
+    }
   }
 
   return NextResponse.next()
