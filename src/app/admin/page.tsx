@@ -1,105 +1,74 @@
 'use client'
 
-import { useSession } from 'next-auth/react'
-import { useEffect } from 'react'
-import { ShieldCheck, Users, ClipboardList, Bell, LogOut } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { ClipboardList, Users, Bell, TrendingUp } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { signOut } from 'next-auth/react'
-import { NotificationBell } from '@/components/notification-bell'
-import { ThemeToggle } from '@/components/theme-toggle'
-import Link from 'next/link'
 
-export default function AdminPage() {
-  const { data: session, status } = useSession()
+export default function AdminDashboard() {
+  const [stats, setStats] = useState({ leads: 0, vendedores: 0, notificaciones: 0, nuevos: 0 })
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      window.location.href = '/login?callbackUrl=/admin'
+    async function fetchStats() {
+      try {
+        const [leadsRes, statsRes, notifsRes] = await Promise.all([
+          fetch('/api/admin/leads?limit=1'),
+          fetch('/api/admin/stats/equipo'),
+          fetch('/api/notifications'),
+        ])
+        if (leadsRes.ok) {
+          const data = await leadsRes.json()
+          setStats(s => ({ ...s, leads: data.total || 0 }))
+        }
+        if (statsRes.ok) {
+          const data = await statsRes.json()
+          setStats(s => ({ ...s, vendedores: data.totalVendedores || 0 }))
+        }
+        if (notifsRes.ok) {
+          const data = await notifsRes.json()
+          setStats(s => ({ ...s, notificaciones: Array.isArray(data) ? data.length : 0 }))
+        }
+      } catch {
+        // ignore
+      } finally {
+        setLoading(false)
+      }
     }
-  }, [status])
+    fetchStats()
+  }, [])
 
-  if (status === 'loading') {
-    return <div className="min-h-screen flex items-center justify-center"><div className="animate-pulse">Cargando...</div></div>
-  }
-  if (status === 'unauthenticated') return null
+  const cards = [
+    { title: 'Mensajes totales', value: stats.leads, icon: ClipboardList, color: 'text-violet-600 bg-violet-500/15' },
+    { title: 'Vendedores activos', value: stats.vendedores, icon: Users, color: 'text-emerald-600 bg-emerald-500/15' },
+    { title: 'Notificaciones', value: stats.notificaciones, icon: Bell, color: 'text-amber-600 bg-amber-500/15' },
+    { title: 'Nuevos leads', value: stats.nuevos, icon: TrendingUp, color: 'text-sky-600 bg-sky-500/15' },
+  ]
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <ShieldCheck className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="text-sm font-bold">Hominis CRM</p>
-              <p className="text-[11px] text-muted-foreground">Panel de Administración</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            <NotificationBell />
-            <Button variant="ghost" size="sm" onClick={() => signOut({ callbackUrl: '/login' })}>
-              <LogOut className="h-4 w-4" />
-              <span className="hidden sm:inline ml-1">Salir</span>
-            </Button>
-          </div>
-        </div>
-      </header>
+    <div>
+      <h1 className="text-2xl font-bold mb-1">Dashboard</h1>
+      <p className="text-sm text-muted-foreground mb-6">Resumen general del sistema</p>
 
-      {/* Main */}
-      <main className="mx-auto max-w-7xl px-4 py-8">
-        <h1 className="text-2xl font-bold mb-1">Bienvenido, {session?.user?.name || 'Admin'}</h1>
-        <p className="text-sm text-muted-foreground mb-6">Panel de Administración — Hominis CRM</p>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <Card>
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-sm text-muted-foreground">Leads</p>
-                <p className="text-2xl font-bold mt-1">—</p>
-              </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-500/15 text-violet-600">
-                <ClipboardList className="h-5 w-5" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-sm text-muted-foreground">Vendedores</p>
-                <p className="text-2xl font-bold mt-1">—</p>
-              </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/15 text-emerald-600">
-                <Users className="h-5 w-5" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-sm text-muted-foreground">Notificaciones</p>
-                <p className="text-2xl font-bold mt-1">—</p>
-              </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-500/15 text-amber-600">
-                <Bell className="h-5 w-5" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <Card className="border-dashed">
-          <CardContent className="py-16 text-center">
-            <p className="text-4xl mb-3">📋</p>
-            <p className="text-muted-foreground">Las funcionalidades del dashboard se cargarán próximamente.</p>
-            <p className="text-xs text-muted-foreground mt-2">
-              Sesión: {session?.user?.email} | Rol: {(session?.user as any)?.role}
-            </p>
-          </CardContent>
-        </Card>
-      </main>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {cards.map((card, i) => {
+          const Icon = card.icon
+          return (
+            <Card key={i}>
+              <CardContent className="flex items-center justify-between p-5">
+                <div>
+                  <p className="text-sm text-muted-foreground">{card.title}</p>
+                  <p className="text-3xl font-bold mt-1">
+                    {loading ? '...' : card.value}
+                  </p>
+                </div>
+                <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${card.color}`}>
+                  <Icon className="h-6 w-6" />
+                </div>
+              </CardContent>
+            </Card>
+          )
+        })}
+      </div>
     </div>
   )
 }
