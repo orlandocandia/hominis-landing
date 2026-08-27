@@ -2,29 +2,55 @@ import { PrismaClient } from '@prisma/client'
 import { createClient } from '@libsql/client'
 import { PrismaLibSql } from '@prisma/adapter-libsql'
 
+// Filtra valores invalidos comunes en env vars de Vercel.
+// A veces Vercel tiene DATABASE_URL seteada al literal "undefined" o "null"
+// (misconfiguracion), lo que causa URL_INVALID en Prisma. Filtramos esos casos.
+function cleanEnvVar(value: string | undefined): string | null {
+  if (!value) return null
+  const trimmed = value.trim()
+  if (!trimmed || trimmed === 'undefined' || trimmed === 'null') return null
+  return trimmed
+}
+
 // 🔥 FUNCIÓN que obtiene la URL solo cuando se llama.
-// Intenta varias env vars (DATABASE_URL, TURSO_DATABASE_URL) para robustez
-// en Vercel, donde a veces el nombre del env var varia.
+// Cadena de prioridad:
+//   1. DATABASE_URL (si es valida y no es "undefined")
+//   2. TURSO_DATABASE_URL (fallback, util si DATABASE_URL esta mal configurada)
 function getDatabaseUrl(): string {
-  // Prioridad: DATABASE_URL > TURSO_DATABASE_URL
-  const url = process.env.DATABASE_URL || process.env.TURSO_DATABASE_URL
-  console.log('[DB] getDatabaseUrl() called, DATABASE_URL exists?', !!process.env.DATABASE_URL, ', TURSO_DATABASE_URL exists?', !!process.env.TURSO_DATABASE_URL)
-  if (!url) {
-    throw new Error(
-      '[DB] CRITICAL: DATABASE_URL no está configurada. ' +
-      'Setear en .env (local) o en Vercel → Settings → Environment Variables (producción). ' +
-      'Formato: libsql://<tu-db>.turso.io (Turso) o file:./prisma/dev.db (SQLite local). ' +
-      'Tambien se acepta TURSO_DATABASE_URL como fallback.'
-    )
+  const dbUrl = cleanEnvVar(process.env.DATABASE_URL)
+  const tursoUrl = cleanEnvVar(process.env.TURSO_DATABASE_URL)
+
+  console.log('[DB] getDatabaseUrl() called —',
+    'DATABASE_URL:', process.env.DATABASE_URL ? JSON.stringify(process.env.DATABASE_URL.slice(0, 30)) : '(not set)',
+    ', TURSO_DATABASE_URL:', process.env.TURSO_DATABASE_URL ? '(set)' : '(not set)',
+    ', cleaned dbUrl:', dbUrl ? dbUrl.slice(0, 30) + '...' : 'null',
+    ', cleaned tursoUrl:', tursoUrl ? tursoUrl.slice(0, 30) + '...' : 'null'
+  )
+
+  // Preferir Turso URL si esta disponible (mas especifica)
+  if (tursoUrl && tursoUrl.startsWith('libsql://')) {
+    return tursoUrl
   }
-  return url
+  // Usar DATABASE_URL si es valida
+  if (dbUrl) {
+    return dbUrl
+  }
+  // Ninguna URL valida
+  throw new Error(
+    '[DB] CRITICAL: DATABASE_URL no está configurada correctamente. ' +
+    'Valor actual de DATABASE_URL: ' + JSON.stringify(process.env.DATABASE_URL) + '. ' +
+    'Setear en Vercel → Settings → Environment Variables: ' +
+    'DATABASE_URL=libsql://hominins-db-orlandocandia.aws-us-east-2.turso.io ' +
+    'y TURSO_AUTH_TOKEN=<token>. ' +
+    'Tambien se acepta TURSO_DATABASE_URL como fallback.'
+  )
 }
 
 // 🔥 FUNCIÓN que crea el cliente solo cuando se necesita
 function createPrismaClient(): PrismaClient {
   const databaseUrl = getDatabaseUrl()
   const isTurso = databaseUrl.startsWith('libsql://')
-  console.log('[DB] Creating PrismaClient with URL:', databaseUrl.slice(0, 40) + '...', 'isTurso:', isTurso)
+  console.log('[DB] Creating PrismaClient — isTurso:', isTurso, ', URL prefix:', databaseUrl.slice(0, 25))
 
   // Turso (libsql://) → usa adapter
   if (isTurso) {
