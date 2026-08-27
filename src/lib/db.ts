@@ -22,6 +22,9 @@ import { PrismaLibSql } from '@prisma/adapter-libsql'
 // (y preferir el env var cuando esté disponible).
 // ═══════════════════════════════════════════════════════════════
 
+// 🔥 VERSION MARKER — v2-harcodeado-2026-08-27 (para detectar si el nuevo codigo esta live)
+export const DB_VERSION = 'v2-harcodeado-2026-08-27'
+
 // 🔥 HARDCODEADO — Turso production DB
 const TURSO_DATABASE_URL = 'libsql://hominins-db-orlandocandia.aws-us-east-2.turso.io'
 const TURSO_AUTH_TOKEN_HARD = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3Nzg3NjM4OTEsImlkIjoiMDE5ZTIzNDYtYjUwMS03Y2Y1LWFkZmItYWJjMDJmODNjNjQ4IiwicmlkIjoiMjI3M2MxOTAtYTA1Yy00MzA3LTk0ZTUtZWIxZTc1YmU3YmM4In0.oimDH6aXYryNto2cw5V3N9C2fhEPZH0jQwBp15VyGPciD7RzuIQfghQbnkuhoywlnFoz9rVq0YmFFXaM9OYfBQ'
