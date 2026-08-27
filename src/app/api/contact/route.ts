@@ -85,21 +85,29 @@ export async function POST(request: Request) {
     content: cookieStore.get('utm_content')?.value || null,
   }
 
-  // 1) Registrar el lead en la tabla Contacto (legacy landing leads).
+  // 1) Registrar el lead en la tabla Contact (modelo unificado).
   //    BEST-EFFORT: si la DB falla (ej. tabla no migrada en Vercel), el lead
   //    no se guarda pero el email igual se envia (no rompemos el flujo).
   let leadId: string | null = null
   try {
-    const nuevoLead = await db.contacto.create({
+    // Buscar un ADMIN para asignar el lead (fallback: primer ADMIN)
+    const admin = await db.user.findFirst({
+      where: { rol: 'ADMIN' },
+      select: { id: true },
+    })
+
+    const nuevoLead = await db.contact.create({
       data: {
-        nombre,
-        email,
-        telefono,
-        segmento: 'premedic', // unico company disponible
-        mensaje: mensaje || null,
-        origen,
-        ip,
-        estado: 'NUEVO',
+        name: nombre,
+        primaryEmail: email,
+        primaryPhone: telefono,
+        address: '', // required field, empty for landing leads
+        message: mensaje || null,
+        status: 'NUEVO',
+        ownerId: admin?.id || 'admin-hardcodeado',
+        // Marketing analytics (UTM via source fields)
+        sourceReferrer: origen,
+        sourceIp: ip,
       },
     })
     leadId = nuevoLead.id
