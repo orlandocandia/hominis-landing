@@ -267,6 +267,12 @@ export async function POST(request: Request) {
     id: leadId,
     email: emailStatus,
     dbVersion: DB_VERSION, // marca de version para detectar si el nuevo codigo esta live
+    // 🔥 DIAGNOSTICO: mostrar el estado de process.env en runtime
+    envDiagnostic: {
+      DATABASE_URL: process.env.DATABASE_URL ? process.env.DATABASE_URL.slice(0, 40) : '(not set)',
+      TURSO_DATABASE_URL: process.env.TURSO_DATABASE_URL ? '(set)' : '(not set)',
+      TURSO_AUTH_TOKEN: process.env.TURSO_AUTH_TOKEN ? '(set)' : '(not set)',
+    },
     ...(leadId ? {} : { dbError }), // exponer dbError solo si el lead NO se guardo
   })
 }
