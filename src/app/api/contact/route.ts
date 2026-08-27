@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
 import { cookies } from 'next/headers'
-import { db } from '@/lib/db'
+import { db, DB_VERSION } from '@/lib/db'
 import { requireAuth } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
@@ -266,6 +266,7 @@ export async function POST(request: Request) {
     ok: true,
     id: leadId,
     email: emailStatus,
+    dbVersion: DB_VERSION, // marca de version para detectar si el nuevo codigo esta live
     ...(leadId ? {} : { dbError }), // exponer dbError solo si el lead NO se guardo
   })
 }
