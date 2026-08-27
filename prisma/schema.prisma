@@ -8,9 +8,14 @@ generator client {
   previewFeatures = ["driverAdapters"]
 }
 
+// 🔥 HARDCODEADO: La URL del schema es file:./prisma/dev.db (valida para provider=sqlite).
+// NO usamos env("DATABASE_URL") porque Vercel la setea a "undefined" en runtime,
+// lo que causa URL_INVALID en Prisma. La conexion REAL a Turso la provee el
+// adapter (@prisma/adapter-libsql) en src/lib/db.ts, no esta URL del schema.
+// Esta URL solo sirve para que Prisma valide el schema sin errores.
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
+  url      = "file:./prisma/dev.db"
 }
 
 // ─── ENUMS ───
