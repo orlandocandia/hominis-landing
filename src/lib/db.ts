@@ -22,8 +22,8 @@ import { PrismaLibSql } from '@prisma/adapter-libsql'
 // (y preferir el env var cuando esté disponible).
 // ═══════════════════════════════════════════════════════════════
 
-// 🔥 VERSION MARKER — v8-adapter-v6-compatible (para detectar si el nuevo codigo esta live)
-export const DB_VERSION = 'v8-adapter-v6-compatible'
+// 🔥 VERSION MARKER — v9-delete-env-use-adapter (para detectar si el nuevo codigo esta live)
+export const DB_VERSION = 'v9-delete-env-use-adapter'
 
 // 🔥 HARDCODEADO — Turso production DB
 const TURSO_DATABASE_URL = 'libsql://hominins-db-orlandocandia.aws-us-east-2.turso.io'
@@ -86,17 +86,12 @@ function createPrismaClient(): PrismaClient {
   const isTurso = databaseUrl.startsWith('libsql://')
   console.log('[DB] Creating PrismaClient — isTurso:', isTurso, ', URL prefix:', databaseUrl.slice(0, 25))
 
-  // 🔥 CRÍTICO: Prisma lee `env("DATABASE_URL")` del schema.prisma al crear el
-  // cliente, INCLUSO cuando usamos un adapter. El schema tiene `provider = "sqlite"`
-  // que requiere una URL `file:`. Si process.env.DATABASE_URL es "undefined" o
-  // `libsql://`, Prisma lanza URL_INVALID antes de que el adapter se ejecute.
-  //
-  // FIX: Setear process.env.DATABASE_URL a un valor VALIDO para sqlite (file:./prisma/dev.db).
-  // Esto satisface la validacion de Prisma. La conexion REAL a Turso la provee
-  // el adapter (@prisma/adapter-libsql), no la URL del schema.
-  // Esto es un workaround documentado para Turso + Prisma + driverAdapters.
-  process.env.DATABASE_URL = 'file:./prisma/dev.db'
-  console.log('[DB] process.env.DATABASE_URL set to file:./prisma/dev.db (for Prisma schema validation; actual Turso connection via adapter)')
+  // CRÍTICO: Vercel setea process.env.DATABASE_URL al string "undefined" en runtime.
+  // Cuando Prisma ve que process.env.DATABASE_URL existe, lo usa para la conexion
+  // en lugar del adapter. Esto causa URL_INVALID o Error code 14.
+  // FIX: DELETE process.env.DATABASE_URL — Prisma usara el adapter para la conexion.
+  delete process.env.DATABASE_URL
+  console.log('[DB] process.env.DATABASE_URL DELETED — Prisma will use adapter for connection')
 
   // Turso (libsql://) → usa adapter
   if (isTurso) {
