@@ -620,32 +620,6 @@ model Tarea {
   @@index([fechaLimite])
 }
 
-// ═══════════════════════════════════════════════════════
-// CONTACTO (LEGACY — leads de la landing pública)
-// Se preserva tal cual. En Fase 3 se migrarán a Contact.
-// ═══════════════════════════════════════════════════════
-
-model Contacto {
-  id        String   @id @default(cuid())
-  nombre    String
-  email     String
-  telefono  String
-  segmento  String
-  mensaje   String?
-  cobertura String?
-  edad      Int?
-  origen    String   @default("landing")
-  ip        String?
-  estado    String   @default("NUEVO")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([email])
-  @@index([segmento])
-  @@index([createdAt])
-  @@index([estado])
-}
-
 
 // ═══════════════════════════════════════════════════════
 // MULTIEMPRESA (Fase 4) — múltiples empresas de salud
