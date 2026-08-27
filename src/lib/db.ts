@@ -1,6 +1,8 @@
 import { PrismaClient } from '@prisma/client'
 import { createClient } from '@libsql/client'
-import { PrismaLibSql } from '@prisma/adapter-libsql'
+// 🔥 NOTA: en @prisma/adapter-libsql v6.x, la exportación es `PrismaLibSQL` (SQL en mayúsculas).
+// En v7.x era `PrismaLibSQL` (camelCase). Usamos v6.19.3 (compatible con @prisma/client 6.19.2).
+import { PrismaLibSQL } from '@prisma/adapter-libsql'
 
 // ═══════════════════════════════════════════════════════════════
 // CONEXIÓN A TURSO — HARDCODEADA (SOLUCIÓN DEFINITIVA)
@@ -22,8 +24,8 @@ import { PrismaLibSql } from '@prisma/adapter-libsql'
 // (y preferir el env var cuando esté disponible).
 // ═══════════════════════════════════════════════════════════════
 
-// 🔥 VERSION MARKER — v9-delete-env-use-adapter (para detectar si el nuevo codigo esta live)
-export const DB_VERSION = 'v9-delete-env-use-adapter'
+// 🔥 VERSION MARKER — v10-correct-adapter-name (para detectar si el nuevo codigo esta live)
+export const DB_VERSION = 'v10-correct-adapter-name'
 
 // 🔥 HARDCODEADO — Turso production DB
 const TURSO_DATABASE_URL = 'libsql://hominins-db-orlandocandia.aws-us-east-2.turso.io'
@@ -100,7 +102,7 @@ function createPrismaClient(): PrismaClient {
       console.warn('[DB] TURSO_AUTH_TOKEN no está configurada — la conexión a Turso fallará con auth error.')
     }
     const libsql = createClient({ url: databaseUrl, authToken })
-    const adapter = new PrismaLibSql(libsql)
+    const adapter = new PrismaLibSQL(libsql)
     // SOLO pasar adapter (NO datasourceUrl) — el adapter maneja la conexion a Turso.
     // El schema tiene url="file:./prisma/dev.db" hardcoded, que Prisma valida internamente
     // pero NO usa para la conexion (el adapter la maneja).
