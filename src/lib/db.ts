@@ -22,8 +22,8 @@ import { PrismaLibSql } from '@prisma/adapter-libsql'
 // (y preferir el env var cuando esté disponible).
 // ═══════════════════════════════════════════════════════════════
 
-// 🔥 VERSION MARKER — v2-harcodeado-2026-08-27 (para detectar si el nuevo codigo esta live)
-export const DB_VERSION = 'v2-harcodeado-2026-08-27'
+// 🔥 VERSION MARKER — v3-set-env-before-create (para detectar si el nuevo codigo esta live)
+export const DB_VERSION = 'v3-set-env-before-create'
 
 // 🔥 HARDCODEADO — Turso production DB
 const TURSO_DATABASE_URL = 'libsql://hominins-db-orlandocandia.aws-us-east-2.turso.io'
@@ -85,6 +85,15 @@ function createPrismaClient(): PrismaClient {
   const databaseUrl = getDatabaseUrl()
   const isTurso = databaseUrl.startsWith('libsql://')
   console.log('[DB] Creating PrismaClient — isTurso:', isTurso, ', URL prefix:', databaseUrl.slice(0, 25))
+
+  // 🔥 CRÍTICO: Prisma lee `env("DATABASE_URL")` del schema.prisma al crear el
+  // cliente, INCLUSO cuando usamos un adapter. Si process.env.DATABASE_URL es
+  // "undefined" (misconfig de Vercel), Prisma lanza URL_INVALID antes de que
+  // nuestro adapter se ejecute. Por eso, sobreescribimos process.env.DATABASE_URL
+  // con la URL resuelta (hardcodeada o del env var) ANTES de crear el PrismaClient.
+  // Esto hace que Prisma lea una URL valida en lugar de "undefined".
+  process.env.DATABASE_URL = databaseUrl
+  console.log('[DB] process.env.DATABASE_URL set to:', databaseUrl.slice(0, 30) + '...')
 
   // Turso (libsql://) → usa adapter
   if (isTurso) {
