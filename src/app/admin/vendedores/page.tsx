@@ -1,14 +1,14 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { Users, Plus, Search, UserCheck, UserX, Pencil, Trash2, Eye } from 'lucide-react'
+import { Users, Plus, Search, UserCheck, UserX, Pencil, Trash2, Eye, Camera } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog'
 import { toast } from 'sonner'
 
@@ -20,6 +20,7 @@ interface Vendedor {
   rol: string
   activo: boolean
   telefono: string | null
+  avatarUrl: string | null  // NUEVO: foto de perfil
   _count: { contacts: number; tareasPendientes: number }
 }
 
@@ -30,10 +31,16 @@ export default function VendedoresPage() {
   const [search, setSearch] = useState('')
   const [dialogOpen, setDialogOpen] = useState(false)
   const [form, setForm] = useState({ nombre: '', apellido: '', email: '', telefono: '', password: '' })
+  // NUEVO: estado para el avatar (data URL base64)
+  const [formAvatar, setFormAvatar] = useState<string | null>(null)
+  const [uploadingAvatar, setUploadingAvatar] = useState(false)
+  const createFileInputRef = useRef<HTMLInputElement>(null)
+  const editFileInputRef = useRef<HTMLInputElement>(null)
 
   // NUEVO: estado para el modal de editar
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [editForm, setEditForm] = useState({ id: '', nombre: '', apellido: '', email: '', telefono: '', activo: true })
+  const [editAvatar, setEditAvatar] = useState<string | null>(null)
   const [savingEdit, setSavingEdit] = useState(false)
 
   // NUEVO: estado para el dialog de confirmacion de eliminacion
@@ -52,19 +59,72 @@ export default function VendedoresPage() {
     finally { setLoading(false) }
   }
 
-  // === CREAR VENDEDOR (existente, sin cambios) ===
+  // === NUEVO: SUBIR FOTO (file → base64 → upload API → data URL) ===
+  async function handleFileSelect(file: File, target: 'create' | 'edit') {
+    if (!file) return
+    // Validar tipo
+    if (!file.type.match(/^image\/(jpeg|jpg|png|webp|gif)$/)) {
+      toast.error('Formato no soportado. Usá JPG, PNG, WEBP o GIF.')
+      return
+    }
+    // Validar tamano (max 2MB en el cliente, la API permite 500KB despues de decode)
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error('Imagen demasiado grande. Máximo 2MB.')
+      return
+    }
+
+    setUploadingAvatar(true)
+    try {
+      // Convertir a base64 data URL
+      const reader = new FileReader()
+      reader.onload = async (e) => {
+        const dataUrl = e.target?.result as string
+        try {
+          // Subir via API (valida y normaliza)
+          const res = await fetch('/api/admin/upload', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: dataUrl }),
+          })
+          if (res.ok) {
+            const data = await res.json()
+            if (target === 'create') {
+              setFormAvatar(data.url)
+            } else {
+              setEditAvatar(data.url)
+            }
+            toast.success('Foto cargada')
+          } else {
+            const err = await res.json()
+            toast.error(err.error || 'Error al subir foto')
+          }
+        } catch {
+          toast.error('Error al subir foto')
+        } finally {
+          setUploadingAvatar(false)
+        }
+      }
+      reader.readAsDataURL(file)
+    } catch {
+      toast.error('Error al leer archivo')
+      setUploadingAvatar(false)
+    }
+  }
+
+  // === CREAR VENDEDOR (existente + avatar) ===
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     try {
       const res = await fetch('/api/admin/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, rol: 'VENDEDOR' }),
+        body: JSON.stringify({ ...form, rol: 'VENDEDOR', avatarUrl: formAvatar }),  // NUEVO: avatarUrl
       })
       if (res.ok) {
         toast.success('Vendedor creado')
         setDialogOpen(false)
         setForm({ nombre: '', apellido: '', email: '', telefono: '', password: '' })
+        setFormAvatar(null)  // NUEVO: reset avatar
         fetchVendedores()
       } else {
         const err = await res.json()
@@ -86,7 +146,7 @@ export default function VendedoresPage() {
     } catch { toast.error('Error') }
   }
 
-  // === NUEVO: EDITAR VENDEDOR ===
+  // === EDITAR VENDEDOR (existente + avatar) ===
   function openEditDialog(v: Vendedor) {
     setEditForm({
       id: v.id,
@@ -96,6 +156,7 @@ export default function VendedoresPage() {
       telefono: v.telefono || '',
       activo: v.activo,
     })
+    setEditAvatar(v.avatarUrl || null)  // NUEVO: cargar avatar existente
     setEditDialogOpen(true)
   }
 
@@ -112,6 +173,7 @@ export default function VendedoresPage() {
           email: editForm.email,
           telefono: editForm.telefono || null,
           activo: editForm.activo,
+          avatarUrl: editAvatar,  // NUEVO: enviar avatarUrl
         }),
       })
       if (res.ok) {
@@ -129,7 +191,7 @@ export default function VendedoresPage() {
     }
   }
 
-  // === NUEVO: ELIMINAR VENDEDOR ===
+  // === ELIMINAR VENDEDOR (existente, sin cambios) ===
   function openDeleteDialog(v: Vendedor) {
     setDeleteTarget(v.id)
     setDeleteName(`${v.nombre} ${v.apellido || ''}`)
@@ -155,7 +217,7 @@ export default function VendedoresPage() {
     }
   }
 
-  // === NUEVO: VER DETALLE ===
+  // === VER DETALLE (existente, sin cambios) ===
   function verDetalle(id: string) {
     router.push(`/admin/vendedores/${id}`)
   }
@@ -196,7 +258,9 @@ export default function VendedoresPage() {
             <Card key={v.id}>
               <CardContent className="p-5">
                 <div className="flex items-start gap-3">
+                  {/* NUEVO: avatar con foto si existe */}
                   <Avatar className="h-10 w-10 border">
+                    <AvatarImage src={v.avatarUrl || undefined} alt={v.nombre} />
                     <AvatarFallback className="bg-primary/10 text-sm font-bold text-primary">{initials}</AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
@@ -218,7 +282,7 @@ export default function VendedoresPage() {
                   </div>
                 </div>
 
-                {/* Botones de accion por vendedor (nuevos) */}
+                {/* Botones de accion por vendedor (existente) */}
                 <div className="grid grid-cols-3 gap-1 mt-3">
                   <Button variant="outline" size="sm" onClick={() => verDetalle(v.id)} title="Ver detalle">
                     <Eye className="h-3.5 w-3.5" />
@@ -241,11 +305,55 @@ export default function VendedoresPage() {
         })}
       </div>
 
-      {/* === MODAL CREAR VENDEDOR (existente, sin cambios) === */}
+      {/* === MODAL CREAR VENDEDOR (existente + avatar) === */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent>
           <DialogHeader><DialogTitle>Nuevo vendedor</DialogTitle></DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* NUEVO: Campo Foto */}
+            <div className="space-y-2">
+              <Label>Foto de perfil (opcional)</Label>
+              <div className="flex items-center gap-3">
+                <Avatar className="h-16 w-16 border">
+                  <AvatarImage src={formAvatar || undefined} alt="Preview" />
+                  <AvatarFallback className="bg-muted">
+                    <Camera className="h-6 w-6 text-muted-foreground" />
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <input
+                    ref={createFileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0], 'create')}
+                    className="hidden"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => createFileInputRef.current?.click()}
+                    disabled={uploadingAvatar}
+                  >
+                    <Camera className="h-4 w-4 mr-2" />
+                    {uploadingAvatar ? 'Subiendo...' : (formAvatar ? 'Cambiar foto' : 'Subir foto')}
+                  </Button>
+                  {formAvatar && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setFormAvatar(null)}
+                      className="ml-2 text-red-600"
+                    >
+                      Quitar
+                    </Button>
+                  )}
+                  <p className="text-xs text-muted-foreground mt-1">JPG, PNG, WEBP. Máx 500KB.</p>
+                </div>
+              </div>
+            </div>
+
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
                 <Label>Nombre</Label>
@@ -276,11 +384,54 @@ export default function VendedoresPage() {
         </DialogContent>
       </Dialog>
 
-      {/* === MODAL EDITAR VENDEDOR (NUEVO) === */}
+      {/* === MODAL EDITAR VENDEDOR (existente + avatar) === */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
         <DialogContent>
           <DialogHeader><DialogTitle>Editar vendedor</DialogTitle></DialogHeader>
           <form onSubmit={handleEditSubmit} className="space-y-4">
+            {/* NUEVO: Campo Foto */}
+            <div className="space-y-2">
+              <Label>Foto de perfil</Label>
+              <div className="flex items-center gap-3">
+                <Avatar className="h-16 w-16 border">
+                  <AvatarImage src={editAvatar || undefined} alt="Preview" />
+                  <AvatarFallback className="bg-muted">
+                    <Camera className="h-6 w-6 text-muted-foreground" />
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <input
+                    ref={editFileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0], 'edit')}
+                    className="hidden"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => editFileInputRef.current?.click()}
+                    disabled={uploadingAvatar}
+                  >
+                    <Camera className="h-4 w-4 mr-2" />
+                    {uploadingAvatar ? 'Subiendo...' : (editAvatar ? 'Cambiar foto' : 'Subir foto')}
+                  </Button>
+                  {editAvatar && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setEditAvatar(null)}
+                      className="ml-2 text-red-600"
+                    >
+                      Quitar
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
                 <Label>Nombre</Label>
@@ -328,7 +479,7 @@ export default function VendedoresPage() {
         </DialogContent>
       </Dialog>
 
-      {/* === DIALOG CONFIRMACION ELIMINAR (NUEVO) === */}
+      {/* === DIALOG CONFIRMACION ELIMINAR (existente, sin cambios) === */}
       <Dialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
         <DialogContent>
           <DialogHeader>
