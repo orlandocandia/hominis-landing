@@ -166,9 +166,9 @@ export default function PerfilPage() {
           <CardHeader><CardTitle className="flex items-center gap-2 text-lg"><Camera className="h-5 w-5" />Foto de perfil</CardTitle></CardHeader>
           <CardContent>
             <div className="flex items-center gap-4">
-              <Avatar className="h-20 w-20 border">
+              <Avatar className="h-32 w-32 border">
                 <AvatarImage src={avatarUrl || undefined} alt={profile.nombre} />
-                <AvatarFallback className="bg-primary/10 text-lg font-bold text-primary">{initials}</AvatarFallback>
+                <AvatarFallback className="bg-primary/10 text-2xl font-bold text-primary">{initials}</AvatarFallback>
               </Avatar>
               <div className="flex-1">
                 <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0])} className="hidden" />
