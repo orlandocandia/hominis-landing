@@ -505,13 +505,22 @@ export default function VendedoresPage() {
                   )}
                 </div>
 
-                {/* Mapa con la ubicacion geocodificada */}
+                {/* Mapa interactivo con la ubicacion geocodificada (arrastrable + clic) */}
                 {formLogistica.latitud !== '' && formLogistica.longitud !== '' && (
                   <LeafletMap
                     lat={Number(formLogistica.latitud)}
                     lng={Number(formLogistica.longitud)}
                     label="Nuevo vendedor"
-                    height="180px"
+                    height="200px"
+                    draggable={true}
+                    onDragEnd={(lat, lng) => {
+                      setFormLogistica(prev => ({ ...prev, latitud: lat, longitud: lng }))
+                      toast.info(`Ubicación ajustada: ${lat.toFixed(4)}, ${lng.toFixed(4)}`)
+                    }}
+                    onClick={(lat, lng) => {
+                      setFormLogistica(prev => ({ ...prev, latitud: lat, longitud: lng }))
+                      toast.info(`Ubicación seleccionada: ${lat.toFixed(4)}, ${lng.toFixed(4)}`)
+                    }}
                   />
                 )}
 
@@ -670,13 +679,22 @@ export default function VendedoresPage() {
                   )}
                 </div>
 
-                {/* Mapa con la ubicacion geocodificada */}
+                {/* Mapa interactivo con la ubicacion geocodificada (arrastrable + clic) */}
                 {editLogistica.latitud !== '' && editLogistica.longitud !== '' && (
                   <LeafletMap
                     lat={Number(editLogistica.latitud)}
                     lng={Number(editLogistica.longitud)}
                     label={editForm.nombre || 'Vendedor'}
-                    height="180px"
+                    height="200px"
+                    draggable={true}
+                    onDragEnd={(lat, lng) => {
+                      setEditLogistica(prev => ({ ...prev, latitud: lat, longitud: lng }))
+                      toast.info(`Ubicación ajustada: ${lat.toFixed(4)}, ${lng.toFixed(4)}`)
+                    }}
+                    onClick={(lat, lng) => {
+                      setEditLogistica(prev => ({ ...prev, latitud: lat, longitud: lng }))
+                      toast.info(`Ubicación seleccionada: ${lat.toFixed(4)}, ${lng.toFixed(4)}`)
+                    }}
                   />
                 )}
 
