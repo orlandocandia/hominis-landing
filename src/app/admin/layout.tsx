@@ -4,7 +4,7 @@ import { useSession, signOut } from 'next-auth/react'
 import { useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { ShieldCheck, Mail, Building2, Users, ListTodo, LogOut, Bell, Activity } from 'lucide-react'
+import { ShieldCheck, Mail, Building2, Users, ListTodo, LogOut, Bell, Activity, UserCircle } from 'lucide-react'
 import { NotificationBell } from '@/components/notification-bell'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
@@ -13,6 +13,7 @@ import { Card } from '@/components/ui/card'
 const NAV_LINKS = [
   { href: '/admin', label: 'Dashboard', icon: ShieldCheck },
   { href: '/admin/mensajes', label: 'Mensajes', icon: Mail },
+  { href: '/admin/clientes', label: 'Clientes', icon: UserCircle },
   { href: '/admin/vendedores', label: 'Vendedores', icon: Users },
   { href: '/admin/tareas', label: 'Tareas', icon: ListTodo },
   { href: '/admin/actividad', label: 'Actividad', icon: Activity },
