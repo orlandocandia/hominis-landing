@@ -227,7 +227,7 @@ export default function PerfilPage() {
                   </div>
                   <div className="space-y-2"><Label>Horario de trabajo</Label><Input value={profile.horario} onChange={(e) => setProfile({ ...profile, horario: e.target.value })} placeholder="Lun-Vie 9-18" /></div>
 
-                  {/* NUEVO: Mapa con la ubicacion del vendedor */}
+                  {/* NUEVO: Mapa interactivo con la ubicacion del vendedor (arrastrable + clic) */}
                   {latLng.lat !== '' && latLng.lng !== '' && (
                     <div className="space-y-2">
                       <Label>Ubicación en el mapa</Label>
@@ -235,7 +235,16 @@ export default function PerfilPage() {
                         lat={Number(latLng.lat)}
                         lng={Number(latLng.lng)}
                         label={profile.nombre || 'Mi ubicación'}
-                        height="180px"
+                        height="200px"
+                        draggable={true}
+                        onDragEnd={(lat, lng) => {
+                          setLatLng({ lat, lng })
+                          toast.info(`Ubicación ajustada: ${lat.toFixed(4)}, ${lng.toFixed(4)}`)
+                        }}
+                        onClick={(lat, lng) => {
+                          setLatLng({ lat, lng })
+                          toast.info(`Ubicación seleccionada: ${lat.toFixed(4)}, ${lng.toFixed(4)}`)
+                        }}
                       />
                     </div>
                   )}
