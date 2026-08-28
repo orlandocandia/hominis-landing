@@ -1,14 +1,15 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Users, Plus, Search, UserCheck, UserX } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { Users, Plus, Search, UserCheck, UserX, Pencil, Trash2, Eye } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog'
 import { toast } from 'sonner'
 
 interface Vendedor {
@@ -23,11 +24,22 @@ interface Vendedor {
 }
 
 export default function VendedoresPage() {
+  const router = useRouter()
   const [vendedores, setVendedores] = useState<Vendedor[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [dialogOpen, setDialogOpen] = useState(false)
   const [form, setForm] = useState({ nombre: '', apellido: '', email: '', telefono: '', password: '' })
+
+  // NUEVO: estado para el modal de editar
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [editForm, setEditForm] = useState({ id: '', nombre: '', apellido: '', email: '', telefono: '', activo: true })
+  const [savingEdit, setSavingEdit] = useState(false)
+
+  // NUEVO: estado para el dialog de confirmacion de eliminacion
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null)
+  const [deleteName, setDeleteName] = useState('')
+  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => { fetchVendedores() }, [])
 
@@ -40,6 +52,7 @@ export default function VendedoresPage() {
     finally { setLoading(false) }
   }
 
+  // === CREAR VENDEDOR (existente, sin cambios) ===
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     try {
@@ -60,6 +73,7 @@ export default function VendedoresPage() {
     } catch { toast.error('Error de conexión') }
   }
 
+  // === ACTIVAR/DESACTIVAR (existente, sin cambios) ===
   async function toggleActivo(v: Vendedor) {
     try {
       await fetch(`/api/admin/users/${v.id}`, {
@@ -70,6 +84,80 @@ export default function VendedoresPage() {
       toast.success(v.activo ? 'Desactivado' : 'Activado')
       fetchVendedores()
     } catch { toast.error('Error') }
+  }
+
+  // === NUEVO: EDITAR VENDEDOR ===
+  function openEditDialog(v: Vendedor) {
+    setEditForm({
+      id: v.id,
+      nombre: v.nombre,
+      apellido: v.apellido || '',
+      email: v.email,
+      telefono: v.telefono || '',
+      activo: v.activo,
+    })
+    setEditDialogOpen(true)
+  }
+
+  async function handleEditSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setSavingEdit(true)
+    try {
+      const res = await fetch(`/api/admin/users/${editForm.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombre: editForm.nombre,
+          apellido: editForm.apellido || null,
+          email: editForm.email,
+          telefono: editForm.telefono || null,
+          activo: editForm.activo,
+        }),
+      })
+      if (res.ok) {
+        toast.success('Vendedor actualizado')
+        setEditDialogOpen(false)
+        fetchVendedores()
+      } else {
+        const err = await res.json()
+        toast.error(err.error || 'Error al actualizar')
+      }
+    } catch {
+      toast.error('Error de conexión')
+    } finally {
+      setSavingEdit(false)
+    }
+  }
+
+  // === NUEVO: ELIMINAR VENDEDOR ===
+  function openDeleteDialog(v: Vendedor) {
+    setDeleteTarget(v.id)
+    setDeleteName(`${v.nombre} ${v.apellido || ''}`)
+  }
+
+  async function handleDelete() {
+    if (!deleteTarget) return
+    setDeleting(true)
+    try {
+      const res = await fetch(`/api/admin/users/${deleteTarget}`, { method: 'DELETE' })
+      if (res.ok) {
+        toast.success('Vendedor eliminado')
+        setDeleteTarget(null)
+        fetchVendedores()
+      } else {
+        const err = await res.json()
+        toast.error(err.error || 'Error al eliminar')
+      }
+    } catch {
+      toast.error('Error de conexión')
+    } finally {
+      setDeleting(false)
+    }
+  }
+
+  // === NUEVO: VER DETALLE ===
+  function verDetalle(id: string) {
+    router.push(`/admin/vendedores/${id}`)
   }
 
   const filtered = search
@@ -129,7 +217,22 @@ export default function VendedoresPage() {
                     <p className="text-[11px] text-muted-foreground">Tareas</p>
                   </div>
                 </div>
-                <Button variant="ghost" size="sm" className="w-full mt-3" onClick={() => toggleActivo(v)}>
+
+                {/* Botones de accion por vendedor (nuevos) */}
+                <div className="grid grid-cols-3 gap-1 mt-3">
+                  <Button variant="outline" size="sm" onClick={() => verDetalle(v.id)} title="Ver detalle">
+                    <Eye className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => openEditDialog(v)} title="Editar">
+                    <Pencil className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => openDeleteDialog(v)} title="Eliminar" className="text-red-600 hover:text-red-700 hover:bg-red-50">
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+
+                {/* Toggle activar/desactivar (existente, sin cambios) */}
+                <Button variant="ghost" size="sm" className="w-full mt-2" onClick={() => toggleActivo(v)}>
                   {v.activo ? <><UserX className="h-4 w-4 mr-1" /> Desactivar</> : <><UserCheck className="h-4 w-4 mr-1" /> Activar</>}
                 </Button>
               </CardContent>
@@ -138,6 +241,7 @@ export default function VendedoresPage() {
         })}
       </div>
 
+      {/* === MODAL CREAR VENDEDOR (existente, sin cambios) === */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent>
           <DialogHeader><DialogTitle>Nuevo vendedor</DialogTitle></DialogHeader>
@@ -169,6 +273,79 @@ export default function VendedoresPage() {
               <Button type="submit">Crear vendedor</Button>
             </DialogFooter>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* === MODAL EDITAR VENDEDOR (NUEVO) === */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Editar vendedor</DialogTitle></DialogHeader>
+          <form onSubmit={handleEditSubmit} className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label>Nombre</Label>
+                <Input value={editForm.nombre} onChange={(e) => setEditForm({ ...editForm, nombre: e.target.value })} required />
+              </div>
+              <div className="space-y-2">
+                <Label>Apellido</Label>
+                <Input value={editForm.apellido} onChange={(e) => setEditForm({ ...editForm, apellido: e.target.value })} />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Email</Label>
+              <Input type="email" value={editForm.email} onChange={(e) => setEditForm({ ...editForm, email: e.target.value })} required />
+            </div>
+            <div className="space-y-2">
+              <Label>Teléfono</Label>
+              <Input value={editForm.telefono} onChange={(e) => setEditForm({ ...editForm, telefono: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Estado</Label>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant={editForm.activo ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setEditForm({ ...editForm, activo: true })}
+                >
+                  🟢 Activo
+                </Button>
+                <Button
+                  type="button"
+                  variant={!editForm.activo ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setEditForm({ ...editForm, activo: false })}
+                >
+                  🔴 Inactivo
+                </Button>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setEditDialogOpen(false)}>Cancelar</Button>
+              <Button type="submit" disabled={savingEdit}>{savingEdit ? 'Guardando...' : 'Guardar cambios'}</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* === DIALOG CONFIRMACION ELIMINAR (NUEVO) === */}
+      <Dialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Eliminar vendedor</DialogTitle>
+            <DialogDescription>
+              ¿Estás seguro de que deseas eliminar a <strong>{deleteName}</strong>?
+              <br /><br />
+              Esta acción no se puede deshacer. Si el vendedor tiene leads o tareas asignadas,
+              primero deberás reasignarlos o desactivarlo.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteTarget(null)}>Cancelar</Button>
+            <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
+              <Trash2 className="h-4 w-4 mr-2" /> {deleting ? 'Eliminando...' : 'Eliminar'}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
