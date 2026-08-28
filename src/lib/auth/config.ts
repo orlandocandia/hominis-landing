@@ -2,6 +2,7 @@ import type { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs'
 import { db } from '@/lib/db'
+import { queryLibsql } from '@/lib/libsql-db'
 
 /**
  * NextAuth configuration — single source of truth.
@@ -44,17 +45,12 @@ export const authOptions: NextAuthOptions = {
           const user = await db.user.findFirst({
             where: { email: credentials.email, activo: true },
             select: {
-              id: true,
-              email: true,
-              nombre: true,
-              apellido: true,
-              rol: true,
-              password: true,
+              id: true, email: true, nombre: true, apellido: true, rol: true, password: true,
             },
           })
 
           if (!user) {
-            console.log('[AUTH] ❌ User not found')
+            console.log('[AUTH] ❌ User not found (Prisma)')
             return null
           }
 
@@ -64,16 +60,40 @@ export const authOptions: NextAuthOptions = {
             return null
           }
 
-          console.log('[AUTH] ✅ DB user:', user.email, '| rol:', user.rol)
+          console.log('[AUTH] ✅ DB user (Prisma):', user.email, '| rol:', user.rol)
           return {
-            id: user.id,
-            email: user.email,
+            id: user.id, email: user.email,
             name: `${user.nombre} ${user.apellido || ''}`.trim(),
             role: user.rol,
           }
         } catch (dbErr) {
-          console.error('[AUTH] DB error:', dbErr)
-          return null
+          // FIX: Prisma falla en Vercel (URL_INVALID) — usar fallback libsql
+          console.warn('[AUTH] Prisma fallo, usando fallback libsql:', (dbErr as Error)?.message?.slice(0, 100))
+          try {
+            const rows = await queryLibsql(
+              "SELECT id, email, nombre, apellido, rol, password, activo FROM User WHERE email = ? AND activo = 1 LIMIT 1",
+              [credentials.email]
+            )
+            if (rows.length === 0) {
+              console.log('[AUTH] ❌ User not found (libsql)')
+              return null
+            }
+            const user = rows[0] as any
+            const isValid = await bcrypt.compare(credentials.password, user.password)
+            if (!isValid) {
+              console.log('[AUTH] ❌ Wrong password (libsql)')
+              return null
+            }
+            console.log('[AUTH] ✅ DB user (libsql):', user.email, '| rol:', user.rol)
+            return {
+              id: user.id, email: user.email,
+              name: `${user.nombre} ${user.apellido || ''}`.trim(),
+              role: user.rol,
+            }
+          } catch (libsqlErr) {
+            console.error('[AUTH] libsql fallback also failed:', libsqlErr)
+            return null
+          }
         }
       },
     }),
