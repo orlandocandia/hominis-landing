@@ -49,7 +49,15 @@ export async function PATCH(request: Request) {
       ...(body.nombre && { nombre: body.nombre }),
       ...(body.apellido !== undefined && { apellido: body.apellido }),
       ...(body.telefono !== undefined && { telefono: body.telefono }),
-      ...(body.avatarUrl !== undefined && { avatarUrl: body.avatarUrl }),  // NUEVO
+      ...(body.avatarUrl !== undefined && { avatarUrl: body.avatarUrl }),  // foto (preservado)
+      // NUEVO: campos logisticos (excepto dni y fechaIngreso que son admin-only)
+      ...(body.province !== undefined && { province: body.province || null }),
+      ...(body.city !== undefined && { city: body.city || null }),
+      ...(body.address !== undefined && { address: body.address || body.direccion || null }),
+      ...(body.direccion !== undefined && { address: body.direccion || null }),
+      ...(body.latitude !== undefined && body.latitude !== null && { latitude: Number(body.latitude) }),
+      ...(body.longitude !== undefined && body.longitude !== null && { longitude: Number(body.longitude) }),
+      ...(body.horario !== undefined && { horario: body.horario || null }),
     }
 
     // Change password
@@ -87,7 +95,11 @@ export async function PATCH(request: Request) {
       const updated = await db.user.update({
         where: { id: userId },
         data: updateData,
-        select: { id: true, email: true, nombre: true, apellido: true, telefono: true, avatarUrl: true },
+        select: {
+          id: true, email: true, nombre: true, apellido: true, telefono: true, avatarUrl: true,
+          // NUEVO: campos logisticos
+          province: true, city: true, address: true, latitude: true, longitude: true, horario: true,
+        },
       })
 
       return NextResponse.json(updated)
@@ -101,7 +113,15 @@ export async function PATCH(request: Request) {
       if (body.apellido !== undefined) { setClauses.push('apellido = ?'); args.push(body.apellido || null) }
       if (body.telefono !== undefined) { setClauses.push('telefono = ?'); args.push(body.telefono || null) }
       if (body.password) { setClauses.push('password = ?'); args.push(updateData.password) }
-      if (body.avatarUrl !== undefined) { setClauses.push('avatarUrl = ?'); args.push(body.avatarUrl) }
+      if (body.avatarUrl !== undefined) { setClauses.push('avatarUrl = ?'); args.push(body.avatarUrl) }  // foto (preservado)
+      // NUEVO: campos logisticos
+      if (body.province !== undefined) { setClauses.push('province = ?'); args.push(body.province || null) }
+      if (body.city !== undefined) { setClauses.push('city = ?'); args.push(body.city || null) }
+      if (body.address !== undefined) { setClauses.push('address = ?'); args.push(body.address || null) }
+      if (body.direccion !== undefined) { setClauses.push('address = ?'); args.push(body.direccion || null) }
+      if (body.latitude !== undefined) { setClauses.push('latitude = ?'); args.push(body.latitude !== null ? Number(body.latitude) : null) }
+      if (body.longitude !== undefined) { setClauses.push('longitude = ?'); args.push(body.longitude !== null ? Number(body.longitude) : null) }
+      if (body.horario !== undefined) { setClauses.push('horario = ?'); args.push(body.horario || null) }
 
       if (setClauses.length === 0) {
         return NextResponse.json({ error: 'No hay campos para actualizar' }, { status: 400 })
@@ -112,7 +132,7 @@ export async function PATCH(request: Request) {
       await executeLibsql(`UPDATE User SET ${setClauses.join(', ')} WHERE id = ?`, args)
 
       const rows = await queryLibsql(
-        'SELECT id, email, nombre, apellido, telefono, avatarUrl FROM User WHERE id = ?',
+        'SELECT id, email, nombre, apellido, telefono, avatarUrl, province, city, address, latitude, longitude, horario FROM User WHERE id = ?',
         [userId]
       )
       if (rows.length === 0) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
