@@ -95,8 +95,20 @@ export async function POST(request: Request) {
 
     const hashedPassword = await bcrypt.hash(body.password, 10)
     const rol = body.rol || 'VENDEDOR'
-    const coverageAreas = body.coverageAreas ? JSON.stringify(body.coverageAreas) : null
-    const avatarUrl = body.avatarUrl || null  // NUEVO: URL de foto de perfil (data URL base64)
+    // coverageAreas: acepta string "Misiones, Corrientes" O array ["Misiones","Corrientes"]; se guarda como string
+    const coverageAreas = body.coverageAreas
+      ? (Array.isArray(body.coverageAreas) ? body.coverageAreas.join(', ') : body.coverageAreas)
+      : null
+    const avatarUrl = body.avatarUrl || null  // foto de perfil (preservado)
+    // NUEVO: campos logisticos
+    const documentNumber = body.documentNumber || body.dni || null  // DNI (acepta documentNumber o dni)
+    const province = body.province || null
+    const city = body.city || null
+    const address = body.address || body.direccion || null
+    const latitude = (body.latitude !== undefined && body.latitude !== null) ? Number(body.latitude) : null
+    const longitude = (body.longitude !== undefined && body.longitude !== null) ? Number(body.longitude) : null
+    const horario = body.horario || null
+    const hireDate = body.hireDate || body.fechaIngreso || null
 
     // === INTENTO 1: Prisma ===
     try {
@@ -110,10 +122,21 @@ export async function POST(request: Request) {
           rol,
           activo: true,
           coverageAreas,
-          ...(avatarUrl && { avatarUrl }),  // NUEVO: guardar avatarUrl si viene
+          ...(avatarUrl && { avatarUrl }),  // foto (preservado)
+          // NUEVO: campos logisticos
+          ...(documentNumber && { documentNumber }),
+          ...(province !== null && { province }),
+          ...(city !== null && { city }),
+          ...(address !== null && { address }),
+          ...(latitude !== null && { latitude }),
+          ...(longitude !== null && { longitude }),
+          ...(horario !== null && { horario }),
+          ...(hireDate !== null && { hireDate: new Date(hireDate) }),
         },
         select: {
           id: true, email: true, nombre: true, apellido: true, rol: true, activo: true, avatarUrl: true,
+          documentNumber: true, province: true, city: true, address: true,
+          latitude: true, longitude: true, coverageAreas: true, horario: true, hireDate: true,
         },
       })
 
@@ -126,9 +149,14 @@ export async function POST(request: Request) {
       const userId = 'user_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8)
 
       await executeLibsql(
-        `INSERT INTO User (id, email, password, nombre, apellido, telefono, rol, activo, coverageAreas, avatarUrl, fechaAlta, createdAt, updatedAt, geocodingStatus, intentosLogin, totalContacts, conversionRate, serviceRadius)
-         VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?, datetime('now'), datetime('now'), datetime('now'), 'PENDING', 0, 0, 0, 50)`,
-        [userId, body.email, hashedPassword, body.nombre, body.apellido || null, body.telefono || null, rol, coverageAreas, avatarUrl]
+        `INSERT INTO User (id, email, password, nombre, apellido, telefono, rol, activo, coverageAreas, avatarUrl,
+            documentNumber, province, city, address, latitude, longitude, horario, hireDate,
+            fechaAlta, createdAt, updatedAt, geocodingStatus, intentosLogin, totalContacts, conversionRate, serviceRadius)
+         VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'), datetime('now'), 'PENDING', 0, 0, 0, 50)`,
+        [userId, body.email, hashedPassword, body.nombre, body.apellido || null, body.telefono || null, rol,
+         coverageAreas, avatarUrl,
+         documentNumber, province, city, address, latitude, longitude, horario,
+         hireDate ? new Date(hireDate).toISOString() : null]
       )
 
       return NextResponse.json({
@@ -138,7 +166,11 @@ export async function POST(request: Request) {
         apellido: body.apellido || null,
         rol,
         activo: true,
-        avatarUrl,  // NUEVO: devolver avatarUrl
+        avatarUrl,  // foto (preservado)
+        // NUEVO: campos logisticos
+        documentNumber, province, city, address,
+        latitude, longitude, coverageAreas, horario,
+        hireDate: hireDate ? new Date(hireDate).toISOString() : null,
       }, { status: 201 })
     }
   } catch (error) {
