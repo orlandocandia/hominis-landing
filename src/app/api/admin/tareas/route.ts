@@ -5,7 +5,7 @@ import { queryLibsql, executeLibsql } from '@/lib/libsql-db'
 
 export const dynamic = 'force-dynamic'
 
-// GET /api/admin/tareas?page=1&limit=20&estado=&asignadoA=
+// GET /api/admin/tareas?page=1&limit=20&estado=&asignadoA=&contactoId=
 export async function GET(request: Request) {
   try {
     const session = await requireAuth()
@@ -13,62 +13,75 @@ export async function GET(request: Request) {
 
     const { searchParams } = new URL(request.url)
     const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '20')
+    const limit = parseInt(searchParams.get('limit') || '50')
     const estado = searchParams.get('estado') || ''
     const asignadoA = searchParams.get('asignadoA') || ''
+    const contactoId = searchParams.get('contactoId') || ''
 
     const where: any = {}
     if (estado) where.estado = estado
     if (asignadoA) where.asignadoA = asignadoA
+    if (contactoId) where.contactoId = contactoId
 
-    const [tareas, total] = await Promise.all([
-      db.tarea.findMany({
-        where,
-        orderBy: { fechaLimite: 'asc' },
-        skip: (page - 1) * limit,
-        take: limit,
-        include: {
-          vendedor: { select: { id: true, nombre: true, apellido: true, email: true } },
-        },
-      }),
-      db.tarea.count({ where }),
-    ])
+    // === INTENTO 1: Prisma ===
+    try {
+      const [tareas, total] = await Promise.all([
+        db.tarea.findMany({
+          where,
+          orderBy: { fechaLimite: 'asc' },
+          skip: (page - 1) * limit,
+          take: limit,
+          include: {
+            vendedor: { select: { id: true, nombre: true, apellido: true, email: true } },
+            contacto: { select: { id: true, name: true, primaryEmail: true, primaryPhone: true } },
+          },
+        }),
+        db.tarea.count({ where }),
+      ])
 
-    return NextResponse.json({ tareas, total, page, limit, totalPages: Math.ceil(total / limit) })
+      return NextResponse.json({ tareas, total, page, limit, totalPages: Math.ceil(total / limit) })
+    } catch (error) {
+      // Fallback: libsql directo
+      console.warn('[tareas GET] Prisma fallo, usando fallback libsql. Error:', (error as Error)?.message?.slice(0, 150))
+
+      const conditions: string[] = []
+      const args: any[] = []
+      if (estado) { conditions.push('t.estado = ?'); args.push(estado) }
+      if (asignadoA) { conditions.push('t.asignadoA = ?'); args.push(asignadoA) }
+      if (contactoId) { conditions.push('t.contactoId = ?'); args.push(contactoId) }
+      const whereClause = conditions.length > 0 ? 'WHERE ' + conditions.join(' AND ') : ''
+
+      const tareasRaw = await queryLibsql(
+        `SELECT t.id, t.titulo, t.descripcion, t.tipo, t.estado, t.fechaLimite, t.fechaCompletada, t.asignadoA, t.contactoId, t.createdAt,
+                u.nombre as vendedorNombre, u.apellido as vendedorApellido, u.email as vendedorEmail,
+                c.name as clienteNombre, c.primaryEmail as clienteEmail, c.primaryPhone as clientePhone
+         FROM Tarea t
+         LEFT JOIN User u ON t.asignadoA = u.id
+         LEFT JOIN Contact c ON t.contactoId = c.id
+         ${whereClause}
+         ORDER BY t.fechaLimite ASC
+         LIMIT ? OFFSET ?`,
+        [...args, limit, (page - 1) * limit]
+      )
+
+      const tareas = tareasRaw.map((t: any) => ({
+        id: t.id, titulo: t.titulo, descripcion: t.descripcion, tipo: t.tipo, estado: t.estado,
+        fechaLimite: t.fechaLimite ? new Date(t.fechaLimite).toISOString() : null,
+        fechaCompletada: t.fechaCompletada ? new Date(t.fechaCompletada).toISOString() : null,
+        asignadoA: t.asignadoA, contactoId: t.contactoId,
+        createdAt: t.createdAt ? new Date(t.createdAt).toISOString() : null,
+        vendedor: t.vendedorNombre ? { id: t.asignadoA, nombre: t.vendedorNombre, apellido: t.vendedorApellido, email: t.vendedorEmail } : null,
+        contacto: t.clienteNombre ? { id: t.contactoId, name: t.clienteNombre, primaryEmail: t.clienteEmail, primaryPhone: t.clientePhone } : null,
+      }))
+
+      const totalRows = await queryLibsql(`SELECT COUNT(*) as n FROM Tarea t ${whereClause}`, args)
+      const totalCount = (totalRows[0] as any)?.n || 0
+
+      return NextResponse.json({ tareas, total: totalCount, page, limit, totalPages: Math.ceil(totalCount / limit) })
+    }
   } catch (error) {
-    // Fallback: libsql directo
-    console.warn('[tareas GET] Prisma fallo, usando fallback libsql. Error:', (error as Error)?.message?.slice(0, 150))
-
-    const conditions: string[] = []
-    const args: any[] = []
-    if (estado) { conditions.push('estado = ?'); args.push(estado) }
-    if (asignadoA) { conditions.push('asignadoA = ?'); args.push(asignadoA) }
-    const whereClause = conditions.length > 0 ? 'WHERE ' + conditions.join(' AND ') : ''
-
-    const tareasRaw = await queryLibsql(
-      `SELECT t.id, t.titulo, t.descripcion, t.tipo, t.estado, t.fechaLimite, t.fechaCompletada, t.asignadoA, t.contactoId, t.createdAt,
-              u.nombre as vendedorNombre, u.apellido as vendedorApellido, u.email as vendedorEmail
-       FROM Tarea t
-       LEFT JOIN User u ON t.asignadoA = u.id
-       ${whereClause}
-       ORDER BY t.fechaLimite ASC
-       LIMIT ? OFFSET ?`,
-      [...args, limit, (page - 1) * limit]
-    )
-
-    const tareas = tareasRaw.map((t: any) => ({
-      id: t.id, titulo: t.titulo, descripcion: t.descripcion, tipo: t.tipo, estado: t.estado,
-      fechaLimite: t.fechaLimite ? new Date(t.fechaLimite).toISOString() : null,
-      fechaCompletada: t.fechaCompletada ? new Date(t.fechaCompletada).toISOString() : null,
-      asignadoA: t.asignadoA, contactoId: t.contactoId,
-      createdAt: t.createdAt ? new Date(t.createdAt).toISOString() : null,
-      vendedor: { id: t.asignadoA, nombre: t.vendedorNombre, apellido: t.vendedorApellido, email: t.vendedorEmail },
-    }))
-
-    const total = await queryLibsql(`SELECT COUNT(*) as n FROM Tarea ${whereClause}`, args)
-    const totalCount = (total[0] as any)?.n || 0
-
-    return NextResponse.json({ tareas, total: totalCount, page, limit, totalPages: Math.ceil(totalCount / limit) })
+    console.error('Error en GET /api/admin/tareas:', error)
+    return NextResponse.json({ error: 'Error interno' }, { status: 500 })
   }
 }
 
