@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { Users, Plus, Search, UserCheck, UserX, Pencil, Trash2, Eye, Camera, MapPin, Loader2, EyeOff } from 'lucide-react'
+import { Users, Plus, Search, UserCheck, UserX, Pencil, Trash2, Eye, Camera, MapPin, Loader2, EyeOff, Lock } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -85,6 +85,16 @@ export default function VendedoresPage() {
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null)
   const [deleteName, setDeleteName] = useState('')
   const [deleting, setDeleting] = useState(false)
+
+  // NUEVO: estado para el modal de cambio de contraseña
+  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false)
+  const [passwordTargetId, setPasswordTargetId] = useState<string | null>(null)
+  const [passwordTargetName, setPasswordTargetName] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [showNewPassword, setShowNewPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [savingPassword, setSavingPassword] = useState(false)
 
   useEffect(() => { fetchVendedores() }, [])
 
@@ -304,6 +314,51 @@ export default function VendedoresPage() {
 
   function verDetalle(id: string) {
     router.push(`/admin/vendedores/${id}`)
+  }
+
+  // === NUEVO: CAMBIO DE CONTRASEÑA ===
+  function openPasswordDialog(v: Vendedor) {
+    setPasswordTargetId(v.id)
+    setPasswordTargetName(`${v.nombre} ${v.apellido || ''}`)
+    setNewPassword('')
+    setConfirmPassword('')
+    setShowNewPassword(false)
+    setShowConfirmPassword(false)
+    setPasswordDialogOpen(true)
+  }
+
+  async function handlePasswordChange(e: React.FormEvent) {
+    e.preventDefault()
+    if (!passwordTargetId) return
+    if (newPassword.length < 6) {
+      toast.error('La contraseña debe tener al menos 6 caracteres')
+      return
+    }
+    if (newPassword !== confirmPassword) {
+      toast.error('Las contraseñas no coinciden')
+      return
+    }
+    setSavingPassword(true)
+    try {
+      const res = await fetch(`/api/admin/users/${passwordTargetId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: newPassword }),
+      })
+      if (res.ok) {
+        toast.success('Contraseña actualizada')
+        setPasswordDialogOpen(false)
+        setNewPassword('')
+        setConfirmPassword('')
+      } else {
+        const err = await res.json()
+        toast.error(err.error || 'Error al cambiar contraseña')
+      }
+    } catch {
+      toast.error('Error de conexión')
+    } finally {
+      setSavingPassword(false)
+    }
   }
 
   // Toggle cobertura (multi-select)
@@ -639,6 +694,19 @@ export default function VendedoresPage() {
               </div>
             </div>
 
+            {/* NUEVO: Botón para cambiar contraseña (abre modal específico) */}
+            <div className="space-y-2">
+              <Label>Contraseña</Label>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => openPasswordDialog({ id: editForm.id, nombre: editForm.nombre, apellido: editForm.apellido } as Vendedor)}
+              >
+                <Lock className="h-4 w-4 mr-2" /> Cambiar contraseña
+              </Button>
+            </div>
+
             {/* === NUEVO: Datos logisticos === */}
             <div className="border-t pt-4">
               <h3 className="text-sm font-semibold mb-3">Datos de logística</h3>
@@ -794,6 +862,89 @@ export default function VendedoresPage() {
               <Trash2 className="h-4 w-4 mr-2" /> {deleting ? 'Eliminando...' : 'Eliminar'}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* === NUEVO: DIALOG DE CAMBIO DE CONTRASEÑA === */}
+      <Dialog open={passwordDialogOpen} onOpenChange={(open) => !open && setPasswordDialogOpen(false)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Lock className="h-5 w-5" /> Cambiar contraseña
+            </DialogTitle>
+            <DialogDescription>
+              Establece una nueva contraseña para <strong>{passwordTargetName}</strong>.
+              La contraseña debe tener al menos 6 caracteres.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handlePasswordChange} className="space-y-4">
+            {/* Nueva contraseña con mostrar/ocultar */}
+            <div className="space-y-2">
+              <Label>Nueva contraseña</Label>
+              <div className="relative">
+                <Input
+                  type={showNewPassword ? 'text' : 'password'}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                  placeholder="Mínimo 6 caracteres"
+                  minLength={6}
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  tabIndex={-1}
+                  aria-label={showNewPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                >
+                  {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+            </div>
+
+            {/* Confirmar contraseña con mostrar/ocultar */}
+            <div className="space-y-2">
+              <Label>Confirmar contraseña</Label>
+              <div className="relative">
+                <Input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  placeholder="Repetir la nueva contraseña"
+                  minLength={6}
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  tabIndex={-1}
+                  aria-label={showConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                >
+                  {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+              {/* Validación visual de coincidencia */}
+              {confirmPassword && newPassword !== confirmPassword && (
+                <p className="text-xs text-red-600">⚠ Las contraseñas no coinciden</p>
+              )}
+              {confirmPassword && newPassword === confirmPassword && newPassword.length >= 6 && (
+                <p className="text-xs text-emerald-600">✓ Las contraseñas coinciden</p>
+              )}
+            </div>
+
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setPasswordDialogOpen(false)}>Cancelar</Button>
+              <Button
+                type="submit"
+                disabled={savingPassword || newPassword.length < 6 || newPassword !== confirmPassword}
+              >
+                <Lock className="h-4 w-4 mr-2" /> {savingPassword ? 'Guardando...' : 'Guardar contraseña'}
+              </Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
     </div>
