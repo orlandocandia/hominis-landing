@@ -2,15 +2,18 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { Users, Plus, Search, UserCheck, UserX, Pencil, Trash2, Eye, Camera } from 'lucide-react'
+import { Users, Plus, Search, UserCheck, UserX, Pencil, Trash2, Eye, Camera, MapPin, Loader2 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { toast } from 'sonner'
+import { PROVINCIAS_ARGENTINA } from '@/lib/provincias'
 
 interface Vendedor {
   id: string
@@ -20,8 +23,22 @@ interface Vendedor {
   rol: string
   activo: boolean
   telefono: string | null
-  avatarUrl: string | null  // NUEVO: foto de perfil
+  avatarUrl: string | null  // foto (preservado)
+  // NUEVO: campos logisticos
+  documentNumber: string | null
+  province: string | null
+  city: string | null
+  address: string | null
+  coverageAreas: string | null
+  horario: string | null
+  hireDate: string | null
   _count: { contacts: number; tareasPendientes: number }
+}
+
+// Helper para parsear coverageAreas (string separado por coma → array)
+function parseCobertura(cov: string | null | undefined): string[] {
+  if (!cov) return []
+  return cov.split(',').map((p) => p.trim()).filter(Boolean)
 }
 
 export default function VendedoresPage() {
@@ -31,19 +48,35 @@ export default function VendedoresPage() {
   const [search, setSearch] = useState('')
   const [dialogOpen, setDialogOpen] = useState(false)
   const [form, setForm] = useState({ nombre: '', apellido: '', email: '', telefono: '', password: '' })
-  // NUEVO: estado para el avatar (data URL base64)
+  // Foto (preservado)
   const [formAvatar, setFormAvatar] = useState<string | null>(null)
   const [uploadingAvatar, setUploadingAvatar] = useState(false)
   const createFileInputRef = useRef<HTMLInputElement>(null)
   const editFileInputRef = useRef<HTMLInputElement>(null)
 
-  // NUEVO: estado para el modal de editar
+  // NUEVO: estado logistico para crear
+  const [formLogistica, setFormLogistica] = useState({
+    dni: '', provincia: '', ciudad: '', direccion: '',
+    latitud: '' as string | number, longitud: '' as string | number,
+    horario: '', fechaIngreso: '',
+  })
+  const [formCobertura, setFormCobertura] = useState<string[]>([])
+  const [geocoding, setGeocoding] = useState(false)
+
+  // Editar (preservado)
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [editForm, setEditForm] = useState({ id: '', nombre: '', apellido: '', email: '', telefono: '', activo: true })
   const [editAvatar, setEditAvatar] = useState<string | null>(null)
   const [savingEdit, setSavingEdit] = useState(false)
+  // NUEVO: estado logistico para editar
+  const [editLogistica, setEditLogistica] = useState({
+    dni: '', provincia: '', ciudad: '', direccion: '',
+    latitud: '' as string | number, longitud: '' as string | number,
+    horario: '', fechaIngreso: '',
+  })
+  const [editCobertura, setEditCobertura] = useState<string[]>([])
 
-  // NUEVO: estado para el dialog de confirmacion de eliminacion
+  // Eliminar (preservado)
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null)
   const [deleteName, setDeleteName] = useState('')
   const [deleting, setDeleting] = useState(false)
@@ -59,72 +92,95 @@ export default function VendedoresPage() {
     finally { setLoading(false) }
   }
 
-  // === NUEVO: SUBIR FOTO (file → base64 → upload API → data URL) ===
+  // === Foto (preservado) ===
   async function handleFileSelect(file: File, target: 'create' | 'edit') {
     if (!file) return
-    // Validar tipo
     if (!file.type.match(/^image\/(jpeg|jpg|png|webp|gif)$/)) {
       toast.error('Formato no soportado. Usá JPG, PNG, WEBP o GIF.')
       return
     }
-    // Validar tamano (max 2MB en el cliente, la API permite 500KB despues de decode)
     if (file.size > 2 * 1024 * 1024) {
       toast.error('Imagen demasiado grande. Máximo 2MB.')
       return
     }
-
     setUploadingAvatar(true)
     try {
-      // Convertir a base64 data URL
       const reader = new FileReader()
       reader.onload = async (e) => {
         const dataUrl = e.target?.result as string
         try {
-          // Subir via API (valida y normaliza)
           const res = await fetch('/api/admin/upload', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ image: dataUrl }),
           })
           if (res.ok) {
             const data = await res.json()
-            if (target === 'create') {
-              setFormAvatar(data.url)
-            } else {
-              setEditAvatar(data.url)
-            }
+            if (target === 'create') setFormAvatar(data.url)
+            else setEditAvatar(data.url)
             toast.success('Foto cargada')
           } else {
             const err = await res.json()
             toast.error(err.error || 'Error al subir foto')
           }
-        } catch {
-          toast.error('Error al subir foto')
-        } finally {
-          setUploadingAvatar(false)
-        }
+        } catch { toast.error('Error al subir foto') }
+        finally { setUploadingAvatar(false) }
       }
       reader.readAsDataURL(file)
-    } catch {
-      toast.error('Error al leer archivo')
-      setUploadingAvatar(false)
-    }
+    } catch { toast.error('Error al leer archivo'); setUploadingAvatar(false) }
   }
 
-  // === CREAR VENDEDOR (existente + avatar) ===
+  // === NUEVO: Geocodificación automática ===
+  async function geocodificar(provincia: string, ciudad: string, direccion: string, target: 'create' | 'edit') {
+    if (!provincia && !ciudad && !direccion) return
+    setGeocoding(true)
+    try {
+      const res = await fetch('/api/admin/geocode', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ provincia, ciudad, direccion }),
+      })
+      const data = await res.json()
+      if (data.lat && data.lng) {
+        if (target === 'create') {
+          setFormLogistica(prev => ({ ...prev, latitud: data.lat, longitud: data.lng }))
+        } else {
+          setEditLogistica(prev => ({ ...prev, latitud: data.lat, longitud: data.lng }))
+        }
+        toast.success(`Geocodificado: ${data.lat.toFixed(4)}, ${data.lng.toFixed(4)}`)
+      } else {
+        toast.warning('No se encontró la dirección exacta. Coordenadas no actualizadas.')
+      }
+    } catch {
+      toast.error('Error al geocodificar')
+    } finally { setGeocoding(false) }
+  }
+
+  // === CREAR VENDEDOR (preservado + logisticos) ===
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     try {
       const res = await fetch('/api/admin/users', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, rol: 'VENDEDOR', avatarUrl: formAvatar }),  // NUEVO: avatarUrl
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...form, rol: 'VENDEDOR', avatarUrl: formAvatar,  // foto (preservado)
+          // NUEVO: campos logisticos
+          documentNumber: formLogistica.dni || undefined,
+          province: formLogistica.provincia || undefined,
+          city: formLogistica.ciudad || undefined,
+          address: formLogistica.direccion || undefined,
+          latitude: formLogistica.latitud !== '' ? formLogistica.latitud : undefined,
+          longitude: formLogistica.longitud !== '' ? formLogistica.longitud : undefined,
+          horario: formLogistica.horario || undefined,
+          hireDate: formLogistica.fechaIngreso || undefined,
+          coverageAreas: formCobertura,  // array de provincias
+        }),
       })
       if (res.ok) {
         toast.success('Vendedor creado')
         setDialogOpen(false)
         setForm({ nombre: '', apellido: '', email: '', telefono: '', password: '' })
-        setFormAvatar(null)  // NUEVO: reset avatar
+        setFormAvatar(null)
+        setFormLogistica({ dni: '', provincia: '', ciudad: '', direccion: '', latitud: '', longitud: '', horario: '', fechaIngreso: '' })
+        setFormCobertura([])
         fetchVendedores()
       } else {
         const err = await res.json()
@@ -133,12 +189,11 @@ export default function VendedoresPage() {
     } catch { toast.error('Error de conexión') }
   }
 
-  // === ACTIVAR/DESACTIVAR (existente, sin cambios) ===
+  // === ACTIVAR/DESACTIVAR (preservado) ===
   async function toggleActivo(v: Vendedor) {
     try {
       await fetch(`/api/admin/users/${v.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ activo: !v.activo }),
       })
       toast.success(v.activo ? 'Desactivado' : 'Activado')
@@ -146,17 +201,24 @@ export default function VendedoresPage() {
     } catch { toast.error('Error') }
   }
 
-  // === EDITAR VENDEDOR (existente + avatar) ===
+  // === EDITAR (preservado + logisticos) ===
   function openEditDialog(v: Vendedor) {
     setEditForm({
-      id: v.id,
-      nombre: v.nombre,
-      apellido: v.apellido || '',
-      email: v.email,
-      telefono: v.telefono || '',
-      activo: v.activo,
+      id: v.id, nombre: v.nombre, apellido: v.apellido || '',
+      email: v.email, telefono: v.telefono || '', activo: v.activo,
     })
-    setEditAvatar(v.avatarUrl || null)  // NUEVO: cargar avatar existente
+    setEditAvatar(v.avatarUrl || null)
+    setEditLogistica({
+      dni: v.documentNumber || '',
+      provincia: v.province || '',
+      ciudad: v.city || '',
+      direccion: v.address || '',
+      latitud: (v as any).latitude ?? '',
+      longitud: (v as any).longitude ?? '',
+      horario: v.horario || '',
+      fechaIngreso: v.hireDate ? new Date(v.hireDate).toISOString().slice(0, 10) : '',
+    })
+    setEditCobertura(parseCobertura(v.coverageAreas))
     setEditDialogOpen(true)
   }
 
@@ -165,15 +227,21 @@ export default function VendedoresPage() {
     setSavingEdit(true)
     try {
       const res = await fetch(`/api/admin/users/${editForm.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          nombre: editForm.nombre,
-          apellido: editForm.apellido || null,
-          email: editForm.email,
-          telefono: editForm.telefono || null,
-          activo: editForm.activo,
-          avatarUrl: editAvatar,  // NUEVO: enviar avatarUrl
+          nombre: editForm.nombre, apellido: editForm.apellido || null,
+          email: editForm.email, telefono: editForm.telefono || null, activo: editForm.activo,
+          avatarUrl: editAvatar,
+          // NUEVO: campos logisticos
+          documentNumber: editLogistica.dni || null,
+          province: editLogistica.provincia || null,
+          city: editLogistica.ciudad || null,
+          address: editLogistica.direccion || null,
+          latitude: editLogistica.latitud !== '' ? Number(editLogistica.latitud) : null,
+          longitude: editLogistica.longitud !== '' ? Number(editLogistica.longitud) : null,
+          horario: editLogistica.horario || null,
+          hireDate: editLogistica.fechaIngreso || null,
+          coverageAreas: editCobertura,
         }),
       })
       if (res.ok) {
@@ -184,14 +252,11 @@ export default function VendedoresPage() {
         const err = await res.json()
         toast.error(err.error || 'Error al actualizar')
       }
-    } catch {
-      toast.error('Error de conexión')
-    } finally {
-      setSavingEdit(false)
-    }
+    } catch { toast.error('Error de conexión') }
+    finally { setSavingEdit(false) }
   }
 
-  // === ELIMINAR VENDEDOR (existente, sin cambios) ===
+  // === ELIMINAR (preservado) ===
   function openDeleteDialog(v: Vendedor) {
     setDeleteTarget(v.id)
     setDeleteName(`${v.nombre} ${v.apellido || ''}`)
@@ -210,21 +275,137 @@ export default function VendedoresPage() {
         const err = await res.json()
         toast.error(err.error || 'Error al eliminar')
       }
-    } catch {
-      toast.error('Error de conexión')
-    } finally {
-      setDeleting(false)
-    }
+    } catch { toast.error('Error de conexión') }
+    finally { setDeleting(false) }
   }
 
-  // === VER DETALLE (existente, sin cambios) ===
   function verDetalle(id: string) {
     router.push(`/admin/vendedores/${id}`)
+  }
+
+  // Toggle cobertura (multi-select)
+  function toggleCobertura(provincia: string, target: 'create' | 'edit') {
+    const setter = target === 'create' ? setFormCobertura : setEditCobertura
+    const current = target === 'create' ? formCobertura : editCobertura
+    setter(current.includes(provincia) ? current.filter((p) => p !== provincia) : [...current, provincia])
   }
 
   const filtered = search
     ? vendedores.filter(v => `${v.nombre} ${v.apellido || ''}`.toLowerCase().includes(search.toLowerCase()) || v.email.toLowerCase().includes(search.toLowerCase()))
     : vendedores
+
+  // Componente reutilizable para los campos logisticos
+  function LogisticFields({ target }: { target: 'create' | 'edit' }) {
+    const logistica = target === 'create' ? formLogistica : editLogistica
+    const setLogistica = target === 'create' ? setFormLogistica : setEditLogistica
+    const cobertura = target === 'create' ? formCobertura : editCobertura
+    return (
+      <>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-2">
+            <Label>DNI</Label>
+            <Input
+              value={logistica.dni}
+              onChange={(e) => setLogistica({ ...logistica, dni: e.target.value })}
+              placeholder="12345678"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Fecha de ingreso</Label>
+            <Input
+              type="date"
+              value={logistica.fechaIngreso}
+              onChange={(e) => setLogistica({ ...logistica, fechaIngreso: e.target.value })}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Provincia</Label>
+          <Select
+            value={logistica.provincia || '_none'}
+            onValueChange={(v) => {
+              const prov = v === '_none' ? '' : v
+              setLogistica({ ...logistica, provincia: prov })
+            }}
+          >
+            <SelectTrigger><SelectValue placeholder="Seleccionar provincia" /></SelectTrigger>
+            <SelectContent className="max-h-60 overflow-y-auto">
+              <SelectItem value="_none">— Sin provincia —</SelectItem>
+              {PROVINCIAS_ARGENTINA.map((p) => (
+                <SelectItem key={p} value={p}>{p}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-2">
+            <Label>Ciudad</Label>
+            <Input
+              value={logistica.ciudad}
+              onChange={(e) => setLogistica({ ...logistica, ciudad: e.target.value })}
+              placeholder="Posadas"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Horario de trabajo</Label>
+            <Input
+              value={logistica.horario}
+              onChange={(e) => setLogistica({ ...logistica, horario: e.target.value })}
+              placeholder="Lun-Vie 9-18"
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Dirección</Label>
+          <div className="flex gap-2">
+            <Input
+              value={logistica.direccion}
+              onChange={(e) => setLogistica({ ...logistica, direccion: e.target.value })}
+              placeholder="Av. Santa Fe 1234"
+              onBlur={() => geocodificar(logistica.provincia, logistica.ciudad, logistica.direccion, target)}
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => geocodificar(logistica.provincia, logistica.ciudad, logistica.direccion, target)}
+              disabled={geocoding}
+            >
+              {geocoding ? <Loader2 className="h-4 w-4 animate-spin" /> : <MapPin className="h-4 w-4" />}
+            </Button>
+          </div>
+          {logistica.latitud !== '' && logistica.longitud !== '' && (
+            <p className="text-xs text-muted-foreground">
+              📍 Coordenadas: {logistica.latitud}, {logistica.longitud}
+            </p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label>Cobertura (provincias que cubre)</Label>
+          <div className="max-h-32 overflow-y-auto border rounded-md p-2 grid grid-cols-2 gap-1">
+            {PROVINCIAS_ARGENTINA.map((p) => (
+              <label key={p} className="flex items-center gap-2 text-sm cursor-pointer hover:bg-muted/50 rounded px-1 py-0.5">
+                <Checkbox
+                  checked={cobertura.includes(p)}
+                  onCheckedChange={() => toggleCobertura(p, target)}
+                />
+                <span className="truncate">{p}</span>
+              </label>
+            ))}
+          </div>
+          {cobertura.length > 0 && (
+            <p className="text-xs text-muted-foreground">
+              {cobertura.length} provincia(s) seleccionada(s): {cobertura.join(', ')}
+            </p>
+          )}
+        </div>
+      </>
+    )
+  }
 
   return (
     <div>
@@ -258,7 +439,6 @@ export default function VendedoresPage() {
             <Card key={v.id}>
               <CardContent className="p-5">
                 <div className="flex items-start gap-3">
-                  {/* NUEVO: avatar con foto si existe */}
                   <Avatar className="h-10 w-10 border">
                     <AvatarImage src={v.avatarUrl || undefined} alt={v.nombre} />
                     <AvatarFallback className="bg-primary/10 text-sm font-bold text-primary">{initials}</AvatarFallback>
@@ -266,11 +446,25 @@ export default function VendedoresPage() {
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold truncate">{v.nombre} {v.apellido}</p>
                     <p className="text-sm text-muted-foreground truncate">{v.email}</p>
-                    <Badge variant={v.activo ? 'default' : 'secondary'} className="mt-1 text-xs">
-                      {v.activo ? '🟢 Activo' : '🔴 Inactivo'}
-                    </Badge>
+                    <div className="flex items-center gap-1 mt-1 flex-wrap">
+                      <Badge variant={v.activo ? 'default' : 'secondary'} className="text-xs">
+                        {v.activo ? '🟢 Activo' : '🔴 Inactivo'}
+                      </Badge>
+                      {/* NUEVO: mostrar provincia y cobertura */}
+                      {v.province && (
+                        <Badge variant="outline" className="text-xs">
+                          <MapPin className="h-2.5 w-2.5 mr-0.5" /> {v.province}
+                        </Badge>
+                      )}
+                    </div>
                   </div>
                 </div>
+                {/* NUEVO: mostrar cobertura si existe */}
+                {v.coverageAreas && (
+                  <div className="mt-2 text-xs text-muted-foreground">
+                    <span className="font-medium">Cobertura:</span> {v.coverageAreas}
+                  </div>
+                )}
                 <div className="grid grid-cols-2 gap-2 mt-4 text-center border-t border-border pt-4">
                   <div>
                     <p className="text-xl font-bold">{v._count?.contacts ?? 0}</p>
@@ -282,7 +476,6 @@ export default function VendedoresPage() {
                   </div>
                 </div>
 
-                {/* Botones de accion por vendedor (existente) */}
                 <div className="grid grid-cols-3 gap-1 mt-3">
                   <Button variant="outline" size="sm" onClick={() => verDetalle(v.id)} title="Ver detalle">
                     <Eye className="h-3.5 w-3.5" />
@@ -295,7 +488,6 @@ export default function VendedoresPage() {
                   </Button>
                 </div>
 
-                {/* Toggle activar/desactivar (existente, sin cambios) */}
                 <Button variant="ghost" size="sm" className="w-full mt-2" onClick={() => toggleActivo(v)}>
                   {v.activo ? <><UserX className="h-4 w-4 mr-1" /> Desactivar</> : <><UserCheck className="h-4 w-4 mr-1" /> Activar</>}
                 </Button>
@@ -305,77 +497,46 @@ export default function VendedoresPage() {
         })}
       </div>
 
-      {/* === MODAL CREAR VENDEDOR (existente + avatar) === */}
+      {/* === MODAL CREAR VENDEDOR (preservado + logisticos) === */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent>
+        <DialogContent className="max-h-[90vh] overflow-y-auto">
           <DialogHeader><DialogTitle>Nuevo vendedor</DialogTitle></DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* NUEVO: Campo Foto */}
+            {/* Foto (preservado) */}
             <div className="space-y-2">
               <Label>Foto de perfil (opcional)</Label>
               <div className="flex items-center gap-3">
                 <Avatar className="h-16 w-16 border">
                   <AvatarImage src={formAvatar || undefined} alt="Preview" />
-                  <AvatarFallback className="bg-muted">
-                    <Camera className="h-6 w-6 text-muted-foreground" />
-                  </AvatarFallback>
+                  <AvatarFallback className="bg-muted"><Camera className="h-6 w-6 text-muted-foreground" /></AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
-                  <input
-                    ref={createFileInputRef}
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp,image/gif"
-                    onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0], 'create')}
-                    className="hidden"
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => createFileInputRef.current?.click()}
-                    disabled={uploadingAvatar}
-                  >
-                    <Camera className="h-4 w-4 mr-2" />
-                    {uploadingAvatar ? 'Subiendo...' : (formAvatar ? 'Cambiar foto' : 'Subir foto')}
+                  <input ref={createFileInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0], 'create')} className="hidden" />
+                  <Button type="button" variant="outline" size="sm" onClick={() => createFileInputRef.current?.click()} disabled={uploadingAvatar}>
+                    <Camera className="h-4 w-4 mr-2" />{uploadingAvatar ? 'Subiendo...' : (formAvatar ? 'Cambiar foto' : 'Subir foto')}
                   </Button>
-                  {formAvatar && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setFormAvatar(null)}
-                      className="ml-2 text-red-600"
-                    >
-                      Quitar
-                    </Button>
-                  )}
+                  {formAvatar && <Button type="button" variant="ghost" size="sm" onClick={() => setFormAvatar(null)} className="ml-2 text-red-600">Quitar</Button>}
                   <p className="text-xs text-muted-foreground mt-1">JPG, PNG, WEBP. Máx 500KB.</p>
                 </div>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <Label>Nombre</Label>
-                <Input value={form.nombre} onChange={(e) => setForm({ ...form, nombre: e.target.value })} required />
+              <div className="space-y-2"><Label>Nombre</Label><Input value={form.nombre} onChange={(e) => setForm({ ...form, nombre: e.target.value })} required /></div>
+              <div className="space-y-2"><Label>Apellido</Label><Input value={form.apellido} onChange={(e) => setForm({ ...form, apellido: e.target.value })} /></div>
+            </div>
+            <div className="space-y-2"><Label>Email</Label><Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required /></div>
+            <div className="space-y-2"><Label>Teléfono</Label><Input value={form.telefono} onChange={(e) => setForm({ ...form, telefono: e.target.value })} /></div>
+            <div className="space-y-2"><Label>Contraseña</Label><Input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required placeholder="Mínimo 6 caracteres" minLength={6} /></div>
+
+            {/* === NUEVO: Datos logisticos === */}
+            <div className="border-t pt-4">
+              <h3 className="text-sm font-semibold mb-3">Datos de logística</h3>
+              <div className="space-y-3">
+                <LogisticFields target="create" />
               </div>
-              <div className="space-y-2">
-                <Label>Apellido</Label>
-                <Input value={form.apellido} onChange={(e) => setForm({ ...form, apellido: e.target.value })} />
-              </div>
             </div>
-            <div className="space-y-2">
-              <Label>Email</Label>
-              <Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
-            </div>
-            <div className="space-y-2">
-              <Label>Teléfono</Label>
-              <Input value={form.telefono} onChange={(e) => setForm({ ...form, telefono: e.target.value })} />
-            </div>
-            <div className="space-y-2">
-              <Label>Contraseña</Label>
-              <Input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required placeholder="Mínimo 6 caracteres" minLength={6} />
-            </div>
+
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>Cancelar</Button>
               <Button type="submit">Crear vendedor</Button>
@@ -384,93 +545,51 @@ export default function VendedoresPage() {
         </DialogContent>
       </Dialog>
 
-      {/* === MODAL EDITAR VENDEDOR (existente + avatar) === */}
+      {/* === MODAL EDITAR VENDEDOR (preservado + logisticos) === */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent>
+        <DialogContent className="max-h-[90vh] overflow-y-auto">
           <DialogHeader><DialogTitle>Editar vendedor</DialogTitle></DialogHeader>
           <form onSubmit={handleEditSubmit} className="space-y-4">
-            {/* NUEVO: Campo Foto */}
+            {/* Foto (preservado) */}
             <div className="space-y-2">
               <Label>Foto de perfil</Label>
               <div className="flex items-center gap-3">
                 <Avatar className="h-16 w-16 border">
                   <AvatarImage src={editAvatar || undefined} alt="Preview" />
-                  <AvatarFallback className="bg-muted">
-                    <Camera className="h-6 w-6 text-muted-foreground" />
-                  </AvatarFallback>
+                  <AvatarFallback className="bg-muted"><Camera className="h-6 w-6 text-muted-foreground" /></AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
-                  <input
-                    ref={editFileInputRef}
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp,image/gif"
-                    onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0], 'edit')}
-                    className="hidden"
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => editFileInputRef.current?.click()}
-                    disabled={uploadingAvatar}
-                  >
-                    <Camera className="h-4 w-4 mr-2" />
-                    {uploadingAvatar ? 'Subiendo...' : (editAvatar ? 'Cambiar foto' : 'Subir foto')}
+                  <input ref={editFileInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0], 'edit')} className="hidden" />
+                  <Button type="button" variant="outline" size="sm" onClick={() => editFileInputRef.current?.click()} disabled={uploadingAvatar}>
+                    <Camera className="h-4 w-4 mr-2" />{uploadingAvatar ? 'Subiendo...' : (editAvatar ? 'Cambiar foto' : 'Subir foto')}
                   </Button>
-                  {editAvatar && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setEditAvatar(null)}
-                      className="ml-2 text-red-600"
-                    >
-                      Quitar
-                    </Button>
-                  )}
+                  {editAvatar && <Button type="button" variant="ghost" size="sm" onClick={() => setEditAvatar(null)} className="ml-2 text-red-600">Quuitar</Button>}
                 </div>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <Label>Nombre</Label>
-                <Input value={editForm.nombre} onChange={(e) => setEditForm({ ...editForm, nombre: e.target.value })} required />
-              </div>
-              <div className="space-y-2">
-                <Label>Apellido</Label>
-                <Input value={editForm.apellido} onChange={(e) => setEditForm({ ...editForm, apellido: e.target.value })} />
-              </div>
+              <div className="space-y-2"><Label>Nombre</Label><Input value={editForm.nombre} onChange={(e) => setEditForm({ ...editForm, nombre: e.target.value })} required /></div>
+              <div className="space-y-2"><Label>Apellido</Label><Input value={editForm.apellido} onChange={(e) => setEditForm({ ...editForm, apellido: e.target.value })} /></div>
             </div>
-            <div className="space-y-2">
-              <Label>Email</Label>
-              <Input type="email" value={editForm.email} onChange={(e) => setEditForm({ ...editForm, email: e.target.value })} required />
-            </div>
-            <div className="space-y-2">
-              <Label>Teléfono</Label>
-              <Input value={editForm.telefono} onChange={(e) => setEditForm({ ...editForm, telefono: e.target.value })} />
-            </div>
+            <div className="space-y-2"><Label>Email</Label><Input type="email" value={editForm.email} onChange={(e) => setEditForm({ ...editForm, email: e.target.value })} required /></div>
+            <div className="space-y-2"><Label>Teléfono</Label><Input value={editForm.telefono} onChange={(e) => setEditForm({ ...editForm, telefono: e.target.value })} /></div>
             <div className="space-y-2">
               <Label>Estado</Label>
               <div className="flex gap-2">
-                <Button
-                  type="button"
-                  variant={editForm.activo ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setEditForm({ ...editForm, activo: true })}
-                >
-                  🟢 Activo
-                </Button>
-                <Button
-                  type="button"
-                  variant={!editForm.activo ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setEditForm({ ...editForm, activo: false })}
-                >
-                  🔴 Inactivo
-                </Button>
+                <Button type="button" variant={editForm.activo ? 'default' : 'outline'} size="sm" onClick={() => setEditForm({ ...editForm, activo: true })}>🟢 Activo</Button>
+                <Button type="button" variant={!editForm.activo ? 'default' : 'outline'} size="sm" onClick={() => setEditForm({ ...editForm, activo: false })}>🔴 Inactivo</Button>
               </div>
             </div>
+
+            {/* === NUEVO: Datos logisticos === */}
+            <div className="border-t pt-4">
+              <h3 className="text-sm font-semibold mb-3">Datos de logística</h3>
+              <div className="space-y-3">
+                <LogisticFields target="edit" />
+              </div>
+            </div>
+
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setEditDialogOpen(false)}>Cancelar</Button>
               <Button type="submit" disabled={savingEdit}>{savingEdit ? 'Guardando...' : 'Guardar cambios'}</Button>
@@ -479,7 +598,7 @@ export default function VendedoresPage() {
         </DialogContent>
       </Dialog>
 
-      {/* === DIALOG CONFIRMACION ELIMINAR (existente, sin cambios) === */}
+      {/* === DIALOG CONFIRMACION ELIMINAR (preservado) === */}
       <Dialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
         <DialogContent>
           <DialogHeader>
