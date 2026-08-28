@@ -1,11 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Mail, Search, CheckCircle2, Trash2, Printer, Download, ChevronDown } from 'lucide-react'
+import { Mail, Search, CheckCircle2, Trash2, Printer, Download, ChevronDown, ClipboardList } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
@@ -49,6 +51,13 @@ export default function MensajesPage() {
   const [search, setSearch] = useState('')
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null) // ID a eliminar (individual)
+
+  // NUEVO: estado para el modal de asignar tarea
+  const [taskDialogOpen, setTaskDialogOpen] = useState(false)
+  const [taskLead, setTaskLead] = useState<Lead | null>(null)
+  const [taskForm, setTaskForm] = useState({ titulo: '', descripcion: '', asignadoA: '', fechaLimite: '', tipo: 'LLAMADA' })
+  const [vendedores, setVendedores] = useState<{ id: string; nombre: string; apellido: string | null }[]>([])
+  const [savingTask, setSavingTask] = useState(false)
 
   useEffect(() => {
     fetchLeads()
@@ -113,6 +122,62 @@ export default function MensajesPage() {
   function printLead(id: string) {
     // Abrir vista de impresion en nueva pestaña
     window.open(`/api/admin/leads/${id}/print`, '_blank')
+  }
+
+  // === NUEVO: ASIGNAR TAREA DESDE MENSAJE ===
+  async function openTaskDialog(lead: Lead) {
+    setTaskLead(lead)
+    setTaskForm({
+      titulo: `Atender lead: ${lead.name}`,
+      descripcion: `Contactar a ${lead.name} (${lead.primaryEmail || 'sin email'} - ${lead.primaryPhone || 'sin teléfono'})${lead.message ? ` - Mensaje: ${lead.message}` : ''}`,
+      asignadoA: '',
+      fechaLimite: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10), // 3 dias por defecto
+      tipo: 'LLAMADA',
+    })
+    // Cargar vendedores si no estan cargados
+    if (vendedores.length === 0) {
+      try {
+        const res = await fetch('/api/admin/users?role=VENDEDOR')
+        if (res.ok) {
+          const data = await res.json()
+          setVendedores(data.map((v: any) => ({ id: v.id, nombre: v.nombre, apellido: v.apellido })))
+        }
+      } catch {}
+    }
+    setTaskDialogOpen(true)
+  }
+
+  async function handleTaskSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!taskLead) return
+    if (!taskForm.asignadoA) { toast.error('Selecciona un vendedor'); return }
+    if (!taskForm.fechaLimite) { toast.error('Selecciona una fecha límite'); return }
+    setSavingTask(true)
+    try {
+      const res = await fetch('/api/admin/tareas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          titulo: taskForm.titulo,
+          descripcion: taskForm.descripcion,
+          tipo: taskForm.tipo,
+          asignadoA: taskForm.asignadoA,
+          fechaLimite: taskForm.fechaLimite,
+          contactoId: taskLead.id,
+        }),
+      })
+      if (res.ok) {
+        toast.success('Tarea asignada al vendedor')
+        setTaskDialogOpen(false)
+      } else {
+        const err = await res.json()
+        toast.error(err.error || 'Error al crear tarea')
+      }
+    } catch {
+      toast.error('Error de conexión')
+    } finally {
+      setSavingTask(false)
+    }
   }
 
   // === Acciones masivas ===
@@ -337,6 +402,9 @@ export default function MensajesPage() {
                           <Button variant="ghost" size="sm" onClick={() => printLead(lead.id)} title="Imprimir">
                             <Printer className="h-4 w-4" />
                           </Button>
+                          <Button variant="ghost" size="sm" onClick={() => openTaskDialog(lead)} title="Asignar tarea" className="text-blue-600 hover:text-blue-700 hover:bg-blue-50">
+                            <ClipboardList className="h-4 w-4" />
+                          </Button>
                           <Button variant="ghost" size="sm" onClick={() => setDeleteTarget(lead.id)} title="Eliminar" className="text-red-600 hover:text-red-700 hover:bg-red-50">
                             <Trash2 className="h-4 w-4" />
                           </Button>
@@ -383,6 +451,84 @@ export default function MensajesPage() {
               <Trash2 className="h-4 w-4 mr-2" /> Eliminar
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* === NUEVO: DIALOG DE ASIGNAR TAREA === */}
+      <Dialog open={taskDialogOpen} onOpenChange={(open) => !open && setTaskDialogOpen(false)}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <ClipboardList className="h-5 w-5 text-blue-600" /> Asignar tarea
+            </DialogTitle>
+            {taskLead && (
+              <DialogDescription>
+                Lead: <strong>{taskLead.name}</strong> ({taskLead.primaryEmail || 'sin email'})
+              </DialogDescription>
+            )}
+          </DialogHeader>
+          <form onSubmit={handleTaskSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label>Título</Label>
+              <Input
+                value={taskForm.titulo}
+                onChange={(e) => setTaskForm({ ...taskForm, titulo: e.target.value })}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Descripción</Label>
+              <Textarea
+                value={taskForm.descripcion}
+                onChange={(e) => setTaskForm({ ...taskForm, descripcion: e.target.value })}
+                rows={3}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label>Vendedor *</Label>
+                <Select value={taskForm.asignadoA} onValueChange={(v) => setTaskForm({ ...taskForm, asignadoA: v })}>
+                  <SelectTrigger><SelectValue placeholder="Seleccionar vendedor" /></SelectTrigger>
+                  <SelectContent className="max-h-60 overflow-y-auto">
+                    {vendedores.map((v) => (
+                      <SelectItem key={v.id} value={v.id}>
+                        {v.nombre} {v.apellido || ''}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Fecha límite *</Label>
+                <Input
+                  type="date"
+                  value={taskForm.fechaLimite}
+                  onChange={(e) => setTaskForm({ ...taskForm, fechaLimite: e.target.value })}
+                  required
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Tipo de tarea</Label>
+              <Select value={taskForm.tipo} onValueChange={(v) => setTaskForm({ ...taskForm, tipo: v })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="LLAMADA">📞 Llamada</SelectItem>
+                  <SelectItem value="WHATSAPP">💬 WhatsApp</SelectItem>
+                  <SelectItem value="EMAIL">✉️ Email</SelectItem>
+                  <SelectItem value="VISITA">🏠 Visita</SelectItem>
+                  <SelectItem value="REUNION">🤝 Reunión</SelectItem>
+                  <SelectItem value="TAREA">📋 Tarea</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setTaskDialogOpen(false)}>Cancelar</Button>
+              <Button type="submit" disabled={savingTask}>
+                <ClipboardList className="h-4 w-4 mr-2" /> {savingTask ? 'Asignando...' : 'Asignar tarea'}
+              </Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
     </div>
