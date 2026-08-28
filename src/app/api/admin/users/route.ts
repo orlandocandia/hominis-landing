@@ -152,7 +152,7 @@ export async function POST(request: Request) {
         `INSERT INTO User (id, email, password, nombre, apellido, telefono, rol, activo, coverageAreas, avatarUrl,
             documentNumber, province, city, address, latitude, longitude, horario, hireDate,
             fechaAlta, createdAt, updatedAt, geocodingStatus, intentosLogin, totalContacts, conversionRate, serviceRadius)
-         VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'), datetime('now'), 'PENDING', 0, 0, 0, 50)`,
+         VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'), datetime('now'), 'PENDING', 0, 0, 0, 50)`,
         [userId, body.email, hashedPassword, body.nombre, body.apellido || null, body.telefono || null, rol,
          coverageAreas, avatarUrl,
          documentNumber, province, city, address, latitude, longitude, horario,
