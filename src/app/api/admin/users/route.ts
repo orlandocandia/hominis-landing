@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { requireAuth } from '@/lib/auth'
-import { queryLibsql, scalarLibsql } from '@/lib/libsql-db'
+import { queryLibsql, scalarLibsql, executeLibsql } from '@/lib/libsql-db'
 import bcrypt from 'bcryptjs'
 
 export const dynamic = 'force-dynamic'
@@ -82,6 +82,7 @@ export async function GET(request: Request) {
 }
 
 // POST /api/admin/users — crear vendedor
+// FLUJO: intenta Prisma primero; si falla, usa fallback libsql.
 export async function POST(request: Request) {
   try {
     const session = await requireAuth()
@@ -93,23 +94,50 @@ export async function POST(request: Request) {
     }
 
     const hashedPassword = await bcrypt.hash(body.password, 10)
-    const user = await db.user.create({
-      data: {
+    const rol = body.rol || 'VENDEDOR'
+    const coverageAreas = body.coverageAreas ? JSON.stringify(body.coverageAreas) : null
+
+    // === INTENTO 1: Prisma ===
+    try {
+      const user = await db.user.create({
+        data: {
+          email: body.email,
+          password: hashedPassword,
+          nombre: body.nombre,
+          apellido: body.apellido || null,
+          telefono: body.telefono || null,
+          rol,
+          activo: true,
+          coverageAreas,
+        },
+        select: {
+          id: true, email: true, nombre: true, apellido: true, rol: true, activo: true,
+        },
+      })
+
+      return NextResponse.json(user, { status: 201 })
+    } catch (prismaErr) {
+      // Fallback: libsql directo
+      console.warn('[admin/users POST] Prisma fallo, usando fallback libsql. Error:', (prismaErr as Error)?.message?.slice(0, 150))
+
+      // Generar un ID unico
+      const userId = 'user_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8)
+
+      await executeLibsql(
+        `INSERT INTO User (id, email, password, nombre, apellido, telefono, rol, activo, coverageAreas, fechaAlta, createdAt, updatedAt, geocodingStatus, intentosLogin, totalContacts, conversionRate, serviceRadius)
+         VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, datetime('now'), datetime('now'), datetime('now'), 'PENDING', 0, 0, 0, 50)`,
+        [userId, body.email, hashedPassword, body.nombre, body.apellido || null, body.telefono || null, rol, coverageAreas]
+      )
+
+      return NextResponse.json({
+        id: userId,
         email: body.email,
-        password: hashedPassword,
         nombre: body.nombre,
         apellido: body.apellido || null,
-        telefono: body.telefono || null,
-        rol: body.rol || 'VENDEDOR',
+        rol,
         activo: true,
-        coverageAreas: body.coverageAreas ? JSON.stringify(body.coverageAreas) : null,
-      },
-      select: {
-        id: true, email: true, nombre: true, apellido: true, rol: true, activo: true,
-      },
-    })
-
-    return NextResponse.json(user, { status: 201 })
+      }, { status: 201 })
+    }
   } catch (error) {
     console.error('Error en POST /api/admin/users:', error)
     return NextResponse.json({ error: 'Error interno' }, { status: 500 })
