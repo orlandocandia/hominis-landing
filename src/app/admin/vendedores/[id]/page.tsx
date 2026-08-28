@@ -175,9 +175,9 @@ export default function VendedorDetallePage({ params }: { params: Promise<{ id: 
       <Card className="mb-6">
         <CardContent className="p-6">
           <div className="flex items-start gap-4">
-            <Avatar className="h-16 w-16 border">
+            <Avatar className="h-24 w-24 border">
               <AvatarImage src={vendedor.avatarUrl || undefined} alt={fullName} />
-              <AvatarFallback className="bg-primary/10 text-lg font-bold text-primary">{initials}</AvatarFallback>
+              <AvatarFallback className="bg-primary/10 text-xl font-bold text-primary">{initials}</AvatarFallback>
             </Avatar>
             <div className="flex-1">
               <h2 className="text-xl font-bold">{fullName}</h2>
