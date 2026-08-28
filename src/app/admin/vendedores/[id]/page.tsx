@@ -9,7 +9,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { toast } from 'sonner'
 
 interface VendedorData {
@@ -20,6 +20,7 @@ interface VendedorData {
   rol: string
   activo: boolean
   telefono: string | null
+  avatarUrl: string | null  // NUEVO: foto de perfil
   ultimoAcceso: string | null
   createdAt: string
   _count: { contacts: number; tareasPendientes: number; totalTareas: number }
@@ -164,6 +165,7 @@ export default function VendedorDetallePage({ params }: { params: Promise<{ id: 
         <CardContent className="p-6">
           <div className="flex items-start gap-4">
             <Avatar className="h-16 w-16 border">
+              <AvatarImage src={vendedor.avatarUrl || undefined} alt={fullName} />
               <AvatarFallback className="bg-primary/10 text-lg font-bold text-primary">{initials}</AvatarFallback>
             </Avatar>
             <div className="flex-1">
