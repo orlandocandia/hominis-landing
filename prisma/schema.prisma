@@ -167,9 +167,10 @@ model User {
   longitude       Float?
   geocodingStatus GeocodingStatus @default(PENDING)
   serviceRadius   Int             @default(50)
-  coverageAreas   String?         // JSON string
-  documentNumber  String?
-  hireDate        DateTime?
+  coverageAreas   String?         // JSON string — provincias que cubre (separadas por coma)
+  documentNumber  String?         // DNI del vendedor
+  hireDate        DateTime?       // Fecha de ingreso
+  horario         String?         // Horario de trabajo (ej: "Lun-Vie 9-18")
   empresaId       String?  // multiempresa
   empresa         Empresa? @relation(fields: [empresaId], references: [id])
 
@@ -275,6 +276,7 @@ model Contact {
   geocodingStatus GeocodingStatus @default(PENDING)
   photoUrl        String?
   photoPublicId   String?
+  dni             String?         // DNI del cliente (NUEVO — logistica nacional)
   segment         ContactSegment?
   age             Int?
   coverage        ContactCoverage?
