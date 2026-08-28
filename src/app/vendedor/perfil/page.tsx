@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import LeafletMap from '@/components/LeafletMap'
 import { toast } from 'sonner'
 import { PROVINCIAS_ARGENTINA } from '@/lib/provincias'
 
@@ -225,6 +226,20 @@ export default function PerfilPage() {
                     )}
                   </div>
                   <div className="space-y-2"><Label>Horario de trabajo</Label><Input value={profile.horario} onChange={(e) => setProfile({ ...profile, horario: e.target.value })} placeholder="Lun-Vie 9-18" /></div>
+
+                  {/* NUEVO: Mapa con la ubicacion del vendedor */}
+                  {latLng.lat !== '' && latLng.lng !== '' && (
+                    <div className="space-y-2">
+                      <Label>Ubicación en el mapa</Label>
+                      <LeafletMap
+                        lat={Number(latLng.lat)}
+                        lng={Number(latLng.lng)}
+                        label={profile.nombre || 'Mi ubicación'}
+                        height="180px"
+                      />
+                    </div>
+                  )}
+
                   <p className="text-xs text-muted-foreground">DNI y fecha de ingreso son editados por el administrador.</p>
                 </div>
               </div>
