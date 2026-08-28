@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { Users, Plus, Search, UserCheck, UserX, Pencil, Trash2, Eye, Camera, MapPin, Loader2 } from 'lucide-react'
+import { Users, Plus, Search, UserCheck, UserX, Pencil, Trash2, Eye, Camera, MapPin, Loader2, EyeOff } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -51,6 +51,8 @@ export default function VendedoresPage() {
   const [search, setSearch] = useState('')
   const [dialogOpen, setDialogOpen] = useState(false)
   const [form, setForm] = useState({ nombre: '', apellido: '', email: '', telefono: '', password: '' })
+  // NUEVO: estado para mostrar/ocultar contraseña
+  const [showPassword, setShowPassword] = useState(false)
   // Foto (preservado)
   const [formAvatar, setFormAvatar] = useState<string | null>(null)
   const [uploadingAvatar, setUploadingAvatar] = useState(false)
@@ -196,6 +198,7 @@ export default function VendedoresPage() {
         setDialogOpen(false)
         setForm({ nombre: '', apellido: '', email: '', telefono: '', password: '' })
         setFormAvatar(null)
+        setShowPassword(false) // resetear visibilidad de contraseña
         setFormLogistica({ dni: '', provincia: '', ciudad: '', direccion: '', latitud: '', longitud: '', horario: '', fechaIngreso: '' })
         setFormCobertura([])
         fetchVendedores()
@@ -438,7 +441,29 @@ export default function VendedoresPage() {
             </div>
             <div className="space-y-2"><Label>Email</Label><Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required /></div>
             <div className="space-y-2"><Label>Teléfono</Label><Input value={form.telefono} onChange={(e) => setForm({ ...form, telefono: e.target.value })} /></div>
-            <div className="space-y-2"><Label>Contraseña</Label><Input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required placeholder="Mínimo 6 caracteres" minLength={6} /></div>
+            <div className="space-y-2">
+              <Label>Contraseña</Label>
+              <div className="relative">
+                <Input
+                  type={showPassword ? 'text' : 'password'}
+                  value={form.password}
+                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  required
+                  placeholder="Mínimo 6 caracteres"
+                  minLength={6}
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  tabIndex={-1}
+                  aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+            </div>
 
             {/* === NUEVO: Datos logisticos === */}
             <div className="border-t pt-4">
