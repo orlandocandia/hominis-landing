@@ -133,8 +133,16 @@ export default function VendedoresPage() {
   }
 
   // === NUEVO: Geocodificación automática ===
+  // NUEVO: refs para trackear el valor anterior de la direccion (evita re-geocodificar al abrir el modal)
+  const lastGeocodedDireccion = useRef<string>('')
+
   async function geocodificar(provincia: string, ciudad: string, direccion: string, target: 'create' | 'edit') {
     if (!provincia && !ciudad && !direccion) return
+    // FIX: no re-geocodificar si la direccion no cambio (evita el warning al abrir el modal de edicion)
+    const fullAddress = `${provincia}|${ciudad}|${direccion}`
+    if (fullAddress === lastGeocodedDireccion.current) return
+    lastGeocodedDireccion.current = fullAddress
+
     setGeocoding(true)
     try {
       const res = await fetch('/api/admin/geocode', {
@@ -148,9 +156,15 @@ export default function VendedoresPage() {
         } else {
           setEditLogistica(prev => ({ ...prev, latitud: data.lat, longitud: data.lng }))
         }
-        toast.success(`Geocodificado: ${data.lat.toFixed(4)}, ${data.lng.toFixed(4)}`)
+        toast.success(`Ubicación actualizada: ${data.lat.toFixed(4)}, ${data.lng.toFixed(4)}`)
       } else {
-        toast.warning('No se encontró la dirección exacta. Coordenadas no actualizadas.')
+        // FIX: si ya hay coordenadas guardadas, no mostrar el warning molesto
+        const currentLat = target === 'create' ? formLogistica.latitud : editLogistica.latitud
+        if (currentLat !== '') {
+          toast.info('No se actualizó la ubicación. Se mantiene la coordenada guardada anterior.')
+        } else {
+          toast.warning('No se encontró la dirección. Podés seleccionar la ubicación manualmente en el mapa.')
+        }
       }
     } catch {
       toast.error('Error al geocodificar')
@@ -223,6 +237,8 @@ export default function VendedoresPage() {
       fechaIngreso: v.hireDate ? new Date(v.hireDate).toISOString().slice(0, 10) : '',
     })
     setEditCobertura(parseCobertura(v.coverageAreas))
+    // FIX: inicializar el ref con la direccion actual para evitar que el onBlur re-geocodifique al abrir
+    lastGeocodedDireccion.current = `${v.province || ''}|${v.city || ''}|${v.address || ''}`
     setEditDialogOpen(true)
   }
 
@@ -305,7 +321,11 @@ export default function VendedoresPage() {
           <h1 className="text-2xl font-bold mb-1">Vendedores</h1>
           <p className="text-sm text-muted-foreground">Gestión del equipo de ventas</p>
         </div>
-        <Button onClick={() => setDialogOpen(true)} size="sm">
+        <Button onClick={() => {
+          // FIX: resetear el ref de geocodificacion al abrir el modal de crear
+          lastGeocodedDireccion.current = ''
+          setDialogOpen(true)
+        }} size="sm">
           <Plus className="h-4 w-4 mr-1" /> Nuevo vendedor
         </Button>
       </div>
