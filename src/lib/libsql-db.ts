@@ -70,3 +70,32 @@ export async function scalarLibsql(sql: string, args: any[] = []): Promise<numbe
   const value = typeof cell === 'object' && 'value' in cell ? (cell as any).value : cell
   return Number(value) || 0
 }
+
+/**
+ * Ejecutar una sentencia INSERT/UPDATE/DELETE y devolver la cantidad de filas afectadas.
+ * Helper para operaciones de escritura en las APIs admin.
+ *
+ * Ejemplo:
+ *   const affected = await executeLibsql('UPDATE Contact SET status = ? WHERE id = ?', ['LEIDO', 'abc123'])
+ *   // affected: 1 (una fila actualizada)
+ */
+export async function executeLibsql(sql: string, args: any[] = []): Promise<number> {
+  const client = getLibsqlClient()
+  const result = await client.execute({ sql, args })
+  return result.rows_affected || 0
+}
+
+/**
+ * Ejecutar un batch de sentencias INSERT/UPDATE/DELETE en una transaccion.
+ * Todas se ejecutan o ninguna (atomicidad).
+ *
+ * Ejemplo:
+ *   await batchLibsql([
+ *     { sql: 'UPDATE Contact SET status = ?', args: ['LEIDO'] },
+ *     { sql: 'INSERT INTO ContactActivity ...', args: [...] },
+ *   ])
+ */
+export async function batchLibsql(statements: { sql: string; args: any[] }[]): Promise<void> {
+  const client = getLibsqlClient()
+  await client.batch(statements.map((s) => ({ sql: s.sql, args: s.args })))
+}
