@@ -79,7 +79,17 @@ export async function POST(request: Request) {
     if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
     const body = await request.json().catch(() => ({}))
-    const userId = (session.user as any).id as string
+    let userId = (session.user as any).id as string
+
+    // FIX: si el userId es 'admin-hardcodeado' (no existe en Turso), buscar un admin real
+    if (userId === 'admin-hardcodeado') {
+      try {
+        const admins = await queryLibsql("SELECT id FROM User WHERE rol = 'ADMIN' LIMIT 1")
+        if (admins.length > 0) {
+          userId = (admins[0] as any).id
+        }
+      } catch {}
+    }
 
     if (!body.titulo || !body.asignadoA || !body.fechaLimite) {
       return NextResponse.json({ error: 'Faltan campos (titulo, asignadoA, fechaLimite)' }, { status: 400 })
