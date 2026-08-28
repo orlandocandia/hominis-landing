@@ -277,6 +277,7 @@ model Contact {
   photoUrl        String?
   photoPublicId   String?
   dni             String?         // DNI del cliente (NUEVO — logistica nacional)
+  notas           String?         // Notas adicionales del cliente (ABM)
   segment         ContactSegment?
   age             Int?
   coverage        ContactCoverage?
