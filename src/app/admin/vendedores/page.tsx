@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { toast } from 'sonner'
 import { PROVINCIAS_ARGENTINA } from '@/lib/provincias'
+import LeafletMap from '@/components/LeafletMap'
 
 interface Vendedor {
   id: string
@@ -294,119 +295,6 @@ export default function VendedoresPage() {
     ? vendedores.filter(v => `${v.nombre} ${v.apellido || ''}`.toLowerCase().includes(search.toLowerCase()) || v.email.toLowerCase().includes(search.toLowerCase()))
     : vendedores
 
-  // Componente reutilizable para los campos logisticos
-  function LogisticFields({ target }: { target: 'create' | 'edit' }) {
-    const logistica = target === 'create' ? formLogistica : editLogistica
-    const setLogistica = target === 'create' ? setFormLogistica : setEditLogistica
-    const cobertura = target === 'create' ? formCobertura : editCobertura
-    return (
-      <>
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-2">
-            <Label>DNI</Label>
-            <Input
-              value={logistica.dni}
-              onChange={(e) => setLogistica({ ...logistica, dni: e.target.value })}
-              placeholder="12345678"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>Fecha de ingreso</Label>
-            <Input
-              type="date"
-              value={logistica.fechaIngreso}
-              onChange={(e) => setLogistica({ ...logistica, fechaIngreso: e.target.value })}
-            />
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label>Provincia</Label>
-          <Select
-            value={logistica.provincia || '_none'}
-            onValueChange={(v) => {
-              const prov = v === '_none' ? '' : v
-              setLogistica({ ...logistica, provincia: prov })
-            }}
-          >
-            <SelectTrigger><SelectValue placeholder="Seleccionar provincia" /></SelectTrigger>
-            <SelectContent className="max-h-60 overflow-y-auto">
-              <SelectItem value="_none">— Sin provincia —</SelectItem>
-              {PROVINCIAS_ARGENTINA.map((p) => (
-                <SelectItem key={p} value={p}>{p}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-2">
-            <Label>Ciudad</Label>
-            <Input
-              value={logistica.ciudad}
-              onChange={(e) => setLogistica({ ...logistica, ciudad: e.target.value })}
-              placeholder="Posadas"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>Horario de trabajo</Label>
-            <Input
-              value={logistica.horario}
-              onChange={(e) => setLogistica({ ...logistica, horario: e.target.value })}
-              placeholder="Lun-Vie 9-18"
-            />
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label>Dirección</Label>
-          <div className="flex gap-2">
-            <Input
-              value={logistica.direccion}
-              onChange={(e) => setLogistica({ ...logistica, direccion: e.target.value })}
-              placeholder="Av. Santa Fe 1234"
-              onBlur={() => geocodificar(logistica.provincia, logistica.ciudad, logistica.direccion, target)}
-            />
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => geocodificar(logistica.provincia, logistica.ciudad, logistica.direccion, target)}
-              disabled={geocoding}
-            >
-              {geocoding ? <Loader2 className="h-4 w-4 animate-spin" /> : <MapPin className="h-4 w-4" />}
-            </Button>
-          </div>
-          {logistica.latitud !== '' && logistica.longitud !== '' && (
-            <p className="text-xs text-muted-foreground">
-              📍 Coordenadas: {logistica.latitud}, {logistica.longitud}
-            </p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <Label>Cobertura (provincias que cubre)</Label>
-          <div className="max-h-32 overflow-y-auto border rounded-md p-2 grid grid-cols-2 gap-1">
-            {PROVINCIAS_ARGENTINA.map((p) => (
-              <label key={p} className="flex items-center gap-2 text-sm cursor-pointer hover:bg-muted/50 rounded px-1 py-0.5">
-                <Checkbox
-                  checked={cobertura.includes(p)}
-                  onCheckedChange={() => toggleCobertura(p, target)}
-                />
-                <span className="truncate">{p}</span>
-              </label>
-            ))}
-          </div>
-          {cobertura.length > 0 && (
-            <p className="text-xs text-muted-foreground">
-              {cobertura.length} provincia(s) seleccionada(s): {cobertura.join(', ')}
-            </p>
-          )}
-        </div>
-      </>
-    )
-  }
-
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
@@ -533,7 +421,119 @@ export default function VendedoresPage() {
             <div className="border-t pt-4">
               <h3 className="text-sm font-semibold mb-3">Datos de logística</h3>
               <div className="space-y-3">
-                <LogisticFields target="create" />
+                {/* Campos logisticos inlineados (no como componente separado para evitar perdida de foco) */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-2">
+                    <Label>DNI</Label>
+                    <Input
+                      value={formLogistica.dni}
+                      onChange={(e) => setFormLogistica({ ...formLogistica, dni: e.target.value })}
+                      placeholder="12345678"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Fecha de ingreso</Label>
+                    <Input
+                      type="date"
+                      value={formLogistica.fechaIngreso}
+                      onChange={(e) => setFormLogistica({ ...formLogistica, fechaIngreso: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Provincia</Label>
+                  <Select
+                    value={formLogistica.provincia || '_none'}
+                    onValueChange={(v) => {
+                      const prov = v === '_none' ? '' : v
+                      setFormLogistica({ ...formLogistica, provincia: prov })
+                    }}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Seleccionar provincia" /></SelectTrigger>
+                    <SelectContent className="max-h-60 overflow-y-auto">
+                      <SelectItem value="_none">— Sin provincia —</SelectItem>
+                      {PROVINCIAS_ARGENTINA.map((p) => (
+                        <SelectItem key={p} value={p}>{p}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-2">
+                    <Label>Ciudad</Label>
+                    <Input
+                      value={formLogistica.ciudad}
+                      onChange={(e) => setFormLogistica({ ...formLogistica, ciudad: e.target.value })}
+                      placeholder="Posadas"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Horario de trabajo</Label>
+                    <Input
+                      value={formLogistica.horario}
+                      onChange={(e) => setFormLogistica({ ...formLogistica, horario: e.target.value })}
+                      placeholder="Lun-Vie 9-18"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Dirección</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      value={formLogistica.direccion}
+                      onChange={(e) => setFormLogistica({ ...formLogistica, direccion: e.target.value })}
+                      placeholder="Av. Santa Fe 1234"
+                      onBlur={() => geocodificar(formLogistica.provincia, formLogistica.ciudad, formLogistica.direccion, 'create')}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => geocodificar(formLogistica.provincia, formLogistica.ciudad, formLogistica.direccion, 'create')}
+                      disabled={geocoding}
+                    >
+                      {geocoding ? <Loader2 className="h-4 w-4 animate-spin" /> : <MapPin className="h-4 w-4" />}
+                    </Button>
+                  </div>
+                  {formLogistica.latitud !== '' && formLogistica.longitud !== '' && (
+                    <p className="text-xs text-muted-foreground">
+                      📍 Coordenadas: {formLogistica.latitud}, {formLogistica.longitud}
+                    </p>
+                  )}
+                </div>
+
+                {/* Mapa con la ubicacion geocodificada */}
+                {formLogistica.latitud !== '' && formLogistica.longitud !== '' && (
+                  <LeafletMap
+                    lat={Number(formLogistica.latitud)}
+                    lng={Number(formLogistica.longitud)}
+                    label="Nuevo vendedor"
+                    height="180px"
+                  />
+                )}
+
+                <div className="space-y-2">
+                  <Label>Cobertura (provincias que cubre)</Label>
+                  <div className="max-h-32 overflow-y-auto border rounded-md p-2 grid grid-cols-2 gap-1">
+                    {PROVINCIAS_ARGENTINA.map((p) => (
+                      <label key={p} className="flex items-center gap-2 text-sm cursor-pointer hover:bg-muted/50 rounded px-1 py-0.5">
+                        <Checkbox
+                          checked={formCobertura.includes(p)}
+                          onCheckedChange={() => toggleCobertura(p, 'create')}
+                        />
+                        <span className="truncate">{p}</span>
+                      </label>
+                    ))}
+                  </div>
+                  {formCobertura.length > 0 && (
+                    <p className="text-xs text-muted-foreground">
+                      {formCobertura.length} provincia(s) seleccionada(s): {formCobertura.join(', ')}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -563,7 +563,7 @@ export default function VendedoresPage() {
                   <Button type="button" variant="outline" size="sm" onClick={() => editFileInputRef.current?.click()} disabled={uploadingAvatar}>
                     <Camera className="h-4 w-4 mr-2" />{uploadingAvatar ? 'Subiendo...' : (editAvatar ? 'Cambiar foto' : 'Subir foto')}
                   </Button>
-                  {editAvatar && <Button type="button" variant="ghost" size="sm" onClick={() => setEditAvatar(null)} className="ml-2 text-red-600">Quuitar</Button>}
+                  {editAvatar && <Button type="button" variant="ghost" size="sm" onClick={() => setEditAvatar(null)} className="ml-2 text-red-600">Quitar</Button>}
                 </div>
               </div>
             </div>
@@ -586,7 +586,119 @@ export default function VendedoresPage() {
             <div className="border-t pt-4">
               <h3 className="text-sm font-semibold mb-3">Datos de logística</h3>
               <div className="space-y-3">
-                <LogisticFields target="edit" />
+                {/* Campos logisticos inlineados (no como componente separado para evitar perdida de foco) */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-2">
+                    <Label>DNI</Label>
+                    <Input
+                      value={editLogistica.dni}
+                      onChange={(e) => setEditLogistica({ ...editLogistica, dni: e.target.value })}
+                      placeholder="12345678"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Fecha de ingreso</Label>
+                    <Input
+                      type="date"
+                      value={editLogistica.fechaIngreso}
+                      onChange={(e) => setEditLogistica({ ...editLogistica, fechaIngreso: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Provincia</Label>
+                  <Select
+                    value={editLogistica.provincia || '_none'}
+                    onValueChange={(v) => {
+                      const prov = v === '_none' ? '' : v
+                      setEditLogistica({ ...editLogistica, provincia: prov })
+                    }}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Seleccionar provincia" /></SelectTrigger>
+                    <SelectContent className="max-h-60 overflow-y-auto">
+                      <SelectItem value="_none">— Sin provincia —</SelectItem>
+                      {PROVINCIAS_ARGENTINA.map((p) => (
+                        <SelectItem key={p} value={p}>{p}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-2">
+                    <Label>Ciudad</Label>
+                    <Input
+                      value={editLogistica.ciudad}
+                      onChange={(e) => setEditLogistica({ ...editLogistica, ciudad: e.target.value })}
+                      placeholder="Posadas"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Horario de trabajo</Label>
+                    <Input
+                      value={editLogistica.horario}
+                      onChange={(e) => setEditLogistica({ ...editLogistica, horario: e.target.value })}
+                      placeholder="Lun-Vie 9-18"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Dirección</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      value={editLogistica.direccion}
+                      onChange={(e) => setEditLogistica({ ...editLogistica, direccion: e.target.value })}
+                      placeholder="Av. Santa Fe 1234"
+                      onBlur={() => geocodificar(editLogistica.provincia, editLogistica.ciudad, editLogistica.direccion, 'edit')}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => geocodificar(editLogistica.provincia, editLogistica.ciudad, editLogistica.direccion, 'edit')}
+                      disabled={geocoding}
+                    >
+                      {geocoding ? <Loader2 className="h-4 w-4 animate-spin" /> : <MapPin className="h-4 w-4" />}
+                    </Button>
+                  </div>
+                  {editLogistica.latitud !== '' && editLogistica.longitud !== '' && (
+                    <p className="text-xs text-muted-foreground">
+                      📍 Coordenadas: {editLogistica.latitud}, {editLogistica.longitud}
+                    </p>
+                  )}
+                </div>
+
+                {/* Mapa con la ubicacion geocodificada */}
+                {editLogistica.latitud !== '' && editLogistica.longitud !== '' && (
+                  <LeafletMap
+                    lat={Number(editLogistica.latitud)}
+                    lng={Number(editLogistica.longitud)}
+                    label={editForm.nombre || 'Vendedor'}
+                    height="180px"
+                  />
+                )}
+
+                <div className="space-y-2">
+                  <Label>Cobertura (provincias que cubre)</Label>
+                  <div className="max-h-32 overflow-y-auto border rounded-md p-2 grid grid-cols-2 gap-1">
+                    {PROVINCIAS_ARGENTINA.map((p) => (
+                      <label key={p} className="flex items-center gap-2 text-sm cursor-pointer hover:bg-muted/50 rounded px-1 py-0.5">
+                        <Checkbox
+                          checked={editCobertura.includes(p)}
+                          onCheckedChange={() => toggleCobertura(p, 'edit')}
+                        />
+                        <span className="truncate">{p}</span>
+                      </label>
+                    ))}
+                  </div>
+                  {editCobertura.length > 0 && (
+                    <p className="text-xs text-muted-foreground">
+                      {editCobertura.length} provincia(s) seleccionada(s): {editCobertura.join(', ')}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
 
