@@ -62,7 +62,17 @@ export async function PATCH(
     try {
       const updated = await db.contact.update({
         where: { id },
-        data: { ...(body.status && { status: body.status }) },
+        data: {
+          ...(body.status && { status: body.status }),
+          // NUEVO: campos logisticos del cliente (dni, provincia, ciudad, direccion, lat, lng)
+          ...(body.dni !== undefined && { dni: body.dni || null }),
+          ...(body.province !== undefined && { province: body.province || null }),
+          ...(body.city !== undefined && { city: body.city || null }),
+          ...(body.address !== undefined && { address: body.address || body.direccion || null }),
+          ...(body.direccion !== undefined && { address: body.direccion || null }),
+          ...(body.latitude !== undefined && body.latitude !== null && { latitude: Number(body.latitude) }),
+          ...(body.longitude !== undefined && body.longitude !== null && { longitude: Number(body.longitude) }),
+        },
       })
       return NextResponse.json(updated)
     } catch (prismaErr) {
@@ -72,10 +82,15 @@ export async function PATCH(
       // Construir SET clause dinamicamente
       const setClauses: string[] = []
       const args: any[] = []
-      if (body.status) {
-        setClauses.push('status = ?')
-        args.push(body.status)
-      }
+      if (body.status) { setClauses.push('status = ?'); args.push(body.status) }
+      // NUEVO: campos logisticos
+      if (body.dni !== undefined) { setClauses.push('dni = ?'); args.push(body.dni || null) }
+      if (body.province !== undefined) { setClauses.push('province = ?'); args.push(body.province || null) }
+      if (body.city !== undefined) { setClauses.push('city = ?'); args.push(body.city || null) }
+      if (body.address !== undefined) { setClauses.push('address = ?'); args.push(body.address || null) }
+      if (body.direccion !== undefined) { setClauses.push('address = ?'); args.push(body.direccion || null) }
+      if (body.latitude !== undefined) { setClauses.push('latitude = ?'); args.push(body.latitude !== null ? Number(body.latitude) : null) }
+      if (body.longitude !== undefined) { setClauses.push('longitude = ?'); args.push(body.longitude !== null ? Number(body.longitude) : null) }
       if (setClauses.length === 0) {
         return NextResponse.json({ error: 'No hay campos para actualizar' }, { status: 400 })
       }
