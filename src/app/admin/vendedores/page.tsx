@@ -352,10 +352,10 @@ export default function VendedoresPage() {
           return (
             <Card key={v.id}>
               <CardContent className="p-5">
-                <div className="flex items-start gap-3">
-                  <Avatar className="h-10 w-10 border">
+                <div className="flex items-start gap-4">
+                  <Avatar className="h-20 w-20 border">
                     <AvatarImage src={v.avatarUrl || undefined} alt={v.nombre} />
-                    <AvatarFallback className="bg-primary/10 text-sm font-bold text-primary">{initials}</AvatarFallback>
+                    <AvatarFallback className="bg-primary/10 text-lg font-bold text-primary">{initials}</AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold truncate">{v.nombre} {v.apellido}</p>
@@ -419,10 +419,10 @@ export default function VendedoresPage() {
             {/* Foto (preservado) */}
             <div className="space-y-2">
               <Label>Foto de perfil (opcional)</Label>
-              <div className="flex items-center gap-3">
-                <Avatar className="h-16 w-16 border">
+              <div className="flex items-center gap-4">
+                <Avatar className="h-24 w-24 border">
                   <AvatarImage src={formAvatar || undefined} alt="Preview" />
-                  <AvatarFallback className="bg-muted"><Camera className="h-6 w-6 text-muted-foreground" /></AvatarFallback>
+                  <AvatarFallback className="bg-muted"><Camera className="h-8 w-8 text-muted-foreground" /></AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
                   <input ref={createFileInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0], 'create')} className="hidden" />
@@ -610,10 +610,10 @@ export default function VendedoresPage() {
             {/* Foto (preservado) */}
             <div className="space-y-2">
               <Label>Foto de perfil</Label>
-              <div className="flex items-center gap-3">
-                <Avatar className="h-16 w-16 border">
+              <div className="flex items-center gap-4">
+                <Avatar className="h-24 w-24 border">
                   <AvatarImage src={editAvatar || undefined} alt="Preview" />
-                  <AvatarFallback className="bg-muted"><Camera className="h-6 w-6 text-muted-foreground" /></AvatarFallback>
+                  <AvatarFallback className="bg-muted"><Camera className="h-8 w-8 text-muted-foreground" /></AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
                   <input ref={editFileInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0], 'edit')} className="hidden" />
