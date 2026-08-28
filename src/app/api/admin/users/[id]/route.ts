@@ -89,8 +89,9 @@ export async function PATCH(
           ...(body.telefono !== undefined && { telefono: body.telefono }),
           ...(body.activo !== undefined && { activo: body.activo }),
           ...(body.coverageAreas && { coverageAreas: JSON.stringify(body.coverageAreas) }),
+          ...(body.avatarUrl !== undefined && { avatarUrl: body.avatarUrl }),  // NUEVO
         },
-        select: { id: true, email: true, nombre: true, apellido: true, rol: true, activo: true },
+        select: { id: true, email: true, nombre: true, apellido: true, rol: true, activo: true, avatarUrl: true },
       })
 
       return NextResponse.json(updated)
@@ -107,6 +108,7 @@ export async function PATCH(
       if (body.telefono !== undefined) { setClauses.push('telefono = ?'); args.push(body.telefono || null) }
       if (body.activo !== undefined) { setClauses.push('activo = ?'); args.push(body.activo ? 1 : 0) }
       if (body.coverageAreas) { setClauses.push('coverageAreas = ?'); args.push(JSON.stringify(body.coverageAreas)) }
+      if (body.avatarUrl !== undefined) { setClauses.push('avatarUrl = ?'); args.push(body.avatarUrl) }  // NUEVO
 
       if (setClauses.length === 0) {
         return NextResponse.json({ error: 'No hay campos para actualizar' }, { status: 400 })
@@ -123,7 +125,7 @@ export async function PATCH(
 
       // Devolver el usuario actualizado
       const rows = await queryLibsql(
-        'SELECT id, email, nombre, apellido, rol, activo FROM User WHERE id = ?',
+        'SELECT id, email, nombre, apellido, rol, activo, avatarUrl FROM User WHERE id = ?',
         [id]
       )
       if (rows.length === 0) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
