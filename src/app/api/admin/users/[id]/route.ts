@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { requireAuth } from '@/lib/auth'
 import { queryLibsql, scalarLibsql, executeLibsql } from '@/lib/libsql-db'
+import bcrypt from 'bcryptjs'
 
 export const dynamic = 'force-dynamic'
 
@@ -85,6 +86,15 @@ export async function PATCH(
 
     // === INTENTO 1: Prisma ===
     try {
+      // NUEVO: si viene password, hashearla antes del update
+      let hashedPassword: string | null = null
+      if (body.password) {
+        if (body.password.length < 6) {
+          return NextResponse.json({ error: 'La contraseña debe tener al menos 6 caracteres' }, { status: 400 })
+        }
+        hashedPassword = await bcrypt.hash(body.password, 10)
+      }
+
       const updated = await db.user.update({
         where: { id },
         data: {
@@ -95,6 +105,7 @@ export async function PATCH(
           ...(body.activo !== undefined && { activo: body.activo }),
           ...(body.coverageAreas !== undefined && { coverageAreas: Array.isArray(body.coverageAreas) ? body.coverageAreas.join(', ') : (body.coverageAreas || null) }),
           ...(body.avatarUrl !== undefined && { avatarUrl: body.avatarUrl }),  // foto (preservado)
+          ...(hashedPassword && { password: hashedPassword }),  // NUEVO: cambiar contraseña
           // NUEVO: campos logisticos
           ...(body.documentNumber !== undefined && { documentNumber: body.documentNumber || body.dni || null }),
           ...(body.dni !== undefined && { documentNumber: body.dni }),
@@ -120,6 +131,15 @@ export async function PATCH(
       // Fallback: libsql directo
       console.warn('[admin/users/[id] PATCH] Prisma fallo, usando fallback libsql. Error:', (prismaErr as Error)?.message?.slice(0, 150))
 
+      // NUEVO: si viene password, hashearla
+      let hashedPassword: string | null = null
+      if (body.password) {
+        if (body.password.length < 6) {
+          return NextResponse.json({ error: 'La contraseña debe tener al menos 6 caracteres' }, { status: 400 })
+        }
+        hashedPassword = await bcrypt.hash(body.password, 10)
+      }
+
       // Construir SET clause dinamicamente
       const setClauses: string[] = []
       const args: any[] = []
@@ -128,6 +148,7 @@ export async function PATCH(
       if (body.email) { setClauses.push('email = ?'); args.push(body.email) }
       if (body.telefono !== undefined) { setClauses.push('telefono = ?'); args.push(body.telefono || null) }
       if (body.activo !== undefined) { setClauses.push('activo = ?'); args.push(body.activo ? 1 : 0) }
+      if (hashedPassword) { setClauses.push('password = ?'); args.push(hashedPassword) }  // NUEVO: password
       if (body.coverageAreas !== undefined) {
         const cov = Array.isArray(body.coverageAreas) ? body.coverageAreas.join(', ') : body.coverageAreas
         setClauses.push('coverageAreas = ?'); args.push(cov)
