@@ -25,11 +25,13 @@ interface Vendedor {
   activo: boolean
   telefono: string | null
   avatarUrl: string | null  // foto (preservado)
-  // NUEVO: campos logisticos
+  // FIX: campos logisticos (faltaban en la interface — causaba que openEditDialog no cargara lat/lng)
   documentNumber: string | null
   province: string | null
   city: string | null
   address: string | null
+  latitude: number | null
+  longitude: number | null
   coverageAreas: string | null
   horario: string | null
   hireDate: string | null
@@ -214,8 +216,9 @@ export default function VendedoresPage() {
       provincia: v.province || '',
       ciudad: v.city || '',
       direccion: v.address || '',
-      latitud: (v as any).latitude ?? '',
-      longitud: (v as any).longitude ?? '',
+      // FIX: ahora latitude/longitude estan en la interface Vendedor
+      latitud: v.latitude ?? '',
+      longitud: v.longitude ?? '',
       horario: v.horario || '',
       fechaIngreso: v.hireDate ? new Date(v.hireDate).toISOString().slice(0, 10) : '',
     })
