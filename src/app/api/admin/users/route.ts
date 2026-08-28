@@ -26,6 +26,9 @@ export async function GET(request: Request) {
           id: true, email: true, nombre: true, apellido: true,
           rol: true, activo: true, avatarUrl: true, coverageAreas: true,
           telefono: true, ultimoAcceso: true, createdAt: true,
+          // FIX: campos logisticos (faltaban en el SELECT del listado)
+          documentNumber: true, province: true, city: true, address: true,
+          latitude: true, longitude: true, horario: true, hireDate: true,
         },
       })
 
@@ -48,11 +51,13 @@ export async function GET(request: Request) {
       // Fallback: libsql directo
       console.warn('[admin/users] Prisma fallo, usando fallback libsql. Error:', (prismaErr as Error)?.message?.slice(0, 150))
 
-      // Consulta base de usuarios
+      // Consulta base de usuarios (FIX: incluye campos logisticos)
       const usersSql = role
-        ? `SELECT id, email, nombre, apellido, rol, activo, avatarUrl, coverageAreas, telefono, ultimoAcceso, createdAt
+        ? `SELECT id, email, nombre, apellido, rol, activo, avatarUrl, coverageAreas, telefono, ultimoAcceso, createdAt,
+                  documentNumber, province, city, address, latitude, longitude, horario, hireDate
            FROM User WHERE rol = ? ORDER BY createdAt ASC`
-        : `SELECT id, email, nombre, apellido, rol, activo, avatarUrl, coverageAreas, telefono, ultimoAcceso, createdAt
+        : `SELECT id, email, nombre, apellido, rol, activo, avatarUrl, coverageAreas, telefono, ultimoAcceso, createdAt,
+                  documentNumber, province, city, address, latitude, longitude, horario, hireDate
            FROM User ORDER BY createdAt ASC`
       const usersArgs = role ? [role] : []
       const users = await queryLibsql(usersSql, usersArgs)
