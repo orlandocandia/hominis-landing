@@ -1,12 +1,18 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Mail, Phone, Search, Filter, CheckCircle2 } from 'lucide-react'
+import { Mail, Search, CheckCircle2, Trash2, Printer, Download, ChevronDown } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
+} from '@/components/ui/dialog'
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { toast } from 'sonner'
 
 interface Lead {
@@ -21,13 +27,8 @@ interface Lead {
 }
 
 const STATUS_LABELS: Record<string, string> = {
-  NUEVO: 'Nuevo',
-  LEIDO: 'Leído',
-  EN_CONTACTO: 'En proceso',
-  REUNION: 'Reunión',
-  PRESUPUESTO: 'Presupuesto',
-  ATENDIDO: 'Atendido',
-  RECHAZADO: 'Rechazado',
+  NUEVO: 'Nuevo', LEIDO: 'Leído', EN_CONTACTO: 'En proceso', REUNION: 'Reunión',
+  PRESUPUESTO: 'Presupuesto', ATENDIDO: 'Atendido', RECHAZADO: 'Rechazado',
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -46,6 +47,8 @@ export default function MensajesPage() {
   const [estado, setEstado] = useState('')
   const [origen, setOrigen] = useState('')
   const [search, setSearch] = useState('')
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null) // ID a eliminar (individual)
 
   useEffect(() => {
     fetchLeads()
@@ -65,6 +68,7 @@ export default function MensajesPage() {
         const data = await res.json()
         setLeads(data.leads || [])
         setTotal(data.total || 0)
+        setSelectedIds([]) // limpiar seleccion al recargar
       }
     } catch {
       toast.error('Error al cargar mensajes')
@@ -75,16 +79,105 @@ export default function MensajesPage() {
 
   async function markAsRead(id: string) {
     try {
-      await fetch(`/api/admin/leads/${id}`, {
+      const res = await fetch(`/api/admin/leads/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: 'LEIDO' }),
       })
-      toast.success('Marcado como leído')
-      fetchLeads()
+      if (res.ok) {
+        toast.success('Marcado como leído')
+        fetchLeads()
+      } else {
+        toast.error('Error al actualizar')
+      }
     } catch {
       toast.error('Error al actualizar')
     }
+  }
+
+  async function deleteLead(id: string) {
+    try {
+      const res = await fetch(`/api/admin/leads/${id}`, { method: 'DELETE' })
+      if (res.ok) {
+        toast.success('Mensaje eliminado')
+        setDeleteTarget(null)
+        fetchLeads()
+      } else {
+        toast.error('Error al eliminar')
+      }
+    } catch {
+      toast.error('Error al eliminar')
+    }
+  }
+
+  function printLead(id: string) {
+    // Abrir vista de impresion en nueva pestaña
+    window.open(`/api/admin/leads/${id}/print`, '_blank')
+  }
+
+  // === Acciones masivas ===
+  function toggleSelect(id: string) {
+    setSelectedIds(prev =>
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    )
+  }
+
+  function toggleSelectAll() {
+    if (selectedIds.length === filteredLeads.length) {
+      setSelectedIds([])
+    } else {
+      setSelectedIds(filteredLeads.map(l => l.id))
+    }
+  }
+
+  async function bulkMarkRead() {
+    if (selectedIds.length === 0) return
+    try {
+      const res = await fetch('/api/admin/leads/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'markRead', ids: selectedIds }),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        toast.success(`${data.affected} mensajes marcados como leídos`)
+        fetchLeads()
+      } else {
+        toast.error('Error en acción masiva')
+      }
+    } catch {
+      toast.error('Error en acción masiva')
+    }
+  }
+
+  async function bulkDelete() {
+    if (selectedIds.length === 0) return
+    try {
+      const res = await fetch('/api/admin/leads/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'delete', ids: selectedIds }),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        toast.success(`${data.affected} mensajes eliminados`)
+        fetchLeads()
+      } else {
+        toast.error('Error en acción masiva')
+      }
+    } catch {
+      toast.error('Error en acción masiva')
+    }
+  }
+
+  // === Exportar ===
+  function exportData(format: 'excel' | 'pdf' | 'csv') {
+    const params = new URLSearchParams()
+    if (estado) params.set('estado', estado)
+    if (origen) params.set('origen', origen)
+    const query = params.toString()
+    const url = `/api/admin/leads/export/${format}${query ? `?${query}` : ''}`
+    window.open(url, '_blank')
   }
 
   const filteredLeads = search
@@ -94,13 +187,40 @@ export default function MensajesPage() {
       )
     : leads
 
+  const allSelected = filteredLeads.length > 0 && selectedIds.length === filteredLeads.length
+
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-1">Mensajes</h1>
-      <p className="text-sm text-muted-foreground mb-4">Bandeja de entrada de leads ({total} total)</p>
+      <div className="flex items-center justify-between mb-1 flex-wrap gap-2">
+        <div>
+          <h1 className="text-2xl font-bold">Mensajes</h1>
+          <p className="text-sm text-muted-foreground">Bandeja de entrada de leads ({total} total)</p>
+        </div>
+        {/* Boton Exportar */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">
+              <Download className="h-4 w-4 mr-2" />
+              Exportar
+              <ChevronDown className="h-4 w-4 ml-2" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => exportData('excel')}>
+              <Download className="h-4 w-4 mr-2" /> Excel (.xls)
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => exportData('pdf')}>
+              <Printer className="h-4 w-4 mr-2" /> PDF (imprimible)
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => exportData('csv')}>
+              <Download className="h-4 w-4 mr-2" /> CSV
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
 
       {/* Filtros */}
-      <div className="flex flex-col sm:flex-row gap-2 mb-4">
+      <div className="flex flex-col sm:flex-row gap-2 mb-4 mt-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
@@ -130,6 +250,21 @@ export default function MensajesPage() {
         </Select>
       </div>
 
+      {/* Acciones masivas (visibles cuando hay seleccion) */}
+      {selectedIds.length > 0 && (
+        <div className="flex items-center gap-2 mb-4 p-3 bg-muted/30 rounded-lg border">
+          <span className="text-sm font-medium">{selectedIds.length} seleccionado(s)</span>
+          <div className="flex-1" />
+          <Button variant="outline" size="sm" onClick={bulkMarkRead}>
+            <CheckCircle2 className="h-4 w-4 mr-1" /> Marcar leídos
+          </Button>
+          <Button variant="destructive" size="sm" onClick={bulkDelete}>
+            <Trash2 className="h-4 w-4 mr-1" /> Eliminar
+          </Button>
+          <Button variant="ghost" size="sm" onClick={() => setSelectedIds([])}>Cancelar</Button>
+        </div>
+      )}
+
       {/* Tabla */}
       <Card>
         <CardContent className="p-0">
@@ -145,6 +280,15 @@ export default function MensajesPage() {
               <table className="w-full text-sm">
                 <thead className="border-b border-border bg-muted/30">
                   <tr>
+                    <th className="p-3 text-left font-medium w-10">
+                      <input
+                        type="checkbox"
+                        checked={allSelected}
+                        onChange={toggleSelectAll}
+                        className="h-4 w-4 cursor-pointer"
+                        aria-label="Seleccionar todos"
+                      />
+                    </th>
                     <th className="p-3 text-left font-medium">Nombre</th>
                     <th className="p-3 text-left font-medium hidden md:table-cell">Email</th>
                     <th className="p-3 text-left font-medium hidden lg:table-cell">Teléfono</th>
@@ -157,6 +301,15 @@ export default function MensajesPage() {
                 <tbody>
                   {filteredLeads.map((lead) => (
                     <tr key={lead.id} className="border-b border-border hover:bg-muted/20 transition-colors">
+                      <td className="p-3">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(lead.id)}
+                          onChange={() => toggleSelect(lead.id)}
+                          className="h-4 w-4 cursor-pointer"
+                          aria-label={`Seleccionar ${lead.name}`}
+                        />
+                      </td>
                       <td className="p-3 font-medium">{lead.name}</td>
                       <td className="p-3 hidden md:table-cell text-muted-foreground">{lead.primaryEmail || '—'}</td>
                       <td className="p-3 hidden lg:table-cell text-muted-foreground">{lead.primaryPhone || '—'}</td>
@@ -174,12 +327,20 @@ export default function MensajesPage() {
                       <td className="p-3 hidden md:table-cell text-muted-foreground text-xs">
                         {new Date(lead.createdAt).toLocaleDateString('es-AR', { day: '2-digit', month: 'short', year: 'numeric' })}
                       </td>
-                      <td className="p-3 text-right">
-                        {lead.status === 'NUEVO' && (
-                          <Button variant="ghost" size="sm" onClick={() => markAsRead(lead.id)}>
-                            <CheckCircle2 className="h-4 w-4" />
+                      <td className="p-3">
+                        <div className="flex items-center justify-end gap-1">
+                          {lead.status === 'NUEVO' && (
+                            <Button variant="ghost" size="sm" onClick={() => markAsRead(lead.id)} title="Marcar como leído">
+                              <CheckCircle2 className="h-4 w-4" />
+                            </Button>
+                          )}
+                          <Button variant="ghost" size="sm" onClick={() => printLead(lead.id)} title="Imprimir">
+                            <Printer className="h-4 w-4" />
                           </Button>
-                        )}
+                          <Button variant="ghost" size="sm" onClick={() => setDeleteTarget(lead.id)} title="Eliminar" className="text-red-600 hover:text-red-700 hover:bg-red-50">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -206,6 +367,24 @@ export default function MensajesPage() {
           </div>
         </div>
       )}
+
+      {/* Dialog de confirmacion de eliminacion */}
+      <Dialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Eliminar mensaje</DialogTitle>
+            <DialogDescription>
+              ¿Estás seguro de que deseas eliminar este lead? Esta acción no se puede deshacer.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteTarget(null)}>Cancelar</Button>
+            <Button variant="destructive" onClick={() => deleteTarget && deleteLead(deleteTarget)}>
+              <Trash2 className="h-4 w-4 mr-2" /> Eliminar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
