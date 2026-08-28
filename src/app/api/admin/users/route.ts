@@ -96,6 +96,7 @@ export async function POST(request: Request) {
     const hashedPassword = await bcrypt.hash(body.password, 10)
     const rol = body.rol || 'VENDEDOR'
     const coverageAreas = body.coverageAreas ? JSON.stringify(body.coverageAreas) : null
+    const avatarUrl = body.avatarUrl || null  // NUEVO: URL de foto de perfil (data URL base64)
 
     // === INTENTO 1: Prisma ===
     try {
@@ -109,9 +110,10 @@ export async function POST(request: Request) {
           rol,
           activo: true,
           coverageAreas,
+          ...(avatarUrl && { avatarUrl }),  // NUEVO: guardar avatarUrl si viene
         },
         select: {
-          id: true, email: true, nombre: true, apellido: true, rol: true, activo: true,
+          id: true, email: true, nombre: true, apellido: true, rol: true, activo: true, avatarUrl: true,
         },
       })
 
@@ -124,9 +126,9 @@ export async function POST(request: Request) {
       const userId = 'user_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8)
 
       await executeLibsql(
-        `INSERT INTO User (id, email, password, nombre, apellido, telefono, rol, activo, coverageAreas, fechaAlta, createdAt, updatedAt, geocodingStatus, intentosLogin, totalContacts, conversionRate, serviceRadius)
-         VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, datetime('now'), datetime('now'), datetime('now'), 'PENDING', 0, 0, 0, 50)`,
-        [userId, body.email, hashedPassword, body.nombre, body.apellido || null, body.telefono || null, rol, coverageAreas]
+        `INSERT INTO User (id, email, password, nombre, apellido, telefono, rol, activo, coverageAreas, avatarUrl, fechaAlta, createdAt, updatedAt, geocodingStatus, intentosLogin, totalContacts, conversionRate, serviceRadius)
+         VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?, datetime('now'), datetime('now'), datetime('now'), 'PENDING', 0, 0, 0, 50)`,
+        [userId, body.email, hashedPassword, body.nombre, body.apellido || null, body.telefono || null, rol, coverageAreas, avatarUrl]
       )
 
       return NextResponse.json({
@@ -136,6 +138,7 @@ export async function POST(request: Request) {
         apellido: body.apellido || null,
         rol,
         activo: true,
+        avatarUrl,  // NUEVO: devolver avatarUrl
       }, { status: 201 })
     }
   } catch (error) {
