@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import LeafletMap from '@/components/LeafletMap'
 import { toast } from 'sonner'
 
 interface VendedorData {
@@ -358,6 +359,19 @@ export default function VendedorDetallePage({ params }: { params: Promise<{ id: 
                       : <span className="text-muted-foreground">Sin cobertura definida</span>}
                   </div>
                 </div>
+
+                {/* NUEVO: Mapa con la ubicacion del vendedor */}
+                {vendedor.latitude !== null && vendedor.longitude !== null && (
+                  <div className="md:col-span-2">
+                    <Label className="text-xs text-muted-foreground mb-2 block">Ubicación en el mapa</Label>
+                    <LeafletMap
+                      lat={vendedor.latitude}
+                      lng={vendedor.longitude}
+                      label={fullName}
+                      height="250px"
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </CardContent>
