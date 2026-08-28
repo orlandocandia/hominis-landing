@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   ArrowLeft, Mail, Phone, Calendar, User, CheckCircle2, Clock,
-  ListChecks, Users, Activity as ActivityIcon, LogIn, Bell
+  ListChecks, Users, Activity as ActivityIcon, LogIn, Bell, MapPin
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -20,9 +20,19 @@ interface VendedorData {
   rol: string
   activo: boolean
   telefono: string | null
-  avatarUrl: string | null  // NUEVO: foto de perfil
+  avatarUrl: string | null  // foto (preservado)
   ultimoAcceso: string | null
   createdAt: string
+  // NUEVO: campos logisticos
+  documentNumber: string | null
+  province: string | null
+  city: string | null
+  address: string | null
+  latitude: number | null
+  longitude: number | null
+  coverageAreas: string | null
+  horario: string | null
+  hireDate: string | null
   _count: { contacts: number; tareasPendientes: number; totalTareas: number }
 }
 
@@ -287,6 +297,67 @@ export default function VendedorDetallePage({ params }: { params: Promise<{ id: 
                       })
                     : 'Nunca'}
                 </p>
+              </div>
+            </div>
+
+            {/* === NUEVO: Sección Datos de logística === */}
+            <div className="border-t pt-4 mt-4">
+              <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-primary" /> Datos de logística
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-xs text-muted-foreground">DNI</Label>
+                  <p className="font-medium">{vendedor.documentNumber || '—'}</p>
+                </div>
+                <div>
+                  <Label className="text-xs text-muted-foreground flex items-center gap-1">
+                    <Calendar className="h-3 w-3" /> Fecha de ingreso
+                  </Label>
+                  <p className="font-medium">
+                    {vendedor.hireDate
+                      ? new Date(vendedor.hireDate).toLocaleDateString('es-AR', {
+                          day: '2-digit', month: 'long', year: 'numeric',
+                        })
+                      : '—'}
+                  </p>
+                </div>
+                <div>
+                  <Label className="text-xs text-muted-foreground flex items-center gap-1">
+                    <MapPin className="h-3 w-3" /> Provincia
+                  </Label>
+                  <p className="font-medium">{vendedor.province || '—'}</p>
+                </div>
+                <div>
+                  <Label className="text-xs text-muted-foreground">Ciudad</Label>
+                  <p className="font-medium">{vendedor.city || '—'}</p>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-xs text-muted-foreground">Dirección</Label>
+                  <p className="font-medium">{vendedor.address || '—'}</p>
+                </div>
+                <div>
+                  <Label className="text-xs text-muted-foreground">Horario de trabajo</Label>
+                  <p className="font-medium">{vendedor.horario || '—'}</p>
+                </div>
+                <div>
+                  <Label className="text-xs text-muted-foreground">Coordenadas</Label>
+                  <p className="font-medium text-xs">
+                    {vendedor.latitude !== null && vendedor.longitude !== null
+                      ? `📍 ${vendedor.latitude.toFixed(4)}, ${vendedor.longitude.toFixed(4)}`
+                      : '—'}
+                  </p>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-xs text-muted-foreground">Cobertura (provincias)</Label>
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {vendedor.coverageAreas
+                      ? vendedor.coverageAreas.split(',').map((p, i) => (
+                          <Badge key={i} variant="outline" className="text-xs">{p.trim()}</Badge>
+                        ))
+                      : <span className="text-muted-foreground">Sin cobertura definida</span>}
+                  </div>
+                </div>
               </div>
             </div>
           </CardContent>
