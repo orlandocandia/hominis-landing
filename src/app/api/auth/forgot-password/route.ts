@@ -63,16 +63,16 @@ export async function POST(request: Request) {
       ).catch(() => {})
     }
 
-    // Guardar el token en una tabla temporal (password_reset_tokens si existe)
+    // Guardar el token en password_reset_tokens (columnas: id, email, token, expiresAt, used, createdAt)
     try {
       await executeLibsql(
-        `INSERT INTO password_reset_tokens (id, email, token, expires_at, created_at)
+        `INSERT INTO password_reset_tokens (id, email, token, expiresAt, createdAt)
          VALUES (?, ?, ?, ?, datetime('now'))`,
         [crypto.randomUUID(), email, token, expiry.toISOString()]
       )
-    } catch {
-      // La tabla puede no existir — usar el token directamente en el email
-      // y validarlo comparando con el hash guardado en User
+      console.log('[forgot-password] Token saved to password_reset_tokens')
+    } catch (tokenErr) {
+      console.warn('[forgot-password] Could not save token to password_reset_tokens:', (tokenErr as Error)?.message?.slice(0, 150))
     }
 
     // Enviar el correo
