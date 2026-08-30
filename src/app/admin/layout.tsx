@@ -13,11 +13,11 @@ import { Card } from '@/components/ui/card'
 const NAV_LINKS = [
   { href: '/admin', label: 'Dashboard', icon: ShieldCheck },
   { href: '/admin/mensajes', label: 'Mensajes', icon: Mail },
-  { href: '/admin/clientes', label: 'Clientes', icon: UserCircle },
   { href: '/admin/vendedores', label: 'Vendedores', icon: Users },
   { href: '/admin/tareas', label: 'Tareas', icon: ListTodo },
   { href: '/admin/actividad', label: 'Actividad', icon: Activity },
   { href: '/admin/empresas', label: 'Empresas', icon: Building2 },
+  { href: '/admin/perfil', label: 'Mi Perfil', icon: UserCircle },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
