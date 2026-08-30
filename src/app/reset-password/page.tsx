@@ -35,9 +35,17 @@ function ResetPasswordForm() {
 
     setLoading(true)
     try {
-      // TODO: POST /api/auth/reset-password { token, password }
-      await new Promise(r => setTimeout(r, 800))
-      setDone(true)
+      const res = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, email: searchParams.get('email') || '', password }),
+      })
+      if (res.ok) {
+        setDone(true)
+      } else {
+        const data = await res.json()
+        setError(data.error || 'Error al restablecer la contraseña.')
+      }
     } catch {
       setError('Error al restablecer la contraseña.')
     } finally {
