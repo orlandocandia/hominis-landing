@@ -22,10 +22,16 @@ export default function ForgotPasswordPage() {
     setLoading(true)
 
     try {
-      // TODO: POST /api/auth/forgot-password (when API is created)
-      // For now, simulate success
-      await new Promise(r => setTimeout(r, 800))
-      setSent(true)
+      const res = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+      if (res.ok) {
+        setSent(true)
+      } else {
+        setError('Error al enviar el correo. Intentá nuevamente.')
+      }
     } catch {
       setError('Error al enviar el correo. Intentá nuevamente.')
     } finally {
